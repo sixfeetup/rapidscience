@@ -1,0 +1,23 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Added</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for bookmark in bookmarks %}
+    <tr>
+      <td>
+        <a href="{{ bookmark.content_object.get_absolute_url }}">
+          {{ bookmark }}
+        </a>
+        <p class="small">
+          {% include 'actstream/_action_detail.html' with action=bookmark.content_object.action_object_actions.first %}
+        </p>
+      </td>
+      <td>{{ bookmark.date_added|date:"M j, Y" }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

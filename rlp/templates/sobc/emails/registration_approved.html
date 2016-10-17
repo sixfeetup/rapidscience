@@ -1,0 +1,20 @@
+{% extends 'emails/base_email.html' %}
+
+{% block content %}
+<strong style="font-size: 21px;">Hi {{ user.get_full_name }},</strong><br><br>
+
+Welcome to the community! Your registration has been approved for the SOBC Research Network.<br><br>
+
+The goal of the Science of Behavior Change Research Network is to pool expertise in the research community for this inherently interdisciplinary field.
+Our Network is divided into several "projects" and "committees", each organized around a central goal.
+Community members are encouraged to post questions to the group, and upload articles or documents that others might find interesting, inspiring, or relevant as they work to meet this goal.<br><br>
+
+To get started, <a href="https://{{ site.domain }}{% url 'profile_edit' %}">log on and create your profile</a>.
+Once you’re on the site, take a look around at what has been posted, and consider sharing your thoughts or uploading articles of your own.<br><br>
+
+Warm Regards,<br><br>
+
+The Rapid Science Team<br><br>
+
+"In the long history of humankind: those who learned to collaborate and improvise most effectively have prevailed." - Charles Darwin
+{% endblock content %}

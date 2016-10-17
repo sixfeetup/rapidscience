@@ -1,0 +1,221 @@
+.side-item-list li {
+    border-top: 1px dotted #333;
+    padding: 10px 0;
+}
+
+.side-item-list a,
+.collection-list a {
+    color: #333;
+}
+
+.main > .container > .row > div {
+    margin-top: 30px;
+}
+
+.nav-tabs > li {
+    width: 25%;
+}
+.navbar-secondary {
+    .search-icon {
+        width: 50px;
+    }
+    form {
+        margin-top: -45px;
+        padding: 0 20px 10px 40px;
+        min-width: 330px;
+    }
+    /*.collapse {
+        transition: opacity 1s ease-out;
+        opacity: 0;
+        height: 0;
+    }
+    .collapse.in {
+        opacity: 1;
+        height: auto;
+    }*/
+    .form-control {
+        float: left;
+        width: auto;
+    }
+    .profile-update {
+        margin-left: 10px;
+        float: left;
+    }
+    .profile-update,
+    .form-control {
+        opacity: 0;
+    }
+    #search-form.in {
+        .profile-update,
+        .form-control {
+            opacity: 1;
+            transition: all .25s ease;
+        }
+    }
+}
+@media (min-width: 905px) {
+    .navbar-secondary {
+    }
+}
+.institutions-header > div:first-child {
+    padding-left: 0;
+}
+
+.members-section {
+    margin: 20px 0;
+}
+
+.member-thumb {
+    border-radius: 50%;
+    height: 50px;
+    width: 50px;
+    overflow: hidden;
+    margin-right: 15px;
+}
+
+.member-thumb + div {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.members-list > li {
+    width: 48%;
+}
+
+.members-list > li p {
+    margin-bottom: 0;
+}
+.members-list > li p:first-child {
+    margin-top: 5px;
+}
+
+.comments-section, .replies-section {
+    margin-top: 10px
+}
+
+.comments-section > ul > li, .replies-section > ul > li {
+    border-left: 1px dotted #ccc;
+    padding-left: 15px;
+}
+
+.tab-controls > div:first-child {
+    padding-top: 5px;
+}
+
+.tab-controls a {
+    margin: 0 0 0 10px;
+}
+
+.tab-controls .control-label {
+    margin-right: 10px;
+}
+
+.tab-controls a > span {
+    position: relative;
+    display: inline-block;
+    width: 16px;
+    height: 12px;
+    margin: 0 5px;
+}
+
+.tab-controls a > span > i {
+    position: absolute;
+    right: 0;
+}
+
+.tab-controls a > span > i.active {
+    color: #333;
+}
+
+.tab-controls a > span > i.up {
+    top: -4px;
+}
+
+.tab-controls a > span > i.down {
+    top: 6px;
+}
+
+.tab-content {
+    h4 {
+        margin-bottom: .5em;
+    }
+}
+
+#people {
+    .row {
+        margin-bottom: 1.5em;
+    }
+}
+
+.videos-list [class*="col"] > h2 {
+    margin-top: 0;
+}
+
+@media screen and (min-width: 1200px) {
+
+    .hero.bg-aging {
+        background-position: 0 -250px;
+    }
+
+    .hero.bg-bibliography {
+        background-position: 0 -250px;
+    }
+}
+/*Related to some jQuery*/
+.character-count {
+    margin-top: 5px;
+}
+.morecontent span {
+    display: none;
+}
+
+.item-list {
+    > li {
+        padding-bottom: 0;
+
+        > a {
+            display: block;
+            margin-bottom: .75em;
+            color: #000;
+
+            .glyphicon-triangle-right {
+                display: none;
+            }
+            .glyphicon-triangle-bottom {
+                display: inline-block;
+            }
+            &.collapsed {
+                .glyphicon-triangle-right {
+                    display: inline-block;
+                }
+                .glyphicon-triangle-bottom {
+                    display: none;
+                }
+            }
+        }
+
+        > div {
+
+        }
+
+        ul {
+            margin: 0 1.25em 0;
+
+            > li {
+                margin: 0 0 .5em;
+                padding: .5em 0;
+                &.active {
+                    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#000000+0,000000+100&amp;0+0,0.05+50,0+99 */
+                    background: -moz-linear-gradient(left,  rgba(0,0,0,0) 0%, rgba(0,0,0,0.05) 50%, rgba(0,0,0,0) 99%, rgba(0,0,0,0) 100%); /* FF3.6-15 */
+                    background: -webkit-linear-gradient(left,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.05) 50%,rgba(0,0,0,0) 99%,rgba(0,0,0,0) 100%); /* Chrome10-25,Safari5.1-6 */
+                    background: linear-gradient(to right,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.05) 50%,rgba(0,0,0,0) 99%,rgba(0,0,0,0) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+                    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#00000000',GradientType=1 ); /* IE6-9 */
+                }
+
+                a {
+                    display: block;
+                }
+            }
+        }
+    }
+}

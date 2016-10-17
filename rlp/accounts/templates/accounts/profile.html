@@ -1,0 +1,55 @@
+{% extends 'accounts/accounts_base.html' %}{% load bootstrap3 %}
+{% load cms_tags staticfiles %}
+
+{% block page_title %}Profile for {{ user.get_full_name }}{% endblock page_title %}
+
+{% block title %}Profile{% endblock title %}
+
+{% block css %}{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'js/vendor/chosen/chosen.min.css' %}" media="screen">
+{% endblock css %}
+
+{% block main_content %}{# TODO: change this to use tabs like project detail pages, Activity & Publications #}
+<div>
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation"{% if tab == 'activity' %} class="active"{% endif %}>
+      <a href="{{ user.get_absolute_url }}">Activity</a>
+    </li>
+    <li role="presentation"{% if tab == 'publications' %} class="active"{% endif %}>
+      <a href="{% url 'profile_publications' pk=user.pk %}">Publications</a>
+    </li>
+  </ul>
+</div>
+<div class="tab-content">
+  <div role="tabpanel" class="tab-pane{% if tab == 'activity' %} active{% endif %}" id="activity">
+    {% if tab == 'activity' %}
+      {% bootstrap_messages %}
+      <form class="form-inline" action="" method="get">
+        {% bootstrap_field filter_form.content_type show_label=False %}
+        <button class="btn btn-primary" type="submit">
+          Filter
+        </button>
+      </form>
+      <hr>
+      {% include page_template %}
+    {% endif %}
+  </div>
+  <div role="tabpanel" class="tab-pane{% if tab == 'publications' %} active{% endif %}" id="publications">
+    {% if tab == 'publications' %}
+      {% for publication in publications %}
+        {% include 'bibliography/_reference.html' with obj=publication.reference %}
+      {% empty %}
+        {% if request.user == user %}
+          <p>Please add your <a href="{% url 'profile_edit' %}">ORCID id to your profile</a> so we can show your publications.</p>
+        {% else %}
+          <p>Coming soon!</p>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  </div>
+</div>
+{% endblock main_content %}
+
+{% block js-footer %}{{ block.super }}
+  <script src="{% static 'js/vendor/chosen/chosen.jquery.min.js' %}"></script>
+{% endblock js-footer %}

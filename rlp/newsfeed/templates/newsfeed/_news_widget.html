@@ -1,0 +1,20 @@
+{% load cms_tags %}<h3>Research News &amp; Opinions</h3>
+{% for object in objects %}
+  <h4>
+    <strong>
+      {% if object.url %}
+      <a target="_blank" href="{{ object.url }}">
+      {% endif %}
+        {{ object.data.title }}
+      {% if object.url %}
+      </a>
+      {% endif %}
+    </strong>
+  </h4>
+
+  <p>
+    {% include 'newsfeed/_item.html' %}
+  </p>
+  <hr>
+{% endfor %}
+<a href="{% page_url 'news-events' %}">View all</a>

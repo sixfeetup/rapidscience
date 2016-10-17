@@ -1,0 +1,21 @@
+{% load cms_tags static %}
+<div class="container">
+  {% include '_logo_footer.html' %}
+  <div class="row col-sm-offset-3">
+    &copy; 2016 Rapid Science |
+    <a href="http://www.rapidscience.org/about/" target="_blank">About</a> |
+    <a href="mailto:info@rapidscience.org">Contact</a> |
+    <a href="{% page_url 'privacy-policy' %}">
+      {% page_attribute 'menu_title' 'privacy-policy' %}
+    </a> |
+    <a href="{% page_url 'terms-of-use' %}">
+      {% page_attribute 'menu_title' 'terms-of-use' %}
+    </a> |
+    <a href="https://www.linkedin.com/company/rapid-science" class="img" target="_blank">
+      <img src="{% static 'img/icon-footer-LinkedIn.png' %}" />
+    </a>
+    <a href="https://twitter.com/RapidScience" class="img" target="_blank">
+      <img src="{% static 'img/icon-footer-Twitter.png' %}" />
+    </a>
+  </div>
+</div>

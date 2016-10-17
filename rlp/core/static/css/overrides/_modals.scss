@@ -1,0 +1,9 @@
+@import "../bootstrap/modals";
+
+@media (min-width: $screen-sm-min) {
+  // Automatically set modal's width for larger viewports
+  .modal-dialog {
+    width: $modal-md;
+    margin: 70px auto;
+  }
+}

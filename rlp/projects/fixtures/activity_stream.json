@@ -1,0 +1,227 @@
+[
+{
+  "model": "actstream.action",
+  "pk": 1,
+  "fields": {
+    "actor_content_type": [
+      "accounts",
+      "user"
+    ],
+    "actor_object_id": "2",
+    "verb": "added",
+    "description": null,
+    "target_content_type": [
+      "projects",
+      "project"
+    ],
+    "target_object_id": "1",
+    "action_object_content_type": [
+      "bibliography",
+      "projectreference"
+    ],
+    "action_object_object_id": "1",
+    "timestamp": "2016-03-10T15:54:26.255Z",
+    "public": true
+  }
+},
+{
+  "model": "actstream.action",
+  "pk": 2,
+  "fields": {
+    "actor_content_type": [
+      "accounts",
+      "user"
+    ],
+    "actor_object_id": "3",
+    "verb": "added",
+    "description": null,
+    "target_content_type": [
+      "projects",
+      "project"
+    ],
+    "target_object_id": "7",
+    "action_object_content_type": [
+      "bibliography",
+      "projectreference"
+    ],
+    "action_object_object_id": "2",
+    "timestamp": "2016-03-10T15:54:26.255Z",
+    "public": true
+  }
+},
+{
+  "model": "actstream.action",
+  "pk": 3,
+  "fields": {
+    "actor_content_type": [
+      "accounts",
+      "user"
+    ],
+    "actor_object_id": "2",
+    "verb": "uploaded",
+    "description": null,
+    "target_content_type": [
+      "projects",
+      "project"
+    ],
+    "target_object_id": "1",
+    "action_object_content_type": [
+      "documents",
+      "file"
+    ],
+    "action_object_object_id": "1",
+    "timestamp": "2016-01-13T23:53:31.894Z",
+    "public": true
+  }
+},
+{
+  "model": "actstream.action",
+  "pk": 4,
+  "fields": {
+    "actor_content_type": [
+      "accounts",
+      "user"
+    ],
+    "actor_object_id": "2",
+    "verb": "uploaded",
+    "description": null,
+    "target_content_type": [
+      "projects",
+      "project"
+    ],
+    "target_object_id": "1",
+    "action_object_content_type": [
+      "documents",
+      "file"
+    ],
+    "action_object_object_id": "2",
+    "timestamp": "2016-01-13T23:53:31.894Z",
+    "public": true
+  }
+},
+{
+  "model": "actstream.action",
+  "pk": 5,
+  "fields": {
+    "actor_content_type": [
+      "accounts",
+      "user"
+    ],
+    "actor_object_id": "3",
+    "verb": "uploaded",
+    "description": null,
+    "target_content_type": [
+      "projects",
+      "project"
+    ],
+    "target_object_id": "7",
+    "action_object_content_type": [
+      "documents",
+      "file"
+    ],
+    "action_object_object_id": "3",
+    "timestamp": "2016-01-13T23:53:31.894Z",
+    "public": true
+  }
+},
+{
+  "model": "actstream.action",
+  "pk": 6,
+  "fields": {
+    "actor_content_type": [
+      "accounts",
+      "user"
+    ],
+    "actor_object_id": "2",
+    "verb": "uploaded",
+    "description": null,
+    "target_content_type": [
+      "projects",
+      "project"
+    ],
+    "target_object_id": "1",
+    "action_object_content_type": [
+      "documents",
+      "link"
+    ],
+    "action_object_object_id": "4",
+    "timestamp": "2016-01-13T23:53:31.894Z",
+    "public": true
+  }
+},
+{
+  "model": "actstream.action",
+  "pk": 7,
+  "fields": {
+    "actor_content_type": [
+      "accounts",
+      "user"
+    ],
+    "actor_object_id": "3",
+    "verb": "uploaded",
+    "description": null,
+    "target_content_type": [
+      "projects",
+      "project"
+    ],
+    "target_object_id": "7",
+    "action_object_content_type": [
+      "documents",
+      "link"
+    ],
+    "action_object_object_id": "5",
+    "timestamp": "2016-01-13T23:53:31.894Z",
+    "public": true
+  }
+},
+{
+  "model": "actstream.action",
+  "pk": 8,
+  "fields": {
+    "actor_content_type": [
+      "accounts",
+      "user"
+    ],
+    "actor_object_id": "2",
+    "verb": "comment",
+    "description": null,
+    "target_content_type": [
+      "projects",
+      "project"
+    ],
+    "target_object_id": "1",
+    "action_object_content_type": [
+      "discussions",
+      "threadedcomment"
+    ],
+    "action_object_object_id": "1",
+    "timestamp": "2016-03-10T11:09:41.518Z",
+    "public": true
+  }
+},
+{
+  "model": "actstream.action",
+  "pk": 9,
+  "fields": {
+    "actor_content_type": [
+      "accounts",
+      "user"
+    ],
+    "actor_object_id": "3",
+    "verb": "comment",
+    "description": null,
+    "target_content_type": [
+      "projects",
+      "project"
+    ],
+    "target_object_id": "7",
+    "action_object_content_type": [
+      "discussions",
+      "threadedcomment"
+    ],
+    "action_object_object_id": "2",
+    "timestamp": "2016-03-11T11:09:41.518Z",
+    "public": true
+  }
+}
+]

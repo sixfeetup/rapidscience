@@ -1,0 +1,50 @@
+{% load comments discussion_tags el_pagination_tags static thumbnail %}
+{% lazy_paginate memberships %}
+
+{% for membership in memberships %}
+{% if not forloop.counter|divisibleby:"2" %}
+<div class="row">
+{% endif %}
+  {% with user=membership.user role=membership.role %}
+  <div class="col-md-2 col-xs-3">
+  {% if user.photo %}
+    {% thumbnail membership.user.photo 120x120 crop upscale as thumbnail %}
+    <img class="contain-img img-circle"
+         src="{{ thumbnail.url }}">
+  {% else %}
+    <img class="contain-img img-circle"
+         src="{% static 'img/user.jpg' %}">
+  {% endif %}
+  </div>
+  <div class="col-md-4 col-xs-9">
+    <p class="no-margin-bottom">
+      <small>
+        <a href="{{ user.get_absolute_url }}">{{ user.get_full_name }}</a>{% if user.degrees %}, {{ user.degrees }}{% endif %}
+      </small>
+    </p>
+    {% if role %}
+    <p class="no-margin-bottom">
+      <small>
+        {{ role }}
+      </small>
+    </p>
+    {% endif %}
+    {% if user.institution %}
+    <p class="no-margin-bottom">
+      <small>
+        {{ user.institution }}
+      </small>
+    </p>
+    {% endif %}
+  </div>
+  {% endwith %}
+  <div class="col-xs-12 hidden-md hidden-lg">
+    <hr class="hidden-md hidden-lg">
+  </div>
+{% if forloop.counter|divisibleby:"2" %}
+</div>
+<hr class="hidden-xs hidden-sm">
+{% endif %}
+
+{% endfor %}
+{% show_more %}

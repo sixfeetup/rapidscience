@@ -1,0 +1,18 @@
+{% load thumbnail %}
+{% if event %}
+  <h1 class="aside-col-header">
+      Next Event
+  </h1>
+  <div class="aside-col-content">
+    {% thumbnail event.image 300x300 crop HIGH_RESOLUTION as thumbnail %}
+      <img alt="{{ event.title }}" src="{{ thumbnail.url }}" width="100%">
+      <h3>
+          <a href="{{ event.url }}">{{ event.title }}</a>
+      </h3>
+      <p>
+          <strong>{{ event.duration }} | {{ event.location }}</strong><br>
+          {{ event.description }}
+      </p>
+      <a role="button" href="{{ event.url }}" class="btn btn-primary">More Info</a>
+  </div>
+{% endif %}

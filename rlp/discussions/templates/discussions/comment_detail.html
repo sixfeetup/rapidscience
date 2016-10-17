@@ -1,0 +1,20 @@
+{% extends 'projects/projects_detail.html' %}{% load bootstrap3 comments discussion_tags %}
+
+{% block project_discussion %}
+{% if comment.title %}<h4>{{ comment.title }}</h4>{% endif %}
+<p>{{ comment.comment|urlize|linebreaksbr }}</p>
+<p class="small">
+  <a href="{{ comment.user.get_absolute_url }}">
+    {{ comment.user.get_full_name }}{% if comment.user.institution %}, {{ comment.user.institution }}{% endif %}
+  </a>
+  | {{ comment.submit_date|date:"j M Y" }}
+</p>
+{% if comment.allow_thread %}
+  <a data-toggle="collapse" href="#reply-form-{{ comment.id }}">Reply</a>
+  <div id="reply-form-{{ comment.id }}" class="collapse">
+    {% get_reply_form comment %}
+  </div>
+{% endif %}
+<hr>
+{% render_comment_list for comment %}
+{% endblock project_discussion %}

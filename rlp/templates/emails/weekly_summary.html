@@ -1,0 +1,42 @@
+{% extends 'emails/base_email.html' %}
+
+{% block content %}
+<strong style="font-size: 21px;">Hi {{ user.get_full_name }},</strong><br><br>
+Here's your weekly summary of activity on the {{ site.name }} web site, all of which appears on your <a href="https://{{ site.domain }}{% url 'dashboard' %}">dashboard</a>:<br><br>
+
+{% if comments %}
+  <strong>{{ comments.count }} Comment{{ comments.count|pluralize }}</strong>
+  <ul>
+  {% for action in comments|slice:":2" %}{# TODO: change to use the comment title once we have comment.title #}
+    <li>{{ action.actor.get_full_name }} said "<a href="https://{{ site.domain }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.comment|truncatewords:30 }}</a>" in {{ action.target }}</li>
+  {% endfor %}
+    <li><a href="https://{{ site.domain }}{% url 'dashboard' %}">View more on your dashboard.</a></li>
+  </ul>
+{% endif %}
+
+{% if docs %}
+  <strong>{{ docs.count }} Document{{ docs.count|pluralize }}/Media</strong>
+  <ul>
+  {% for action in docs|slice:":2" %}
+    <li>{{ action.actor.get_full_name }} uploaded <a href="https://{{ site.domain }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.title }}</a> to {{ action.target }}</li>
+  {% endfor %}
+    <li><a href="https://{{ site.domain }}{% url 'dashboard' %}">View more on your dashboard.</a></li>
+  </ul>
+{% endif %}
+
+{% if references %}
+  <strong>{{ references.count }} Reference{{ references.count|pluralize }}</strong>
+  <ul>
+  {% for action in references|slice:":2" %}
+    <li>{{ action.actor.get_full_name }} added <a href="https://{{ site.domain }}{{ action.action_object.get_absolute_url }}">{% include 'bibliography/_reference.html' with obj=action.action_object.reference search=True %}</a> to {{ action.target }}</li>
+  {% endfor %}
+  <li><a href="https://{{ site.domain }}{% url 'dashboard' %}">View more on your dashboard.</a></li>
+  </ul>
+{% endif %}
+
+Join the conversation<br><br>
+
+The Rapid Science Team<br><br>
+
+Respond or send questions/concerns to <a href="mailto:info@rapidscience.org">info@rapidscience.org</a>.
+{% endblock content %}

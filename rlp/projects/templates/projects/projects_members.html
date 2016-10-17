@@ -1,0 +1,28 @@
+{% extends "projects/projects_detail.html" %}{% load bootstrap3 cms_tags comments discussion_tags project_tags thumbnail %}{% load static from staticfiles %}
+
+{% block left_column %}
+  {% if project.goal %}
+  <div class="box">
+    <p class="section-label">Goal</p>
+    <p>{{ project.goal }}</p>
+  </div>
+  {% endif %}
+{% endblock left_column %}
+
+{% block main_content %}
+  <div>
+    <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation">
+        <a href="{{ project.get_absolute_url }}">&lt; Back to Activity</a>
+      </li>
+      <li role="presentation" class="active">
+        <a href="{% url 'projects:projects_members' pk=project.pk slug=project.slug %}">Members</a>
+      </li>
+    </ul>
+  </div>
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="members">
+      {% include page_template %}
+    </div>
+  </div>
+{% endblock main_content %}

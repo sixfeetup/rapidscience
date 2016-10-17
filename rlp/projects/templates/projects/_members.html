@@ -1,0 +1,42 @@
+{% load static thumbnail %}
+<div class="box">
+  <p class="section-label">Members</p>
+  <ul class="list-unstyled item-list">
+    {% for membership in memberships|slice:":11" %}
+      {% with user=membership.user role=membership.role %}
+      <li class="clearfix">
+        <div class="col-xs-3">
+        {% if user.photo %}
+          {% thumbnail membership.user.photo 120x120 crop upscale as thumbnail %}
+          <img class="contain-img img-circle"
+               src="{{ thumbnail.url }}">
+        {% else %}
+          <img class="contain-img img-circle"
+               src="{% static 'img/user.jpg' %}">
+        {% endif %}
+        </div>
+        <div class="col-xs-9">
+          <p class="no-margin-bottom">
+            <small>
+              <a href="{{ user.get_absolute_url }}"><strong>{{ user.get_full_name }}</strong></a>{% if user.degrees %}, {{ user.degrees }}{% endif %}
+            </small>
+          </p>
+          {% if role %}
+          <p class="no-margin-bottom">
+            <small>
+              {{ role }}
+            </small>
+          </p>
+          {% endif %}
+        </div>
+      </li>
+      {% endwith %}
+    {% endfor %}
+    {% if memberships|length > 12 %}
+      <li><a href="{% url 'projects:projects_members' pk=project.pk slug=project.slug %}">View all</a></li>
+    {% endif %}
+  </ul>
+</div>
+
+
+

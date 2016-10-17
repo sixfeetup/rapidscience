@@ -1,0 +1,17 @@
+{% extends 'left_col.html' %}
+
+{% block hero %}
+    {% include "accounts/_hero.html" with user=user %}
+{% endblock hero %}
+
+{% block left_column %}
+  {% with projects=user.projects.all %}
+    {% if projects %}
+      {% include "accounts/_projects.html" %}
+    {% endif %}
+  {% endwith %}
+
+    {% include "accounts/_bio.html" %}
+
+    {% include "accounts/_research_interests.html" %}
+{% endblock left_column %}

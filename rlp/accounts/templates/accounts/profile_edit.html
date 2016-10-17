@@ -1,0 +1,28 @@
+{% extends 'single_col.html' %}{% load bootstrap3 cms_tags %}
+
+{% block hero %}
+    {% include "accounts/_hero.html" with user=user %}
+{% endblock hero %}
+
+{% block main_content %}
+<div class="plugin-form">
+    <h2>Edit your profile</h2>
+    <p>
+      Need to <a href="{% url 'password_change' %}">change your password</a>?
+    </p>
+    <form method="post" enctype="multipart/form-data" action="{% url 'profile_edit' %}">
+        {% csrf_token %}
+      {% bootstrap_form form %}
+      <fieldset>
+        <legend>Your Projects</legend>
+        {% bootstrap_formset formset layout='horizontal' %}
+      </fieldset>
+        <button class="btn btn-primary" type="submit">
+          Update
+        </button>
+        <a role="button" class="btn btn-default" href="{% url 'dashboard' %}">
+          Cancel
+        </a>
+    </form>
+</div>
+{% endblock main_content %}

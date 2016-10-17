@@ -1,0 +1,56 @@
+{% if object.data.itemType == 'book' %}
+  {{ object.authors }}
+  {{ object.editors }}
+  {% if object.data.date %}{{ object.data.date }}.{% endif %}
+  {% if object.data.numPages %}{{ object.data.numPages }} pp,{% endif %}
+  {{ object.data.publisher }}
+  {% if object.data.ISBN %}ISBN: {{ object.data.ISBN }}{% endif %}
+{% elif object.data.itemType == 'bookSection' %}
+  {{ object.authors }}
+  {% if object.data.date %}{{ object.data.date }}.{% endif %}
+  {% if object.data.bookTitle %}In <i>{{ object.data.bookTitle }}</i>{% endif %}
+  {% if object.editors %}{{ object.editors }},{% endif %}
+  {% if object.data.pages %}pp. {{ object.data.pages }}.{% endif %}
+  {{ object.data.publisher }}
+  {% if object.data.ISBN %}ISBN: {{ object.data.ISBN }}{% endif %}
+  {% if object.pmid %}
+    PMID: {{ object.pmid }}.
+  {% endif %}
+{% elif object.data.itemType == 'journalArticle' %}
+  {{ object.authors }}
+  {% if object.data.date %}{{ object.data.date }}.{% endif %}
+  {{ object.data.publicationTitle }}
+  {{ object.data.volume }}{% if object.data.issue %}({{ object.data.issue}}):{{ object.data.pages }}.{% endif %}
+  {% if object.data.DOI %} doi: {{ object.data.DOI }} {% endif %}
+  {% if object.pmid %} PMID: {{ object.pmid }} {% endif %}
+{% elif object.data.itemType == 'bookSection' %}
+  {{ object.authors }}
+  {{ object.data.date }}.
+  In <i>{{ object.data.bookTitle }}</i>{% if object.editors %} (ed. {{ object.editors }}){% endif %},
+  pp{{ object.data.pages }}.
+  {% if object.data.DOI %} doi: {{ object.data.DOI }} {% endif %}
+  {% if object.pmid %} PMID: {{ object.pmid }} {% endif %}
+{% elif object.data.itemType == 'blogPost' %}
+  {% if object.authors %}{{ object.authors }}.{% endif %}
+  {% if object.data.date %}{{ object.data.date }}.{% endif %}
+  <i>{{ object.data.blogTitle }}</i>.
+  Retrieved on {{ object.data.accessDate }} from {{ object.data.url }}
+{% else %}
+{# no formats match; try to guess the best that we can #}
+  {% if object.authors %}
+    {{ object.authors }}
+  {% endif %}
+  {% if object.data.date %}
+    {{ object.data.date }}.
+  {% endif %}
+  {% if object.data.journalAbbreviation %}
+    <i>{{ object.data.journalAbbreviation }}</i>.
+  {% elif object.data.publicationTitle %}
+    <i>{{ object.data.publicationTitle }}</i>.
+  {% elif object.data.websiteTitle %}
+    <i>{{ object.data.websiteTitle }}</i>.
+  {% endif %}
+  {% if object.pmid %}
+    PMID: {{ object.pmid }}.
+  {% endif %}
+{% endif %}

@@ -1,0 +1,639 @@
+[
+{
+  "model": "bibliography.reference",
+  "pk": 1,
+  "fields": {
+    "title": "A PIECE OF MY MIND. Story as Evidence, Evidence as Story.",
+    "pubmed_id": "26172890",
+    "doi": "10.1001/jama.2015.3930",
+    "source": "pubmed",
+    "raw_data": {
+      "MedlineCitation": {
+        "MeshHeadingList": [
+          {
+            "DescriptorName": "Communication",
+            "QualifierName": []
+          },
+          {
+            "DescriptorName": "Evidence-Based Medicine",
+            "QualifierName": []
+          },
+          {
+            "DescriptorName": "Female",
+            "QualifierName": []
+          },
+          {
+            "DescriptorName": "Humans",
+            "QualifierName": []
+          },
+          {
+            "DescriptorName": "Mammography",
+            "QualifierName": [
+              "adverse effects",
+              "utilization"
+            ]
+          },
+          {
+            "DescriptorName": "Narration",
+            "QualifierName": []
+          }
+        ],
+        "Article": {
+          "Pagination": {
+            "MedlinePgn": "125-6"
+          },
+          "ArticleDate": [],
+          "Journal": {
+            "ISSN": "1538-3598",
+            "Title": "JAMA",
+            "ISOAbbreviation": "JAMA",
+            "JournalIssue": {
+              "Volume": "314",
+              "Issue": "2",
+              "PubDate": {
+                "Year": "2015",
+                "Month": "Jul",
+                "Day": "14"
+              }
+            }
+          },
+          "AuthorList": [
+            {
+              "ForeName": "Louise",
+              "AffiliationInfo": [
+                {
+                  "Affiliation": "Division of Geriatrics, Department of Medicine, University of California, San Francisco.",
+                  "Identifier": []
+                }
+              ],
+              "Initials": "L",
+              "LastName": "Aronson",
+              "Identifier": []
+            }
+          ],
+          "ArticleTitle": "A PIECE OF MY MIND. Story as Evidence, Evidence as Story.",
+          "ELocationID": [
+            "10.1001/jama.2015.3930"
+          ],
+          "Language": [
+            "eng"
+          ],
+          "PublicationTypeList": [
+            "Journal Article"
+          ]
+        },
+        "DateCreated": {
+          "Year": "2015",
+          "Month": "07",
+          "Day": "16"
+        },
+        "SpaceFlightMission": [],
+        "MedlineJournalInfo": {
+          "ISSNLinking": "0098-7484",
+          "NlmUniqueID": "7501160",
+          "Country": "United States",
+          "MedlineTA": "JAMA"
+        },
+        "OtherID": [],
+        "PMID": "26172890",
+        "KeywordList": [],
+        "OtherAbstract": [],
+        "GeneralNote": [],
+        "DateCompleted": {
+          "Year": "2015",
+          "Month": "08",
+          "Day": "03"
+        },
+        "CitationSubset": [
+          "AIM",
+          "IM"
+        ]
+      },
+      "PubmedData": {
+        "History": [
+          {
+            "Hour": "6",
+            "Month": "7",
+            "Day": "15",
+            "Minute": "0",
+            "Year": "2015"
+          },
+          {
+            "Hour": "6",
+            "Month": "7",
+            "Day": "15",
+            "Minute": "0",
+            "Year": "2015"
+          },
+          {
+            "Hour": "6",
+            "Month": "8",
+            "Day": "4",
+            "Minute": "0",
+            "Year": "2015"
+          }
+        ],
+        "PublicationStatus": "ppublish",
+        "ArticleIdList": [
+          "2396482",
+          "10.1001/jama.2015.3930",
+          "26172890"
+        ]
+      }
+    },
+    "parsed_data": {
+      "authors": "Aronson L",
+      "doi": "10.1001/jama.2015.3930",
+      "publisher": "",
+      "abstract": "",
+      "retrieval_date": "",
+      "publication_date": "14 Jul 2015",
+      "editors": "",
+      "journal_issue": "2",
+      "container_title": "",
+      "journal_title": "JAMA",
+      "title": "A PIECE OF MY MIND. Story as Evidence, Evidence as Story.",
+      "url": "",
+      "page_range": "",
+      "pages": "",
+      "pubmed_id": "26172890",
+      "isbn": "",
+      "issn": "1538-3598",
+      "journal_volume": "314"
+    },
+    "date_added": "2016-03-09T21:26:37.461Z",
+    "date_updated": "2016-03-23T22:48:53.191Z"
+  }
+},
+{
+  "model": "bibliography.reference",
+  "pk": 2,
+  "fields": {
+    "title": "Mandela's Mortality",
+    "pubmed_id": "",
+    "doi": "10.1017/cco9781139003766.016",
+    "source": "crossref",
+    "raw_data": {
+      "editor": [
+        {
+          "given": "Rita",
+          "family": "Barnard",
+          "affiliation": []
+        }
+      ],
+      "URL": "http://dx.doi.org/10.1017/cco9781139003766.016",
+      "publisher": "Cambridge University Press (CUP)",
+      "indexed": {
+        "timestamp": 1451998383938,
+        "date-time": "2016-01-05T12:53:03Z",
+        "date-parts": [
+          [
+            2016,
+            1,
+            5
+          ]
+        ]
+      },
+      "page": "267-290",
+      "member": "http://id.crossref.org/member/56",
+      "type": "book-chapter",
+      "DOI": "10.1017/cco9781139003766.016",
+      "issued": {
+        "date-parts": [
+          [
+            null
+          ]
+        ]
+      },
+      "reference-count": 0,
+      "score": 1.0,
+      "ISBN": [
+        "http://id.crossref.org/isbn/9781139003766"
+      ],
+      "created": {
+        "timestamp": 1392213209000,
+        "date-time": "2014-02-12T13:53:29Z",
+        "date-parts": [
+          [
+            2014,
+            2,
+            12
+          ]
+        ]
+      },
+      "prefix": "http://id.crossref.org/prefix/10.1017",
+      "title": [
+        "Mandela\u2019s Mortality"
+      ],
+      "source": "CrossRef",
+      "author": [
+        {
+          "given": "Sarah",
+          "family": "Nuttall",
+          "affiliation": []
+        },
+        {
+          "given": "Achille",
+          "family": "Mbembe",
+          "affiliation": []
+        }
+      ],
+      "container-title": [
+        "The Cambridge Companion to Nelson Mandela"
+      ],
+      "subtitle": [],
+      "deposited": {
+        "timestamp": 1451757680000,
+        "date-time": "2016-01-02T18:01:20Z",
+        "date-parts": [
+          [
+            2016,
+            1,
+            2
+          ]
+        ]
+      }
+    },
+    "parsed_data": {
+      "authors": "Nuttall S, Mbembe A",
+      "doi": "10.1017/cco9781139003766.016",
+      "publisher": "Cambridge University Press (CUP)",
+      "abstract": "",
+      "retrieval_date": "",
+      "publication_date": "",
+      "editors": "",
+      "journal_issue": "",
+      "container_title": "The Cambridge Companion to Nelson Mandela",
+      "journal_title": "",
+      "title": "Mandela's Mortality",
+      "url": "",
+      "page_range": "",
+      "pages": "",
+      "pubmed_id": "",
+      "isbn": "",
+      "issn": "",
+      "journal_volume": ""
+    },
+    "date_added": "2016-03-10T08:07:53.598Z",
+    "date_updated": "2016-03-24T16:17:21.560Z"
+  }
+},
+{
+  "model": "bibliography.reference",
+  "pk": 3,
+  "fields": {
+    "title": "Urban observation and sentiment in James Parkinson's Essay on the Shaking Palsy (1817).",
+    "pubmed_id": "25055707",
+    "doi": "",
+    "source": "pubmed",
+    "raw_data": {
+      "MedlineCitation": {
+        "MeshHeadingList": [
+          {
+            "DescriptorName": "History, 19th Century",
+            "QualifierName": []
+          },
+          {
+            "DescriptorName": "Humans",
+            "QualifierName": []
+          },
+          {
+            "DescriptorName": "Medicine in Literature",
+            "QualifierName": []
+          },
+          {
+            "DescriptorName": "Observation",
+            "QualifierName": []
+          },
+          {
+            "DescriptorName": "Parkinson Disease",
+            "QualifierName": [
+              "history"
+            ]
+          },
+          {
+            "DescriptorName": "Publishing",
+            "QualifierName": [
+              "history"
+            ]
+          }
+        ],
+        "Article": {
+          "Pagination": {
+            "MedlinePgn": "74-104"
+          },
+          "ArticleDate": [],
+          "Journal": {
+            "ISSN": "0278-9671",
+            "Title": "Literature and medicine",
+            "ISOAbbreviation": "Lit Med",
+            "JournalIssue": {
+              "Volume": "32",
+              "Issue": "1",
+              "PubDate": {
+                "Year": "2014",
+                "Season": "Spring"
+              }
+            }
+          },
+          "AuthorList": [
+            {
+              "ForeName": "Brian",
+              "AffiliationInfo": [],
+              "Initials": "B",
+              "LastName": "Hurwitz",
+              "Identifier": []
+            }
+          ],
+          "ArticleTitle": "Urban observation and sentiment in James Parkinson's Essay on the Shaking Palsy (1817).",
+          "ELocationID": [],
+          "Language": [
+            "eng"
+          ],
+          "PublicationTypeList": [
+            "Historical Article",
+            "Journal Article"
+          ]
+        },
+        "CommentsCorrectionsList": [
+          {
+            "RefSource": "Hist Psychiatry. 2001 Dec;12(48 Pt 4):404-30",
+            "PMID": "11951866"
+          },
+          {
+            "RefSource": "Hist Psychiatry. 2001 Sep;12(47 Pt 3):245-82",
+            "PMID": "11951913"
+          },
+          {
+            "RefSource": "Clio Med. 1987-1988;21(1-4):21-34",
+            "PMID": "2475299"
+          },
+          {
+            "RefSource": "J Soc Hist. 2011;44(3):915-35",
+            "PMID": "21853622"
+          },
+          {
+            "RefSource": "Mov Disord. 1997 Sep;12(5):798-806",
+            "PMID": "9380070"
+          },
+          {
+            "RefSource": "Neurology. 2007 Jul 31;69(5):482-5",
+            "PMID": "17664408"
+          },
+          {
+            "RefSource": "Lancet. 2008 Jan 5;371(9606):85-7",
+            "PMID": "18177779"
+          },
+          {
+            "RefSource": "J Hist Neurosci. 1996 Aug;5(2):200-7",
+            "PMID": "11619048"
+          }
+        ],
+        "DateCreated": {
+          "Year": "2014",
+          "Month": "07",
+          "Day": "24"
+        },
+        "SpaceFlightMission": [],
+        "MedlineJournalInfo": {
+          "ISSNLinking": "0278-9671",
+          "NlmUniqueID": "8309346",
+          "Country": "United States",
+          "MedlineTA": "Lit Med"
+        },
+        "OtherID": [
+          "PMC4077538"
+        ],
+        "DateRevised": {
+          "Year": "2015",
+          "Month": "08",
+          "Day": "05"
+        },
+        "PMID": "25055707",
+        "KeywordList": [],
+        "OtherAbstract": [],
+        "GeneralNote": [],
+        "DateCompleted": {
+          "Year": "2014",
+          "Month": "08",
+          "Day": "25"
+        },
+        "CitationSubset": [
+          "IM"
+        ]
+      },
+      "PubmedData": {
+        "History": [
+          {
+            "Hour": "6",
+            "Month": "7",
+            "Day": "25",
+            "Minute": "0",
+            "Year": "2014"
+          },
+          {
+            "Hour": "6",
+            "Month": "7",
+            "Day": "25",
+            "Minute": "0",
+            "Year": "2014"
+          },
+          {
+            "Hour": "6",
+            "Month": "8",
+            "Day": "26",
+            "Minute": "0",
+            "Year": "2014"
+          }
+        ],
+        "PublicationStatus": "ppublish",
+        "ArticleIdList": [
+          "25055707",
+          "PMC4077538"
+        ]
+      }
+    },
+    "parsed_data": {
+      "authors": "Hurwitz B",
+      "doi": "",
+      "publisher": "",
+      "abstract": "",
+      "retrieval_date": "",
+      "publication_date": "2014",
+      "editors": "",
+      "journal_issue": "1",
+      "container_title": "",
+      "journal_title": "Literature and medicine",
+      "title": "Urban observation and sentiment in James Parkinson's Essay on the Shaking Palsy (1817).",
+      "url": "",
+      "page_range": "",
+      "pages": "",
+      "pubmed_id": "25055707",
+      "isbn": "",
+      "issn": "0278-9671",
+      "journal_volume": "32"
+    },
+    "date_added": "2016-03-10T15:54:17.223Z",
+    "date_updated": "2016-03-23T22:48:53.194Z"
+  }
+},
+{
+  "model": "bibliography.reference",
+  "pk": 4,
+  "fields": {
+    "title": "Older adults in the emergency department: A systematic review of patterns of use, adverse outcomes, and effectiveness of interventions",
+    "pubmed_id": "",
+    "doi": "10.1067/mem.2002.121523",
+    "source": "crossref",
+    "raw_data": {
+      "URL": "http://dx.doi.org/10.1067/mem.2002.121523",
+      "member": "http://id.crossref.org/member/78",
+      "DOI": "10.1067/mem.2002.121523",
+      "subject": [
+        "Emergency Medicine"
+      ],
+      "published-print": {
+        "date-parts": [
+          [
+            2002,
+            3
+          ]
+        ]
+      },
+      "issue": "3",
+      "reference-count": 84,
+      "alternative-id": [
+        "S0196064402530614"
+      ],
+      "issued": {
+        "date-parts": [
+          [
+            2002,
+            3
+          ]
+        ]
+      },
+      "ISSN": [
+        "0196-0644"
+      ],
+      "subtitle": [],
+      "deposited": {
+        "timestamp": 1423890000000,
+        "date-time": "2015-02-14T05:00:00Z",
+        "date-parts": [
+          [
+            2015,
+            2,
+            14
+          ]
+        ]
+      },
+      "prefix": "http://id.crossref.org/prefix/10.1067",
+      "publisher": "Elsevier BV",
+      "indexed": {
+        "timestamp": 1450551988233,
+        "date-time": "2015-12-19T19:06:28Z",
+        "date-parts": [
+          [
+            2015,
+            12,
+            19
+          ]
+        ]
+      },
+      "page": "238-247",
+      "type": "journal-article",
+      "container-title": [
+        "Annals of Emergency Medicine"
+      ],
+      "volume": "39",
+      "link": [
+        {
+          "content-version": "vor",
+          "URL": "http://api.elsevier.com/content/article/PII:S0196064402530614?httpAccept=text/xml",
+          "intended-application": "text-mining",
+          "content-type": "text/xml"
+        },
+        {
+          "content-version": "vor",
+          "URL": "http://api.elsevier.com/content/article/PII:S0196064402530614?httpAccept=text/plain",
+          "intended-application": "text-mining",
+          "content-type": "text/plain"
+        }
+      ],
+      "score": 2.5068533,
+      "created": {
+        "timestamp": 1030227266000,
+        "date-time": "2002-08-24T22:14:26Z",
+        "date-parts": [
+          [
+            2002,
+            8,
+            24
+          ]
+        ]
+      },
+      "title": [
+        "Older adults in the emergency department: A systematic review of patterns of use, adverse outcomes, and effectiveness of interventions"
+      ],
+      "source": "CrossRef",
+      "author": [
+        {
+          "given": "Faranak",
+          "family": "Aminzadeh",
+          "affiliation": []
+        },
+        {
+          "given": "William Burd",
+          "family": "Dalziel",
+          "affiliation": []
+        }
+      ]
+    },
+    "parsed_data": {
+      "authors": "Aminzadeh F, Dalziel W",
+      "doi": "10.1067/mem.2002.121523",
+      "publisher": "Elsevier BV",
+      "abstract": "",
+      "retrieval_date": "",
+      "publication_date": "2002-3",
+      "editors": "",
+      "journal_issue": "",
+      "container_title": "Annals of Emergency Medicine",
+      "journal_title": "",
+      "title": "Older adults in the emergency department: A systematic review of patterns of use, adverse outcomes, and effectiveness of interventions",
+      "url": "",
+      "page_range": "",
+      "pages": "",
+      "pubmed_id": "",
+      "isbn": "",
+      "issn": "",
+      "journal_volume": ""
+    },
+    "date_added": "2016-03-29T18:37:44.846Z",
+    "date_updated": "2016-03-29T18:37:44.846Z"
+  }
+},
+{
+  "model": "bibliography.projectreference",
+  "pk": 1,
+  "fields": {
+    "reference": 1,
+    "project": 1,
+    "owner": 2,
+    "date_added": "2016-03-30T16:55:37.413Z",
+    "date_updated": "2016-03-30T16:55:37.413Z"
+  }
+},
+{
+  "model": "bibliography.projectreference",
+  "pk": 2,
+  "fields": {
+    "reference": 2,
+    "project": 7,
+    "owner": 3,
+    "date_added": "2016-03-30T16:55:37.413Z",
+    "date_updated": "2016-03-30T16:55:37.413Z"
+  }
+}
+]

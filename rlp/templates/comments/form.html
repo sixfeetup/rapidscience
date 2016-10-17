@@ -1,0 +1,25 @@
+{% load bootstrap3 comments discussion_tags %}
+
+<div class="plugin-form">
+  <form action="{% comment_form_target %}" method="POST">
+    {% csrf_token %}
+    {% if form.title %}
+    {% bootstrap_field form.title %}
+    {% endif %}
+    {% bootstrap_field form.comment show_label=False %}
+    {{ form.honeypot }}
+    {{ form.reply_to }}
+    {% bootstrap_field form.content_type %}
+    {% bootstrap_field form.object_pk %}
+    {% bootstrap_field form.timestamp %}
+    {% bootstrap_field form.security_hash %}
+    {% get_next_for_comment form.target_object as next %}
+    <input type="hidden" name="next" value="{{ next }}"/>
+    <button class="btn btn-primary" type="submit">
+      {{ button_label|default:"Comment" }}
+    </button>
+    <a role="button" class="btn btn-default cancel-button-collapse" href="#">
+      Cancel
+    </a>
+  </form>
+</div>

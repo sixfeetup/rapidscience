@@ -1,0 +1,33 @@
+{% load bootstrap3 bibliography_tags %}
+
+<div class="share-widget">
+  <form class="share-button"  method="post">{% csrf_token %}
+    <button type="button" data-toggle="modal" data-target="#modal-{{ action.id }}">
+      <i class="fa fa-share" aria-hidden="true"></i>
+    </button>
+  </form>
+</div>
+
+<div class="modal fade" id="modal-{{ action.id }}" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Share "{{ action.action_object.reference.title }}"</h4>
+      </div>
+      <form class="share" action="{% url 'reference_share' reference_pk=action.action_object.pk %}" method="post">{% csrf_token %}
+        <div class="modal-body">
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">
+            Close
+          </button>
+          <button type="submit" class="btn btn-primary">
+            Share
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

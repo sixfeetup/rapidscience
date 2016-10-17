@@ -1,0 +1,11 @@
+{% if objects.has_previous or objects.has_next %}
+<ul class="pagination">
+    {% if objects.has_previous %}
+        <li><a class="previous" href="?page={{ objects.previous_page_number }}{% if query_string %}&amp;{{ query_string }}{% endif %}">&laquo; Previous</a></li>
+    {% endif %}
+
+    {% if objects.has_next %}
+        <li><a class="next" href="?page={{ objects.next_page_number }}{% if query_string %}&amp;{{ query_string }}{% endif %}">Next &raquo;</a></li>
+    {% endif %}
+</ul>
+{% endif %}

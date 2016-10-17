@@ -1,0 +1,8 @@
+{% if posts %}
+<div class="box">
+  <h3>{{ site.name }} Blog</h3>
+  {% for post in posts %}
+    {% include "djangocms_blog/includes/blog_item.html" with post=post image="true" TRUNCWORDS_COUNT=25 %}
+  {% endfor %}
+</div>
+{% endif %}

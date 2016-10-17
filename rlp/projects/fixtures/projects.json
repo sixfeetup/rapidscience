@@ -1,0 +1,322 @@
+[
+{
+  "model": "projects.topic",
+  "pk": 1,
+  "fields": {
+    "title": "Aging",
+    "page_title": "",
+    "menu_title": "",
+    "meta_description": "",
+    "slug": "aging",
+    "date_created": "2015-12-24T20:19:54.959Z",
+    "date_updated": "2015-12-24T20:19:54.959Z",
+    "order": 0
+  }
+},
+{
+  "model": "projects.topic",
+  "pk": 2,
+  "fields": {
+    "title": "Summer Institutes",
+    "page_title": "",
+    "menu_title": "Summer Institutes",
+    "meta_description": "",
+    "slug": "medical-humanities",
+    "date_created": "2016-01-13T22:32:47.893Z",
+    "date_updated": "2016-03-09T18:36:15.840Z",
+    "order": 2
+  }
+},
+{
+  "model": "projects.topic",
+  "fields": {
+    "page_title": "",
+    "date_created": "2015-11-18T01:29:08.500Z",
+    "date_updated": "2015-11-18T01:29:08.500Z",
+    "menu_title": "",
+    "slug": "test-topic-3",
+    "meta_description": "",
+    "title": "Test Topic 3"
+  },
+  "pk": 3
+},
+{
+  "model": "projects.role",
+  "pk": 1,
+  "fields": {
+    "title": "Principal Investigator",
+    "contact": false,
+    "order": 2
+  }
+},
+{
+  "model": "projects.role",
+  "pk": 2,
+  "fields": {
+    "title": "Co-Investigator ",
+    "contact": false,
+    "order": 3
+  }
+},
+{
+  "model": "projects.role",
+  "pk": 3,
+  "fields": {
+    "title": "NIH Program Official",
+    "contact": false,
+    "order": 4
+  }
+},
+{
+  "model": "projects.role",
+  "pk": 4,
+  "fields": {
+    "title": "NIH Lead Project Scientist",
+    "contact": false,
+    "order": 5
+  }
+},
+{
+  "model": "projects.role",
+  "pk": 5,
+  "fields": {
+    "title": "NIH Project Scientist",
+    "contact": false,
+    "order": 6
+  }
+},
+{
+  "model": "projects.role",
+  "pk": 6,
+  "fields": {
+    "title": "SOBC Project Coordinator ",
+    "contact": false,
+    "order": 7
+  }
+},
+{
+  "model": "projects.role",
+  "pk": 7,
+  "fields": {
+    "title": "Principal Investigator / Contact",
+    "contact": true,
+    "order": 1
+  }
+},
+{
+  "model": "projects.role",
+  "pk": 8,
+  "fields": {
+    "title": "Project Participant",
+    "contact": false,
+    "order": 8
+  }
+},
+{
+  "model": "projects.role",
+  "pk": 9,
+  "fields": {
+    "title": "Committee Member",
+    "contact": false,
+    "order": 0
+  }
+},
+{
+  "model": "projects.project",
+  "pk": 1,
+  "fields": {
+    "title": "Aging and its Tropes",
+    "page_title": "",
+    "menu_title": "",
+    "meta_description": "",
+    "slug": "aging-and-its-tropes",
+    "date_created": "2015-12-24T20:18:14.039Z",
+    "date_updated": "2016-01-19T19:58:48.114Z",
+    "cover_photo": null,
+    "institution": 1,
+    "topic": 1,
+    "approval_required": true,
+    "auto_opt_in": false,
+    "goal": "Providing a holistic portrait of the ethical and treatment dilemmas around care of patients who, before the advent of support technology, were allowed to expire without aggressive intervention - using interviews with patients, caregivers, and family members in four intensive care units.",
+    "order": 0
+  }
+},
+{
+  "model": "projects.project",
+  "pk": 2,
+  "fields": {
+    "title": "Border Crossing, Piloting, Aging",
+    "page_title": "",
+    "menu_title": "",
+    "meta_description": "",
+    "slug": "border-crossing-piloting-aging",
+    "date_created": "2016-01-05T02:16:34.931Z",
+    "date_updated": "2016-01-05T02:16:34.931Z",
+    "cover_photo": null,
+    "institution": 2,
+    "topic": 1,
+    "approval_required": true,
+    "auto_opt_in": false,
+    "goal": "Questioning the received notion of Chinese culture as particularly reverent toward the elderly through a rigorous examination of the historical record, while studying how attitudes and behavior toward the elderly have changed over the past fifty years.",
+    "order": 0
+  }
+},
+{
+  "model": "projects.project",
+  "pk": 3,
+  "fields": {
+    "title": "Medical Subjects",
+    "page_title": "",
+    "menu_title": "",
+    "meta_description": "",
+    "slug": "medical-subjects",
+    "date_created": "2016-01-05T02:35:43.705Z",
+    "date_updated": "2016-01-19T20:01:20.698Z",
+    "cover_photo": null,
+    "institution": 3,
+    "topic": 1,
+    "approval_required": true,
+    "auto_opt_in": false,
+    "goal": " Exploring cultural notions of \u201cthe subject\u201d in relation to clinical concerns such as elder care.  Can the humanities\u2019 reflections on concepts like \u201cthe subject\u201d prove useful to health care practitioners, and what can decisions about treatment us about subjectivity?",
+    "order": 0
+  }
+},
+{
+  "model": "projects.project",
+  "pk": 4,
+  "fields": {
+    "title": "Culture and the Reproduction of Myths About Aging",
+    "page_title": "",
+    "menu_title": "",
+    "meta_description": "",
+    "slug": "culture-and-reproduction-myths-about-aging",
+    "date_created": "2016-01-05T02:37:32.999Z",
+    "date_updated": "2016-01-19T20:00:15.536Z",
+    "cover_photo": null,
+    "institution": 4,
+    "topic": 1,
+    "approval_required": true,
+    "auto_opt_in": false,
+    "goal": "Surveying the extent to which recent memoirs concerned with old age contest Western stereotypes and how far they reinforce them. How can social innovation help redress institutionally ingrained patterns? And how might Western society use memoir more effectively to engage with the realities of old age?",
+    "order": 0
+  }
+},
+{
+  "model": "projects.project",
+  "pk": 5,
+  "fields": {
+    "title": "Autobiographical Narrative and Aging",
+    "page_title": "",
+    "menu_title": "",
+    "meta_description": "",
+    "slug": "autobiographical-narrative-and-aging",
+    "date_created": "2016-01-05T02:38:43.408Z",
+    "date_updated": "2016-01-05T02:38:43.408Z",
+    "cover_photo": null,
+    "institution": 5,
+    "topic": 1,
+    "approval_required": true,
+    "auto_opt_in": false,
+    "goal": "Assessing how written versus oral narratives from the elderly correlate to mental and physical well-being, through collection of data in clinical settings.",
+    "order": 0
+  }
+},
+{
+  "model": "projects.project",
+  "pk": 6,
+  "fields": {
+    "title": "Age and the Body",
+    "page_title": "",
+    "menu_title": "",
+    "meta_description": "",
+    "slug": "age-and-body",
+    "date_created": "2016-01-05T02:40:58.647Z",
+    "date_updated": "2016-01-19T19:57:54.166Z",
+    "cover_photo": null,
+    "institution": 6,
+    "topic": 1,
+    "approval_required": true,
+    "auto_opt_in": false,
+    "goal": "Exploring attitudes toward aging and researching a range of medical responses to the facts of aging and death, by collecting narratives from the elderly that record and reflect on 20th century sexual practices, organ and transplant histories, chronic illness, neuro states, and pathographies, all the while including ordinary South Africans and analyses of two notable South Africans\u2014Christiaan Barnard and Nelson Mandela.",
+    "order": 0
+  }
+},
+{
+  "model": "projects.project",
+  "pk": 7,
+  "fields": {
+    "title": "2015 CHCI Medical Humanities Institute",
+    "page_title": "2015 Medical Humanities Summer Institute - Dartmouth July 12-14",
+    "menu_title": "2015 MedHum Institute",
+    "meta_description": "",
+    "slug": "chci-summer-institute-2015",
+    "date_created": "2016-01-13T22:41:37.767Z",
+    "date_updated": "2016-03-10T15:49:03.049Z",
+    "cover_photo": null,
+    "institution": 3,
+    "topic": 2,
+    "approval_required": false,
+    "auto_opt_in": false,
+    "goal": "July 12-14, 2015, Dartmouth University. Gathered scholars and practitioners in medical humanities to discuss research being done under this rubric in a number of disciplines.",
+    "order": 0
+  }
+},
+{
+  "model": "projects.project",
+  "pk": 8,
+  "fields": {
+    "title": "2016 CHCI Medical Humanities Institute",
+    "page_title": "2016 CHCI Summer Institute - University College London, June 26-27",
+    "menu_title": "2016 MedHum Institute",
+    "meta_description": "",
+    "slug": "2016-ucl-institute",
+    "date_created": "2016-03-09T18:30:59.490Z",
+    "date_updated": "2016-03-10T15:49:23.035Z",
+    "cover_photo": null,
+    "institution": 4,
+    "topic": 2,
+    "approval_required": false,
+    "auto_opt_in": false,
+    "goal": "June 26, 2016 - June 27, 2016, Kings College London. Goal is to promote robust conversation about medical humanities research and the development of degree programs.",
+    "order": 0
+  }
+},
+{
+  "model": "projects.project",
+  "pk": 9,
+  "fields": {
+    "title": "Community Commons",
+    "page_title": "",
+    "menu_title": "",
+    "meta_description": "",
+    "slug": "community-commons",
+    "date_created": "2016-03-10T04:35:23.207Z",
+    "date_updated": "2016-03-10T04:36:55.035Z",
+    "cover_photo": null,
+    "institution": null,
+    "topic": null,
+    "approval_required": false,
+    "auto_opt_in": true,
+    "goal": "Community Commons is a place to discuss topics and post documents and references relating broadly to medical humanities.",
+    "order": 0
+  }
+},
+{
+  "model": "projects.projectmembership",
+  "pk": 1,
+  "fields": {
+    "project": 1,
+    "user": 2,
+    "role": 7
+  }
+},
+{
+  "model": "projects.projectmembership",
+  "pk": 2,
+  "fields": {
+    "project": 7,
+    "user": 3,
+    "role": 7
+  }
+}
+]

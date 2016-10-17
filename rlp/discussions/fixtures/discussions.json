@@ -1,0 +1,66 @@
+[
+{
+  "model": "django_comments.comment",
+  "pk": 1,
+  "fields": {
+    "content_type": [
+      "projects",
+      "project"
+    ],
+    "object_pk": "1",
+    "site": 1,
+    "user": 2,
+    "user_name": "Flippy Flap",
+    "user_email": "flippy-flap@columbia.edu",
+    "user_url": "",
+    "comment": "All registered members of this website can join the Commons to hold discussions and post documents and references.",
+    "submit_date": "2016-03-10T11:09:41.518Z",
+    "ip_address": "192.168.1.1",
+    "is_public": true,
+    "is_removed": false
+  }
+},
+{
+  "model": "django_comments.comment",
+  "pk": 2,
+  "fields": {
+    "content_type": [
+      "projects",
+      "project"
+    ],
+    "object_pk": "7",
+    "site": 1,
+    "user": 3,
+    "user_name": "Arf McArf",
+    "user_email": "arf-mcarf@dartmouth.edu",
+    "user_url": "",
+    "comment": "All registered members of this website can join the Commons to hold discussions and post documents and references.",
+    "submit_date": "2016-03-11T11:09:41.518Z",
+    "ip_address": "192.168.1.2",
+    "is_public": true,
+    "is_removed": false
+  }
+},
+{
+  "model": "discussions.threadedcomment",
+  "pk": 1,
+  "fields": {
+    "thread_id": 1,
+    "parent_id": 1,
+    "level": 0,
+    "order": 1,
+    "title": "Comment Title"
+  }
+},
+{
+  "model": "discussions.threadedcomment",
+  "pk": 2,
+  "fields": {
+    "thread_id": 2,
+    "parent_id": 2,
+    "level": 0,
+    "order": 1,
+    "title": "Comment Title"
+  }
+}
+]

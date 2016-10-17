@@ -1,0 +1,30 @@
+Hi {{ user.get_full_name }},
+
+Here's your weekly summary of activity on the {{ site.name }} web site, all of which appears on your dashboard (https://{{ site.domain }}{% url 'dashboard' %}):
+{% if comments %}
+{{ comments.count }} Comment{{ comments.count|pluralize }}
+
+  {% for action in comments|slice:":2" %}
+    {{ action.actor.get_full_name }} said "{{ action.action_object.comment|truncatewords:30 }}" in {{ action.target }}
+
+  {% endfor %}
+{% endif %}
+
+{% if docs %}
+{{ docs.count }} Document{{ docs.count|pluralize }}/Media
+
+  {% for action in docs|slice:":2" %}
+    {{ action.actor.get_full_name }} uploaded {{ action.action_object.title }} (https://{{ site.domain }}{{ action.action_object.get_absolute_url }}) to {{ action.target }}
+
+  {% endfor %}
+{% endif %}
+
+{% if references %}
+{{ references.count }} Reference{{ references.count|pluralize }}
+
+  {% for action in references|slice:":2" %}
+    {{ action.actor.get_full_name }} added {{ action.action_object.reference.title }} (https://{{ site.domain }}{{ action.action_object.get_absolute_url }}) to {{ action.target }}
+  {% endfor %}
+
+Visit your dashboard to view all recent activity: https://{{ site.domain }}{% url 'dashboard' %}
+{% endif %}

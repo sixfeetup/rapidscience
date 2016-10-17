@@ -1,0 +1,20 @@
+{% extends 'projects/projects_detail.html' %}
+
+{% block project_documents %}
+<h4>{{ document.title }}</h4>
+<form method="post" action="">
+  {% csrf_token %}
+
+  <div class="alert alert-danger alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&#215;</button>
+    Are you sure you want to delete "{{ document }}"?
+    If you do, all comments/replies will also be deleted.
+  </div>
+  <button class="btn btn-primary" type="submit">
+    Delete
+  </button>
+  <a role="button" class="btn btn-default" href="{{ document.get_absolute_url }}">
+    Cancel
+  </a>
+</form>
+{% endblock project_documents %}

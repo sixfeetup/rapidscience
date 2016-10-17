@@ -1,0 +1,16 @@
+{% extends 'single_col.html' %}{% load cms_tags %}
+
+{% block hero %}
+<div class="hero">
+  <div class="backdrop image-container">
+    {% include 'projects/_institution_hero_image.html' %}
+  </div>
+  <div class="container">
+    <h1>{% page_attribute "title" %}</h1>
+  </div>
+</div>
+{% endblock hero %}
+
+{% block main_content %}
+  {% placeholder 'content' %}
+{% endblock main_content %}

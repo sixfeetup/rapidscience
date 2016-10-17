@@ -1,0 +1,16 @@
+{% extends 'emails/base_email.html' %}{% load cms_tags %}
+
+{% block content %}
+{{ user.get_full_name }} ({{ user.email }}) has requested permission to register on the CHCI Research Network,
+  and has identified as being part of the project, {{ project.title }}.<br><br>
+
+If this individual has permission to register under this project, please click "<a href="https://{{ site.domain }}{% url 'registration_activate' activation_key=activation_key %}">Approve</a>".<br><br>
+
+Note that immediately upon clicking "Approve", the individual will have permission to register.<br><br>
+
+If you clicked "Approve" in error, please email <a href="mailto:info@rapidscience.org">info@rapidscience.org</a> as soon as possible.<br><br>
+
+Warm regards,<br><br>
+
+The Rapid Science team<br><br>
+{% endblock content %}

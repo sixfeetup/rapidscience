@@ -1,0 +1,5 @@
+{{ object.get_full_name }}{{ object.email }}
+{{ object.title }}
+{{ object.degrees }}
+{{ object.bio }}
+{{ object.research_interests }}

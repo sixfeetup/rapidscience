@@ -1,0 +1,23 @@
+{% load el_pagination_tags %}
+{% lazy_paginate objects %}
+
+{% for object in objects %}
+  <h4>
+    <strong>
+      {% if object.url %}
+      <a target="_blank" href="{{ object.url }}">
+      {% endif %}
+        {{ object.data.title }}
+      {% if object.url %}
+      </a>
+      {% endif %}
+    </strong>
+  </h4>
+
+  <p>
+    {% include 'newsfeed/_item.html' %}
+  </p>
+  <hr>
+{% endfor %}
+
+{% show_more %}

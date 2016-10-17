@@ -1,0 +1,18 @@
+{% extends 'accounts/accounts_base.html' %}{% load bootstrap3 %}
+{% load cms_tags staticfiles %}
+
+{% block page_title %}Profile for {{ user.get_full_name }}{% endblock page_title %}
+
+{% block title %}Profile{% endblock title %}
+
+{% block main_content %}
+<div class="box accounts-activity">
+  {% bootstrap_messages %}
+  <h1 class="activity-header">Publications</h1>
+  {% for publication in publications %}
+    {% include 'bibliography/_reference.html' with obj=publication.reference %}
+  {% empty %}
+    <p>Coming soon!</p>
+  {% endfor %}
+</div>
+{% endblock main_content %}

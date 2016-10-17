@@ -1,0 +1,11 @@
+{% if edit_url or delete_url %}
+<div class="btn-group">
+  <button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu">
+    {% if edit_url %}<li><a href="{{ edit_url }}">Edit</a></li>{% endif %}
+    {% if delete_url %}<li><a href="{{ delete_url }}">Delete</a></li>{% endif %}
+  </ul>
+</div>
+{% endif %}

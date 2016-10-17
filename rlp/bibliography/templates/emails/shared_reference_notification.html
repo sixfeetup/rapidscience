@@ -1,0 +1,7 @@
+{% extends 'emails/base_email.html' %}
+
+{% block content %}
+{{ share.user.get_full_name }} has shared a <a href="https://{{ site.domain }}{{ share.reference.projectreference_set.first.get_absolute_url }}">reference</a> with you.<br>
+
+{% include 'bibliography/_reference.html' with obj=share.reference %}
+{% endblock content %}

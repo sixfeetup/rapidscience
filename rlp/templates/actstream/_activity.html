@@ -1,0 +1,58 @@
+{% load bookmarks comments discussion_tags el_pagination_tags %}
+{% lazy_paginate activity_stream %}
+{% for action in activity_stream %}
+  <div class="activity-stream">
+    {% if action.action_object %}
+    <div class="row">
+      {% with obj=action.action_object model=action.action_object_content_type.model %}
+      <div class="col-md-11">
+        <p class="small">
+          {% include 'actstream/_action_detail.html' %}
+        </p>
+        {% if model == 'file' %}
+          {% include 'documents/_file.html' %}
+        {% elif model == 'image' %}
+          {% include 'documents/_image.html' %}
+        {% elif model == 'link' %}
+          {% include 'documents/_link.html' %}
+        {% elif model == 'video' %}
+          {% include 'documents/_video.html' %}
+        {% elif model == 'threadedcomment' %}
+          {% include 'comments/_comment.html' %}
+        {% elif model == 'referenceshare' %}
+          <blockquote>
+            <p>{{ obj.comment }}</p>
+          </blockquote>
+          {% include 'bibliography/_reference.html' with obj=obj.reference %}
+        {% elif model == 'projectreference' %}
+          {% include 'bibliography/_reference.html' with obj=obj.reference %}
+        {% endif %}
+        <br>
+        {% for tag in action.action_object.tags.all %}
+          <a role="button" class="btn btn-tag btn-xs" href="{% url 'haystack_search' %}?tags={{ tag.id }}">
+            {{ tag }}
+          </a>
+        {% endfor %}
+      </div>
+      <div class="col-md-1 activity-actions">
+        {% if model == 'threadedcomment' %}
+          {% if obj.user == request.user %}{% include 'forms/_edit_dropdown.html' with edit_url=obj.get_edit_url delete_url=obj.get_delete_url %}{% endif %}
+        {% else %}
+          {% if obj.owner == request.user %}{% include 'forms/_edit_dropdown.html' with edit_url=obj.get_edit_url delete_url=obj.get_delete_url %}{% endif %}
+        {% endif %}
+        {% if request.user.is_authenticated %}
+        {% include 'bookmarks/_form.html' %}
+        {% endif %}
+        {% if model == 'projectreference' and request.user.is_authenticated %}
+          {% include 'bibliography/_share_reference.html' %}
+        {%  endif %}
+      </div>
+      {% endwith %}
+    </div>
+    {% endif %}
+  </div>
+  <hr>
+{% empty %}
+  <p>There is no recent activity</p>
+{% endfor %}
+{% show_more %}

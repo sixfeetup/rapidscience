@@ -1,0 +1,160 @@
+{% load cms_tags sekizai_tags staticfiles compress menu_tags %}<!doctype html>
+<html class="no-js" lang="{{ LANGUAGE_CODE|default:'en-us' }}">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block page_title %}{% page_attribute 'page_title' as page_title %}{% if page_title %}{{ page_title }}{% else %}{% include '_meta_title.txt' %}{% endif %}{% endblock page_title %}{% block page_title_postfix %} | {% include '_meta_title.txt' %}{% endblock page_title_postfix %}</title>
+    <meta name="description"
+          content="{% block meta_description %}{% endblock meta_description %}">
+
+    {% include '_favicon.html' %}
+
+    {# Use the following block to place canonical urls in <head> #}
+    {% block canonical %}{% endblock canonical %}
+
+    {% block css %}
+        {% compress css %}
+            <link rel="stylesheet" type="text/x-scss" href="{% static 'css/styles.scss' %}" media="screen">
+        {% endcompress %}
+    {% endblock css %}
+
+    {% render_block 'css' %}
+
+    {% block js-header %}
+        <script src="{% static 'js/vendor/modernizr-2.8.3.min.js' %}"></script>
+    {% endblock js-header %}
+    <!--[if lt IE 9]>
+          <script src="{% static 'js/vendor/html5shiv.min.js' %}"></script>
+          <script src="{% static 'js/vendor/respond.min.js' %}"></script>
+          <link href="{% static 'respond-proxy.html' %}" id="respond-proxy" rel="respond-proxy" />
+          <link href="/static/js/vendor/respond.proxy.gif" id="respond-redirect" rel="respond-redirect" />
+          <script src="/static/js/vendor/respond.proxy.js"></script>
+        <![endif]-->
+</head>
+<body>
+<!--[if IE]>
+<div class="messages"><p class="browserupgrade bg-danger">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p></div>
+<![endif]-->
+{% block js-body %}{% endblock js-body %}
+{% cms_toolbar %}
+
+<nav class="navbar navbar-default navbar-fixed-top top-nav">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">
+                {% include '_logo.html' %}
+            </a>
+        </div>
+        <div class="navbar-collapse collapse navbar-right">
+            <ul class="nav navbar-nav">
+                {% show_menu 0 3 100 100 "menu.html" %}
+            </ul>
+            <ul class="nav navbar-nav navbar-secondary">
+                {% if request.user.is_authenticated %}
+                    <li><a href="{% url 'dashboard' %}">{{ request.user.first_name }}</a></li>
+                    <li><a href="javascript:void(0)" class="no-side-padding">|</a></li>
+                    <li><a href="{% url 'logout' %}">Sign out</a></li>
+                {% else %}
+                    <li><a href="{% url 'login' %}">Sign in</a></li>
+                    <li><a href="javascript:void(0)" class="no-side-padding">|</a></li>
+                    <li><a href="{% url 'register' %}">Register</a></li>
+                {% endif %}
+                <li class="navbar-secondary">
+                    <a class="search-icon" href="#search-form" data-toggle="collapse">
+                        <i class="glyphicon glyphicon-search invert-horizontal"></i>
+                    </a>
+                    <div id="search-form" class="collapse">
+                        <form class="clearfix" action="{% url 'haystack_search' %}" method="get">
+                          <label for="search" class="sr-only">Search: </label>
+                          <input class="form-control" type="text" name="q" placeholder="Search">
+                          <button class="btn btn-primary" type="submit">
+                            Search
+                          </button>
+                      </form>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+</nav>
+
+<div class="main">
+    {% block hero %}{% endblock hero %}
+    {% block content %}{% endblock content %}
+</div>
+
+<div class="main-footer">
+    {% include '_footer.html' %}
+</div>
+
+{% if debug %}
+    <script src="{% static 'js/vendor/jquery-1.11.3.min.js' %}"></script>
+    <script src="{% static 'js/vendor/jquery.transit.min.js' %}"></script>
+{% else %}
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="{% static 'js/vendor/jquery.transit.min.js' %}"></script>
+    <script>window.jQuery || document.write('<script src="{% static 'js/vendor/jquery-1.11.3.min.js' %}"><\/script>')</script>
+{% endif %}
+
+{% block js-footer %}
+    {% if not request.user.is_staff %}
+        <script>
+            var MEDIA_URL = "{{ MEDIA_URL }}";
+            var STATIC_URL = "{{ STATIC_URL }}";
+        </script>
+    {% endif %}
+    {% compress js %}
+        <script src="{% static 'js/vendor/image-scale.min.js' %}"></script>
+        <script src="{% static 'js/plugins.js' %}"></script>
+        <script src="{% static 'js/analytics.js' %}"></script>
+        <script src="{% static 'js/vendor/bootstrap.js' %}"></script>
+        <script src="{% static 'js/vendor/jasny-bootstrap.js' %}"></script>
+        <script src="{% static 'el-pagination/js/el-pagination.js' %}"></script>
+        <script src="{% static 'js/main.js' %}"></script>
+        <script>$.endlessPaginate({paginateOnScroll: true, onCompleted: function(context, fragment) {show_more();remaining_characters();}});</script>
+        {% block js-compress-inline %}
+        {% endblock %}
+    {% endcompress %}
+{% endblock js-footer %}
+
+{% render_block 'js' %}
+
+    <script>
+        {# Set autoscaling for any hero images added via cms #}
+        $(function() {
+            $('.hero .backdrop img').imageScale({
+                rescaleOnResize: true
+            });
+        });
+    </script>
+
+{% if GOOGLE_UA and not request.user.is_staff %}
+  {# Set GOOGLE_UA in settings_base.py to have this section enabled in production #}
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r;
+            i[r] = i[r] || function () {
+                        (i[r].q = i[r].q || []).push(arguments)
+                    }, i[r].l = 1 * new Date();
+            a = s.createElement(o),
+                    m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+        ga('create', '{{ GOOGLE_UA }}', 'auto');
+        ga('send', 'pageview'{% block analytics_send_params %}{% endblock %});
+        {% block analytics_script %}{% endblock analytics_script %}
+    </script>
+{% endif %}
+</body>
+</html>

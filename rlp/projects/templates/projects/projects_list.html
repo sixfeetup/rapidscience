@@ -1,0 +1,25 @@
+{% extends 'cms/left_col.html' %}
+{% load cms_tags project_tags %}{% load static from staticfiles %}
+
+{% block hero %}
+<div class="hero">
+  <div class="image-container">
+    {% placeholder 'hero-image' %}
+  </div>
+  <div class="container">
+    <div class="col-md-8">
+      {% placeholder 'hero-text' %}
+    </div>
+  </div>
+</div>
+{% endblock hero %}
+
+{% block left_column %}
+    {% projects_sidebar %}
+{% endblock left_column %}
+
+{% block main_content %}
+  <div class="box">
+  {% placeholder 'content' %}
+  </div>
+{% endblock main_content %}

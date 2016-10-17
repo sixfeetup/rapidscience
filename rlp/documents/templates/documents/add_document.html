@@ -1,0 +1,16 @@
+{% extends 'projects/projects_detail.html' %}{% load bootstrap3 %}
+
+{% block project_documents %}
+<h2>{% if document %}Edit{% else %}Upload{% endif %} Document</h2>
+
+<form method="post" enctype="multipart/form-data" action="">
+  {% csrf_token %}
+  {% bootstrap_form form %}
+  <button class="btn btn-primary" type="submit">
+    Save
+  </button>
+  <a role="button" class="btn btn-default" href="{{ project.get_documents_url }}">
+    Cancel
+  </a>
+</form>
+{% endblock project_documents %}

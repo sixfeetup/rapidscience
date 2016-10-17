@@ -1,0 +1,60 @@
+{% extends 'projects/projects_detail.html' %}{% load bootstrap3 %}
+
+{% block project_bibliography %}
+<h2>Add Reference</h2>
+
+  <form method="get" action="">
+    <label for="id_q">Search</label>
+    <div class="input-group">
+      <input class="form-control" id="id_q" name="q" title="Enter a PMID or DOI" type="text" placeholder="Author name, keyword, DOI, PMID..." value="{{ query }}">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="submit">
+          <i class="fa fa-search"></i>
+        </button>
+      </span>
+    </div>
+  </form>
+  <h3>Or upload</h3>
+  <!-- Single button -->
+  <div class="btn-group">
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Upload <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu">
+      <li><a href="{% url 'projects:add_book' pk=project.pk slug=project.slug %}">Book</a></li>
+      <li><a href="{% url 'projects:add_book_chapter' pk=project.pk slug=project.slug %}">Book chapter</a></li>
+      <li><a href="{% url 'projects:add_article' pk=project.pk slug=project.slug %}">Journal article</a></li>
+    </ul>
+  </div>
+  {% if results %}
+    <hr>
+    {% for reference in results %}
+      {% include 'bibliography/_reference.html' with obj=reference %}
+      <form id="{{ reference.id }}" class="form-reference-add" action="{% url 'projects:reference_add' project.id project.slug reference.id %}" method="post">{% csrf_token %}
+        <input class="profile-update btn btn-primary" type="submit" value="Add"/>
+      </form>
+      {% if not forloop.last %}<hr>{% endif %}
+    {% endfor %}
+  {% else %}
+    {% if query %}
+    <hr>
+    <p>No results found.</p>
+    {% endif %}
+  {% endif %}
+{% endblock project_bibliography %}
+
+{% block js-footer %}{{ block.super }}
+  <script>
+    $('.form-reference-add').submit(function(event) {
+      var form = $(this);
+      event.preventDefault();
+      // Clear out any old messages
+      $('.alert-dismissable').remove();
+      $.post($(this).attr('action'), $(this).serialize(), function(data) {
+        if (data.messages) {
+          $(form).replaceWith(data.messages);
+        }
+      });
+    });
+  </script>
+{% endblock js-footer %}

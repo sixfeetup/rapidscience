@@ -1,0 +1,51 @@
+{% extends "djangocms_blog/base.html" %}
+{% load i18n thumbnail cms_tags %}
+
+{% block page_title %}{{ post.title }}{% endblock %}
+{% block meta_description %}{{ post.meta_description }}{% endblock meta_description %}
+{% block meta_keywords %}{{ post.meta_keywords }}{% endblock meta_keywords %}
+{% block canonical_url %}<link rel="canonical" href="{{ meta.url }}"/>{% endblock canonical_url %}
+{% block title %}{{ post.get_title }}{% endblock %}
+
+{% block js-body %}
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.6";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+{% endblock js-body %}
+
+{% block content_blog %}{% spaceless %}
+<article id="post-{{ post.slug }}" class="post-item post-detail">
+    <header>
+        <h2>{% render_model post "title" %}</h2>
+        {% block blog_meta %}
+            {% include "djangocms_blog/includes/blog_meta.html" %}
+        {% endblock %}
+    </header>
+    {% if post.main_image_id %}
+    <div class="blog-visual">
+        {% thumbnail post.main_image post.full_image_options.size crop=post.full_image_options.crop upscale=post.full_image_options.upscale subject_location=post.main_image.subject_location  as thumb %}
+        <img src="{{ thumb.url }}" alt="{{ post.main_image.default_alt_text }}" />
+    </div>
+    {% endif %}
+    {% endspaceless %}
+    {% if post.app_config.use_placeholder %}
+        <div class="blog-content">{% render_placeholder post.content %}</div>
+    {% else %}
+        <div class="blog-content">{% render_model post "post_text" "post_text" %}</div>
+    {% endif %}
+  <div class="social-share">
+    <a href="https://twitter.com/share" class="twitter-share-button">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+    <span class="fb-share-button" data-href="{{ meta.url }}" data-layout="button" data-mobile-iframe="true"></span>
+
+    <script src="//platform.linkedin.com/in.js" type="text/javascript"> lang: en_US</script>
+    <script type="IN/Share" data-url="{{ meta.url }}"></script>
+    <a type="button" class="btn btn-primary btn-xs email-share-button" href="mailto:?subject={{ post.title }}&amp;body={{ meta.url }}">Email</a>
+  </div>
+</article>
+{% endblock content_blog %}

@@ -1,0 +1,55 @@
+{% extends 'projects/projects_detail.html' %}{% load comments embed_video_tags %}
+
+{% block project_documents %}
+  <p><a href="{{ project.get_documents_url }}">&lt; Back to all documents</a></p>
+  <p class="small">
+    {% include 'actstream/_action_detail.html' with action=document.action_object_actions.first %}
+  </p>
+  {% with obj=document %}
+  <div class="row">
+    <div class="col-md-11">
+      <h4>{{ obj.title }}</h4>
+      {% if obj.description %}<p>{{ obj.description|urlize }}</p>{% endif %}
+      {% if document.polymorphic_ctype.model == 'file' %}
+        <a class="btn btn-primary" href="{{ obj.upload.url }}" target="_blank">
+          Download
+        </a>
+      {% elif document.polymorphic_ctype.model == 'image' %}
+        <a href="{{ obj.upload.url }}" target="_blank">
+          <img alt="{{ obj.title }}" src="{{ obj.upload.url }}" width="{% if obj.upload.width < 500 %}{{ obj.upload.width }}{% else %}500px{% endif %}">
+        </a>
+      {% elif document.polymorphic_ctype.model == 'link' %}
+        <blockquote>
+        <a href="{{ obj.url }}" target="_blank">
+          {{ obj.url }}
+        </a>
+        </blockquote>
+      {% elif document.polymorphic_ctype.model == 'video' %}
+        {% video obj.share_link as shared_video %}
+        {% video shared_video 'medium' %}
+        {% endvideo %}
+      {% endif %}
+    </div>
+    <div class="col-md-1">
+      {% if obj.owner == request.user %}{% include 'forms/_edit_dropdown.html' with edit_url=obj.get_edit_url delete_url=obj.get_delete_url %}{% endif %}
+      {% if request.user.is_authenticated %}
+      {% include 'bookmarks/_form.html' with action=obj.action_object_actions.first %}
+      {% endif %}
+    </div>
+  </div>
+  {% with tags=obj.tags.all %}
+    {% if tags %}
+      <br>
+      {% for tag in obj.tags.all %}
+        <a role="button" class="btn btn-tag btn-xs" href="{% url 'haystack_search' %}?tags={{ tag.id }}">
+          {{ tag }}
+        </a>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+  <hr>
+  {% render_comment_form for obj %}
+  <br>
+  {% render_comment_list for obj %}
+{% endwith %}
+{% endblock project_documents %}

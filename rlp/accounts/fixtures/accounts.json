@@ -1,0 +1,200 @@
+[
+{
+  "model": "accounts.institution",
+  "pk": 1,
+  "fields": {
+    "name": "Columbia University",
+    "banner_image": "institutions/inst-columbia.jpg",
+    "thumbnail_image": "institutions/icon-Columbia.png",
+    "website": "http://www.columbia.edu/"
+  }
+},
+{
+  "model": "accounts.institution",
+  "pk": 2,
+  "fields": {
+    "name": "Chinese University of Hong Kong",
+    "banner_image": "institutions/inst-chinese.jpg",
+    "thumbnail_image": "",
+    "website": "http://www.cuhk.hk/"
+  }
+},
+{
+  "model": "accounts.institution",
+  "pk": 3,
+  "fields": {
+    "name": "Dartmouth University",
+    "banner_image": "institutions/inst-dartmouth.jpg",
+    "thumbnail_image": "",
+    "website": "http://www.dartmouth.edu/"
+  }
+},
+{
+  "model": "accounts.institution",
+  "pk": 4,
+  "fields": {
+    "name": "King's College London",
+    "banner_image": "institutions/inst-kings.jpg",
+    "thumbnail_image": "",
+    "website": "http://www.kcl.ac.uk/"
+  }
+},
+{
+  "model": "accounts.institution",
+  "pk": 5,
+  "fields": {
+    "name": "University of North Carolina, Chapel Hill",
+    "banner_image": "institutions/inst-unc.jpg",
+    "thumbnail_image": "",
+    "website": "http://www.unc.edu/"
+  }
+},
+{
+  "model": "accounts.institution",
+  "pk": 6,
+  "fields": {
+    "name": "University of the Witwatersrand, Wiser",
+    "banner_image": "institutions/inst-wits.jpg",
+    "thumbnail_image": "",
+    "website": "http://www.wits.ac.za/"
+  }
+},
+{
+  "model": "accounts.institution",
+  "pk": 7,
+  "fields": {
+    "name": "Duke University",
+    "banner_image": "",
+    "thumbnail_image": "",
+    "website": "http://www.duke.edu/"
+  }
+},
+{
+  "model": "accounts.institutiondomain",
+  "pk": 1,
+  "fields": {
+    "institution": 4,
+    "domain": "kcl.ac.uk"
+  }
+},
+{
+  "model": "accounts.institutiondomain",
+  "pk": 2,
+  "fields": {
+    "institution": 2,
+    "domain": "cuhk.hk"
+  }
+},
+{
+  "model": "accounts.institutiondomain",
+  "pk": 3,
+  "fields": {
+    "institution": 1,
+    "domain": "columbia.edu"
+  }
+},
+{
+  "model": "accounts.institutiondomain",
+  "pk": 4,
+  "fields": {
+    "institution": 7,
+    "domain": "duke.edu"
+  }
+},
+{
+  "model": "accounts.institutiondomain",
+  "pk": 5,
+  "fields": {
+    "institution": 3,
+    "domain": "dartmouth.edu"
+  }
+},
+{
+  "model": "accounts.institutiondomain",
+  "pk": 6,
+  "fields": {
+    "institution": 5,
+    "domain": "unc.edu"
+  }
+},
+{
+  "model": "accounts.institutiondomain",
+  "pk": 7,
+  "fields": {
+    "institution": 6,
+    "domain": "wits.ac.za"
+  }
+},
+{
+  "fields": {
+    "title": "Test Title, Test Department",
+    "date_joined": "2015-11-16T05:47:07Z",
+    "is_active": true,
+    "first_name": "Test",
+    "website": "https://example.com",
+    "user_permissions": [],
+    "research_interests": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc auctor leo sit amet ipsum accumsan, pharetra pharetra nibh pretium. Integer tempor sapien a nunc elementum, a congue mauris dictum.",
+    "orcid": "1234-4321-1234-4321",
+    "password": "bcrypt_sha256$$2b$12$3IELxHFonxVCwSydFTE6G.cAMVcjDyLyNDXirtoethpe7NPX37r1y",
+    "last_login": "2015-11-18T01:39:52.565Z",
+    "bio": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc auctor leo sit amet ipsum accumsan, pharetra pharetra nibh pretium. Integer tempor sapien a nunc elementum, a congue mauris dictum. Proin nec tellus ut mi sollicitudin vehicula in id metus. Aenean feugiat lacus diam, nec congue enim lobortis sed. Donec finibus nibh in nibh posuere elementum quis et felis. Morbi feugiat justo a scelerisque egestas. Nulla arcu ligula, ultricies non euismod eget, tincidunt ut magna. Etiam cursus congue diam. Nam vehicula ipsum non orci varius consequat.",
+    "is_superuser": false,
+    "institution": 1,
+    "last_name": "User",
+    "groups": [],
+    "is_staff": false,
+    "photo": "",
+    "email": "test-user@example.com"
+  },
+  "pk": 1,
+  "model": "accounts.user"
+},
+{
+  "fields": {
+    "title": "Test Title, Test Department",
+    "date_joined": "2015-11-16T05:47:07Z",
+    "is_active": true,
+    "first_name": "Flippy",
+    "website": "https://example.com",
+    "user_permissions": [],
+    "research_interests": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "orcid": "1234-4321-1234-4321",
+    "password": "bcrypt_sha256$$2b$12$3IELxHFonxVCwSydFTE6G.cAMVcjDyLyNDXirtoethpe7NPX37r1y",
+    "last_login": "2015-11-18T01:39:52.565Z",
+    "bio": "I am attached to a project that requires approval.",
+    "is_superuser": false,
+    "institution": 1,
+    "last_name": "Flap",
+    "groups": [],
+    "is_staff": false,
+    "photo": "",
+    "email": "flippy-flap@columbia.edu"
+  },
+  "pk": 2,
+  "model": "accounts.user"
+},
+{
+  "fields": {
+    "title": "Test Title, Test Department",
+    "date_joined": "2015-11-16T05:47:07Z",
+    "is_active": true,
+    "first_name": "Arf",
+    "website": "https://example.com",
+    "user_permissions": [],
+    "research_interests": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "orcid": "1234-4321-1234-4321",
+    "password": "bcrypt_sha256$$2b$12$3IELxHFonxVCwSydFTE6G.cAMVcjDyLyNDXirtoethpe7NPX37r1y",
+    "last_login": "2015-11-18T01:39:52.565Z",
+    "bio": "I'm attached to a project that DOES NOT require approval.",
+    "is_superuser": false,
+    "institution": 3,
+    "last_name": "McArf",
+    "groups": [],
+    "is_staff": false,
+    "photo": "",
+    "email": "arf-mcarf@dartmouth.edu"
+  },
+  "pk": 3,
+  "model": "accounts.user"
+}
+]

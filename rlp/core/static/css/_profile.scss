@@ -1,0 +1,16 @@
+.filters-container {
+    padding: 10px 0;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+}
+
+.accounts-activity {
+    padding: 2em;
+
+    .activity-header {
+        margin-top: 0;
+        font-size: 1.25em;
+        text-transform: uppercase;
+        border-bottom: 1px solid #ccc;
+    }
+}

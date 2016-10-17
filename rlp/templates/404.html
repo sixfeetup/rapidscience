@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block page_title %}Page not found{% endblock page_title %}
+
+{% block title %}Page not found{% endblock title %}
+
+{% block content %}
+<p class="alert alert-danger">We're sorry, "{{ request.path }}" could not be found on this site.</p>
+{% endblock content %}

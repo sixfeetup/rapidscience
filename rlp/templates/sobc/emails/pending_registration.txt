@@ -1,0 +1,11 @@
+{{ user.get_full_name }} ({{ user.email }}) has requested permission to register on the SOBC Research Network, and has identified as being part of the project, {{ project.title }}.
+
+If this individual has permission to register under this project, please click this approval link: https://{{ site.domain }}{% url 'registration_activate' activation_key=activation_key %}
+
+Note that immediately upon clicking the link, the individual will have permission to register.
+
+If you clicked the approval link in error, please email info@rapidscience.org as soon as possible.
+
+Warm regards,
+
+the Rapid Science team

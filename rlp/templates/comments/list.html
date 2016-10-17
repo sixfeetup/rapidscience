@@ -1,0 +1,6 @@
+{% load el_pagination_tags %}
+{% lazy_paginate comment_list %}
+{% for comment in comment_list %}
+  {% include 'comments/list_item.html' %}
+{% endfor %}
+{% show_more %}

@@ -1,0 +1,25 @@
+{% extends 'single_col.html' %}{% load bootstrap3 %}
+
+{% load cms_tags %}
+
+{% block page_title %}Register{% endblock page_title %}
+
+{% block title %}Register{% endblock title %}
+
+{% block main_content %}
+<div class="messages">
+  {% include '_register_intro.html' %}
+</div>
+<div class="plugin-form">
+  <form method="post" action="">
+    {% include "forms/_non_field_errors.html" %}
+    {% csrf_token %}
+    {{ wizard.management_form }}
+    {% bootstrap_form wizard.form %}
+    <button type="submit" class="btn btn-primary">
+      Register
+    </button>
+  </form>
+  <hr>
+</div>
+{% endblock main_content %}

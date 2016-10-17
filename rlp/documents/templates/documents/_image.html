@@ -1,0 +1,19 @@
+{% load thumbnail %}
+
+<h4><a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a></h4>
+
+{% if obj.description %}
+<div class="row">
+  <p class="more col-md-12">{{ obj.description|urlize }}</p>
+</div>
+{% endif %}
+
+<div class="row">
+  <div class="col-md-12">
+    {% thumbnail obj.upload 700x160 crop upscale HIGH_RESOLUTION as thumbnail %}
+    <a href="{{ obj.upload.url }}" target="_blank">
+      <img class="thumbnail-image" alt="{{ obj.title }}" src="{{ thumbnail.url }}" width="100%">
+    </a>
+  </div>
+</div>
+

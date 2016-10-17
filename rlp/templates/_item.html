@@ -1,0 +1,45 @@
+{% load thumbnail %}
+
+{% comment %}
+The template variable 'thumbnail_url' is just what it says.
+In some cases such as Youtube videos, we don't have local images so we can't make our own thumbnails.
+{% endcomment %}
+
+<div class="clearfix">
+    <div class="plugin plugin-teaser">
+      {% if label %}<p>{{ label|capfirst }}</p>{% endif %}
+        {% if image or thumbnail_url %}
+            {% if link %}<a {% if target_blank %}target="_blank" {% endif %}href="{{ link }}">{% endif %}
+            {% if image %}
+                {% thumbnail image 120x120 crop upscale subject_location=image.subject_location as thumbnail %}
+                <img{% if image.default_alt_text %} alt="{{ image.default_alt_text|default:title }}"{% endif %}
+                                                    src="{{ thumbnail.url }}">
+            {% elif thumbnail_url %}
+                <img src="{{ thumbnail_url }}" alt="{{ title }}">
+            {% endif %}
+            {% if link %}</a>{% endif %}
+        {% endif %}
+
+        {% if title %}
+        <h4>
+            {% if link %}
+                <a {% if target_blank or 'http' in link %}target="_blank" {% endif %}href="{{ link }}">{{ title }}</a>
+            {% else %}
+                {{ title }}
+            {% endif %}
+        </h4>
+        {% endif %}
+
+        {% if description %}
+        <p>
+            {% if highlighted %}
+              {% autoescape off %}
+              {{ highlighted|join:'...' }}
+              {% endautoescape %}
+            {% else %}
+              {{ description|striptags|truncatewords:30 }}
+            {% endif %}
+        </p>
+        {% endif %}
+    </div>
+</div>

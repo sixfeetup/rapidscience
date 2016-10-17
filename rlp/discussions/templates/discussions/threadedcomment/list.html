@@ -1,0 +1,4 @@
+{# this template handles replies only so no pagination #}
+{% for comment in comment_list %}
+  {% include 'comments/list_item.html' %}
+{% endfor %}

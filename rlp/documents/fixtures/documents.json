@@ -1,0 +1,120 @@
+[
+{
+  "model": "documents.document",
+  "pk": 1,
+  "fields": {
+    "polymorphic_ctype": [
+      "documents",
+      "file"
+    ],
+    "title": "Open Questions: Border Crossing, Piloting, Aging",
+    "description": "What can analyses of personal narratives inform us about the relationships between the individual, the family and society? How do historical narratives serve as devices that frame, and are challenged by, individual life stories? How has the thickening age bracket of the elderly population since the 1980s, in Hong Kong and elsewhere, affected social and economic well-being of the broader population? What are the key differences between the new wave of 18th-century 'self-care' texts that ...",
+    "project": 1,
+    "date_added": "2016-01-12T08:36:12.662Z",
+    "date_updated": "2016-01-26T07:20:46.980Z",
+    "owner": 2
+  }
+},
+{
+  "model": "documents.document",
+  "pk": 2,
+  "fields": {
+    "polymorphic_ctype": [
+      "documents",
+      "file"
+    ],
+    "title": "2015 Dartmouth Summer Institute Summary",
+    "description": "Speakers and topics covered in the summer institute are listed here.  Jonathan Metzl (Vanderbilt University) delivered a keynote lecture entitled 'The Politics of Health: Building an Interdisciplinary Pre-Health Curriculum Around the Complex Meanings of Health and Illness.'  Brian Hurwitz (MD/PhD King's College London) delivered the second keynote lecture, 'Can an Essay Transform a Medical Field?'",
+    "project": 1,
+    "date_added": "2016-01-13T23:53:31.882Z",
+    "date_updated": "2016-01-26T07:20:46.977Z",
+    "owner": 2
+  }
+},
+{
+  "model": "documents.document",
+  "pk": 3,
+  "fields": {
+    "polymorphic_ctype": [
+      "documents",
+      "file"
+    ],
+    "title": "Project Summary: Border Crossing, Piloting, Aging",
+    "description": "The Research Institute for the Humanities (RIH) would conduct the Mellon Medical Humanities Project with the theme 'Border Crossing, Piloting, Aging' as responding to overall focus topic of the project on 'aging', in which we aim at examining the respectful elderly-caring culture which commonly perceived in traditional Chinese society and its actual practice in modern society through aspects like history, sociology, anthropology and gerontology.....",
+    "project": 7,
+    "date_added": "2016-01-14T00:31:01.908Z",
+    "date_updated": "2016-01-26T07:20:46.974Z",
+    "owner": 3
+  }
+},
+{
+  "model": "documents.document",
+  "pk": 4,
+  "fields": {
+    "polymorphic_ctype": [
+      "documents",
+      "link"
+    ],
+    "title": "Buch, Elana D. Troubling gifts of care. Medical Anthropology Quarterly 2014; 28(4):599 615. (pdf 122KB)",
+    "description": "",
+    "project": 1,
+    "date_added": "2016-03-30T17:04:57.986Z",
+    "date_updated": "2016-03-30T17:04:57.986Z",
+    "owner": 2
+  }
+},
+{
+  "model": "documents.document",
+  "pk": 5,
+  "fields": {
+    "polymorphic_ctype": [
+      "documents",
+      "link"
+    ],
+    "title": "Halpin-Healy, Carolyn, Report from the field: Multi-cultural dialogue and transformative learning in Arts & Minds programs at The Studio Museum in Harlem. 2015. Museum & Society 13(2)188-194. (pdf 2.8MB)",
+    "description": "",
+    "project": 7,
+    "date_added": "2016-03-30T17:09:36.063Z",
+    "date_updated": "2016-03-30T17:09:36.063Z",
+    "owner": 3
+  }
+},
+{
+  "model": "documents.file",
+  "pk": 1,
+  "fields": {
+    "upload": "docs/2016/01/12/CHCI-OpenQuestions-HongKong.docx",
+    "working_document": false
+  }
+},
+{
+  "model": "documents.file",
+  "pk": 2,
+  "fields": {
+    "upload": "docs/2016/01/13/CHCI_Summer_Institute_2015_Summary.docx",
+    "working_document": true
+  }
+},
+{
+  "model": "documents.file",
+  "pk": 3,
+  "fields": {
+    "upload": "docs/2016/01/14/CUHK_MEDICAL_HUMANITIES_REPORT_150603.docx",
+    "working_document": true
+  }
+},
+{
+  "model": "documents.link",
+  "pk": 4,
+  "fields": {
+    "url": "https://chcimedicalhumanities.org/media/cms_page_media/37/Biblio-Dartmouth-Buch-troubling%20gifts%20of%20care.pdf"
+  }
+},
+{
+  "model": "documents.link",
+  "pk": 5,
+  "fields": {
+    "url": "https://chcimedicalhumanities.org/media/cms_page_media/37/Biblio-SummerInst-halpinhealy-Arts%26Minds.pdf"
+  }
+}
+]

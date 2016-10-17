@@ -1,0 +1,55 @@
+{% extends 'accounts/accounts_base.html' %}
+{% load bootstrap3 cms_tags staticfiles %}
+
+{% block page_title %}Profile{% endblock page_title %}
+
+{% block title %}Profile{% endblock title %}
+
+{% block css %}{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'js/vendor/chosen/chosen.min.css' %}" media="screen">
+{% endblock css %}
+
+{% block hero %}
+    {% include "accounts/_hero.html" with user=user edit=True %}
+{% endblock hero %}
+
+{% block main_content %}
+<div>
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation"{% if tab == 'activity' %} class="active"{% endif %}>
+      <a href="{% url 'dashboard' %}">Activity</a>
+    </li>
+    <li role="presentation"{% if tab == 'bookmarks' %} class="active"{% endif %}>
+      <a href="{% url 'dashboard_bookmarks' %}">Bookmarks</a>
+    </li>
+  </ul>
+</div>
+<div class="tab-content">
+  <div role="tabpanel" class="tab-pane{% if tab == 'activity' %} active{% endif %}" id="activity">
+    {% if tab == 'activity' %}
+      {% bootstrap_messages %}
+      <form class="form-inline" action="" method="get">
+        {% bootstrap_field filter_form.content_type show_label=False %}
+        {% bootstrap_field filter_form.project show_label=False %}
+        {% bootstrap_field filter_form.user_activity_only %}
+        <input class="profile-update btn btn-primary" type="submit" value="Filter"/>
+      </form>
+      <hr>
+      {% include page_template %}
+    {% endif %}
+  </div>
+  <div role="tabpanel" class="tab-pane{% if tab == 'bookmarks' %} active{% endif %}" id="bookmarks">
+    {% if tab == 'bookmarks' %}
+      {% if bookmarks %}
+        {% include 'bookmarks/_bookmarks.html' %}
+      {% else %}
+        <p>You have not added any bookmarks yet.</p>
+      {% endif %}
+    {% endif %}
+  </div>
+</div>
+{% endblock main_content %}
+
+{% block js-footer %}{{ block.super }}
+  <script src="{% static 'js/vendor/chosen/chosen.jquery.min.js' %}"></script>
+{% endblock js-footer %}

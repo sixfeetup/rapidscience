@@ -1,0 +1,2 @@
+{% load static from staticfiles %}<?xml version="1.0" encoding="utf-8"?>
+<browserconfig><msapplication><tile><square70x70logo src="{% static 'chci/ms-icon-70x70.png' %}"/><square150x150logo src="{% static 'chci/ms-icon-150x150.png' %}"/><square310x310logo src="{% static 'chci/ms-icon-310x310.png' %}"/><TileColor>#ffffff</TileColor></tile></msapplication></browserconfig>

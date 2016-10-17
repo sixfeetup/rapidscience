@@ -1,0 +1,20 @@
+{% load cms_tags %}Hi {{ user.get_full_name }},
+
+Welcome to the community! You are now registered on the CHCI Medical Humanities Research Network web site.
+
+Our goal is to foster collaboration among scholars working in humanities departments and their colleagues in the health sciences.
+We encourage you to post questions to the group, and upload articles or documents that others might find interesting, inspiring, or relevant as they work to meet these goals.
+
+To get started, log on and create your profile => https://{{ site.domain }}{% url 'profile_edit' %}
+Posting your biographical information and photo will help to foster interaction and trust, attributes of successful communities.
+
+Once you’re on the site, take a look around at what has been posted, and consider sharing your thoughts or uploading articles of your own.
+
+If you have questions or technical difficulties, or ideas regarding how the site can facilitate your work on CHCI,
+please contact us at info@rapidscience.org.
+
+Happy collaborating!
+
+The Rapid Science Team
+
+"In the long history of humankind: those who learned to collaborate and improvise most effectively have prevailed." - Charles Darwin

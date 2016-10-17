@@ -1,0 +1,27 @@
+{% for topic in topics %}
+    <div class="collections-listing-header row">
+        <div class="col-md-12">
+            {{ topic.title }}
+        </div>
+    </div>
+
+    {% with topic.project_set.all as projects %}
+    {% if projects %}
+    <div class="collections-listing row">
+        <div class="col-md-12">
+            <ul class="list-unstyled">
+                {% for project in projects %}
+                <li>
+                    <h3>
+                        <a href="{{ project.get_absolute_url }}">{{ project.title }}</a>
+                    </h3>
+                    {% if project.institution %}<h5>{{ project.institution }}</h5>{% endif %}
+                    {% if project.goal %}<p>Goal: {{ project.goal }}</p>{% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% endif %}
+    {% endwith %}
+{% endfor %}

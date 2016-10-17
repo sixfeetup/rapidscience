@@ -1,0 +1,152 @@
+@import 'mixins';
+
+.contain-img {
+    width: 100%;
+}
+
+.no-side-padding {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.text-normal {
+    text-transform: none;
+}
+
+.invert-hotizontal {
+    transform: rotateY(180deg);
+}
+
+.nav-tabs {
+    display: flex;
+}
+
+.nav-tabs > li {
+    margin-bottom: 7px;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+    flex-grow: 1;
+}
+
+.nav-tabs > li.active {
+    margin-bottom: 0;
+    box-shadow: none;
+}
+
+.nav-tabs > li.active a {
+    height: 50px;
+    color: #000;
+    background: #fff;
+}
+
+.nav-tabs > li + li {
+    margin-left: 7px;
+}
+
+.nav-tabs > li > a {
+    background-color: white;
+    border: 1px solid #ddd;
+    margin-right: 0;
+    border-radius: 0;
+    color: #666;
+    height: 43px;
+}
+
+.nav-tabs > li > a:hover {
+    border: 1px solid #ddd;
+    background: white;
+    color: #1cb9ff;
+}
+
+.nav-tabs > li:first-child > a {
+    border-top-left-radius: 5px;
+}
+
+.nav-tabs > li:last-child > a {
+    border-top-right-radius: 5px;
+}
+
+.nav-tabs > li .count {
+    padding: 0 5px;
+    margin: 0 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+.tab-content {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    padding: 30px 15px;
+    margin-top: -1px;
+}
+
+.institutions-header {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.institutions-header > div:last-child {
+    border-top: 1px dotted #333;
+    margin-top: 10px;
+}
+
+.article-actions li a {
+    color: #333;
+}
+
+.item-list > li {
+    padding: 20px 0;
+}
+
+.item-list > li + li {
+    border-top: 1px dotted #ddd;
+}
+
+.tags {
+    margin-bottom: 10px;
+}
+
+.tags > .tag {
+    margin-top: 10px;
+    margin-right: 10px;
+    padding: 5px 15px;
+}
+
+.horizontal-separator {
+    border-top: 1px dotted #ccc;
+    margin: 15px 0;
+}
+
+.no-margin-bottom {
+    margin-bottom: 0;
+}
+
+.full-height {
+    height: 100%;
+}
+
+.margin-vertical-20 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.comments-section, .replies-section {
+    margin-top: 10px
+}
+
+.comments-section > ul > li, .replies-section > ul > li {
+    border-left: 1px dotted #ccc;
+    padding-left: 15px;
+}
+
+.box {
+    &.main-content {
+        padding: 1em 2em;
+    }
+}
+
+.refine-search ul {
+  list-style: none;
+  padding: 0;
+}

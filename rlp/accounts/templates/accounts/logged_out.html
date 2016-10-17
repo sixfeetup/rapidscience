@@ -1,0 +1,9 @@
+{% extends 'single_col.html' %}
+
+{% block page_title %}Logout{% endblock page_title %}
+
+{% block title %}Logout{% endblock title %}
+
+{% block main_content %}
+<p>You have successfully logged out. Click <a href="{% url 'login' %}">here</a> to log back in.</p>
+{% endblock main_content %}

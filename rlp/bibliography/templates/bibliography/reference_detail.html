@@ -1,0 +1,11 @@
+{% extends 'projects/projects_detail.html' %}{% load comments %}
+
+{% block project_bibliography %}
+  <p><a href="{{ project.get_bibliography_url }}">&lt; Back to the bibliography</a></p>
+  {% if obj.owner == request.user %}{% include 'forms/_edit_dropdown.html' with edit_url=obj.get_edit_url delete_url=obj.get_delete_url %}{% endif %}
+  {% include 'bibliography/_reference.html' with obj=obj.reference %}
+<hr>
+{% render_comment_form for obj %}
+{% render_comment_list for obj %}
+
+{% endblock project_bibliography %}

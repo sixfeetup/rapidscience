@@ -1,0 +1,8 @@
+{% if not search %}<p>{% endif %}
+  {% if obj.parsed_data.authors %}{{ obj.parsed_data.authors }}. {% endif %}<strong>{% if obj.get_source_url %}<a href="{{ obj.get_source_url }}" {% if 'http' in obj.get_source_url %}target="_blank"{% endif %}>{% endif %}{{ obj.parsed_data.title|striptags }}{% if obj.get_source_url %}</a>{% endif %}</strong>,
+  {% if obj.parsed_data.container_title %}in <em>{{ obj.parsed_data.container_title }}</em>,{% endif %}
+  {% if obj.parsed_data.page %}pp {{ obj.parsed_data.page }}.{% endif %}
+  {% if obj.parsed_data.publication_date %}{{ obj.parsed_data.publication_date }};{% endif %}
+  {{ obj.parsed_data.publisher }} {{ obj.parsed_data.journal_title }}
+  {% if obj.parsed_data.doi %}DOI: {{ obj.parsed_data.doi }}{% endif %} {% if obj.parsed_data.pubmed_id %}PMID: {{ obj.parsed_data.pubmed_id }}{% endif %}
+{% if not search %}</p>{% endif %}

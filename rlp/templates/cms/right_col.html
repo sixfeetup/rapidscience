@@ -1,0 +1,22 @@
+{% extends "right_col.html" %}{% load cms_tags staticfiles sekizai_tags menu_tags %}
+
+{% block hero %}
+<div class="hero">
+    <div class="backdrop image-container">
+        {% placeholder 'hero-image' %}
+    </div>
+    <div class="container">
+        {% placeholder 'hero-text' %}
+    </div>
+</div>
+{% endblock hero %}
+
+{% block right_column %}
+  {% placeholder 'right-column' %}
+{% endblock right_column %}
+
+{% block main_content %}
+  <div class="box">
+  {% placeholder 'content' %}
+  </div>
+{% endblock main_content %}

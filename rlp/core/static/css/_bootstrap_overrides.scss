@@ -1,0 +1,44 @@
+/*
+  Bootstrap overrides
+*/
+
+// Navbar links
+$navbar-default-link-color:                #2c3d96 !default;
+$navbar-default-link-hover-color:          #662d91 !default;
+$navbar-default-link-active-color:         #000 !default;
+
+.navbar-default {
+
+  .navbar-nav {
+
+    &.navbar-secondary,
+    > li.navbar-secondary {
+      border-left: 1px solid $navbar-default-color;
+    }
+
+    > li > a {
+      color: $navbar-default-link-color !important;
+
+      &:hover,
+      &:focus {
+        color: $navbar-default-link-hover-color;
+        background-color: $navbar-default-link-hover-bg;
+      }
+    }
+    > .active > a {
+      &,
+      &:hover,
+      &:focus {
+        color: $navbar-default-link-active-color;
+        background: transparent;
+      }
+    }
+    > .disabled > a {
+      &,
+      &:hover,
+      &:focus {
+        color: $navbar-default-link-disabled-color;
+      }
+    }
+  }
+}

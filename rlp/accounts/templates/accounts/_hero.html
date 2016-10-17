@@ -1,0 +1,32 @@
+{% load staticfiles thumbnail %}
+<div class="hero">
+  <div class="image-container">
+    {% include 'projects/_institution_hero_image.html' %}
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="pull-left col-md-2 profile-image">
+        {% if user.photo %}
+            {% thumbnail user.photo 120x120 crop upscale as thumbnail %}
+            <img src="{{ thumbnail.url }}" height="120px" width="120px">
+        {% else %}
+          <img class="img-circle" height="120px" width="120px" src="{% static 'img/user.jpg' %}">
+        {% endif %}
+      </div>
+      <div class="col-md-7">
+        <h1>{{ user.get_full_name }}{% if user.degrees %}, {{ user.degrees }}{% endif %} {% if edit %}{% include "accounts/_edit_pencil.html" %}{% endif %}</h1>
+
+        <p>
+          {% if user.title %}{{ user.title }}{% if user.institution %}, {% endif %}{% endif %}
+          {% if user.institution %}{{ user.institution }}{% endif %}
+        </p>
+        <p class="text-uppercase">
+          {% if user.website %}<a href="{{ user.website }}" rel="_blank">Website</a>{% if user.orcid or user.twitter or user.linkedin %} | {% endif %}{% endif %}
+          {% if user.orcid %}ORCID ID: {{ user.orcid }}{% if user.twitter or user.linkedin %} | {% endif %}{% endif %}
+          {% if user.linkedin %}<a href="{{ user.linkedin }}"><i class="fa fa-linkedin-square"></i></a>{% endif %}
+          {% if user.twitter %}<a href="{{ user.twitter }}"><i class="fa fa-twitter-square"></i></a>{% endif %}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

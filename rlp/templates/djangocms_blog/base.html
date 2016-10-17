@@ -1,0 +1,20 @@
+{% extends 'cms/right_col.html' %}{% load news_tags %}
+
+{% block meta %}
+    {%  if meta %}
+        {% include "meta/meta.html" %}
+    {% endif %}
+{% endblock meta %}
+
+{% block main_content %}
+  <div class="app app-blog box">
+    {% block content_blog %}{% endblock %}
+  </div>
+{% endblock main_content %}
+
+{% block right_column %}
+  <div class="box">
+  {% show_news_items %}
+  </div>
+  {% include '_twitter.html' %}
+{% endblock right_column %}

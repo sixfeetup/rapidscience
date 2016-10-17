@@ -1,0 +1,8 @@
+{% if obj.title %}
+  <h4><a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a></h4>
+{% endif %}
+{% with truncated_comment=obj.comment|truncatewords:20 %}
+<p id="c{{ obj.id }}" class="more">
+  {{ obj.comment }}
+</p>
+{% endwith %}
