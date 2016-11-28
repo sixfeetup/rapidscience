@@ -5,6 +5,7 @@
 # Install base requirements
 --requirement=requirements.txt
 
+awscli==1.11.13
 ipdb
 
 selenium==2.53.6
