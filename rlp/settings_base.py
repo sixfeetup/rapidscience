@@ -105,6 +105,7 @@ INSTALLED_APPS = (
     'rlp.newsfeed.apps.NewsFeedConfig',
     'rlp.projects.apps.ProjectsConfig',
     'rlp.search.apps.SearchConfig',
+    'django_extensions',
 )
 
 MIDDLEWARE_CLASSES = (
