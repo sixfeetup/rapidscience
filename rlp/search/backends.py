@@ -71,7 +71,7 @@ class ElasticsearchSearchBackend(OrigElasticsearchSearchBackend):
             '-Xmx384m',
             '-Djava.awt.headless=true',
             '-jar',
-            os.path.join(settings.BASE_DIR, 'bin', 'tika-app-1.13.jar'),
+            os.path.join(settings.ROOT_DIR, 'bin', 'tika-app-1.13.jar'),
             '--text-main',
             file_path
         ])

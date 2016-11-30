@@ -13,6 +13,7 @@ __pycache__
 *.log
 .DS_Store
 .idea
+.env
 bin
 docs/build
 settings.py

@@ -10,29 +10,25 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-import os
-
 gettext = lambda s: s
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+import environ
 
+# (rapidscience/config/settings/common.py - 3 = rapidscience/)
+ROOT_DIR = environ.Path(__file__) - 3
+APPS_DIR = ROOT_DIR.path('rlp')
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
+env = environ.Env()
+env.read_env()
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'in settings.py'
+SITE_PREFIX = env('SITE_PREFIX')
+
 USE_X_FORWARDED_HOST = True
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
-
-SESSION_COOKIE_SECURE = True
-
-CSRF_COOKIE_SECURE = True
 
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 
@@ -46,9 +42,7 @@ AUTH_USER_MODEL = 'accounts.User'
 
 DEBUG = False
 
-ALLOWED_HOSTS = [
-    '.rapidscience.org',
-]
+ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['rapidscience.org'])
 
 # Application definition
 
@@ -105,7 +99,6 @@ INSTALLED_APPS = (
     'rlp.newsfeed.apps.NewsFeedConfig',
     'rlp.projects.apps.ProjectsConfig',
     'rlp.search.apps.SearchConfig',
-    'django_extensions',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -127,13 +120,14 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.cache.FetchFromCacheMiddleware',
 )
 
-ROOT_URLCONF = 'rlp.urls'
+ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'rlp', 'templates')
+            str(APPS_DIR.path('templates', SITE_PREFIX)),
+            str(APPS_DIR.path('templates')),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -222,17 +216,14 @@ CMS_PLACEHOLDER_CONF = {
 
 CMS_INTERNAL_IPS = []
 
-WSGI_APPLICATION = 'rlp.wsgi.application'
+WSGI_APPLICATION = 'config.wsgi.application'
 
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'USER': 'web',
-    }
+    'default': env.db()
 }
 
 # Internationalization
@@ -258,12 +249,12 @@ REGISTRATION_REVIEWERS_FOR_APPROVAL_REQUIRED_PROJECTS = []
 # STATIC_URL = 'http://static.TBD.org/'
 STATIC_URL = '/static/'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = str(ROOT_DIR('static'))
 
 # MEDIA_URL = 'http://media.TBD.org/'
 MEDIA_URL = '/media/'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = str(APPS_DIR('media'))
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -298,14 +289,10 @@ ORCID_SECRET_KEY = ''
 ZOTERO_URL = "in settings.py"
 
 CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
-    }
+    "default": env.cache()
 }
+
+CACHES['default']['KEY_PREFIX'] = SITE_PREFIX
 
 ACTSTREAM_SETTINGS = {
     'MANAGER': 'actstream.managers.ActionManager',
@@ -334,9 +321,8 @@ EMBED_VIDEO_BACKENDS = [
 
 HAYSTACK_CONNECTIONS = {
     'default': {
-        'ENGINE': 'rlp.search.backends.ElasticsearchSearchEngine',
-        'URL': 'http://127.0.0.1:9200/',
-        'INDEX_NAME': 'haystack',
+        'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
+        'URL': 'http://127.0.0.1:8983/solr'
     },
 }
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
@@ -389,7 +375,7 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
             'formatter': 'verbose',
-            'filename': os.path.join(BASE_DIR, 'log', 'rlp.log'),
+            'filename': ROOT_DIR.path('log').file('rlp.log').name,
         }
     },
     'loggers': {
@@ -412,3 +398,5 @@ LOGGING = {
         }
     },
 }
+
+ACCOUNT_ACTIVATION_DAYS = 14
