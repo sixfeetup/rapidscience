@@ -254,7 +254,7 @@ STATIC_ROOT = str(ROOT_DIR('static'))
 # MEDIA_URL = 'http://media.TBD.org/'
 MEDIA_URL = '/media/'
 
-MEDIA_ROOT = str(APPS_DIR('media'))
+MEDIA_ROOT = str(ROOT_DIR('media'))
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
