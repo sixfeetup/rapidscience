@@ -1,15 +1,15 @@
 from django.views.generic import TemplateView
-from views import CaseReportFormView
-from  views import AutoCompleteView
+from .views import CaseReportFormView
+from  .views import AutoCompleteView
 
 __author__ = 'yaseen'
 from django.conf.urls import patterns, url
 
-from views import CaseReportDetailView
-from views import downloadfile
-from views import FormTypeView
-from views import reindexsolr
-from  views import CaseReportEditView
+from .views import CaseReportDetailView
+from .views import downloadfile
+from .views import FormTypeView
+from .views import reindexsolr
+from  .views import CaseReportEditView
 
 urlpatterns = patterns('',
                        url(r'^results/$', TemplateView.as_view(template_name="search_results.html")),

@@ -1,5 +1,5 @@
 from ajax_select import register, LookupChannel
-from havoc_interface import havoc_results
+from .havoc_interface import havoc_results
 
 from casereport.models import DiagnosisEvent
 from casereport.models import MolecularAbberation
@@ -20,7 +20,7 @@ class BaseLookup(LookupChannel):
         return results[:10]
 
     def format_item_display(self, obj):
-        return u"<span class='tag'>%s</span>" % obj['value']
+        return "<span class='tag'>%s</span>" % obj['value']
 
     def format_match(self, obj):
         return obj['value']

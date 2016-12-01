@@ -100,10 +100,10 @@ class EventBaseForm(ModelForm):
         case = None
         try:
             case = args[0].get('casereport')
-        except Exception, e:
+        except Exception as e:
             try:
                 case = kwargs['instance'].casereport
-            except Exception, e:
+            except Exception as e:
                 pass
         super(EventBaseForm, self).__init__(*args, **kwargs)
         if case:

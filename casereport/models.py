@@ -39,7 +39,7 @@ class Physician(CRDBBase):
     email = models.EmailField()
 
     def __unicode__(self):
-        return unicode(self.name) or u''
+        return str(self.name) or ''
 
     def get_name(self):
         return self.name
@@ -407,7 +407,7 @@ class CaseReportHistory(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):
-        return unicode(self.case) or u''
+        return str(self.case) or ''
 
     # def __unicode__(self):
     #     return self.case.__unicode__()

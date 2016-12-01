@@ -27,7 +27,7 @@ class BaseTestCase(TestCase):
         self.client.get('/casereport/add/')
         captcha_count = CaptchaStore.objects.count()
         # Test to check there is a new captcha object instance:
-        self.failUnlessEqual(captcha_count, 1)
+        self.assertEqual(captcha_count, 1)
 
     def test_validate_captcha(self):
         url = self.client.get('/casereport/add/')

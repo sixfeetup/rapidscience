@@ -4,10 +4,10 @@ __author__ = 'yaseen'
 from django.template.loader import render_to_string
 
 from haystack import indexes
-from models import CaseReport, ResultValueEvent
-from models import TestEvent
-from models import TreatmentEvent
-from models import DiagnosisEvent
+from .models import CaseReport, ResultValueEvent
+from .models import TestEvent
+from .models import TreatmentEvent
+from .models import DiagnosisEvent
 
 class CaseReportIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True)
@@ -92,7 +92,7 @@ class CaseReportIndex(indexes.SearchIndex, indexes.Indexable):
             terms.append(digo.name)
             terms.append(digo.specimen)
             terms.append(digo.body_part)
-        terms = filter(None, terms)
+        terms = [_f for _f in terms if _f]
         terms = list(set(terms))
         term_string = ','.join(terms).encode('utf-8')
         synonyms = get_all_synonyms(terms=term_string)

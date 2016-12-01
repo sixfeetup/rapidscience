@@ -39,7 +39,7 @@ class FacetedSearchForm(SearchForm):
                     min_val, max_val = value.strip('[').strip(']').split('TO')
                     sqs = sqs.filter(age__gte=int(min_val), age__lte=int(max_val))
                 else:
-                    sqs = sqs.narrow(u'%s:"%s"' % (field, value))
+                    sqs = sqs.narrow('%s:"%s"' % (field, value))
         return sqs
 
     def get_suggestion(self):

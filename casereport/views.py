@@ -129,7 +129,7 @@ class CaseReportFormView(FormView):
                                 response=response,
                                 additional_comment=additional_comment,
                                 index=index, physicians=physicians,sarcoma_type=sarcoma, other_sarcoma=other_sarcoma)
-            for i in xrange(0, len(treatment_name)):
+            for i in range(0, len(treatment_name)):
                 if treatment_name[i]:
                     treatment_type = data.getlist('treatment_type_%s' %i, None)
                     duration = data.get('treatment_length_%s' %i, None)
@@ -358,7 +358,7 @@ class CaseReportEditView(TemplateView):
         case = get_object_or_404(CaseReport, id=case_id)
         data = self.request.POST
         action = data.get('action', None)
-        if action == u'Approve':
+        if action == 'Approve':
             CaseReportInstanceResource().approve(case_id=case_id)
             context = {'message': settings.APPROVED_MESSAGE, 'back_link_label': None, 'back_link': None }
 
