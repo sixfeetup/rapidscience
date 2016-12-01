@@ -1,0 +1,251 @@
+<script src="{{ STATIC_URL }}/static/js/manual_form.js" ></script>
+<script src="{{ STATIC_URL }}/static/js/free-text.js" xmlns="http://www.w3.org/1999/html"></script>
+
+
+<div class="manual-form">
+    <h4 class="title-name">Patient Information</h4>
+
+{#            <div class="authors-div">#}
+{#            <div class="form-group">#}
+{#              <label >Authorized Email:</label>#}
+{#              <input name="author" value="{{ author }}"  type="EMAIL" class="form-control" id="author_email">#}
+{#            </div>#}
+{#         </div>#}
+{#          <i class="fa fa-plus"></i><a class="add_field_button">Add More</a>#}
+{#          <br />#}
+{#          <br />#}
+        <div class="form-group">
+           <label class="required"> Case Report Title:</label>
+          <input name="title" class="form-control"  id="title"  >
+                <div class="title-message">
+                     <p>This field is required.</p>
+                </div>
+        </div>
+        <div class="row">
+                    <div class="form-group col-xs-4 ">
+                         <label  class="required">Patient Age(at presentation):</label>
+                        <div class="input-group">
+                              <span class="input-group-btn">
+                                  <button type="button" class="btn btn-default btn-number" data-type="minus" data-field="age">
+                                      <span class="glyphicon glyphicon-minus"></span>
+                                  </button>
+                              </span>
+                              <input type="text" name="age" id="age" class="form-control input-number" onkeypress="return isNumberKey(event)" value="25" min="1" max="100">
+                              <span class="input-group-btn">
+                                  <button type="button" class="btn btn-default btn-number" data-type="plus" data-field="age">
+                                      <span class="glyphicon glyphicon-plus"></span>
+                                  </button>
+                              </span>
+                         </div>
+                        <div class="age-message">
+                                <p>This field is required.</p>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group col-md-4 col-xs-4">
+                      <label  class="required">Patient Gender:</label>
+                      <select name="gender" class="form-control" id="gender">
+                          <option selected disabled value="">-------</option>
+                          <option value="male">Male</option>
+                          <option value="female">Female</option>
+                          <option value="transgender male">Transgender Male</option>
+                          <option value="transgender female">Transgender Female</option>
+                      </select>
+                             <div class="gender-message">
+                             <p>Select gender.</p>
+                            </div>
+                    </div>
+        </div>
+{#           <div class="form-group ">#}
+{#                      <label >Charlson Index:</label>#}
+{#                      <select name="index" class="form-control" id="index" >#}
+{#                          <option disabled selected value="">select</option>#}
+{#                          <option value="1">1</option>#}
+{#                          <option value="2">2</option>#}
+{#                          <option value="3">3</option>#}
+{#                          <option value="3">4</option>#}
+{#                          <option value="5">5</option>#}
+{#                          <option value="6">6</option>#}
+{#                      </select>#}
+{#                    </div>#}
+
+       <div class="form-group">
+         <label class="required"> Subtype:</label>
+           <input name="sarcoma" class="form-control "id="subtype">
+{#            <select name="sarcoma" class=" form-control" id="subtype">#}
+{#                  <option value="">select sub type</option>#}
+{#                  {% for key, value in sarcoma %}#}
+{#                      <option value="{{ key }}">{{ value }}</option>#}
+{#                  {% endfor %}#}
+{#            </select>#}
+                    <div class="subtype-message">
+                     <p>This field is required.</p>
+                    </div>
+                <div class="form-group others">
+                  <input id="other-sarcoma" name="other-sarcoma" class="form-control" placeholder="Enter Sub type here "  >
+                </div>
+        </div>
+
+
+     <div class="form-group">
+          <label class="required">Pathology:</label>
+          <textarea name="pathology" class="form-control editor"  rows="8" cols="73" id="pathology"  placeholder="E.g., tests, tumor size, location, physical description, stage"></textarea>
+                <div class="pathology-message">
+                     <p>This field is required.</p>
+                </div>
+     </div>
+
+        <div class="molecular-abberations">
+             <label for="comment">Genetic Aberrations:</label>
+            <div class="row ">
+                <div class="form-group col-xs-6">
+                    <input name="test" class="form-control test" >
+                </div>
+
+                <div class="form-group col-xs-6">
+                  <input type="text" name="test_result"  class="form-control">
+                </div>
+            </div>
+        </div>
+        <i class="fa fa-plus"></i><a class="add_button">Add More Genetic Aberrations</a>
+
+     <div class="treatment-section-form"><!--treatment-section start -->
+         <label ><h4>Treatment Section</h4></label>
+        <div class="form-group row">
+          <div class="col-md-8 col-xs-6">
+          <label >Treatment Type (1):</label>
+                      <select name="treatment_type_0" class="form-control treatment_type">
+                          <option value="" selected>Select Treatment Type</option>
+                          <option value="Chemoradiotherapy">Chemoradiotherapy</option>
+                          <option value="Radiotherapy">Radiotherapy</option>
+                          <option value="Surgery">Surgery</option>
+                          <option value="Systemic Therapy">Systemic Therapy</option>
+                      </select>
+          </div>
+        </div>
+
+    <div class="form-group">
+        <label >Treatment Name:</label>
+        <input name="treatment_name" class="form-control treatment_name" >
+    </div>
+{#    <div class="chemo-section" ><!--chemo-section start -->#}
+{#        <div class="form-group row">#}
+{#          <div class="col-xs-4">#}
+{#            <label >Treatment length:</label>#}
+{#              <input name="treatment_length_0" class="form-control">#}
+{#          </div>#}
+{#          <div class="col-xs-4">#}
+{#            <label >Dose:</label>#}
+{#            <input name="dose_0" class="form-control" >#}
+{#          </div>#}
+{#            <div class="col-xs-4">#}
+{#             <label >Number of cycles:</label>#}
+{#                 <div class="input-group">#}
+{#                      <span class="input-group-btn">#}
+{#                          <button type="button" class="btn btn-default btn-number" data-type="minus" data-field="cycles_0">#}
+{#                              <span class="glyphicon glyphicon-minus"></span>#}
+{#                          </button>#}
+{#                      </span>#}
+{#                      <input type="text" name="cycles_0" class="form-control input-number" onkeypress="return isNumberKey(event)" value="1" min="1" max="100">#}
+{#                      <span class="input-group-btn">#}
+{#                          <button type="button" class="btn btn-default btn-number" data-type="plus" data-field="cycles_0">#}
+{#                              <span class="glyphicon glyphicon-plus"></span>#}
+{#                          </button>#}
+{#                      </span>#}
+{#                 </div>#}
+{#          </div>#}
+{#        </div>#}
+                 <div class="row ">
+                <div class="form-group col-xs-4">
+                    <label >Performance Status</label>
+                    <select name="status_0" class="form-control">
+                        <option value="" disabled selected>select performance status</option>
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+
+                <div class="form-group col-xs-4">
+                    <label >Tumor Size(post-treatment):</label>
+                  <input type="text" name="tumor_size_0"   class="form-control" >
+
+                </div>
+
+               <div class="form-group col-xs-4">
+                      <label >Objective Response:</label>
+                      <select name="objective_response_0" class="form-control" id="response" >
+                          <option value="">select</option>
+                          <option value="SD">Stable Disease</option>
+                          <option value="PR">Partial Response</option>
+                          <option value="PD">Progressive Disease</option>
+                          <option value="CR">Complete Response</option>
+                      </select>
+                    </div>
+            </div>
+{#    </div><!--chemo-section-end -->#}
+{#    <div class="non-chemo-section" ><!--non-chemo-section-start -->#}
+{#        <div class="form-group">#}
+{#          <label >Notes:</label>#}
+{#          <textarea name="notes_0"  class="form-control editor" rows="5" cols="73" id="editor"></textarea>#}
+{#        </div>#}
+{#    </div><!--non-chemo-section-end -->#}
+
+
+         <div class="form-group">
+          <label >Treatment Notes/Outcome:</label>
+          <textarea name="treatment_outcome_0"  placeholder="E.g., treatment length, dose/cycle, response, time to progression, adverse events" class="form-control editor" rows="5" cols="73" id="editor"></textarea>
+        </div>
+
+
+
+     </div><!--treatment-section end -->
+                <i class="fa fa-plus"></i><a class="add_treatment">Add More Treatment</a>
+<br/>
+    <br/>
+{#<div class="row">#}
+{#        <div class="form-group col-xs-6 col-md-6 ">#}
+{#                      <label >Objective Response:</label>#}
+{#                      <select name="response" class="form-control" id="response" >#}
+{#                          <option value="">select</option>#}
+{#                          <option value="SD">Stable Disease</option>#}
+{#                          <option value="PR">Partial Response</option>#}
+{#                          <option value="PD">Progressive Disease</option>#}
+{#                          <option value="CR">Complete Response</option>#}
+{#                      </select>#}
+{#                    </div>#}
+{##}
+{#</div>#}
+        <div class="form-group">
+          <label>Additional comment:</label>
+          <textarea name="additional_comment" class="form-control editor"  rows="5" cols="73" id="additional_comment"></textarea>
+        </div>
+</div>
+
+
+
+<script>
+    $('body').on('focusin','#subtype',function() {
+        $(this).autocomplete({
+            source: {{ sarcoma|safe }},
+            minLength: 2,
+
+        })
+    });
+
+ $( "#subtype" ).on( "autocompleteselect", function( event, ui ) {
+    value = ui.item.value.split(",");
+        if (value == "Other") {
+               $(".others").show();
+                $("#other-sarcoma").prop('required',true);
+            } else {
+               $(".others").hide();
+           }
+    } );
+
+</script>
+

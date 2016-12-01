@@ -1,0 +1,64 @@
+{{object.title}}
+{{object.gender}}
+{{object.age}}
+{{object.created_on}}
+sarcoma
+{{object.sarcoma_type}}
+{{object.other_sarcoma_type}}
+{% for physician in object.referring_physician.all %}
+    {{ physician.name }}
+    {{ physician.email }}
+    {% if forloop.last %}
+        {{ physician.affiliation.name }}
+        {{ physician.affiliation.city }}
+        {{ physician.get_country }}
+        {{ physician.get_country_code }}
+        {{ physician.affiliation.address }}
+    {% endif %}
+{% endfor %}
+{% for author in object.authorized_reps.all %}
+    {{author.email}}
+    {{author.first_name}}
+    {{athor.last_name}}
+{% endfor %}
+{% for m in object.molecular_abberations.all %}
+    {{m.name}}
+    {{m.molecule}}
+{% endfor %}
+{{ reported_date }}
+
+{% for syn in synonyms %}
+
+    {{syn}}
+
+{% endfor %}
+
+{% for outcome in outcomes %}
+    {{outcome}}
+{% endfor %}
+
+{% for result in results %}
+    {{result}}
+{% endfor %}
+
+{% for test in test_names %}
+    {{test}}
+{% endfor %}
+
+{% for treatment in treatment_names %}
+    {{treatment}}
+{% endfor %}
+
+{{object.tumor_location}}
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+      {% load staticfiles %}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>CRDB</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Latest compiled and minified CSS -->
+
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+      <link rel="stylesheet" href="{{STATIC_URL}}/static/css/style.css">
+      <link rel="stylesheet" href="{{STATIC_URL}}/static/font-awesome/css/font-awesome.css">
+
+      <link rel="stylesheet" href="{{STATIC_URL}}/static/css/jquery-ui.css" />
+
+{#<link rel="stylesheet" href="http://kendo.cdn.telerik.com/2014.1.318/styles/kendo.common.min.css">#}
+{#     <link rel="stylesheet" href="http://kendo.cdn.telerik.com/2014.1.318/styles/kendo.blueopal.min.css" />#}
+      <script src="{{STATIC_URL}}/static/js/jquery-1.11.3.min.js"></script>
+      <script src="{{STATIC_URL}}/static/js/bootstrap.min.js"></script>
+      <script type="text/javascript" src="{{STATIC_URL}}/static/js/bootbox.min.js"></script>
+    <script src="{{STATIC_URL}}/static/js/jquery-ui.min.js"></script>
+{#           <script src="http://kendo.cdn.telerik.com/2014.1.318/js/kendo.all.min.js"></script>#}
+
+
+
+
+  </head>
+  <body >
+<div class="main-wrapper">
+  <div class="container">
+{#      {{ form }}#}
+
+          <div class="col-lg-2"></div>
+
+      <div class="col-lg-8">
+
+      <div  class="form">
+          <h3>New Case Report</h3>
+
+    		<form id="caseform" action="." method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+            <div class="submit-button pull-right">
+           <button  type="submit" class="btn btn-primary btn-md" id="" >Submit</button>
+             </div>
+
+                <div class="form-group">
+                      <label >Reffering Physician:</label>
+                      <input name="physician" value="{{ physician }}" required="required" type="EMAIL" class="form-control" id="physician_email">
+                </div>
+
+{#              <div class="form-group radio-box " >#}
+{#                    <input {% if formtype == "M" %}checked="checked"{% endif %}  id="id_radio1" type="radio"  class="radiobut" name="entry-type" value="M" required="required"/> Enter Manually#}
+{#                   <input {% if formtype == "F" %}checked="checked"{% endif %} id="id_radio2" type="radio" class="radiobut"  name="entry-type" value="F" /> Upload Scanned Document#}
+{#                </div>#}
+{#                <div id="captcha">#}
+{#                    {{ captchaform }}#}
+{#                    <span id="invalid_cap" class="hide">Captcha Invalid</span>#}
+{#                    <button class='js-captcha-refresh btn btn-primary '>refresh</button>#}
+{#                </div>#}
+{#                <div id="myform">#}
+{#                    {% if formtype == 'M' %}#}
+                        <div class="manual-form">
+                <div class="form-group">
+                  <label >Title:</label>
+                  <input name="title" value="{{ title }}" class="form-control id=" title="" required="required">
+
+                </div>
+                  {% for author in authors %}
+                   <div class="authors-div">
+                    <div class="form-group">
+                      <label >Author Email:</label>
+                      <input name="author" value="{{ author }}" required="required" type="EMAIL" class="form-control" id="author_email">
+                    </div>
+                 </div>
+                   {% endfor %}
+                    <i class="fa fa-plus"></i><a class="add_field_button">Add More</a>
+
+                <div class="row">
+                            <div class="form-group col-xs-6">
+                                 <label for="title">AGE:</label>
+                                <input name="age" value="{{ age }}" type="text" class="form-control" required="required" id="age">
+                            </div>
+                            <div class="form-group col-xs-6">
+                              <label >Select Gender:</label>
+                              <select  name="gender" class="form-control" id="gender" required="required">
+                                <option >Male</option>
+                                <option>Female</option>
+                              </select>
+                            </div>
+                </div>
+                <div class="form-group">
+                  <label for="comment">History:</label>
+                  <textarea name="history" required="required" class="form-control editor" rows="5" cols="73" id="editor">
+                      {{ history }}
+                  </textarea>
+                </div>
+                 <div class="form-group">
+                  <label for="comment">Previous Treatment:
+                  </label>
+                  <textarea  name="previous_treatment" required="required" class="form-control editor" rows="5" cols="73" id="treatment">
+                      {{ previous_treatment }}
+                  </textarea>
+                </div>
+                <div class="molecular-abberations">
+                     <label for="comment">Molecular Abberations</label>
+                    <div class="row ">
+                         {% for i in abberations %}
+                        <div class="form-group col-xs-6">
+                            <input value="{{i.molecule.cui}}" name="cui" class="form-control cui" type="hidden" >
+                            <input value="{{ i.molecule.name }}" name="test" class="form-control test"  required="required">
+
+                        </div>
+
+                        <div class="form-group col-xs-6">
+                          <input value="{{i}}" type="text" name="test_result"  required="required" class="form-control" >
+                        </div>
+                    {% endfor %}
+                    </div>
+                </div>
+                <i class="fa fa-plus"></i><a class="add_button">Add More</a>
+
+                <div class="form-group">
+                  <label for="comment">Specimen Analyzed:</label>
+                  <textarea name="specimen" class="form-control editor" required="required" rows="5" cols="73" id="comment">
+                      {{specimen_analyzed }}
+                  </textarea>
+                </div>
+
+
+                <div class="form-group">
+                  <label for="comment">Precision Treatment and Rationale:</label>
+                  <textarea name="rationale" class="form-control editor" required="required" rows="5" cols="73" id="comment">
+                      {{ rationale }}
+                  </textarea>
+                </div>
+
+
+                <div class="form-group">
+                  <label for="comment">Clinical Outcome:</label>
+                  <textarea  name="outcome" class="form-control editor" required="required" ,rows="5" cols="73" id="comment">
+                      {{ outcome }}
+                  </textarea>
+                </div>
+      </div>
+
+
+
+
+   </form>
+
+          </div>
+          <div class="col-lg-2">
+
+          </div>
+      </div>
+</div>
+</div>
+
+
+    <script src="{{STATIC_URL}}/static/js/add_case_report.js"></script>
+
+  </body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+

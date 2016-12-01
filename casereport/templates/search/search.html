@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+{% load mytags %}
+{% load inplace_edit %}
+
+<html>
+    <head>
+        {%  load staticfiles %}
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>{% block title %}
+            {% if query %}{{ query }}{% else %}CRDB{% endif %}
+        {% endblock %}</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <!-- Latest compiled and minified CSS -->
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+        <link rel="stylesheet" href="{{STATIC_URL}}/static/css/style.css">
+        <link rel="stylesheet" href="{{STATIC_URL}}/static/font-awesome/css/font-awesome.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/5.2.3/css/bootstrap-slider.min.css">
+        <link rel="stylesheet" href="{{STATIC_URL}}/static/css/jquery-ui.css" />
+        <link rel="stylesheet" href="{{STATIC_URL}}/static/css/select2.min.css" />
+        <link href='https://fonts.googleapis.com/css?family=News+Cycle' rel='stylesheet' type='text/css'>
+        <script src="{{STATIC_URL}}/static/js/jquery-1.11.3.min.js"></script>
+        {% inplace_static %}
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/5.2.3/bootstrap-slider.min.js"></script>
+
+        <script src="{{STATIC_URL}}/static/js/select2.min.js"></script>
+        <script src="{{STATIC_URL}}/static/js/jquery-ui.min.js"></script>
+        <script src="{{ STATIC_URL }}/static/js/manual_form.js" ></script>
+    </head>
+    <body id="search-body">
+<div class="header-img"><img src="{{STATIC_URL}}/static/images/headerlogo.png"> </div>
+        <div class="container">
+            {% block container %}
+                <div class="logo-img"><img src="{{STATIC_URL}}/static/images/logo.png"> </div>
+                <div class="tabs-wrapper">
+                    <div class="row">
+                        <div class="col-md-7">
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a data-toggle="tab" href="#search">Search</a></li>
+                                <li ><a data-toggle="tab" id="case-form"  href="#report">Submit</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-5">
+                            {% if request.user.is_authenticated %}
+                                <div class="">
+                                    <a  href ='/casereport/reindex' class="btn btn-danger pull-right">Rebuild Solr</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+            <div class="tab-content search-page-tab-content">
+                <div id="search" class="tab-pane fade in active">
+                        <div class="row">
+
+                         <div class=" col-md-9 main-content ">
+                            <div class="row search-div">
+
+                                     <form method="get" action=".">
+                                     <div class="col-md-12">
+{#                                           <input type="text" class="form-control search" placeholder="Sarcoma"  onfocus="this.placeholder = ''" onblur="this.placeholder = 'Sarcoma'"  name="q" id="" value="{% if query %}{{ query }}{% else %}{% endif %}" >#}
+{#                                         <button class="btn btn-md btn-primary">Search <i class="fa fa-search"></i></button>#}
+{#                                            </div>#}
+
+
+                                         <div class="input-group">
+                                           <input type="text" class="form-control search" placeholder="Authors, institutions, drugs..."  onfocus="this.placeholder = ''" onblur="this.placeholder = 'Authors, institutions, drugs...'"  name="q" id="" value="{% if query %}{{ query }}{% else %}{% endif %}" >
+                                      <span class="input-group-btn">
+                                        <button type="submit" class="btn btn-primary search-button" type="button"><i class="fa fa-search"></i></button>
+                                      </span>
+                                    </div><!-- /input-group -->
+                                  </div><!-- /.col-lg-12 -->
+
+
+
+                                        </form>
+                            </div>
+
+                                <div class="row">
+
+                                     <div class="sortresults pull-right">
+                                      <div class="col-md-5">
+                                         Sort by
+                                         <select id="sort"  name="sortby" class="sorting form-control " onchange="handleSelect()">
+                                             <option  value="relevance" {% if sortby == 'relevance' %}selected{% endif %}>Relevance</option>
+                                             <option value="created_on" {% if sortby == 'created_on' %}selected{% endif %}>Submit date</option>
+                                         </select>
+                                      </div>
+                                      <div class="col-md-5">
+                                         Order
+                                         <select  {% if sortby == 'relevance' %}disabled {% endif %} id="order-sort" name="sortorder" class="sorting form-control col-md-2" >
+                                             <option value="desc" {% if sortorder == 'desc' %}selected{% endif %}>Descending</option>
+                                             <option value="asc" {% if sortorder == 'asc' %}selected{% endif %}>Ascending</option>
+                                         </select>
+                                      </div>
+                                     <div class="col-md-2 sortbtn">
+
+                                         <button id="sort_button" class="btn btn-primary">Sort</button>
+                                      </div>
+                                     </div>
+
+                                     </div>
+
+                                    <div class="result_block">
+                                        {% include 'search/results.html' %}
+                                    </div>
+                                </div>
+
+
+                          <div class="col-md-3 filter-section">
+                             <h2>Filter Articles</h2>
+                                    <br/>
+                                    <div class="gender-section ">
+                                        <h5>Gender:</h5>
+                                        {% with facets.fields.gender as gender %}
+                                            <label  class="checkbox-inline "><input class="filter-checkbox" type="checkbox" id="inlineCheckbox1" value="1}" name="gender" data-url="selected_facets=gender_exact:male" {% check_value_is_active "gender" "male" request.get_full_path %} />Male ({% if gender.1.0 == "male" %}{{ gender.1.1 }}{% else %}{% if gender.0.0 == "male" %}{{ gender.0.1 }}{% else %}0{% endif %}{% endif %})</label>
+                                            <label  class="checkbox-inline"><input class="filter-checkbox" type="checkbox" id="inlineCheckbox2" value="0" name="gender" data-url="selected_facets=gender_exact:female"{% check_value_is_active "gender" "female" request.get_full_path %}/>Female ({% if gender.1.0 == "female" %}{{ gender.1.1 }}{% else %}{% if gender.0.0 == "female" %}{{ gender.0.1 }}{% else %}0{% endif %}{% endif %})</label>
+                                        {% endwith %}
+                                    </div>
+                                    </br>
+                        <p>
+                          <label class="age" for="amount">Age range:</label>
+                          <input type="text" id="amount" readonly value="{% age_range request.get_full_path facets.fields.age %}">
+                        </p>
+                         <div id="slider-range"></div>
+                                    </br>
+                                    <div class="country-section">
+                                        <h5>Country</h5>
+                                        <select class="form-control select2" name="country">
+                                            <option value="" > ---- </option>
+                                            {% for cnt in facets.fields.country %}
+                                                {% if cnt.1 > 0 %}
+                                                    <option value="selected_facets=country_exact:{{ cnt.0|urlencode }}" {% check_value_is_active "country" cnt.0 request.get_full_path %}>{{ cnt.0|title }} ({{ cnt.1 }})</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+{#                                  </br>#}
+{#                                    <div class="abberations-section">#}
+{#                                        <h5>Genetic Aberrations</h5>#}
+{#                                        <select class="form-control select2" multiple >#}
+{#                                            {% for molecular_abberation in facets.fields.molecular_abberations %}#}
+{#                                                {% if molecular_abberation.1 > 0 %}#}
+{#                                                    <option value="selected_facets=molecular_abberations_exact:{{ molecular_abberation.0|urlencode }}" {% check_value_is_active "molecular_abberations" molecular_abberation.0 request.get_full_path %}>{{ molecular_abberation.0 }} ({{ molecular_abberation.1 }})</option>#}
+{#                                                {% endif %}#}
+{#                                            {% endfor %}#}
+{#                                        </select>#}
+{#                                    </div>#}
+{#                                    </br>#}
+{##}
+{#                                    <div class="treatments-section">#}
+{#                                        <h5>Treatments</h5>#}
+{#                                        <select class="form-control select2" multiple>#}
+{#                                            {% for treatment in facets.fields.treatments %}#}
+{#                                                {% if treatment.1 > 0 %}#}
+{#                                                    <option value="selected_facets=treatments_exact:{{ treatment.0|urlencode }}" {% check_value_is_active "treatments" treatment.0 request.get_full_path %}>{{ treatment.0 }} ({{ treatment.1 }})</option>#}
+{#                                                {% endif %}#}
+{#                                            {% endfor %}#}
+{#                                        </select>#}
+{#                                    </div>#}
+                                  </br>
+
+                                    <div class="treatment_type-section">
+                                        <h5>Treatment Type</h5>
+                                        <select class="form-control select2"  name="treatment_type">
+                                         <option value="" > ---- </option>
+
+                                        <option value="selected_facets=treatment_type_exact:Chemotherapy" {% check_value_is_active "treatment_type" "Chemotherapy" request.get_full_path %}> Chemotherapy</option>
+                                         <option value="selected_facets=treatment_type_exact:Immunotherapy" {% check_value_is_active "treatment_type" "Immunotherapy" request.get_full_path %}> Immunotherapy</option>
+                                        <option value="selected_facets=treatment_type_exact:Radiotherapy" {% check_value_is_active "treatment_type" "Radiotherapy" request.get_full_path %}>Radiotherapy</option>
+                                        <option value="selected_facets=treatment_type_exact:Surgery" {% check_value_is_active "treatment_type" "Surgery" request.get_full_path %}> Surgery</option>
+                                        <option value="selected_facets=treatment_type_exact:Targeted Therapy" {% check_value_is_active "treatment_type" "Targeted Therapy" request.get_full_path %}>Targeted Therapy</option>
+
+
+                                        </select>
+                                    </div>
+                                    </br>
+{#                                    <div class="tests-section">#}
+{#                                        <h5>Tests</h5>#}
+{#                                        <select class="form-control select2" multiple>#}
+{#                                            {% for test in facets.fields.cr_tests %}#}
+{#                                                {% if test.1 > 0 %}#}
+{#                                                    <option value="selected_facets=cr_tests_exact:{{ test.0|urlencode }}" {% check_value_is_active "cr_tests" test.0 request.get_full_path %}>{{ test.0 }} ({{ test.1 }})</option>#}
+{#                                                {% endif %}#}
+{#                                            {% endfor %}#}
+{#                                        </select>#}
+{#                                    </div>#}
+
+
+                                </div>
+
+
+
+
+                    </div>
+
+
+        </div>
+            <div id="report" class="tab-pane fade">
+            {% include 'new_add_casereport.html' %}
+
+            </div>
+
+      </div>
+       {% endblock %}
+        </div>
+    <div class="overlay hide"></div>
+        <script src="{{STATIC_URL}}/static/js/search.js"></script>
+
+    </body>
+</html>

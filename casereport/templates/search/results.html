@@ -1,0 +1,98 @@
+{% load mytags %}
+<p> <span>{{ page.paginator.count }}</span> Search Results</p>
+
+{#<div class="row">#}
+        <div class="results">
+
+{% for result in page.object_list %}
+
+            <!--search-->
+    <div class="searchresult">
+
+            <div class="row">
+                <div class="result_list col-md-12">
+
+                    <a href="{% url 'casereport_detail' result.object.id  result.object.title|slugify %}">
+                    <div class=" nav-item">{{ result.object.gender|capfirst }}  {{ result.object.age }} y</div>
+                    <div class="nav-item">{{ result.object.get_sarcoma_type|capfirst }}{% if result.object.tumor_location %}, {{ result.object.tumor_location }}{% endif %}</div>
+
+                    </a>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="physician-result-list">
+                    <div class="col-md-12 ">
+                        <li><span>{{ result.object.get_physician|capfirst }}</span>,   {{ result.object.get_physician_affiliation|capfirst }}  |  {{ result.object.created_on|date:"M d, Y" }}</li>
+                    </div>
+                </div>
+            </div>
+
+{#            <div class="row">#}
+{#                <div class="case_presented col-md-12">#}
+{#                    <li>{{ result.object.get_presented }}</li>#}
+{#                </div>#}
+{#            </div>#}
+
+
+                <div class="row">
+                    <div class="col-md-8 treatment-result-list">
+                    <h4>Treatment / Response</h4>
+                        {% for treatment in result.object.get_treatment_events_in_order|slice:":3" %}
+                            {% if treatment.get_outcome %}<div class="row treatments"><span > {{ treatment.get_dates }} {{ treatment.get_name }}</span> <span >{{ treatment.get_outcome |truncatewords:20 }}</span></div>{% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="col-md-4 search-abberations">
+                    <h4>Genetic Aberrations</h4>
+                        {% for abb in result.object.molecular_abberations.all|slice:":3" %}
+                            <div class="abberations"><span><i>{{ abb.molecule }}</i>  {{ abb.name }}</span></div>
+                        {% endfor %}
+                    </div>
+            </div>
+
+    </div>
+    </br>
+    {% comment %}
+        {% if page.has_previous or page.has_next %}
+            <div>
+                {% if page.has_previous %}<a href="{% get_pagination_url request.get_full_path page.previous_page_number %}">{% endif %}&laquo; Previous{% if page.has_previous %}</a>{% endif %}
+        |
+                {% if page.has_next %}<a href="{% get_pagination_url request.get_full_path page.next_page_number %}">{% endif %}Next &raquo;{% if page.has_next %}</a>{% endif %}
+            </div>
+        {% endif %}
+
+    {% endcomment %}
+{% empty %}
+    <p>
+    {% if suggestions %}
+      did you mean
+    {% endif %}
+    {% for sugg in suggestions %}
+        <a href="/?q={{ sugg.word }}">{{ sugg.word }}</a>
+           {% if not forloop.last %} or {% endif %}
+
+        {% empty %}
+        No Results
+        {% endfor %}</p>
+{% endfor %}
+        </div>
+{#</div>#}
+        {% if page.has_previous or page.has_next %}
+            <div class="row pagination_wrapper">
+                <ul class="pagination">
+                    <li>
+                        <a href="{% if page.has_previous %}{% get_pagination_url request.get_full_path page.previous_page_number %}{% else %}#{% endif %}">Previous</a>
+                    </li>
+                    {% for i in page.paginator.page_range %}
+                        {% ifequal i page.number %}
+                            <li class="active"><a href="{% get_pagination_url request.get_full_path i %}">{{ i }}</a></li>
+                        {% else %}
+                            <li><a href="{% get_pagination_url request.get_full_path i %}">{{ i }}</a></li>
+                        {% endifequal %}
+                    {% endfor %}
+                    <li>
+                        <a href="{% if page.has_next %}{% get_pagination_url request.get_full_path page.next_page_number %}{% else %}#{% endif %}">Next</a>
+                    </li>
+                </ul>
+            </div>
+        {% endif %}

@@ -1,0 +1,173 @@
+<table class="table table-bordered">
+    <tbody>
+        <tr>
+            <td class="col-md-4">Author/Primary Contact:</td>
+            <td>{{ casereport.get_physician }}</td>
+        </tr>
+        <tr>
+            <td>Email:</td>
+            <td>{{ casereport.primary_physician.email }}</td>
+        </tr>
+        {% for physician in casereport.referring_physician.all %}
+            {% if not forloop.counter == 1 %}
+                <tr>
+                    <td>Physician
+                        {% if physician.name %}
+                            Name
+                        {% endif %}
+                        {% if physician.email %}
+                            /Email
+                        {% endif %}
+                        :
+                    </td>
+                    <td>
+                        {% if physician.name %}
+                            {{ physician.name }}
+                        {% endif %}
+                        {% if physician.email %}
+                            /{{ physician.email }}
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+        {% for authorized_rep in casereport.authorized_reps.all %}
+            <tr>
+                <td>Authorized Email:</td>
+                <td>{{ authorized_rep.email }}</td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <td>Affiliation/Institution:</td>
+            <td>{{ casereport.get_physician_affiliation }}</td>
+        </tr>
+        <tr>
+            <td>City:</td>
+            <td>{{ casereport.get_physician_affiliation.city|title  }}</td>
+        </tr>
+        <tr>
+            <td>Country:</td>
+            <td>{{ casereport.primary_physician.get_country|title }}</td>
+        </tr>
+        {% if casereport.history %}
+            <tr>
+                <td>Case Details:</td>
+                <td>{{ casereport.history }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td>Patient Age:</td>
+                <td>{{ casereport.age }}</td>
+            </tr>
+            <tr>
+                <td>Patient Gender:</td>
+                <td>{{ casereport.gender|title }}</td>
+            </tr>
+            {% if casereport.index %}
+                <tr>
+                    <td>Charlson Index:</td>
+                    <td>{{ casereport.index }}</td>
+                </tr>
+            {% endif%}
+            {% if casereport.sarcoma_type %}
+                <tr>
+                    <td>Sarcoma Type:</td>
+                    <td> {{ casereport.get_sarcoma_type }}</td>
+                </tr>
+            {% endif%}
+            {% if casereport.pathology %}
+                <tr>
+                    <td>Pathology:</td>
+                    <td>{{ casereport.pathology }}</td>
+                </tr>
+            {% endif%}
+         {% for abb in casereport.molecular_abberations.all %}
+             <tr>
+                    <td>Genetic Aberrations:</td>
+                    <td>
+                        {{ abb.molecule }} {{ abb.name }}{% if not forloop.last %}, {% endif %}
+                    </td>
+            </tr>
+            {% endfor %}
+            {% for treatment in treatments %}
+                <tr>
+                    <td>Treatment Name
+                        {% if treatment.get_treatment_type %}
+                            /Type
+                        {% endif %}
+                        {% if treatment.length %}
+                            /Length
+                        {% endif %}
+                        {% if treatment.dose %}
+                            /Dose
+                        {% endif %}
+                        {% if treatment.cycles %}
+                            /Number of Cycles
+                        {% endif %}
+                        {% if treatment.status %}
+                            /Performance status
+                        {% endif %}
+                        {% if treatment.tumor %}
+                            /Size of Tumor
+                        {% endif %}
+                        {% if treatment.outcome %}
+                            /Response
+                        {% endif %}
+                        :
+                    </td>
+                    <td>{{ treatment.name }}
+                        {% if treatment.get_treatment_type %}
+                            /{{ treatment.get_treatment_type }}
+                        {% endif %}
+                        {% if treatment.length %}
+                            /{{ treatment.length }}
+                        {% endif %}
+                        {% if treatment.dose %}
+                            /{{ treatment.dose }}
+                        {% endif %}
+                        {% if treatment.cycles %}
+                            /{{ treatment.cycles }}
+                        {% endif %}
+                        {% if treatment.status %}
+                            /{{ treatment.status }}
+                        {% endif %}
+                        {% if treatment.tumor %}
+                            /{{ treatment.tumor }}
+                        {% endif %}
+                        {% if treatment.outcome %}
+                            /{{ treatment.outcome }}
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            {% if casereport.progression %}
+                <tr>
+                    <td>Time to Progression:</td>
+                    <td>{{ casereport.progression }}</td>
+                </tr>
+             {% endif %}
+
+            {% if casereport.response %}
+                <tr>
+                    <td>Response:</td>
+                    <td>{{ casereport.get_response_display }}</td>
+                </tr>
+             {% endif %}
+
+            {% if casereport.additional_comment %}
+                <tr>
+                    <td>Additional Comment:</td>
+                    <td>{{ casereport.additional_comment }}</td>
+                </tr>
+            {% endif %}
+            {% if casereport.history %}
+                <tr>
+                    <td>Additional Comment:</td>
+                    <td>{{ casereport.history }}</td>
+                </tr>
+            {% endif %}
+        {% endif %}
+    </tbody>
+</table>
+
+
