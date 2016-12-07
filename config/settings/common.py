@@ -248,6 +248,14 @@ USE_L10N = True
 
 USE_TZ = True
 
+# FIXTURE CONFIGURATION
+# -----------------------------------------------------------------------------
+# See:
+#  https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-FIXTURE_DIRS
+FIXTURE_DIRS = (
+    str(ROOT_DIR.path('fixtures')),
+)
+
 # Override these per site
 REGISTRATION_REVIEWERS = []
 REGISTRATION_REVIEWERS_FOR_APPROVAL_REQUIRED_PROJECTS = []
