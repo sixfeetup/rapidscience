@@ -99,6 +99,14 @@ INSTALLED_APPS = (
     'rlp.newsfeed.apps.NewsFeedConfig',
     'rlp.projects.apps.ProjectsConfig',
     'rlp.search.apps.SearchConfig',
+    'casereport',
+    'captcha',
+    'django_countries',
+    'ajax_select',
+    'inplaceeditform_bootstrap',
+    'inplaceeditform',
+    'inplaceeditform_extra_fields',
+    'bootstrap3_datetime',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -127,6 +135,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             str(APPS_DIR.path('templates', SITE_PREFIX)),
+            str(ROOT_DIR.path('casereports', 'templates')),
             str(APPS_DIR.path('templates')),
         ],
         'APP_DIRS': True,

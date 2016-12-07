@@ -21,6 +21,7 @@ from django.contrib.sitemaps.views import sitemap
 
 from rlp.core import views
 from rlp.sitemaps import sitemaps
+from casereport.views import ajax_lookup
 
 handler500 = 'rlp.core.views.server_error'
 
@@ -37,6 +38,15 @@ urlpatterns = [
         {'sitemaps': sitemaps}),
     url(r'^select2/', include('django_select2.urls')),
     url(r'^taggit_autosuggest/', include('taggit_autosuggest.urls')),
+    url(r'^casereport/', include('casereport.urls')),
+    url(r'^captcha/', include('captcha.urls')),
+    url(r'^ajax_lookup/(?P<channel>[-\w]+)$',
+        ajax_lookup,
+        name='ajax_lookup'),
+    url(r'^add_popup/(?P<app_label>\w+)/(?P<model>\w+)$',
+        views.add_popup,
+        name='add_popup'),
+    url(r'^inplaceeditform/', include('inplaceeditform.urls')),
     url(r'^', include('cms.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
