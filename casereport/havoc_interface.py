@@ -1,11 +1,13 @@
 __author__ = 'yaseen'
 
 import requests
-from crdb.settings import HAVOC_USER
-from crdb.settings import HAVOC_TOKEN
-from crdb.settings import HAVOC_BASE_URL
-from crdb.settings import VOCABS
-from crdb.settings import get_havoc_url
+from django.conf import settings
+
+
+HAVOC_USER = settings.HAVOC_USER
+HAVOC_TOKEN = settings.HAVOC_TOKEN
+HAVOC_BASE_URL = settings.HAVOC_BASE_URL
+VOCABS = settings.VOCABS
 
 
 def havoc_results(api, term, vocab=None, partial=None):
@@ -52,3 +54,12 @@ def get_all_synonyms(terms):
     synonyms = list(set(synonyms))
     return synonyms
 
+
+def get_havoc_url(name, **kwargs):
+    havoc_apis = {
+        "concepts": "concepts?term={term}",
+        "concepts_bulk": "concepts_bulk?terms={terms}",
+        "synonyms": "concepts/{cui}/synonyms?",
+    }
+    url = havoc_apis[name].format(**kwargs)
+    return url
