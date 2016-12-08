@@ -1,13 +1,16 @@
-from casereport.havoc_interface import  get_all_synonyms
-
 __author__ = 'yaseen'
+
 from django.template.loader import render_to_string
 
 from haystack import indexes
+
+from casereport.havoc_interface import get_all_synonyms
+
 from .models import CaseReport, ResultValueEvent
 from .models import TestEvent
 from .models import TreatmentEvent
 from .models import DiagnosisEvent
+
 
 class CaseReportIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True)
@@ -22,9 +25,15 @@ class CaseReportIndex(indexes.SearchIndex, indexes.Indexable):
     modified_on = indexes.DateTimeField(model_attr='modified_on')
     treatment_type = indexes.MultiValueField(faceted=True)
     country = indexes.MultiValueField(faceted=True)
+    suggestions = indexes.FacetCharField()
 
     def get_model(self):
         return CaseReport
+
+    def prepare(self, obj):
+        prepared_data = super(CaseReportIndex, self).prepare(obj)
+        prepared_data['suggestions'] = prepared_data['text']
+        return prepared_data
 
     def index_queryset(self, using=None):
         cases = CaseReport.objects.filter(status='approved')
@@ -37,9 +46,15 @@ class CaseReportIndex(indexes.SearchIndex, indexes.Indexable):
         results = self.get_results(obj)
         test_names = self.prepare_cr_tests(obj)
         treatment_names = self.prepare_treatments(obj)
-        searchstring = render_to_string('search/indexes/casereport/casereport_text.txt',
-                                {'object': obj, 'synonyms': synonyms,'outcomes':outcomes,'results':results,
-                                'reported_date': reported_date,'test_names':test_names,'treatment_names':treatment_names})
+        searchstring = render_to_string(
+            'search/indexes/casereport/casereport_text.txt',
+            {'object': obj,
+             'synonyms': synonyms,
+             'outcomes': outcomes,
+             'results': results,
+             'reported_date': reported_date,
+             'test_names': test_names,
+             'treatment_names': treatment_names})
         return searchstring
 
     def prepare_country(self, obj):
@@ -98,7 +113,7 @@ class CaseReportIndex(indexes.SearchIndex, indexes.Indexable):
         synonyms = get_all_synonyms(terms=term_string)
         return synonyms
 
-    def prepare_treatment_type(self,obj):
+    def prepare_treatment_type(self, obj):
         treatments = TreatmentEvent.objects.filter(casereport=obj)
         types = [i.treatment_type.strip().capitalize() for i in treatments]
         types = list(set(types))
@@ -117,6 +132,3 @@ class CaseReportIndex(indexes.SearchIndex, indexes.Indexable):
         for e in events:
             results.append(e.value)
         return results
-
-
-
