@@ -32,7 +32,6 @@ from casereport.forms import FacetedSearchForm
 from casereport.havoc_interface import havoc_results
 from casereport.models import CaseReport
 from casereport.models import CaseFile
-from casereport.constants import SARCOMA_TYPE
 from casereport.models import Treatment
 from django.core.mail import EmailMessage
 # from access_tokens import scope, tokens
@@ -214,12 +213,14 @@ class FormTypeView(TemplateView):
 class MyFacetedSearchView(FacetedSearchView):
     def __init__(self, *args, **kwargs):
         sqs = SearchQuerySet().facet('gender', sort='index')\
-                .facet('age', sort='index').facet('molecular_abberations', sort='count')\
-                .facet('country', sort='count')\
-                .facet('molecules', sort='count')\
-                .facet('treatments', sort='count')\
-                .facet('cr_tests', sort='count')\
-                .facet('treatment_type', sort='count')
+            .facet('age', sort='index')\
+            .facet('molecular_abberations', sort='count')\
+            .facet('country', sort='count')\
+            .facet('molecules', sort='count')\
+            .facet('treatments', sort='count')\
+            .facet('cr_tests', sort='count')\
+            .facet('treatment_type', sort='count')\
+            .highlight(fragsize=200)
         kwargs.update({'form_class': FacetedSearchForm, 'searchqueryset': sqs})
         super(MyFacetedSearchView, self).__init__(*args, **kwargs)
 
