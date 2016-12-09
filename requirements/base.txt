@@ -42,6 +42,7 @@ djangocms-column==1.7.0
 djangocms-link==2.0.3
 djangocms-text-ckeditor==3.3.1
 easy-thumbnails==2.3
+git+https://github.com/sixfeetup/django-access-tokens.git
 html5lib==0.9999999
 iso8601==0.1.11
 libsass==0.11.2
