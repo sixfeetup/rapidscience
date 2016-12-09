@@ -35,7 +35,7 @@ class CaseReportListResource:
         #     details = CaseReport(age=age, gender=gender,sarcoma_type=sarcoma_type,history=details, other_sarcoma_type=other_sarcoma)
         #     details.save()
         result = CaseReport(title=title, age=age, gender=gender,
-                            progression=progression, casefile=document,
+                            progression=progression, casefile_f=document,
                             pathology=pathology, response=response,
                             additional_comment=additional_comment,
                             index=index, sarcoma_type=sarcoma_type,

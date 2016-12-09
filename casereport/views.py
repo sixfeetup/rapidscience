@@ -46,10 +46,10 @@ class CaseReportDetailView(TemplateView):
         casereport = CaseReport.objects.get(id=case_id)
         treatments = Treatment.objects.filter(casereport_id=case_id)
         testevents = casereport.event_set.select_related('testevent')
-        if casereport.casefile:
+        if casereport.casefile_f:
             return self.render_to_response(dict(casereport=casereport,
                                                 test=testevents,
-                                                casefile=casereport.casefile))
+                                                casefile=casereport.casefile_f))
 
         return self.render_to_response(dict(casereport=casereport, test=testevents,treatments=treatments))
 
@@ -350,7 +350,7 @@ class CaseReportEditView(TemplateView):
         treatments = Treatment.objects.filter(casereport_id=case_id)
         testevents = casereport.event_set.select_related('testevent')
         kwargs = {'casereport': casereport, 'gender': GENDER, 'sarcoma_types': SARCOMA_TYPE,
-                  'casefile': casereport.casefile, 'treatments': treatments, 'test': testevents}
+                  'casefile': casereport.casefile_f, 'treatments': treatments, 'test': testevents}
         return self.render_to_response(kwargs)
 
     def post(self, *args, **kwargs):

@@ -46,7 +46,7 @@ class CaseFileAdmin(admin.ModelAdmin):
                     'casereport')
 
     def casereport(self, obj):
-        if CaseReport.objects.filter(casefile=obj).count() > 0:
+        if CaseReport.objects.filter(casefile_f=obj).count() > 0:
             link = '<a href="%s">View</a>' % \
                 reverse('admin:casereport_casereport_change',
                         args=(obj.casereport.all()[0].id,))
@@ -68,10 +68,10 @@ class CaseReportAdmin(admin.ModelAdmin):
     ]
 
     def view_casefile(self, obj):
-        if obj.casefile:
+        if obj.casefile_f:
             link = '<a href="%s">View</a>' % \
                 reverse('admin:casereport_casefile_change',
-                        args=(obj.casefile.id,))
+                        args=(obj.casefile_f.id,))
         else:
             link = ''
         return link
