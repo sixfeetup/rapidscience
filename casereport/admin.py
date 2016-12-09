@@ -37,7 +37,7 @@ class TreatmentForm(ModelForm):
 
 class TreatmentInline(admin.StackedInline):
     model = Treatment
-    fk_name = 'casereport'
+    fk_name = 'casereport_f'
     form = TreatmentForm
 
 
@@ -49,7 +49,7 @@ class CaseFileAdmin(admin.ModelAdmin):
         if CaseReport.objects.filter(casefile_f=obj).count() > 0:
             link = '<a href="%s">View</a>' % \
                 reverse('admin:casereport_casereport_change',
-                        args=(obj.casereport.all()[0].id,))
+                        args=(obj.casereport_f.all()[0].id,))
         else:
             link = '<a href="%s?casefile=%s">Convert</a>' \
                 % (reverse('admin:casereport_casereport_add'), obj.id)
@@ -102,20 +102,20 @@ class EventBaseForm(ModelForm):
             case = args[0].get('casereport')
         except Exception as e:
             try:
-                case = kwargs['instance'].casereport
+                case = kwargs['instance'].casereport_f
             except Exception as e:
                 pass
         super(EventBaseForm, self).__init__(*args, **kwargs)
         if case:
-            self.fields['previous_event'].queryset = Event.objects.filter(casereport=case)
-            self.fields['next_event'].queryset = Event.objects.filter(casereport=case)
-            self.fields['parent_event'].queryset = Event.objects.filter(casereport=case, event_type=None)
+            self.fields['previous_event'].queryset = Event.objects.filter(casereport_f=case)
+            self.fields['next_event'].queryset = Event.objects.filter(casereport_f=case)
+            self.fields['parent_event'].queryset = Event.objects.filter(casereport_f=case, event_type=None)
 
     def clean_parent_event(self):
         case = self.cleaned_data.get('casereport')
         parent_event = self.cleaned_data.get('parent_event')
         if parent_event:
-            if parent_event.casereport != case:
+            if parent_event.casereport_f != case:
                 raise forms.ValidationError("Not a valid parent event")
         return parent_event
 
@@ -123,7 +123,7 @@ class EventBaseForm(ModelForm):
         case = self.cleaned_data.get('casereport')
         previous_event = self.cleaned_data.get('previous_event')
         if previous_event:
-            if previous_event.casereport != case:
+            if previous_event.casereport_f != case:
                 raise forms.ValidationError("Not a valid previous event")
         return previous_event
 
@@ -131,7 +131,7 @@ class EventBaseForm(ModelForm):
         case = self.cleaned_data.get('casereport')
         next_event = self.cleaned_data.get('next_event')
         if next_event:
-            if next_event.casereport != case:
+            if next_event.casereport_f != case:
                 raise forms.ValidationError("Not a valid next event")
         return next_event
 
@@ -139,7 +139,7 @@ class EventBaseForm(ModelForm):
 
 class EventBaseAdmin(admin.ModelAdmin):
     list_display = ('name', 'parent_event', 'previous_event', 'next_event')
-    list_filter = ('casereport',)
+    list_filter = ('casereport_f',)
     exclude = ('event_type', )
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
@@ -147,7 +147,7 @@ class EventBaseAdmin(admin.ModelAdmin):
             kwargs["queryset"] = Event.objects.all().order_by('-id')
         if db_field.name == "parent_event":
             kwargs["queryset"] = Event.objects.filter(event_type__isnull=True).order_by('-id')
-        if db_field.name == "casereport":
+        if db_field.name == "casereport_f":
             kwargs["queryset"] = CaseReport.objects.all().order_by('-id')
         return super(EventBaseAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 

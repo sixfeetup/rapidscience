@@ -192,7 +192,7 @@ class CaseReport(CRDBBase):
     def ordered_event(self, event_type):
         events = []
         try:
-            event = Event.objects.get(casereport=self, previous_event=None,
+            event = Event.objects.get(casereport_f=self, previous_event=None,
                                       parent_event=None)
         except:
             return events
@@ -226,7 +226,7 @@ class CaseReport(CRDBBase):
         return self.primary_physician.name
 
     def get_presented(self):
-        event = Event.objects.filter(casereport=self, parent_event__isnull=True)
+        event = Event.objects.filter(casereport_f=self, parent_event__isnull=True)
         return event[0].get_info()
 
     def get_physician_affiliation(self):
@@ -234,7 +234,7 @@ class CaseReport(CRDBBase):
 
     def get_reported_date(self):
         try:
-            event = Event.objects.get(casereport=self, parent_event=None)
+            event = Event.objects.get(casereport_f=self, parent_event=None)
         except:
             event = None
         return event.date_point if event else event
@@ -244,7 +244,7 @@ class CaseReport(CRDBBase):
 
 
 class Treatment(CRDBBase):
-    casereport = models.ForeignKey(CaseReport)
+    casereport_f = models.ForeignKey(CaseReport)
     name = models.CharField(max_length=250)
     treatment_type = models.CharField(max_length=250)
     duration = models.CharField(max_length=250, null=True, blank=True)
@@ -260,7 +260,7 @@ class Treatment(CRDBBase):
 
 
 class Event(CRDBBase):
-    casereport = models.ForeignKey(CaseReport)
+    casereport_f = models.ForeignKey(CaseReport)
     parent_event = models.ForeignKey('self', null=True, blank=True, related_name="parentevent")
     name =  models.CharField(max_length=255)
     frequency = models.IntegerField(null=True, blank=True)

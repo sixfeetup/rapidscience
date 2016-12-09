@@ -71,7 +71,7 @@ class BaseTestCase(TestCase):
 
     def test_treatment_creation(self):
         case = self.create_case_report()
-        result = Treatment.objects.create(casereport=case, name="Drug name", treatment_type="Surgery")
+        result = Treatment.objects.create(casereport_f=case, name="Drug name", treatment_type="Surgery")
         self.assertTrue(isinstance(result, Treatment))
 
     def test_physician(self):

@@ -86,9 +86,9 @@ class CaseReportIndex(indexes.SearchIndex, indexes.Indexable):
     def get_synonyms(self, obj):
         terms = []
         mols = obj.molecular_abberations.all()
-        tests = TestEvent.objects.filter(casereport=obj)
-        treatments = TreatmentEvent.objects.filter(casereport=obj)
-        diagnosis = DiagnosisEvent.objects.filter(casereport=obj)
+        tests = TestEvent.objects.filter(casereport_f=obj)
+        treatments = TreatmentEvent.objects.filter(casereport_f=obj)
+        diagnosis = DiagnosisEvent.objects.filter(casereport_f=obj)
         for mol in mols:
             terms.append(mol.molecule)
         for test in tests:
@@ -114,13 +114,13 @@ class CaseReportIndex(indexes.SearchIndex, indexes.Indexable):
         return synonyms
 
     def prepare_treatment_type(self, obj):
-        treatments = TreatmentEvent.objects.filter(casereport=obj)
+        treatments = TreatmentEvent.objects.filter(casereport_f=obj)
         types = [i.treatment_type.strip().capitalize() for i in treatments]
         types = list(set(types))
         return types
 
     def get_outcomes(self, obj):
-        events = TreatmentEvent.objects.filter(casereport=obj)
+        events = TreatmentEvent.objects.filter(casereport_f=obj)
         outcomes = []
         for e in events:
             outcomes.append(e.outcome)

@@ -196,7 +196,7 @@ class TreatmentInstanceResource:
         :type Treatment: object
         """
         result = Treatment()
-        result.casereport = casereport
+        result.casereport_f = casereport
         result.name = name
         result.treatment_type = treatment_type
         result.status = status if status else None
