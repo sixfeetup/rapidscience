@@ -6,12 +6,17 @@ Configuring your environment
 
 The following documents the steps to set up a freshly `git clone`d copy of the project.
 
-First, set up your virtualenv (assumes you have Python 3.4+ installed and that your current working directory is the parent `rlp` directory of this project)::
+First, set up your virtualenv (assumes you have Python 3.4+ installed and that your current working directory is root of this repository)::
 
-    pyvenv env
+    virtualenv -p python3 env
     source env/bin/activate
     pip install -U pip setuptools
     pip install -r requirements-dev.txt
+
+If you see SSL errors from `biopython` and `psycopg2`, and you have OpenSSL installed via Homebrew, you might need to set these variables during installation::
+
+    LDFLAGS="-L/usr/local/opt/openssl/lib"
+    CPPFLAGS="-I/usr/local/opt/openssl/include"
 
 If you are using `pyenv` (preferred)::
 
@@ -20,13 +25,22 @@ If you are using `pyenv` (preferred)::
     pip install -U pip setuptools
     pip install -r requirements-dev.txt
 
-Copy the example settings file::
+Copy the example environment file::
 
-    cp rlp/settings.py.example rlp/settings.py
+    cp env.example.chci config/settings/.env
 
 If you are starting with an empty database::
 
+    mkdir log
+    touch log/rlp.log
+    createuser web
+    createdb chci # (or sobc)
     ./manage.py migrate
+
+Load some initial data::
+
+    ./manage.py loaddata contenttypes_contenttype.json
+    ./manage.py loaddata auth_permissions.json
 
 Now you should be able to successfully::
 
