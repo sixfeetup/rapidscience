@@ -424,3 +424,20 @@ HAVOC_USER = env('HAVOC_USER')
 HAVOC_TOKEN = env('HAVOC_TOKEN')
 HAVOC_BASE_URL = env('HAVOC_BASE_URL')
 VOCABS = env('VOCABS')
+
+CRDB_DOMAIN = '127.0.0.1:8000'
+APPROVED_MESSAGE = (
+    'Your approved case report has been submitted.'
+    ' You will be notified shortly when it is posted'
+    ' to the Cases Central database.'
+)
+EDITED_MESSAGE = (
+    'Your edits to the case report have been submitted. '
+    ' We will email you as soon as we review your changes'
+    ' for final approval and posting to Cases Central.'
+)
+CASE_SUBMIT = 'Your case report submission'
+
+TOKEN_SALT = env('TOKEN_SALT')
+CRDB_SERVER_EMAIL = env('CRDB_SERVER_EMAIL')
+CRDB_BCC_LIST = env.list('CRDB_BCC_LIST')

@@ -2,6 +2,7 @@ import json
 from ajax_select import registry
 from captcha.helpers import captcha_image_url
 from captcha.models import CaptchaStore
+from django.conf import settings
 from django.core import management
 from django.shortcuts import render_to_response
 from django.template.loader import render_to_string
@@ -34,8 +35,6 @@ from casereport.models import CaseReport
 from casereport.models import CaseFile
 from casereport.models import Treatment
 from django.core.mail import EmailMessage
-# from access_tokens import scope, tokens
-from crdb import settings
 
 __author__ = 'yaseen'
 
@@ -159,15 +158,15 @@ class CaseReportFormView(FormView):
         return self.render_to_response({})
 
     def case_success_mail(self, physicians, author_list):
-        Headers = {'Reply-To': settings.SERVER_EMAIL}
+        Headers = {'Reply-To': settings.CRDB_SERVER_EMAIL}
         recipient = physicians[0]
         authorized_recipient = []
         for i in author_list:
             authorized_recipient.append(str(i))
         message = render_to_string('case_submit_email.html', {'name': recipient.get_name(),
-                                                              'DOMAIN': settings.DOMAIN})
-        msg = EmailMessage(settings.CASE_SUBMIT, message, settings.SERVER_EMAIL, [recipient.email],
-                           headers=Headers, cc=authorized_recipient, bcc=settings.BCC_LIST)
+                                                              'DOMAIN': settings.CRDB_DOMAIN})
+        msg = EmailMessage(settings.CASE_SUBMIT, message, settings.CRDB_SERVER_EMAIL, [recipient.email],
+                           headers=Headers, cc=authorized_recipient, bcc=settings.CRDB_BCC_LIST)
         msg.content_subtype = "html"
         msg.send()
 

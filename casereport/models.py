@@ -1,3 +1,4 @@
+from access_tokens import tokens
 from casereport.constants import GENDER
 from casereport.constants import SARCOMA_TYPE
 from casereport.constants import STATUS
@@ -137,8 +138,7 @@ class CaseReport(CRDBBase):
 
     def send_review_mail(self):
         history_obj = CaseReportHistory.objects.filter(case=self.id).last()
-        # TODO: replace access tokens with a Python 3 compatible metho
-        # token = tokens.generate(scope=(), key=self.id, salt=settings.TOKEN_SALT)
+        token = tokens.generate(scope=(), key=self.id, salt=settings.TOKEN_SALT)
         Headers = {'Reply-To': settings.SERVER_EMAIL}
         recipients = list(self.authorized_reps.all())
         primary_recipient = self.primary_physician
@@ -150,7 +150,7 @@ class CaseReport(CRDBBase):
                                                {'id': self.id,
                                                 'title': self.title,
                                                 'name': recipient.get_name(),
-                                                # 'token': token,
+                                                'token': token,
                                                 'DOMAIN': settings.DOMAIN,
                                                 'Date': self.created_on,
                                                 'primary_physician': self.primary_physician.get_name()
