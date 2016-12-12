@@ -43,9 +43,6 @@ urlpatterns = [
     url(r'^ajax_lookup/(?P<channel>[-\w]+)$',
         ajax_lookup,
         name='ajax_lookup'),
-    url(r'^add_popup/(?P<app_label>\w+)/(?P<model>\w+)$',
-        views.add_popup,
-        name='add_popup'),
     url(r'^inplaceeditform/', include('inplaceeditform.urls')),
     url(r'^', include('cms.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
