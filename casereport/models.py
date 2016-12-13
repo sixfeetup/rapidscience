@@ -247,7 +247,9 @@ class CaseReport(CRDBBase):
 
 
 class Treatment(CRDBBase):
-    casereport_f = models.ForeignKey(CaseReport, verbose_name='Case Report')
+    casereport_f = models.ForeignKey(
+        CaseReport, verbose_name='Case Report', default=1
+    )
     name = models.CharField(max_length=250)
     treatment_type = models.CharField(max_length=250)
     duration = models.CharField(max_length=250, null=True, blank=True)
@@ -263,7 +265,9 @@ class Treatment(CRDBBase):
 
 
 class Event(CRDBBase):
-    casereport_f = models.ForeignKey(CaseReport, verbose_name='Case Report')
+    casereport_f = models.ForeignKey(
+        CaseReport, verbose_name='Case Report', default=1
+    )
     parent_event = models.ForeignKey('self', null=True, blank=True, related_name="parentevent")
     name =  models.CharField(max_length=255)
     frequency = models.IntegerField(null=True, blank=True)
