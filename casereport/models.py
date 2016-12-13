@@ -62,7 +62,7 @@ class CaseFile(CRDBBase):
     document = models.FileField()
 
     def __str__(self):
-        return self.name.encode('utf-8')
+        return self.name
 
 class MolecularAbberation(CRDBBase):
     name = models.CharField(max_length=255)
@@ -82,7 +82,7 @@ class AuthorizedRep(CRDBBase):
     email = models.EmailField()
 
     def __str__(self):
-        return self.email.encode('utf-8')
+        return self.email
 
     def get_name(self):
         return self.email
