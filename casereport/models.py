@@ -103,7 +103,10 @@ class CaseReport(CRDBBase):
     additional_comment = models.TextField(null=True, blank=True)
     previous_treatments = models.TextField(null=True, blank=True)
     status = models.CharField(max_length=50, choices=STATUS, default='processing')
-    casefile_f = models.ForeignKey(CaseFile, null=True, blank=True)
+    casefile_f = models.ForeignKey(
+        CaseFile, null=True, blank=True,
+        verbose_name='Case File',
+    )
     index = models.IntegerField(max_length=1, choices=INDEXES, null=True, blank=True)
     pathology = models.TextField(null=True, blank=True)
     progression = models.CharField(max_length=250, null=True, blank=True)
@@ -244,7 +247,7 @@ class CaseReport(CRDBBase):
 
 
 class Treatment(CRDBBase):
-    casereport_f = models.ForeignKey(CaseReport)
+    casereport_f = models.ForeignKey(CaseReport, verbose_name='Case Report')
     name = models.CharField(max_length=250)
     treatment_type = models.CharField(max_length=250)
     duration = models.CharField(max_length=250, null=True, blank=True)
@@ -260,7 +263,7 @@ class Treatment(CRDBBase):
 
 
 class Event(CRDBBase):
-    casereport_f = models.ForeignKey(CaseReport)
+    casereport_f = models.ForeignKey(CaseReport, verbose_name='Case Report')
     parent_event = models.ForeignKey('self', null=True, blank=True, related_name="parentevent")
     name =  models.CharField(max_length=255)
     frequency = models.IntegerField(null=True, blank=True)
