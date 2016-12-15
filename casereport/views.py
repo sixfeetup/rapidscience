@@ -5,6 +5,7 @@ from captcha.models import CaptchaStore
 from django.conf import settings
 from django.core import management
 from django.shortcuts import render_to_response
+from django.template.context import RequestContext
 from django.template.loader import render_to_string
 from casereport.constants import COUNTRIES
 from haystack.query import SearchQuerySet
@@ -288,7 +289,10 @@ class MyFacetedSearchView(FacetedSearchView):
 
         context['captchaform'] = captchaform
         context['countries'] = COUNTRIES
-        return render_to_response(self.template, context, context_instance=self.context_class(self.request))
+        return render_to_response(
+            self.template, context,
+            context_instance=RequestContext(self.request),
+        )
 
 
 
