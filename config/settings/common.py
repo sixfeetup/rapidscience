@@ -135,7 +135,6 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             str(APPS_DIR.path('templates', SITE_PREFIX)),
-            str(ROOT_DIR.path('casereports', 'templates')),
             str(APPS_DIR.path('templates')),
         ],
         'APP_DIRS': True,
