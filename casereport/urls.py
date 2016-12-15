@@ -12,7 +12,7 @@ from .views import reindexsolr
 
 __author__ = 'yaseen'
 
-urlpatterns = patterns(
+urlpatterns = [
     '',
     url(
         r'^results/$',
@@ -31,4 +31,4 @@ urlpatterns = patterns(
         r'^edit/(?P<case_id>[0-9]*)/(?P<token>.*)/$',
         CaseReportEditView.as_view(),
     ),
-)
+]
