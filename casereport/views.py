@@ -45,7 +45,7 @@ class CaseReportDetailView(TemplateView):
 
     def get(self, request, case_id, **kwargs):
         casereport = CaseReport.objects.get(id=case_id)
-        treatments = Treatment.objects.filter(casereport_id=case_id)
+        treatments = Treatment.objects.filter(casereport_f_id=case_id)
         testevents = casereport.event_set.select_related('testevent')
         if casereport.casefile_f:
             return self.render_to_response(dict(casereport=casereport,
