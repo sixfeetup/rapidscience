@@ -7,13 +7,14 @@ from .views import CaseReportEditView
 from .views import CaseReportFormView
 from .views import downloadfile
 from .views import FormTypeView
+from .views import MyFacetedSearchView
 from .views import reindexsolr
 
 
 __author__ = 'yaseen'
 
 urlpatterns = [
-    '',
+    url(r'^$', MyFacetedSearchView(), name='haystac'),
     url(
         r'^results/$',
         TemplateView.as_view(template_name="search_results.html"),
