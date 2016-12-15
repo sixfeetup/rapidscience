@@ -41,7 +41,7 @@ __author__ = 'yaseen'
 
 
 class CaseReportDetailView(TemplateView):
-    template_name = 'search_results.html'
+    template_name = 'casereport/search_results.html'
 
     def get(self, request, case_id, **kwargs):
         casereport = CaseReport.objects.get(id=case_id)
@@ -55,7 +55,7 @@ class CaseReportDetailView(TemplateView):
         return self.render_to_response(dict(casereport=casereport, test=testevents,treatments=treatments))
 
 class CaseReportFormView(FormView):
-    template_name = 'new_add_casereport.html'
+    template_name = 'casereport/new_add_casereport.html'
     form_class = CaptchaForm
     def get(self, request, *args, **kwargs):
         captchaform = self.form_class()
@@ -154,7 +154,7 @@ class CaseReportFormView(FormView):
             case = CaseReportListResource()._post(physicians=physicians,age=age,gender=gender, sarcoma_type=sarcoma, other_sarcoma=other_sarcoma, details=details)
             CaseReportInstanceResource()._addauthor(case, author_list)
 
-        self.template_name = 'add_casereport_success.html'
+        self.template_name = 'casereport/add_casereport_success.html'
         self.case_success_mail(physicians, author_list)
         return self.render_to_response({})
 
@@ -164,7 +164,7 @@ class CaseReportFormView(FormView):
         authorized_recipient = []
         for i in author_list:
             authorized_recipient.append(str(i))
-        message = render_to_string('case_submit_email.html', {'name': recipient.get_name(),
+        message = render_to_string('casereport/case_submit_email.html', {'name': recipient.get_name(),
                                                               'DOMAIN': settings.CRDB_DOMAIN})
         msg = EmailMessage(settings.CASE_SUBMIT, message, settings.CRDB_SERVER_EMAIL, [recipient.email],
                            headers=Headers, cc=authorized_recipient, bcc=settings.CRDB_BCC_LIST)
@@ -196,16 +196,16 @@ class AutoCompleteView(FormView):
 
 
 class FormTypeView(TemplateView):
-    template_name = 'manualform.html'
+    template_name = 'casereport/manualform.html'
 
     def get(self, request, **kwargs):
         ftype = request.GET.get('ftype', '')
         sarcoma = sorted(SARCOMA_TYPE)
         if ftype == 'F':
-            self.template_name = 'fileform.html'
+            self.template_name = 'casereport/fileform.html'
         elif ftype == "T":
 
-            self.template_name = 'free-text.html'
+            self.template_name = 'casereport/free-text.html'
             return self.render_to_response(dict(sarcoma=sarcoma))
         return self.render_to_response(dict(sarcoma=sarcoma))
 
@@ -226,9 +226,9 @@ class MyFacetedSearchView(FacetedSearchView):
 
     def __call__(self, request):
         if request.is_ajax():
-            self.template = 'search/results.html'
+            self.template = 'casereport/search/results.html'
         else:
-            self.template = 'search/search.html'
+            self.template = 'casereport/search/search.html'
         return super(MyFacetedSearchView, self).__call__(request)
 
     def get_results(self):
@@ -341,7 +341,7 @@ def downloadfile(request, file_id):
 
 
 class CaseReportEditView(TemplateView):
-    template_name = 'case_edit.html'
+    template_name = 'casereport/case_edit.html'
 
     @method_decorator(validate_token)
     @method_decorator(csrf_exempt)
@@ -382,7 +382,7 @@ class CaseReportEditView(TemplateView):
                             tests=tests, treatments=treatments, diagnosis=diagnosis,
                             molecular_abberations=molecular_abberations)
             context = {'message': settings.EDITED_MESSAGE, 'back_link_label': None, 'back_link': None }
-        message = render_to_string('message.html', context)
+        message = render_to_string('casereport/message.html', context)
         return HttpResponse(json.dumps({'message': message.encode('utf-8')}), content_type='application/json')
 
 
