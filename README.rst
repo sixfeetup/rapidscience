@@ -34,7 +34,7 @@ If you are starting with an empty database::
     mkdir log
     touch log/rlp.log
     createuser web
-    createdb chci # (or sobc)
+    createdb -O web chci # (or sobc)
     ./manage.py migrate
 
 Load some initial data::
