@@ -92,11 +92,11 @@ class CaseReport(CRDBBase):
     gender = models.CharField(max_length=20, choices=GENDER, null=True, blank=True)
     age = models.IntegerField(null=True, blank=True)
     primary_physician = models.ForeignKey(Physician, related_name='primary_case')
-    referring_physician = models.ManyToManyField(Physician, null=True, blank=True)
-    authorized_reps = models.ManyToManyField(AuthorizedRep, null=True, blank=True)
+    referring_physician = models.ManyToManyField(Physician, blank=True)
+    authorized_reps = models.ManyToManyField(AuthorizedRep, blank=True)
     sarcoma_type = models.CharField(max_length=100, choices=sorted(SARCOMA_TYPE),null=True, blank=True)
     other_sarcoma_type = models.CharField(max_length=200, null=True, blank=True)
-    molecular_abberations = models.ManyToManyField(MolecularAbberation, null=True, blank=True)
+    molecular_abberations = models.ManyToManyField(MolecularAbberation, blank=True)
     history = models.TextField(null=True, blank=True)
     precision_treatment = models.TextField(null=True, blank=True)
     specimen_analyzed = models.TextField(null=True, blank=True)
@@ -107,7 +107,7 @@ class CaseReport(CRDBBase):
         CaseFile, null=True, blank=True,
         verbose_name='Case File',
     )
-    index = models.IntegerField(max_length=1, choices=INDEXES, null=True, blank=True)
+    index = models.IntegerField(choices=INDEXES, null=True, blank=True)
     pathology = models.TextField(null=True, blank=True)
     progression = models.CharField(max_length=250, null=True, blank=True)
     response = models.CharField(max_length=2, choices=OBJECTIVE_RESPONSES, null=True, blank=True)
@@ -256,7 +256,7 @@ class Treatment(CRDBBase):
     dose = models.CharField(max_length=250, null=True, blank=True)
     objective_response = models.CharField(max_length=2, choices=OBJECTIVE_RESPONSES, null=True, blank=True)
     tumor_size = models.CharField(max_length=50, null=True, blank=True)
-    status = models.IntegerField(max_length=1, choices=PERFORMANCE_STATUS, null=True, blank=True)
+    status = models.IntegerField(choices=PERFORMANCE_STATUS, null=True, blank=True)
     treatment_outcome = models.TextField(null=True, blank=True)
     notes = models.TextField(null=True, blank=True)
 
