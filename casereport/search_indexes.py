@@ -73,14 +73,14 @@ class CaseReportIndex(indexes.SearchIndex, indexes.Indexable):
 
     def prepare_treatments(self, obj):
         events = obj.event_set.filter(event_type='treatment')
-        treatments = [i.name.strip().capitalize() for i in events]
-        treatments = list(set(treatments))
+        treatments = {i.name.strip().capitalize() for i in events}
+        treatments = list(treatments)
         return treatments
 
     def prepare_cr_tests(self, obj):
         events = obj.event_set.filter(event_type='test')
-        tests = [i.name.strip().capitalize() for i in events]
-        tests = list(set(tests))
+        tests = {i.name.strip().capitalize() for i in events}
+        tests = list(tests)
         return tests
 
     def get_synonyms(self, obj):
@@ -107,16 +107,16 @@ class CaseReportIndex(indexes.SearchIndex, indexes.Indexable):
             terms.append(digo.name)
             terms.append(digo.specimen)
             terms.append(digo.body_part)
-        terms = [_f for _f in terms if _f]
-        terms = list(set(terms))
+        terms = {_f for _f in terms if _f}
+        terms = list(terms)
         term_string = ','.join(terms).encode('utf-8')
         synonyms = get_all_synonyms(terms=term_string)
         return synonyms
 
     def prepare_treatment_type(self, obj):
         treatments = TreatmentEvent.objects.filter(casereport_f=obj)
-        types = [i.treatment_type.strip().capitalize() for i in treatments]
-        types = list(set(types))
+        types = {i.treatment_type.strip().capitalize() for i in treatments}
+        types = list(types)
         return types
 
     def get_outcomes(self, obj):

@@ -43,15 +43,15 @@ def format_results(data):
 
 def get_all_synonyms(terms):
     cui_list = []
-    synonyms = []
+    synonyms = set()
     data = havoc_results(api='concepts_bulk', term=terms)
     for term in data:
         if term.get('cui') not in cui_list:
             cui_list.append(term.get('cui'))
     for cui in cui_list:
         synons = havoc_results(api='synonyms', term=cui)
-        synonyms.extend(synons)
-    synonyms = list(set(synonyms))
+        synonyms.add(synons)
+    synonyms = list(synonyms)
     return synonyms
 
 
