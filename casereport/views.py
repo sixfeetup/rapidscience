@@ -383,7 +383,7 @@ class CaseReportEditView(TemplateView):
                             molecular_abberations=molecular_abberations)
             context = {'message': settings.EDITED_MESSAGE, 'back_link_label': None, 'back_link': None }
         message = render_to_string('casereport/message.html', context)
-        return HttpResponse(json.dumps({'message': message.encode('utf-8')}), content_type='application/json')
+        return HttpResponse(json.dumps({'message': message}), content_type='application/json')
 
 
 

@@ -37,7 +37,7 @@ class SearchView(BaseSearchView):
         # Override to actually add functionality
         get_request = self.request.GET.dict()
         utf8_get_dict = {
-            key: str(val).encode('utf-8')
+            key: str(val)
             for key, val in get_request.items()
         }
         utf8_get_dict.pop('page', '')

@@ -109,7 +109,7 @@ class CaseReportIndex(indexes.SearchIndex, indexes.Indexable):
             terms.append(digo.body_part)
         terms = {_f for _f in terms if _f}
         terms = list(terms)
-        term_string = ','.join(terms).encode('utf-8')
+        term_string = ','.join(terms)
         synonyms = get_all_synonyms(terms=term_string)
         return synonyms
 
