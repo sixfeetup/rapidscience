@@ -11,14 +11,14 @@ from .models import Project, Topic
 
 
 class ProjectMenu(CMSAttachMenu):
-    name = "Project Menu"
+    name = "Group Menu"
 
     def get_nodes(self, request):
         nodes = []
         menu_id = 1000
         page = _get_page_by_untyped_arg('project-landing', request, settings.SITE_ID)
         nodes.append(NavigationNode(
-            'Projects Overview',
+            'Groups Overview',
             page.get_absolute_url(),
             page.id
         ))
