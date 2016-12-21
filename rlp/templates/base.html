@@ -59,8 +59,6 @@
             </ul>
             <ul class="nav navbar-nav navbar-secondary">
                 {% if request.user.is_authenticated %}
-                    <li><a href="{% url 'dashboard' %}">{{ request.user.first_name }}</a></li>
-                    <li><a href="javascript:void(0)" class="no-side-padding">|</a></li>
                     <li><a href="{% url 'logout' %}">Sign out</a></li>
                 {% else %}
                     <li><a href="{% url 'login' %}">Sign in</a></li>
