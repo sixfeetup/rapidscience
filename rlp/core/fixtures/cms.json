@@ -224,7 +224,7 @@
       "changed_by": "anonymous",
       "in_navigation": true,
       "numchild": 0,
-      "limit_visibility_in_menu": null,
+      "limit_visibility_in_menu": 1,
       "publisher_is_draft": true,
       "login_required": true
     },
@@ -257,7 +257,7 @@
       "changed_by": "anonymous",
       "in_navigation": true,
       "numchild": 0,
-      "limit_visibility_in_menu": null,
+      "limit_visibility_in_menu": 1,
       "publisher_is_draft": false,
       "login_required": true
     },
@@ -290,7 +290,7 @@
       "changed_by": "anonymous",
       "in_navigation": true,
       "numchild": 0,
-      "limit_visibility_in_menu": null,
+      "limit_visibility_in_menu": 1,
       "publisher_is_draft": true,
       "login_required": true
     },
@@ -323,7 +323,7 @@
       "changed_by": "anonymous",
       "in_navigation": true,
       "numchild": 0,
-      "limit_visibility_in_menu": null,
+      "limit_visibility_in_menu": 1,
       "publisher_is_draft": false,
       "login_required": true
     },
@@ -356,7 +356,7 @@
       "changed_by": "anonymous",
       "in_navigation": true,
       "numchild": 0,
-      "limit_visibility_in_menu": null,
+      "limit_visibility_in_menu": 1,
       "publisher_is_draft": true,
       "login_required": true
     },
@@ -389,7 +389,7 @@
       "changed_by": "anonymous",
       "in_navigation": true,
       "numchild": 0,
-      "limit_visibility_in_menu": null,
+      "limit_visibility_in_menu": 1,
       "publisher_is_draft": false,
       "login_required": true
     },
