@@ -41,6 +41,7 @@ Load some initial data::
 
     ./manage.py loaddata contenttypes_contenttype.json
     ./manage.py loaddata auth_permissions.json
+    ./manage.py loaddata cms.json
 
 Now you should be able to successfully::
 
