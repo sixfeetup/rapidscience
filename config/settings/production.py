@@ -1,4 +1,4 @@
-from .settings_base import *
+from .common import *
 
 SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_HTTPONLY = True
