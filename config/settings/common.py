@@ -106,7 +106,6 @@ INSTALLED_APPS = (
     'inplaceeditform_bootstrap',
     'inplaceeditform',
     'inplaceeditform_extra_fields',
-    'bootstrap3_datetime',
 )
 
 MIDDLEWARE_CLASSES = (
