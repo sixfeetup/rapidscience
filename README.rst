@@ -11,7 +11,7 @@ First, set up your virtualenv (assumes you have Python 3.4+ installed and that y
     virtualenv -p python3 env
     source env/bin/activate
     pip install -U pip setuptools
-    pip install -r requirements-dev.txt
+    pip install -r requirements/local.txt
 
 If you see SSL errors from `biopython` and `psycopg2`, and you have OpenSSL installed via Homebrew, you might need to set these variables during installation::
 
@@ -23,7 +23,7 @@ If you are using `pyenv` (preferred)::
     pyenv virtualenv 3.5.2 rlp
     pyenv activate rlp
     pip install -U pip setuptools
-    pip install -r requirements-dev.txt
+    pip install -r requirements/local.txt
 
 Copy the example environment file::
 
