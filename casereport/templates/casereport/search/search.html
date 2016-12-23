@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-{% load mytags %}
+{% load mytags menu_tags %}
 {% load inplace_edit %}
 
 <html>
@@ -31,7 +31,35 @@
         <script src="{{STATIC_URL}}js/manual_form.js" ></script>
     </head>
     <body id="search-body">
-<div class="header-img"><img src="{{STATIC_URL}}images/headerlogo.png"> </div>
+        <div class="navbar-collapse collapse navbar-right">
+            <ul class="nav navbar-nav">
+                {% show_menu 0 3 100 100 "menu.html" %}
+            </ul>
+            <ul class="nav navbar-nav navbar-secondary">
+                {% if request.user.is_authenticated %}
+                    <li><a href="{% url 'logout' %}">Sign out</a></li>
+                {% else %}
+                    <li><a href="{% url 'login' %}">Sign in</a></li>
+                    <li><a href="javascript:void(0)" class="no-side-padding">|</a></li>
+                    <li><a href="{% url 'register' %}">Register</a></li>
+                {% endif %}
+                <li class="navbar-secondary">
+                    <a class="search-icon" href="#search-form" data-toggle="collapse">
+                        <i class="glyphicon glyphicon-search invert-horizontal"></i>
+                    </a>
+                    <div id="search-form" class="collapse">
+                        <form class="clearfix" action="{% url 'haystack_search' %}" method="get">
+                          <label for="search" class="sr-only">Search: </label>
+                          <input class="form-control" type="text" name="q" placeholder="Search">
+                          <button class="btn btn-primary" type="submit">
+                            Search
+                          </button>
+                      </form>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
         <div class="container">
             {% block container %}
                 <div class="logo-img"><img src="{{STATIC_URL}}images/logo.png"> </div>
