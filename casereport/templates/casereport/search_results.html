@@ -13,7 +13,7 @@
     {% if request.META.HTTP_REFERER %}
     <a href="{{request.META.HTTP_REFERER}}">Return To Search Results</a>
         {% else %}
-        <a href="/">Return To Search Case Reports</a>
+        <a href="{% url 'haystac' %}">Return To Search Case Reports</a>
     {% endif %}
 </div>
 
