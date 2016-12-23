@@ -130,7 +130,7 @@ class CaseReport(CRDBBase):
         subject = settings.NEW_CASE
         if self.status == CASE_STATUS['E']:
             subject = settings.EDITED
-        message_body = render_to_string('admin_notify.html', {'title': self.title,
+        message_body = render_to_string('casereport/admin_notify.html', {'title': self.title,
                                                               'status': self.status,
                                                               'name': self.primary_physician.name})
         recipient_members = settings.DATA_SCIENCE_TEAM
@@ -149,7 +149,7 @@ class CaseReport(CRDBBase):
         if self.status == CASE_STATUS['R'] and not history_obj:
             for recipient in recipients:
                 if recipient.email:
-                    message = render_to_string('email_to_authorized.html',
+                    message = render_to_string('casereport/email_to_authorized.html',
                                                {'id': self.id,
                                                 'title': self.title,
                                                 'name': recipient.get_name(),
@@ -172,7 +172,7 @@ class CaseReport(CRDBBase):
         authorized_emails = []
         for entry in recipients:
             authorized_emails.append(str(entry))
-        message = render_to_string('email_to_physician.html',
+        message = render_to_string('casereport/email_to_physician.html',
                                    {'id': self.id,
                                     'title': self.title,
                                     'name': primary_recipient.get_name(),
