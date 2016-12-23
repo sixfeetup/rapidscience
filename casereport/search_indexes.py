@@ -47,7 +47,7 @@ class CaseReportIndex(indexes.SearchIndex, indexes.Indexable):
         test_names = self.prepare_cr_tests(obj)
         treatment_names = self.prepare_treatments(obj)
         searchstring = render_to_string(
-            'search/indexes/casereport/casereport_text.txt',
+            'casereport/search/indexes/casereport/casereport_text.txt',
             {'object': obj,
              'synonyms': synonyms,
              'outcomes': outcomes,
@@ -127,7 +127,7 @@ class CaseReportIndex(indexes.SearchIndex, indexes.Indexable):
         return outcomes
 
     def get_results(self, obj):
-        events = ResultValueEvent.objects.filter(test__casereport=obj)
+        events = ResultValueEvent.objects.filter(test__casereport_f=obj)
         results = []
         for e in events:
             results.append(e.value)

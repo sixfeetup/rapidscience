@@ -50,7 +50,7 @@ def get_all_synonyms(terms):
             cui_list.append(term.get('cui'))
     for cui in cui_list:
         synons = havoc_results(api='synonyms', term=cui)
-        synonyms.add(synons)
+        synonyms.update(set(synons))
     synonyms = list(synonyms)
     return synonyms
 
