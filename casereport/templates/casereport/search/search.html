@@ -14,6 +14,8 @@
         <link rel="stylesheet" href="{{STATIC_URL}}css/jquery-ui.css" />
         <link rel="stylesheet" href="{{STATIC_URL}}css/select2.min.css" />
         <link href='https://fonts.googleapis.com/css?family=News+Cycle' rel='stylesheet' type='text/css'>
+{% endblock canonical %}
+{% block js-footer %}
         <script src="{{STATIC_URL}}js/jquery-1.11.3.min.js"></script>
         {% inplace_static %}
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
@@ -22,7 +24,7 @@
         <script src="{{STATIC_URL}}js/select2.min.js"></script>
         <script src="{{STATIC_URL}}js/jquery-ui.min.js"></script>
         <script src="{{STATIC_URL}}js/manual_form.js" ></script>
-{% endblock canonical %}
+{% endblock js-footer %}
 
 {% block content %}
         <div class="container">
