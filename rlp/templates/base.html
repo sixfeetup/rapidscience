@@ -104,25 +104,26 @@
 {% endif %}
 
 {% block js-footer %}
-    {% if not request.user.is_staff %}
-        <script>
-            var MEDIA_URL = "{{ MEDIA_URL }}";
-            var STATIC_URL = "{{ STATIC_URL }}";
-        </script>
-    {% endif %}
-    {% compress js %}
-        <script src="{% static 'js/vendor/image-scale.min.js' %}"></script>
-        <script src="{% static 'js/plugins.js' %}"></script>
-        <script src="{% static 'js/analytics.js' %}"></script>
-        <script src="{% static 'js/vendor/bootstrap.js' %}"></script>
-        <script src="{% static 'js/vendor/jasny-bootstrap.js' %}"></script>
-        <script src="{% static 'el-pagination/js/el-pagination.js' %}"></script>
-        <script src="{% static 'js/main.js' %}"></script>
-        <script>$.endlessPaginate({paginateOnScroll: true, onCompleted: function(context, fragment) {show_more();remaining_characters();}});</script>
-        {% block js-compress-inline %}
-        {% endblock %}
-    {% endcompress %}
 {% endblock js-footer %}
+
+{% if not request.user.is_staff %}
+    <script>
+        var MEDIA_URL = "{{ MEDIA_URL }}";
+        var STATIC_URL = "{{ STATIC_URL }}";
+    </script>
+{% endif %}
+{% compress js %}
+    <script src="{% static 'js/vendor/image-scale.min.js' %}"></script>
+    <script src="{% static 'js/plugins.js' %}"></script>
+    <script src="{% static 'js/analytics.js' %}"></script>
+    <script src="{% static 'js/vendor/bootstrap.js' %}"></script>
+    <script src="{% static 'js/vendor/jasny-bootstrap.js' %}"></script>
+    <script src="{% static 'el-pagination/js/el-pagination.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script>$.endlessPaginate({paginateOnScroll: true, onCompleted: function(context, fragment) {show_more();remaining_characters();}});</script>
+    {% block js-compress-inline %}
+    {% endblock %}
+{% endcompress %}
 
 {% render_block 'js' %}
 
