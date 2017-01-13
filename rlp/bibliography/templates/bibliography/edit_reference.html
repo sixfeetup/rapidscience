@@ -5,6 +5,7 @@
 
   {% include 'bibliography/_reference.html' with obj=instance.reference %}
 
+{% if form %}
 <form method="post" action="">
   {% csrf_token %}
   {% bootstrap_form form %}
@@ -15,4 +16,5 @@
     Cancel
   </a>
 </form>
+{% endif %}
 {% endblock project_bibliography %}

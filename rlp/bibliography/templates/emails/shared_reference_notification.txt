@@ -1,5 +1,5 @@
-{{ share.user.get_full_name }} has shared a reference with you: https://{{ site.domain }}{{ share.reference.projectreference_set.first.get_absolute_url }}
+{{ share.user.get_full_name }} has shared a reference with you.
 
+"{{ share.comment }}"
 
-
-{% include 'bibliography/_reference.html' with obj=share.reference %}
+{% include 'bibliography/_reference.txt' with obj=share.reference %}

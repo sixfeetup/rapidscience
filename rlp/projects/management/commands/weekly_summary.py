@@ -29,10 +29,12 @@ class Command(BaseCommand):
         site = Site.objects.get_current()
         some_day_last_week = timezone.now().date() - timedelta(days=7)
         year, week, day = some_day_last_week.isocalendar()
+        # Exclude shared references since this doesn't make sense to show to the full audience
+        shared_ref_ct = ContentType.objects.get(app_label='bibliography', model='referenceshare')
         activity_stream = Action.objects.filter(
             timestamp__isoyear=year,
             timestamp__week=week
-        )
+        ).exclude(action_object_content_type=shared_ref_ct)
         # Bail early if there wasn't any activity last week
         if not activity_stream.count():
             return

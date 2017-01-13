@@ -1,0 +1,8 @@
+{{ user.get_full_name }} ({{ user.email }}) is now approved to join the {{ site_prefix }} Research Network as part of the project, {{ project.title }}.
+
+If this member was approved in error, please email <a href="mailto:info@rapidscience.org">info@rapidscience.org</a> as soon as possible.
+
+
+Warm regards,
+
+The Rapid Science team

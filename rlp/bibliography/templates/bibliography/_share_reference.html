@@ -1,14 +1,14 @@
 {% load bootstrap3 bibliography_tags %}
 
 <div class="share-widget">
-  <form class="share-button"  method="post">{% csrf_token %}
-    <button type="button" data-toggle="modal" data-target="#modal-{{ action.id }}">
+  <form class="share-button" method="post">{% csrf_token %}
+    <button type="button" data-toggle="modal" data-target="#modal-share-{{ action.id }}" title="Share">
       <i class="fa fa-share" aria-hidden="true"></i>
     </button>
   </form>
 </div>
 
-<div class="modal fade" id="modal-{{ action.id }}" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
+<div class="modal fade" id="modal-share-{{ action.id }}" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">

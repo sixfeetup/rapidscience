@@ -5,12 +5,14 @@ import requests
 
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
+from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import Q
 
 from Bio import Entrez
 from taggit.managers import TaggableManager
+from taggit.models import Tag
 
 from rlp.accounts.models import User
 from . import choices
@@ -54,7 +56,11 @@ class Reference(models.Model):
             return self.parsed_data['upload_url']
         # Should be safe to assume this is a user-generated reference and that this lives under exactly one project.
         # Fetch the ProjectReference for this Reference and use its get_absolute_url()
-        return self.projectreference_set.first().get_absolute_url()
+        # Add the domain since this url may be used in email templates when shared.
+        return 'https://{}{}'.format(
+            Site.objects.get_current().domain,
+            self.projectreference_set.first().get_absolute_url()
+        )
 
 
 class ReferenceShare(models.Model):
@@ -89,6 +95,9 @@ class ProjectReference(models.Model):
         })
 
     def get_edit_url(self):
+        # Don't provide an edit url for Pubmed/Crossref if there aren't any tags to add (there's nothing else to edit)
+        if self.reference.source != choices.MEMBER and not Tag.objects.count():
+            return
         return reverse('projects:reference_edit', kwargs={
             'pk': self.project.pk,
             'slug': self.project.slug,

@@ -1,23 +1,101 @@
+<div class="bookmarks-tab-header">
+  <a class="link-create-folder" href="#"><i class="fa fa-folder" aria-hidden="true"></i> Create folder</a>
+  <p>All bookmarks</p>
+  <form action="#" class="contaier-fluid" id="bookmarks-tab-add-folder-form">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="status-message"></div>
+      </div>
+      <div class="col-xs-9">
+        <input class="form-control" id="id_folder_title" maxlength="50"
+               name="foldername" type="text" placeholder="Title for new bookmarks folder"
+               data-url-folder-add="{% url 'bookmark_folder_add'%}">
+      </div>
+      <div class="col-xs-3">
+        <button type="submit" class="btn btn-primary btn-add-new-folder">Add new folder</button>
+      </div>
+      {% csrf_token %}
+    </div>
+  </form>
+</div>
+
 <table class="table">
   <thead>
     <tr>
-      <th>Name</th>
-      <th>Added</th>
+      <th class="col-bookmarks">Name</th>
+      <th class="col-date">Added</th>
+      <th class="col-actions">Action</th>
     </tr>
   </thead>
   <tbody>
+    {% for folder in bookmarks_folders %}
+        <tr>
+          <td colspan="3" class="col-bookmarks">
+            <a class="btn btn-primary btn-bookmarks-folder" data-toggle="collapse" href="#collapse_{{ folder.pk }}" aria-expanded="false" aria-controls="collapse_{{ folder.pk }}">
+              <i class="fa fa-folder"></i> {{ folder.name }}
+            </a>
+            <div class="collapse" id="collapse_{{ folder.pk }}">
+              <ul class="bookmarks-folder-items-list">
+                {# TODO  #}
+                {% for bookmark in folder.bookmark_set.all %}
+                  <li class="bookmarks-single-item">
+                    <div class="col-actions">
+                      <a href="#" class="action-edit" title="Edit bookmark"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+                      <a href="#" class="action-remove" title="Remove bookmark" data-url-bookmark-delete="{% url 'bookmark_delete' bookmark.pk %}"><i class="fa fa-times" aria-hidden="true"></i></a>
+                    </div>
+                    <div class="status-message"></div>
+                    <a href="{{ bookmark.content_object.get_absolute_url }}">
+                       <i class="fa fa-file-text-o" aria-hidden="true"></i> {{ bookmark }}
+                    </a>
+                    <p class="small">
+                      {% include 'actstream/_action_detail.html' with action=bookmark.content_object.action_object_actions.first %}
+                    </p>
+                    <span class="bookmark-added-date">Bookmark added: {{ bookmark.date_added|date:"M j, Y" }}</span>
+                    <form action="#" class="bookmark-edit-form">
+                      <div class="bookmark-edit-form-wrapper">
+                        <input name="bookmarkname" class="form-control" type="text" maxlength="50" value="{{ bookmark }}"
+                               data-folderid="{{ bookmark.folder.pk }}"
+                               data-url-bookmark-update="{% url 'bookmark_update' bookmark.pk %}"/>
+                        <button type="submit" class="btn btn-primary btn-edit-bookmark-title">Save</button>
+                      </div>
+                    </form>
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+          </td>
+        </tr>
+    {% endfor %}
+
     {% for bookmark in bookmarks %}
-    <tr>
-      <td>
-        <a href="{{ bookmark.content_object.get_absolute_url }}">
-          {{ bookmark }}
-        </a>
-        <p class="small">
-          {% include 'actstream/_action_detail.html' with action=bookmark.content_object.action_object_actions.first %}
-        </p>
-      </td>
-      <td>{{ bookmark.date_added|date:"M j, Y" }}</td>
-    </tr>
+        <tr class="bookmarks-single-item">
+          <td class="col-bookmarks">
+            <div class="status-message"></div>
+            <a href="{{ bookmark.content_object.get_absolute_url }}">
+              <i class="fa fa-file-text-o" aria-hidden="true"></i>
+              {{ bookmark }}
+            </a>
+            <p class="small">
+              {% include 'actstream/_action_detail.html' with action=bookmark.content_object.action_object_actions.first %}
+            </p>
+            <form action="#" class="bookmark-edit-form">
+              <div class="bookmark-edit-form-wrapper">
+                <input name="bookmarkname" class="form-control" type="text" maxlength="50"
+                       value="{{ bookmark }}"
+                       data-folderid="{{ bookmark.folder.pk }}"
+                       data-url-bookmark-update="{% url 'bookmark_update' bookmark.pk %}"/>
+                <button type="submit" class="btn btn-primary btn-edit-bookmark-title">Save</button>
+              </div>
+            </form>
+          </td>
+          <td class="col-date">{{ bookmark.date_added|date:"M j, Y" }}</td>
+          <td class="col-actions">
+            <a href="#" class="action-edit" title="Edit bookmark"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+            <a href="#" class="action-remove" title="Remove bookmark" data-url-bookmark-delete="{% url 'bookmark_delete' bookmark.pk %}">
+                <i class="fa fa-times" aria-hidden="true"></i>
+            </a>
+          </td>
+        </tr>
     {% endfor %}
   </tbody>
 </table>

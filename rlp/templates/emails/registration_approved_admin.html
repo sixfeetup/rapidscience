@@ -1,0 +1,11 @@
+{% extends 'emails/base_email.html' %}{% load cms_tags %}
+
+{% block content %}
+{{ user.get_full_name }} ({{ user.email }}) is now approved to join the {{ site_prefix }} Research Network as part of the project, {{ project.title }}.<br><br>
+
+If this member was approved in error, please email <a href="mailto:info@rapidscience.org">info@rapidscience.org</a> as soon as possible.<br><br>
+
+Warm regards,<br><br>
+
+The Rapid Science team<br><br>
+{% endblock content %}

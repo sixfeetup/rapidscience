@@ -2,7 +2,7 @@
 {% has_bookmark_permission action as can_bookmark %}
 <div class="bookmark-widget">
   {% if can_bookmark %}
-    <form class="bookmark" action="{% url 'bookmarks_add' action_pk=action.id %}" method="post">{% csrf_token %}
+    <form class="bookmark" action="{% url 'bookmark_add' action_pk=action.id %}" method="post">{% csrf_token %}
       <button type="submit">
         <i class="fa fa-bookmark" aria-hidden="true"></i>
       </button>

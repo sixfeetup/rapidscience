@@ -5,8 +5,21 @@ from django.db import models
 from rlp.accounts.models import User
 
 
+class Folder(models.Model):
+    name = models.CharField(max_length=50)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ['name']
+        unique_together = ['name', 'user']
+
+    def __str__(self):
+        return self.name
+
+
 class Bookmark(models.Model):
     name = models.CharField(max_length=50, blank=True)
+    folder = models.ForeignKey(Folder, null=True, blank=True, on_delete=models.PROTECT)
     content_type = models.ForeignKey(ContentType,
                                      verbose_name='content type',
                                      related_name="content_type_set_for_%(class)s",
@@ -27,6 +40,6 @@ class Bookmark(models.Model):
         else:
             name = str(self.content_object)
         if len(name) > 50:
-            return '{}...'.format(name[:50])
+            return '{}...'.format(name[:45])
         return name
 

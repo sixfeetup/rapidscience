@@ -1,3 +1,4 @@
+@import 'bootstrap/variables';
 @import 'mixins';
 
 .contain-img {
@@ -19,66 +20,60 @@
 
 .nav-tabs {
     display: flex;
-}
-
-.nav-tabs > li {
-    margin-bottom: 7px;
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
-    flex-grow: 1;
-}
-
-.nav-tabs > li.active {
-    margin-bottom: 0;
-    box-shadow: none;
-}
-
-.nav-tabs > li.active a {
-    height: 50px;
-    color: #000;
-    background: #fff;
-}
-
-.nav-tabs > li + li {
-    margin-left: 7px;
-}
-
-.nav-tabs > li > a {
-    background-color: white;
-    border: 1px solid #ddd;
-    margin-right: 0;
-    border-radius: 0;
-    color: #666;
-    height: 43px;
-}
-
-.nav-tabs > li > a:hover {
-    border: 1px solid #ddd;
-    background: white;
-    color: #1cb9ff;
-}
-
-.nav-tabs > li:first-child > a {
-    border-top-left-radius: 5px;
-}
-
-.nav-tabs > li:last-child > a {
-    border-top-right-radius: 5px;
-}
-
-.nav-tabs > li .count {
-    padding: 0 5px;
-    margin: 0 5px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #fff;
+    & > li {
+        flex-grow: 1;
+        a {
+            height: 43px;
+            margin-right: 0;
+            color: #666;
+            background-color: #f7f7f7;
+            border: 1px solid #ddd;
+            border-radius: 0;
+            &:hover {
+//                color: #1cb9ff;
+                color: #000;
+                background: #fff;
+                border: 1px solid #ddd;
+                border-bottom: 0;
+            }
+        }
+        .count {
+            padding: 0 5px;
+            margin: 0 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+    }
+    & > li.active {
+        position: relative;
+        top: 1px;
+        a {
+            color: #000;
+            background: #fff;
+//            border-color: #333;
+            border-bottom: 1px solid #fff;
+        }
+    }
+    & > li + li {
+        margin-left: 7px;
+    }
+    & > li:first-child > a {
+        border-top-left-radius: 5px;
+    }
+    & > li:last-child > a {
+        border-top-right-radius: 5px;
+    }
 }
 
 .tab-content {
-    background-color: white;
-    border: 1px solid #ddd;
-    border-top: none;
+//    position: relative;
+//    z-index: 10; // place it over the tabs
     padding: 30px 15px;
-    margin-top: -1px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-top: 1px solid #fff;
+    box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.15);
 }
 
 .institutions-header {
@@ -147,6 +142,275 @@
 }
 
 .refine-search ul {
-  list-style: none;
-  padding: 0;
+    list-style: none;
+    padding: 0;
+}
+
+// Bookmarks tab of account page
+
+#bookmarks {
+    .bookmarks-tab-header {
+        margin-bottom: 25px;
+        .link-create-folder {
+            float: right;
+            &:hover {
+                text-decoration: none;
+                color: #000;
+            }
+            i {
+                margin-right: 3px;
+                font-size: 20px;
+                vertical-align: middle;
+            }
+        }
+        #bookmarks-tab-add-folder-form {
+            display: none;
+            input,
+            button {
+                width: 100%;
+            }
+            .close {
+                width: auto;
+            }
+        }
+    }
+    .table {
+        & > thead > tr > th {
+            padding: 15px 15px 15px 0;
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+        }
+        & > tbody > tr > td {
+            padding: 15px 15px 15px 0;
+            vertical-align: top;
+        }
+        i {
+            font-size: 25px;
+            vertical-align: middle;
+            color: $gray-dark;
+        }
+        .col-bookmarks {
+            i {
+                margin-right: 10px;
+            }
+        }
+        .col-owner,
+        .col-date {
+            text-align: center;
+        }
+        td.col-owner,
+        td.col-date {
+            font-size: 90%;
+        }
+        .col-actions {
+            text-align: center;
+            a {
+                margin: 0 2px;
+                i {
+                    color: $link-color;
+                }
+                &:hover {
+                    i {
+                        color: #000;
+                    }
+                }
+            }
+        }
+        a {
+            &:hover {
+                text-decoration: none;
+            }
+        }
+    }
+    .btn-bookmarks-folder {
+        display: block;
+        padding: 0;
+        color: $link-color;
+        text-align: left;
+        background-color: transparent;
+        border: 0;
+        &:hover {
+            color: $gray-base;
+        }
+        &:active {
+            box-shadow: none;
+        }
+        i {
+            margin-right: 10px;
+            font-size: 25px;
+            vertical-align: middle;
+            color: $gray-dark;
+        }
+    }
+    form.bookmark-edit-form {
+        .folder-save-message {
+            margin-left: 35px;
+        }
+        .bookmark-edit-form-wrapper {
+            display: none;
+            padding: 10px 0;
+        }
+        input {
+            display: inline-block;
+            width: 300px;
+            padding: 5px;
+            vertical-align: top;
+        }
+        .btn-edit-bookmark-title {
+            width: 60px;
+            vertical-align: top;
+        }
+    }
+    .bookmarks-folder-items-list {
+        margin: 0;
+        padding: 15px 0 0 39px;
+        list-style: none;
+        li {
+            overflow: hidden; // clearfix
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid $gray-lighter;
+            &:last-child {
+                margin-bottom: 0;
+                border: 0;
+            }
+            & > a {
+                i {
+                    margin-right: 5px !important;
+                    font-size: 20px;
+                }
+            }
+        }
+        .small {
+            margin: 0;
+        }
+        .bookmark-added-date {
+            display: block;
+            font-size: 75%;
+        }
+        div.col-actions {
+            float: right;
+            i {
+                margin-right: 5px;
+            }
+        }
+        .bookmarks-single-item {
+            .bookmark-edit-form-wrapper {
+                display: none;
+            }
+        }
+    }
+    tr.bookmarks-single-item {
+        & > td {
+            &:last-child {
+                vertical-align: middle;
+            }
+        }
+        .col-bookmarks {
+            i {
+                margin-right: 10px;
+            }
+        }
+        .small {
+            margin: 0 0 0 35px;
+        }
+        .bookmark-edit-form-wrapper {
+            padding: 10px 0 10px 35px;
+        }
+    }
+}
+
+// Bookmarks pop-up modal form
+
+.activity-actions {
+    // Modal have one message block for any kind of messages
+    .status-message {
+        margin-top: 15px;
+        .alert {
+            margin: 0;
+        }
+    }
+    .modal-dialog {
+        width: 350px;
+        margin: 70px 140px 70px auto;
+        a {
+            color: #3792bf;
+        }
+        .modal-header {
+            .modal-title {
+                margin: 0;
+            }
+            .btn-add-folder {
+                opacity: 1;
+                span {
+                    display: inline-block;
+                    width: 30px;
+                    height: 30px;
+                    background: url(/static/img/icon-folder-with-plus.png) no-repeat center center;
+                    background-size: contain;
+                }
+            }
+        }
+        .modal-body {
+            .form-group {
+                label {
+                    display: none;
+                }
+            }
+            .form-group-new-folder-title {
+                display: none;
+                margin-bottom: 20px;
+                padding-bottom: 10px;
+                border-bottom: 1px solid $gray-lighter;
+                .btn {
+                    display: block;
+                    width: 100%;
+                    margin: 10px 0;
+                }
+            }
+        }
+        .modal-footer {
+            .btn {
+                width: 100%;
+                margin: 0 0 10px;
+            }
+        }
+    }
+    .bookmarks-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        font-size: 20px;
+        li {
+            display: block;
+            margin: 0 0 3px;
+            padding: 10px;
+            &.bookmarks-folder {
+                padding: 0 10px;
+                &.selected,
+                &.selected:hover {
+                    background-color: $gray;
+                    a {
+                        color: #fff;
+                    }
+                }
+                &:hover {
+                    background-color: $gray-lighter;
+                }
+            }
+            a {
+                display: block;
+                padding: 10px 0;
+                text-decoration: none;
+                &:hover {
+                    color: #000;
+                    text-decoration: none;
+                }
+            }
+            i {
+                margin-right: 10px;
+                font-size: 20px;
+            }
+        }
+    }
 }

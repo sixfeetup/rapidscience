@@ -1,0 +1,42 @@
+{% load cms_tags static %}
+{% load bookmarks %}
+{% has_bookmark_permission action as can_bookmark %}
+
+<div class="bookmark-widget">
+  {% if can_bookmark %}
+    <form class="bookmark-button" method="post">{% csrf_token %}
+      <button type="button" data-toggle="modal" data-target="#modal-bookmark-{{ action.id }}" title="Bookmark this item">
+        <i class="fa fa-bookmark" aria-hidden="true"></i>
+      </button>
+    </form>
+  {% else %}
+    <button disabled title="Item already bookmarked">
+      <i class="fa fa-bookmark" aria-hidden="true"></i>
+    </button>
+  {% endif %}
+</div>
+
+<div class="modal fade" id="modal-bookmark-{{ action.id }}" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-add-folder"><span></span></button>
+        <h4 class="modal-title">Bookmark</h4>
+        <div class="status-message"></div>
+      </div>
+      <form class="bookmark" action="{% url 'bookmark_add' action_pk=action.id %}" method="post">{% csrf_token %}
+        <div class="modal-body">
+          <!-- Generated content -->
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">
+            Save
+          </button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">
+            Close
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

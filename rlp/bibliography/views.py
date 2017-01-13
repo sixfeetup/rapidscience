@@ -270,6 +270,9 @@ def reference_edit(request, pk, slug, reference_pk, template_name='bibliography/
             return redirect(project.get_bibliography_url())
     else:
         form = ProjectReferenceForm(instance=project_reference, initial={'tags': project_reference.tags.all()})
+    # It shouldn't be possible to land on the edit page if there aren't any tags, but just in case, remove the form
+    if not Tag.objects.count():
+        form = None
     context = {
         'form': form,
         'instance': project_reference,

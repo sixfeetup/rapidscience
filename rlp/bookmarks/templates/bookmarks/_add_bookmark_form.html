@@ -1,0 +1,24 @@
+{% load bootstrap3 %}
+{% bootstrap_messages %}
+{% include 'forms/_non_field_errors.html' %}
+
+<div class="form-group form-group-new-folder-title">
+  <input class="form-control" id="id_folder_title" maxlength="50" name="foldername"
+         type="text" placeholder="Title for new bookmarks folder"
+         data-url-folder-add="{% url 'bookmark_folder_add'%}">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-primary btn-add-new-folder">Add new folder</button>
+</div>
+
+{% bootstrap_field form.name %}
+{% bootstrap_field form.folder %}
+{% bootstrap_field form.content_type %}
+{% bootstrap_field form.object_pk %}
+
+<ul class="bookmarks-list">
+  {% for folder in bookmarks_folders %}
+    <li class="bookmarks-folder" data-name="{{ folder.pk }}"> <!-- .selected class added on click -->
+      <a href="#"><i class="fa fa-folder"></i>{{ folder.name }}</a>
+    </li>
+  {% endfor %}
+</ul>
