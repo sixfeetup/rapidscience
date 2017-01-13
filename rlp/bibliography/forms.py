@@ -69,6 +69,13 @@ class BaseReferenceForm(forms.ModelForm):
             'url',
         ]
 
+    def clean(self):
+        cleaned_data = super().clean()
+        upload = cleaned_data.get('upload')
+        url = cleaned_data.get('url')
+        if not any([upload, url]):
+            raise forms.ValidationError('Please provide a link or upload a file.')
+
     def save(self, commit=True):
         self.cleaned_data['reference_type'] = self.reference_type
         reference = super().save(commit=False)

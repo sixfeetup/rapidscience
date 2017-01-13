@@ -38,14 +38,10 @@ from .signals import sync_user
 REGISTRATION_SALT = getattr(settings, 'REGISTRATION_SALT', 'registration')
 
 REGISTRATION_SUCCESS_SUBJECT = "Thank you for registering"
-PENDING_APPROVAL_SUBJECT = '{}: New registration pending approval'
-PENDING_REGISTRATION_MESSAGE = "Thank you for your interest in joining the CHCI Research Network. " \
-                                    "Your registration is pending approval. " \
-                                    "You will receive an email when your registration is complete."
-CHCI_PENDING_REGISTRATION_MESSAGE = PENDING_REGISTRATION_MESSAGE.format(settings.SITE_PREFIX.upper())
-CHCI_PENDING_APPROVAL_SUBJECT = PENDING_APPROVAL_SUBJECT.format(settings.SITE_PREFIX.upper())
-SOBC_PENDING_REGISTRATION_MESSAGE = PENDING_REGISTRATION_MESSAGE.format(settings.SITE_PREFIX.upper())
-SOBC_PENDING_APPROVAL_SUBJECT = PENDING_APPROVAL_SUBJECT.format(settings.SITE_PREFIX.upper())
+PENDING_APPROVAL_SUBJECT = '{}: New registration pending approval'.format(settings.SITE_PREFIX.upper())
+PENDING_REGISTRATION_MESSAGE = "Thank you for your interest in joining the {} Research Network. " \
+                               "Your registration is pending approval. You will receive an email when your " \
+                               "registration is complete.".format(settings.SITE_PREFIX.upper())
 
 
 @sensitive_post_parameters()
@@ -198,10 +194,10 @@ class Register(SessionWizardView):
             # Automatically add user to 'auto opt-in' projects if applicable
             for project in Project.objects.filter(auto_opt_in=True).exclude(pk=form.cleaned_data['project'].pk):
                 ProjectMembership.objects.create(user=user, project=project)
-            messages.success(self.request, SOBC_PENDING_REGISTRATION_MESSAGE)
+            messages.success(self.request, PENDING_REGISTRATION_MESSAGE)
             # Email the contacts for this project
             contact_email_addresses = project_membership.project.get_contact_email_addresses()
-            subject = SOBC_PENDING_APPROVAL_SUBJECT
+            subject = PENDING_APPROVAL_SUBJECT
             email_context = {
                 'user': user,
                 'project': project_membership.project,
@@ -293,6 +289,20 @@ class ActivationView(TemplateView):
                         'request': self.request,
                     }
                     send_transactional_mail(user.email, subject, template, context)
+                    project = user.projectmembership_set.first().project
+                    contact_email_addresses = project.get_contact_email_addresses()
+                    admin_context = {
+                        'site_prefix': settings.SITE_PREFIX.upper(),
+                        'user': user,
+                        'project': project,
+                    }
+                    for email in contact_email_addresses:
+                        send_transactional_mail(
+                            email,
+                            '{} is now approved'.format(user.email),
+                            'emails/registration_approved_admin',
+                            admin_context
+                        )
                     messages.success(self.request, "{} is now approved to complete their registration.".format(
                         user.email))
             # return so we don't accidentally pick up the following message.
@@ -363,7 +373,8 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
             'filter_form': filter_form,
         })
     elif tab == 'bookmarks':
-        context['bookmarks'] = request.user.bookmark_set.all()
+        context['bookmarks'] = request.user.bookmark_set.filter(folder__isnull=True)
+        context['bookmarks_folders'] = request.user.folder_set.all()
     if extra_context is not None:
         context.update(extra_context)
     return render(request, template_name, context)

@@ -384,16 +384,14 @@ small {
 
 .bookmark-widget {
   button {
-    border: none;
+    color: $text-color;
     background: transparent;
-    .active {
-
+    border: none;
+    &:hover {
+      color: #ddd;
     }
-  }
-  form > button {
-    color: $gray-light;
-    :hover {
-      color: $text-color;
+    &[disabled] {
+      color: #ddd;
     }
   }
 }
