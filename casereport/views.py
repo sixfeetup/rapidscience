@@ -212,7 +212,7 @@ class FormTypeView(TemplateView):
 
 class MyFacetedSearchView(FacetedSearchView):
     def __init__(self, *args, **kwargs):
-        sqs = SearchQuerySet().facet('gender', sort='index')\
+        sqs = SearchQuerySet().models(CaseReport).facet('gender', sort='index')\
             .facet('age', sort='index')\
             .facet('molecular_abberations', sort='count')\
             .facet('country', sort='count')\
