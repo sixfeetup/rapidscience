@@ -4,42 +4,43 @@ from casereport.constants import SARCOMA_TYPE
 from casereport.constants import STATUS
 from casereport.constants import CASE_STATUS
 from casereport.constants import TYPE
-from casereport.constants import TREATMENT_TYPES
 from casereport.constants import PERFORMANCE_STATUS
 from casereport.constants import OBJECTIVE_RESPONSES
 from casereport.constants import INDEXES
-from django.core.urlresolvers import reverse
 from django_countries.fields import CountryField
 from django.db import models
-from django.template.defaultfilters import slugify
-from django.core.mail import send_mail
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.conf import settings
+from django.utils.encoding import python_2_unicode_compatible
+
 __author__ = 'yaseen'
 
 
+@python_2_unicode_compatible
 class CRDBBase(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     modified_on = models.DateTimeField(auto_now=True)
 
 
+@python_2_unicode_compatible
 class Institution(CRDBBase):
     name = models.CharField(max_length=200)
     city = models.CharField(max_length=200)
     country = CountryField()
     address = models.TextField()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
+@python_2_unicode_compatible
 class Physician(CRDBBase):
     affiliation = models.ForeignKey(Institution, null=True, blank=True)
     name = models.CharField(max_length=200)
     email = models.EmailField()
 
-    def __unicode__(self):
+    def __str__(self):
         return str(self.name) or ''
 
     def get_name(self):
@@ -56,6 +57,7 @@ class Physician(CRDBBase):
         return None
 
 
+@python_2_unicode_compatible
 class CaseFile(CRDBBase):
     # referring_physician = models.ForeignKey(Physician, null=True, blank=True)
     name = models.CharField(max_length=200)
@@ -64,6 +66,8 @@ class CaseFile(CRDBBase):
     def __str__(self):
         return self.name
 
+
+@python_2_unicode_compatible
 class MolecularAbberation(CRDBBase):
     name = models.CharField(max_length=255)
     molecule = models.CharField(max_length=255)
@@ -72,10 +76,11 @@ class MolecularAbberation(CRDBBase):
         verbose_name = 'Genetic Aberration'
         verbose_name_plural = 'Genetic Aberrations'
 
-    def __unicode__(self):
-        return '%s: %s' %(self.molecule, self.name)
+    def __str__(self):
+        return '%s: %s' % (self.molecule, self.name)
 
 
+@python_2_unicode_compatible
 class AuthorizedRep(CRDBBase):
     first_name = models.CharField(max_length=200, null=True, blank=True)
     last_name = models.CharField(max_length=200, null=True, blank=True)
@@ -87,22 +92,35 @@ class AuthorizedRep(CRDBBase):
     def get_name(self):
         return self.email
 
+
+@python_2_unicode_compatible
 class CaseReport(CRDBBase):
     title = models.CharField(max_length=200, null=True, blank=True)
-    gender = models.CharField(max_length=20, choices=GENDER, null=True, blank=True)
+    gender = models.CharField(max_length=20,
+                              choices=GENDER,
+                              null=True,
+                              blank=True)
     age = models.IntegerField(null=True, blank=True)
-    primary_physician = models.ForeignKey(Physician, related_name='primary_case')
+    primary_physician = models.ForeignKey(Physician,
+                                          related_name='primary_case')
     referring_physician = models.ManyToManyField(Physician, blank=True)
     authorized_reps = models.ManyToManyField(AuthorizedRep, blank=True)
-    sarcoma_type = models.CharField(max_length=100, choices=sorted(SARCOMA_TYPE),null=True, blank=True)
-    other_sarcoma_type = models.CharField(max_length=200, null=True, blank=True)
-    molecular_abberations = models.ManyToManyField(MolecularAbberation, blank=True)
+    sarcoma_type = models.CharField(max_length=100,
+                                    choices=sorted(SARCOMA_TYPE),
+                                    null=True,
+                                    blank=True)
+    other_sarcoma_type = models.CharField(max_length=200,
+                                          null=True,
+                                          blank=True)
+    molecular_abberations = models.ManyToManyField(MolecularAbberation,
+                                                   blank=True)
     history = models.TextField(null=True, blank=True)
     precision_treatment = models.TextField(null=True, blank=True)
     specimen_analyzed = models.TextField(null=True, blank=True)
     additional_comment = models.TextField(null=True, blank=True)
     previous_treatments = models.TextField(null=True, blank=True)
-    status = models.CharField(max_length=50, choices=STATUS, default='processing')
+    status = models.CharField(max_length=50, choices=STATUS,
+                              default='processing')
     casefile_f = models.ForeignKey(
         CaseFile, null=True, blank=True,
         verbose_name='Case File',
@@ -110,8 +128,9 @@ class CaseReport(CRDBBase):
     index = models.IntegerField(choices=INDEXES, null=True, blank=True)
     pathology = models.TextField(null=True, blank=True)
     progression = models.CharField(max_length=250, null=True, blank=True)
-    response = models.CharField(max_length=2, choices=OBJECTIVE_RESPONSES, null=True, blank=True)
-    tumor_location = models.CharField(max_length=200,null=True,blank=True)
+    response = models.CharField(max_length=2, choices=OBJECTIVE_RESPONSES,
+                                null=True, blank=True)
+    tumor_location = models.CharField(max_length=200, null=True, blank=True)
     molecular_abberations.verbose_name = 'Genetic Aberrations'
 
     def __str__(self):
@@ -122,7 +141,7 @@ class CaseReport(CRDBBase):
             # sending a notify email to admin
             self.notify_admin()
         if self.status == CASE_STATUS['R'] or self.status == CASE_STATUS['A']:
-            # sending review email to authorized rep/physicain
+            # sending review email to authorized rep/physician
             self.send_review_mail()
         super(CaseReport, self).save(*args, **kwargs)
 
@@ -130,18 +149,23 @@ class CaseReport(CRDBBase):
         subject = settings.NEW_CASE
         if self.status == CASE_STATUS['E']:
             subject = settings.EDITED
-        message_body = render_to_string('casereport/admin_notify.html', {'title': self.title,
-                                                              'status': self.status,
-                                                              'name': self.primary_physician.name})
+        message_body = render_to_string('casereport/admin_notify.html',
+                                        {'title': self.title,
+                                         'status': self.status,
+                                         'name': self.primary_physician.name})
         recipient_members = settings.DATA_SCIENCE_TEAM
         for member in recipient_members:
-            message = EmailMessage(subject, message_body, settings.SERVER_EMAIL, [member])
+            message = EmailMessage(subject,
+                                   message_body,
+                                   settings.SERVER_EMAIL,
+                                   [member])
             message.content_subtype = 'html'
             message.send()
 
     def send_review_mail(self):
         history_obj = CaseReportHistory.objects.filter(case=self.id).last()
-        token = tokens.generate(scope=(), key=self.id, salt=settings.TOKEN_SALT)
+        token = tokens.generate(scope=(), key=self.id,
+                                salt=settings.TOKEN_SALT)
         Headers = {'Reply-To': settings.SERVER_EMAIL}
         recipients = list(self.authorized_reps.all())
         primary_recipient = self.primary_physician
@@ -149,14 +173,15 @@ class CaseReport(CRDBBase):
         if self.status == CASE_STATUS['R'] and not history_obj:
             for recipient in recipients:
                 if recipient.email:
-                    message = render_to_string('casereport/email_to_authorized.html',
-                                               {'id': self.id,
-                                                'title': self.title,
-                                                'name': recipient.get_name(),
-                                                'token': token,
-                                                'DOMAIN': settings.DOMAIN,
-                                                'Date': self.created_on,
-                                                'primary_physician': self.primary_physician.get_name()
+                    message = render_to_string(
+                        'casereport/email_to_authorized.html',
+                       {'id': self.id,
+                        'title': self.title,
+                        'name': recipient.get_name(),
+                        'token': token,
+                        'DOMAIN': settings.DOMAIN,
+                        'Date': self.created_on,
+                        'primary_physician': self.primary_physician.get_name()
                                                 })
                     msg = EmailMessage(subject,
                                        message,
@@ -229,7 +254,8 @@ class CaseReport(CRDBBase):
         return self.primary_physician.name
 
     def get_presented(self):
-        event = Event.objects.filter(casereport_f=self, parent_event__isnull=True)
+        event = Event.objects.filter(casereport_f=self,
+                                     parent_event__isnull=True)
         return event[0].get_info()
 
     def get_physician_affiliation(self):
@@ -246,6 +272,7 @@ class CaseReport(CRDBBase):
         return self.sarcoma_type if not self.sarcoma_type == 'Other' else self.other_sarcoma_type
 
 
+@python_2_unicode_compatible
 class Treatment(CRDBBase):
     casereport_f = models.ForeignKey(
         CaseReport, verbose_name='Case Report', default=1
@@ -260,10 +287,11 @@ class Treatment(CRDBBase):
     treatment_outcome = models.TextField(null=True, blank=True)
     notes = models.TextField(null=True, blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
+@python_2_unicode_compatible
 class Event(CRDBBase):
     casereport_f = models.ForeignKey(
         CaseReport, verbose_name='Case Report', default=1
@@ -279,7 +307,7 @@ class Event(CRDBBase):
     is_negation = models.BooleanField(default=False)
     event_type = models.CharField(max_length=15, choices=TYPE, null=True, blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def get_treatment_type(self):
@@ -361,6 +389,7 @@ class Event(CRDBBase):
 
 
 
+@python_2_unicode_compatible
 class TestEvent(Event):
     specimen = models.CharField(max_length=255)
     body_part = models.CharField(max_length=255, null=True, blank=True)
@@ -369,6 +398,8 @@ class TestEvent(Event):
         self.event_type = 'test'
         super(TestEvent, self).save()
 
+
+@python_2_unicode_compatible
 class TreatmentEvent(Event):
     treatment_type = models.CharField(max_length=255)
     followed_by = models.ForeignKey('self', null=True, blank=True)  # - Treatment Event
@@ -383,16 +414,18 @@ class TreatmentEvent(Event):
         super(TreatmentEvent, self).save()
 
 
+@python_2_unicode_compatible
 class ResultValueEvent(CRDBBase):
     test = models.ForeignKey(TestEvent)  # FK (Test Event)
     value = models.CharField(max_length=200)  # 15.6
     result_indicator = models.CharField(max_length=200, null=True,
                                         blank=True)  # high, low, normal (if available or will be null)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.value
 
 
+@python_2_unicode_compatible
 class DiagnosisEvent(Event):
     test = models.ForeignKey(TestEvent, null=True, blank=True)  # FK (Test Event)
     specimen = models.CharField(max_length=255, null=True, blank=True)
@@ -404,6 +437,7 @@ class DiagnosisEvent(Event):
         super(DiagnosisEvent, self).save()
 
 
+@python_2_unicode_compatible
 class CaseReportHistory(models.Model):
     case = models.ForeignKey(CaseReport)
     physician = models.TextField(null=True, blank=True)
@@ -413,9 +447,6 @@ class CaseReportHistory(models.Model):
     diagnosis = models.TextField(null=True, blank=True)
     created_on = models.DateTimeField(auto_now_add=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return str(self.case) or ''
-
-    # def __unicode__(self):
-    #     return self.case.__unicode__()
 

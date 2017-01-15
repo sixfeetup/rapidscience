@@ -222,6 +222,7 @@ class TestEventForm(EventBaseForm):
 class TestEventAdmin(EventBaseAdmin):
     form = TestEventForm
 
+
 class PhysicianAdmin(admin.ModelAdmin):
     list_display = ('name', 'affiliation', 'city', 'country')
     list_filter = ('affiliation', 'affiliation__city', 'affiliation__country')
