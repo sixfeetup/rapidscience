@@ -1,6 +1,6 @@
-{% extends 'projects/projects_detail.html' %}{% load discussion_tags %}
+{% extends 'home.html' %}{% load discussion_tags %}
 
-{% block project_discussion %}
+{% block main_content %}
   {% get_threaded_comment_count for comment as comment_count %}
 <h2>Delete Comment</h2>
 <p class="more well">{{ comment.comment|urlize|linebreaksbr }}</p>
@@ -18,4 +18,4 @@
     Cancel
   </a>
 </form>
-{% endblock project_discussion %}
+{% endblock main_content %}

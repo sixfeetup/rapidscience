@@ -1,6 +1,6 @@
-{% extends 'projects/projects_detail.html' %}{% load bootstrap3 comments discussion_tags %}
+{% extends 'home.html' %}{% load bootstrap3 comments discussion_tags %}
 
-{% block project_discussion %}
+{% block main_content %}
 {% if comment.title %}<h4>{{ comment.title }}</h4>{% endif %}
 <p>{{ comment.comment|urlize|linebreaksbr }}</p>
 <p class="small">
@@ -17,4 +17,4 @@
 {% endif %}
 <hr>
 {% render_comment_list for comment %}
-{% endblock project_discussion %}
+{% endblock main_content %}

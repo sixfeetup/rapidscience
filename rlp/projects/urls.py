@@ -18,7 +18,6 @@ urlpatterns = [
         views.projects_detail,
         {'tab': 'discussions'},
         name='projects_discussions'),
-    url(r'^(?P<pk>\d+)-(?P<slug>[\w\d-]+)/discussions/', include('rlp.discussions.urls_edit_delete')),
     url(r'^(?P<pk>\d+)-(?P<slug>[\w\d-]+)/bibliography/$',
         views.projects_detail,
         {'tab': 'bibliography'},

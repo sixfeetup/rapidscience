@@ -71,9 +71,7 @@ class ThreadedComment(Comment):
     def get_absolute_url(self):
         if self.content_type.name == 'project':
             project = ThreadedComment.get_project_for_comment(self)
-            return reverse('projects:comments-detail', kwargs={
-                'pk': project.pk,
-                'slug': project.slug,
+            return reverse('comments-detail', kwargs={
                 'comment_pk': self.pk
             })
         return super().get_absolute_url()
@@ -118,17 +116,13 @@ class ThreadedComment(Comment):
 
     def get_edit_url(self):
         project = ThreadedComment.get_project_for_comment(self)
-        return reverse('projects:comments-edit', kwargs={
-            'pk': project.pk,
-            'slug': project.slug,
+        return reverse('comments-edit', kwargs={
             'comment_pk': self.pk
         })
 
     def get_delete_url(self):
         project = ThreadedComment.get_project_for_comment(self)
-        return reverse('projects:comments-delete', kwargs={
-            'pk': project.pk,
-            'slug': project.slug,
+        return reverse('comments-delete', kwargs={
             'comment_pk': self.pk
         })
 

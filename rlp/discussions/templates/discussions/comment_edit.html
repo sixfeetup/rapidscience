@@ -1,6 +1,6 @@
-{% extends 'projects/projects_detail.html' %}{% load bootstrap3 %}
+{% extends 'home.html' %}{% load bootstrap3 %}
 
-{% block project_discussion %}
+{% block main_content %}
 <h2>Edit Comment</h2>
 <p>{{ comment.comment }}</p>
 <form method="post" action="">
@@ -13,4 +13,4 @@
     Cancel
   </a>
 </form>
-{% endblock project_discussion %}
+{% endblock main_content %}

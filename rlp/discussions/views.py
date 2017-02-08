@@ -27,21 +27,18 @@ def post_redirect(request, content_type_id, object_id):
 
 
 @login_required
-def comment_detail(request, pk, slug, comment_pk, template_name='discussions/comment_detail.html'):
-    project = get_object_or_404(Project, pk=pk, slug=slug)
+def comment_detail(request, comment_pk, template_name='discussions/comment_detail.html'):
     comment = get_object_or_404(ThreadedComment, pk=comment_pk)
     context = {
         'comment': comment,
         'comment_list': get_comments_for_instance(comment),
-        'project': project,
         'tab': 'discussions',
     }
     return render(request, template_name, context)
 
 
 @login_required
-def comment_edit(request, pk, slug, comment_pk, template_name='discussions/comment_edit.html'):
-    project = get_object_or_404(Project, pk=pk, slug=slug)
+def comment_edit(request, comment_pk, template_name='discussions/comment_edit.html'):
     comment = get_object_or_404(ThreadedComment, pk=comment_pk)
     if request.user != comment.user:
         messages.error(request, "You do not have permission to edit this.")
@@ -62,15 +59,13 @@ def comment_edit(request, pk, slug, comment_pk, template_name='discussions/comme
     context = {
         'comment': comment,
         'form': form,
-        'project': project,
         'tab': 'discussions',
     }
     return render(request, template_name, context)
 
 
 @login_required
-def comment_delete(request, pk, slug, comment_pk, template_name='discussions/comment_delete.html'):
-    project = get_object_or_404(Project, pk=pk, slug=slug)
+def comment_delete(request, comment_pk, template_name='discussions/comment_delete.html'):
     comment = get_object_or_404(ThreadedComment, pk=comment_pk)
     if request.user != comment.user:
         messages.error(request, "You do not have permission to delete this.")
@@ -85,10 +80,9 @@ def comment_delete(request, pk, slug, comment_pk, template_name='discussions/com
             comment_children_ids = list(qs_to_delete.values_list('id', flat=True))
             qs_to_delete.delete()
         messages.success(request, "Comment successfully deleted!")
-        return redirect(project.get_absolute_url())
+        return redirect(comment.get_absolute_url())
     context = {
         'comment': comment,
-        'project': project,
         'tab': 'discussions'
     }
     return render(request, template_name, context)
