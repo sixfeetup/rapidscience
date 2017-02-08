@@ -68,6 +68,17 @@ class ThreadedComment(Comment):
             kwargs["force_insert"] = False
             super().save(*args, **kwargs)
 
+    def delete(self, *args, **kwargs):
+        # delete children
+        to_delete = ThreadedComment.objects.filter(
+            parent_id=self.id
+        ).exclude(id=self.id)
+        for comment in to_delete:
+            # delete each individually
+            # mass deletion using to_delete skips this custom method
+            comment.delete()
+        super(ThreadedComment, self).delete(*args, **kwargs)
+
     def get_absolute_url(self):
         if self.content_type.name == 'project':
             project = ThreadedComment.get_project_for_comment(self)

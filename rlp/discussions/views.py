@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.urlresolvers import reverse
 from django import http
 from django.shortcuts import get_object_or_404, redirect, render
 
@@ -71,16 +72,9 @@ def comment_delete(request, comment_pk, template_name='discussions/comment_delet
         messages.error(request, "You do not have permission to delete this.")
         return redirect(comment.get_absolute_url())
     if request.method == 'POST':
-        qs_to_delete = ThreadedComment.objects.filter(parent_id=comment.id)
-        comment_children_ids = list(qs_to_delete.values_list('id', flat=True))
-        # This deletes the comment too, since parent_id == comment.id
-        qs_to_delete.delete()
-        while comment_children_ids:
-            qs_to_delete = ThreadedComment.objects.filter(parent_id__in=comment_children_ids)
-            comment_children_ids = list(qs_to_delete.values_list('id', flat=True))
-            qs_to_delete.delete()
+        comment.delete()
         messages.success(request, "Comment successfully deleted!")
-        return redirect(comment.get_absolute_url())
+        return redirect(reverse('dashboard'))
     context = {
         'comment': comment,
         'tab': 'discussions'
