@@ -1,10 +1,12 @@
 from django.conf import settings
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 
 from embed_video.fields import EmbedVideoField
 from polymorphic.models import PolymorphicModel
 from taggit.managers import TaggableManager
 
+from rlp.discussions.models import ThreadedComment
 from rlp.projects.models import Project
 
 
@@ -15,6 +17,10 @@ class Document(PolymorphicModel):
     date_added = models.DateTimeField(auto_now_add=True, db_index=True)
     date_updated = models.DateTimeField(auto_now=True)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL)
+    discussions = GenericRelation(
+        ThreadedComment,
+        object_id_field='object_pk',
+    )
 
     tags = TaggableManager()
 
