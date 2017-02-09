@@ -16,7 +16,7 @@
       <a href="{{ user.get_absolute_url }}">Activity</a>
     </li>
     <li role="presentation"{% if tab == 'publications' %} class="active"{% endif %}>
-      <a href="{% url 'profile_publications' pk=user.pk %}">Publications</a>
+      <a href="{% url 'profile_tab' pk=user.pk tab='publications' %}">Publications</a>
     </li>
   </ul>
 </div>
