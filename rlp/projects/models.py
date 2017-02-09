@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.contenttypes.fields import GenericRelation
 
 from filer.fields.image import FilerImageField
+from menus.menu_pool import menu_pool
 
 from rlp.accounts.models import Institution
 from rlp.discussions.models import ThreadedComment
@@ -87,6 +88,13 @@ class Project(SEOMixin):
                 template,
                 context
             )
+
+    def save(self, *args, **kwargs):
+        # Groups are in the top level navigation and need to clear the cache
+        # on save.
+        menu_pool.clear()
+        super().save(*args, **kwargs)
+
 
 
 class ProjectMembership(models.Model):
