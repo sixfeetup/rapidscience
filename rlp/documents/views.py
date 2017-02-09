@@ -11,7 +11,6 @@ from PIL import Image
 from taggit.models import Tag
 
 from rlp.discussions.models import ThreadedComment
-from rlp.discussions.shortcuts import get_comments_for_instance
 from .forms import FileForm, ImageForm, LinkForm, VideoForm
 from .models import Document
 from rlp.projects.models import Project
@@ -206,7 +205,7 @@ def document_detail(request, pk, slug, doc_pk, template_name='documents/document
         'document': document,
         'project': project,
         'tab': 'documents',
-        'comment_list': get_comments_for_instance(document)
+        'comment_list': document.discussions.all(),
     }
     return render(request, template_name, context)
 

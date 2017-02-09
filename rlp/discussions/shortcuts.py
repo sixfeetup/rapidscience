@@ -1,13 +1,5 @@
 from django.contrib.contenttypes.models import ContentType
 
-from .models import ThreadedComment
-
-
-def get_comments_for_instance(instance):
-    content_type = ContentType.objects.get_for_model(instance.__class__)
-    qs = ThreadedComment.objects.filter(content_type=content_type, object_pk=instance.id)
-    return qs
-
 
 def get_url_for_comment(object):
     """Returns the detail view of the top-level target of the comment thread."""

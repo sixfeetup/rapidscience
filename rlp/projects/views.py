@@ -5,7 +5,6 @@ from django.views.decorators.cache import never_cache
 from actstream.models import Action
 from el_pagination.decorators import page_template
 
-from rlp.discussions.shortcuts import get_comments_for_instance
 from rlp.documents.models import File
 from rlp.search.forms import ActionObjectForm
 from .models import Project
@@ -69,7 +68,7 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
         context['activity_stream'] = activity_stream
         context['working_documents'] = working_documents
     elif tab == 'discussions':
-        context['comment_list'] = get_comments_for_instance(project)
+        context['comment_list'] = project.discussions.all()
         if request.is_ajax():
             template_name = 'comments/list.html'
         context['page_template'] = 'comments/list.html'

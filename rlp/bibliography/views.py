@@ -13,7 +13,6 @@ from actstream import action
 from taggit.models import Tag
 
 from rlp.discussions.models import ThreadedComment
-from rlp.discussions.shortcuts import get_comments_for_instance
 from . import choices
 from .forms import SearchForm, BookForm, BookSectionForm, JournalArticleForm, ProjectReferenceForm, ReferenceShareForm
 from .models import Reference, ProjectReference
@@ -375,6 +374,6 @@ def reference_detail(request, pk, slug, reference_pk, template_name='bibliograph
         'obj': project_reference,
         'project': project,
         'tab': 'bibliography',
-        'comment_list': get_comments_for_instance(project_reference)
+        'comment_list': project_reference.discussions.all(),
     }
     return render(request, template_name, context)
