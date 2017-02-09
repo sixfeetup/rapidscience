@@ -70,10 +70,7 @@ class ThreadedComment(Comment):
 
     def delete(self, *args, **kwargs):
         # delete children
-        to_delete = ThreadedComment.objects.filter(
-            parent_id=self.id
-        ).exclude(id=self.id)
-        for comment in to_delete:
+        for comment in self.children():
             # delete each individually
             # mass deletion using to_delete skips this custom method
             comment.delete()
@@ -147,3 +144,9 @@ class ThreadedComment(Comment):
         if self.content_type.name.lower() == 'comment':
             return True
         return False
+
+    def children(self):
+        children = ThreadedComment.objects.filter(
+            parent_id=self.id
+        ).exclude(id=self.id)
+        return children

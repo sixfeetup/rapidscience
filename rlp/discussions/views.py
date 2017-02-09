@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from rlp.projects.models import Project
 from .forms import ThreadedCommentEditForm, ThreadedCommentWithTitleEditForm
 from .models import ThreadedComment
-from .shortcuts import get_url_for_comment, get_comments_for_instance
+from .shortcuts import get_url_for_comment
 
 
 @login_required
@@ -32,7 +32,7 @@ def comment_detail(request, comment_pk, template_name='discussions/comment_detai
     comment = get_object_or_404(ThreadedComment, pk=comment_pk)
     context = {
         'comment': comment,
-        'comment_list': get_comments_for_instance(comment),
+        'comment_list': comment.children(),
         'tab': 'discussions',
     }
     return render(request, template_name, context)
