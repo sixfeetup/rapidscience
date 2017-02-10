@@ -51,9 +51,5 @@ INSTALLED_APPS += ('django_extensions', )
 COMPRESS_OUTPUT_DIR = ''
 COMPRESS_OFFLINE = False
 
-# Disable real-time Haystack index so tests pass.
-# It would require more work than is currently warranted to mock search.
-HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.BaseSignalProcessor'
-
 # Edit to add ID
 ZOTERO_URL = "https://api.zotero.org/groups/INSERT-ID-HERE/items/top?start=%%START%%&limit=%%NUM_PER_PAGE%%&sort=dateAdded&format=json"

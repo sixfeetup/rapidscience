@@ -28,3 +28,4 @@ settings.py
 styles.css
 rlp/core/static/css/*.css
 *.css.map
+/dump.rdb

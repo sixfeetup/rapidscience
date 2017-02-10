@@ -341,7 +341,10 @@ HAYSTACK_CONNECTIONS = {
         'INCLUDE_SPELLING': True,
     },
 }
-HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+
+# Use a custom Haystack signal processor since the casereports doesn't play
+# nice with the realtime one.
+HAYSTACK_SIGNAL_PROCESSOR = 'rlp.search.signals.RLPSignalProcessor'
 
 INDEXABLE_EXTENSIONS = (
     'doc',
