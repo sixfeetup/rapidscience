@@ -50,11 +50,6 @@ class EmailLog(models.Model):
 
 class SharedContent(models.Model):
     '''Associates target content with multiple project/user viewers'''
-    class Meta:
-        unique_together = (
-            ('viewer_id', 'viewer_type'),
-            ('target_id', 'target_type'),
-        )
 
     viewer_id = models.TextField('project/user ID')
     viewer_type = models.ForeignKey(
