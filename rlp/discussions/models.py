@@ -7,6 +7,8 @@ from django.contrib.contenttypes.models import ContentType
 
 from django_comments.models import Comment
 
+from rlp.core.models import SharedContent
+
 
 def max_thread_level_for_content_type(content_type):
     app_model = "%s.%s" % (content_type.app_label, content_type.model)
@@ -66,7 +68,15 @@ class ThreadedComment(Comment):
                 else:
                     raise MaxThreadLevelExceededException(self.content_type)
             kwargs["force_insert"] = False
-            super().save(*args, **kwargs)
+            with atomic():
+                if self.id == self.parent_id:
+                    # new top-level discussion
+                    shared = SharedContent(
+                        viewer=self.content_object,
+                        target=self,
+                    )
+                    shared.save()
+                super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         # delete children
