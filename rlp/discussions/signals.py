@@ -17,15 +17,17 @@ def create_comment_activity(**kwargs):
     # original comment, so we have to guard against accidentally adding duplicate entries to the activity stream.
     if comment.action_object_actions.count():
         return
-    project = ThreadedComment.get_project_for_comment(comment)
+    viewer = comment.content_object
     if comment.is_reply():
         verb = 'reply'
     else:
         verb = 'comment'
-    new_action = action.send(comment.user, verb=verb, action_object=comment, target=project)
-    project.notify_members(
-        '{}: A new comment was posted'.format(settings.SITE_PREFIX.upper()),
-        {
-            'action': new_action[0][1],
-        }
-    )
+    new_action = action.send(comment.user, verb=verb, action_object=comment, target=viewer)
+    # TODO get a list of all viewers
+    # for viewer in everyone_sharing_this:
+    #     viewer.notify_members(
+    #         '{}: A new comment was posted'.format(
+    #             settings.SITE_PREFIX.upper()
+    #         ),
+    #         {'action': new_action[0][1]},
+    #     )

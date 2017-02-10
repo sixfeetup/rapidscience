@@ -87,11 +87,9 @@ class ThreadedComment(Comment):
         super(ThreadedComment, self).delete(*args, **kwargs)
 
     def get_absolute_url(self):
-        if self.content_type.name == 'project':
-            return reverse('comments-detail', kwargs={
-                'comment_pk': self.pk
-            })
-        return super().get_absolute_url()
+        return reverse('comments-detail', kwargs={
+            'comment_pk': self.pk
+        })
 
     def _calculate_thread_data(self):
         # Implements the following approach:
@@ -118,18 +116,6 @@ class ThreadedComment(Comment):
             return True
         else:
             return False
-
-    @classmethod
-    def get_project_for_comment(cls, instance):
-        content_type = instance.content_type
-        # Comment on a project
-        if content_type.model == 'project':
-            return instance.content_object
-        # Comment on a document/biblio
-        if hasattr(instance.content_object, 'project'):
-            return instance.content_object.project
-        # Replies
-        return ThreadedComment.get_project_for_comment(instance.content_object)
 
     def get_edit_url(self):
         return reverse('comments-edit', kwargs={
