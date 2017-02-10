@@ -1,14 +1,13 @@
 from django.conf import settings
 from django.db import models
-from django.contrib.contenttypes.fields import GenericRelation
 
 from filer.fields.image import FilerImageField
 from menus.menu_pool import menu_pool
 
 from rlp.accounts.models import Institution
-from rlp.discussions.models import ThreadedComment
 from rlp.core.email import send_transactional_mail
 from rlp.core.models import SEOMixin
+from rlp.core.mixins import SharesContentMixin
 
 
 class Topic(SEOMixin):
@@ -32,7 +31,7 @@ class Role(models.Model):
         return self.title
 
 
-class Project(SEOMixin):
+class Project(SEOMixin, SharesContentMixin):
     cover_photo = FilerImageField(null=True, blank=True, related_name="project_photo")
     institution = models.ForeignKey(Institution, blank=True, null=True)
     topic = models.ForeignKey(Topic, blank=True, null=True)
@@ -43,10 +42,6 @@ class Project(SEOMixin):
     users = models.ManyToManyField(settings.AUTH_USER_MODEL, through="ProjectMembership", related_name='projects')
     goal = models.CharField(max_length=450, blank=True)
     order = models.PositiveIntegerField(default=0, db_index=True)
-    discussions = GenericRelation(
-        ThreadedComment,
-        object_id_field='object_pk',
-    )
 
     class Meta:
         ordering = ['order', 'title']

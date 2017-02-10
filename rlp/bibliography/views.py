@@ -374,6 +374,6 @@ def reference_detail(request, pk, slug, reference_pk, template_name='bibliograph
         'obj': project_reference,
         'project': project,
         'tab': 'bibliography',
-        'comment_list': project_reference.discussions.all(),
+        'comment_list': project_reference.get_discussions(),
     }
     return render(request, template_name, context)

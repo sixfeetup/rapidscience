@@ -68,7 +68,7 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
         context['activity_stream'] = activity_stream
         context['working_documents'] = working_documents
     elif tab == 'discussions':
-        context['comment_list'] = project.discussions.all()
+        context['comment_list'] = project.get_discussions()
         if request.is_ajax():
             template_name = 'comments/list.html'
         context['page_template'] = 'comments/list.html'

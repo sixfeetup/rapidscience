@@ -2,10 +2,11 @@ import logging
 import re
 
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
-from django.contrib.sessions.models import Session
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+
+from rlp.core.mixins import SharesContentMixin
 
 
 logger = logging.getLogger(__name__)
@@ -78,7 +79,7 @@ class UserManager(BaseUserManager):
                                  **extra_fields)
 
 
-class User(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
     """
     Email and password are required. Other fields are optional.
     """
