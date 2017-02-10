@@ -1,3 +1,5 @@
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models.lookups import DateTransform
 
@@ -45,3 +47,34 @@ class EmailLog(models.Model):
     def __str__(self):
         return 'To: {} Subject: {}'.format(self.to_email, self.subject[:10])
 
+
+class SharedContent(models.Model):
+    '''Associates target content with multiple project/user viewers'''
+    class Meta:
+        unique_together = (
+            ('viewer_id', 'viewer_type'),
+            ('target_id', 'target_type'),
+        )
+
+    viewer_id = models.TextField('project/user ID')
+    viewer_type = models.ForeignKey(
+        ContentType,
+        verbose_name='viewer content type',
+        related_name='viewer_type_set_for_%(class)s',
+        on_delete=models.CASCADE,
+    )
+    viewer = GenericForeignKey(
+        ct_field='viewer_type',
+        fk_field='viewer_id',
+    )
+    target_id = models.TextField('target ID')
+    target_type = models.ForeignKey(
+        ContentType,
+        verbose_name='target content type',
+        related_name='target_type_set_for_%(class)s',
+        on_delete=models.CASCADE,
+    )
+    target = GenericForeignKey(
+        ct_field='target_type',
+        fk_field='target_id',
+    )
