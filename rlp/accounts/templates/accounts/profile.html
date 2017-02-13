@@ -18,6 +18,9 @@
     <li role="presentation"{% if tab == 'discussions' %} class="active"{% endif %}>
       <a href="{% url 'profile_tab' pk=user.pk tab='discussions' %}">Discussions</a>
     </li>
+    <li role="presentation"{% if tab == 'casereports' %} class="active"{% endif %}>
+      <a href="{% url 'profile_tab' pk=user.pk tab='casereports' %}">Case Reports</a>
+    </li>
     <li role="presentation"{% if tab == 'publications' %} class="active"{% endif %}>
       <a href="{% url 'profile_tab' pk=user.pk tab='publications' %}">Publications</a>
     </li>
@@ -67,6 +70,20 @@
       <hr>
       {% render_comment_list for user %}
       {% include page_template %}
+    {% endif %}
+  </div>
+  <div role="tabpanel" class="tab-pane{% if tab == 'casereports' %} active{% endif %}" id="casereports">
+    {% if tab == 'casereports' %}
+      {% bootstrap_messages %}
+      {% block project_casereport %}
+      {% for report in case_reports %}
+      <p><a href="{% url 'casereport_detail' case_id=report.id title_slug=report.title|slugify %}">
+        {{ report.title }}
+      </a></p>
+      {% endfor %}
+      <hr>
+      {% include page_template %}
+      {% endblock project_casereport %}
     {% endif %}
   </div>
 </div>

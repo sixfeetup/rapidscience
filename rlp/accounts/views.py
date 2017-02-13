@@ -423,6 +423,9 @@ def profile(request, pk, tab='activity', template_name='accounts/profile.html', 
         if request.is_ajax():
             template_name = 'comments/list.html'
         context['activity_stream'] = []
+    elif tab == 'casereports':
+        context['activity_stream'] = []
+        context['case_reports'] = user.get_casereports()
     if extra_context is not None:
         context.update(extra_context)
     return render(request, template_name, context)
