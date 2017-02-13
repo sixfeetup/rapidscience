@@ -38,11 +38,11 @@
             <li role="presentation"{% if tab == 'activity' %} class="active"{% endif %}>
                 <a href="{{ project.get_absolute_url }}">Activity</a>
             </li>
-            <li role="presentation"{% if tab == 'documents' %} class="active"{% endif %}>
-                <a href="{% url 'projects:projects_documents' pk=project.pk slug=project.slug %}">Documents &amp; Media</a>
-            </li>
             <li role="presentation"{% if tab == 'discussions' %} class="active"{% endif %}>
                 <a href="{% url 'projects:projects_discussions' pk=project.pk slug=project.slug %}">Discussions</a>
+            </li>
+            <li role="presentation"{% if tab == 'documents' %} class="active"{% endif %}>
+                <a href="{% url 'projects:projects_documents' pk=project.pk slug=project.slug %}">Documents &amp; Media</a>
             </li>
             <li role="presentation"{% if tab == 'bibliography' %} class="active"{% endif %}>
                 <a href="{% url 'projects:projects_bibliography' pk=project.pk slug=project.slug %}">Bibliography</a>
