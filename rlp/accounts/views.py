@@ -417,6 +417,12 @@ def profile(request, pk, tab='activity', template_name='accounts/profile.html', 
             filter_form = ActionObjectForm()
         context['activity_stream'] = activity_stream
         context['filter_form'] = filter_form
+    elif tab == 'discussions':
+        context['comment_list'] = user.get_discussions()
+        # TODO discussions aren't showing on the page
+        if request.is_ajax():
+            template_name = 'comments/list.html'
+        context['activity_stream'] = []
     if extra_context is not None:
         context.update(extra_context)
     return render(request, template_name, context)

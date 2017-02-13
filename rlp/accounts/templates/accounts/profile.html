@@ -1,5 +1,5 @@
 {% extends 'accounts/accounts_base.html' %}{% load bootstrap3 %}
-{% load cms_tags staticfiles %}
+{% load cms_tags staticfiles comments discussion_tags %}
 
 {% block page_title %}Profile for {{ user.get_full_name }}{% endblock page_title %}
 
@@ -14,6 +14,9 @@
   <ul class="nav nav-tabs" role="tablist">
     <li role="presentation"{% if tab == 'activity' %} class="active"{% endif %}>
       <a href="{{ user.get_absolute_url }}">Activity</a>
+    </li>
+    <li role="presentation"{% if tab == 'discussions' %} class="active"{% endif %}>
+      <a href="{% url 'profile_tab' pk=user.pk tab='discussions' %}">Discussions</a>
     </li>
     <li role="presentation"{% if tab == 'publications' %} class="active"{% endif %}>
       <a href="{% url 'profile_tab' pk=user.pk tab='publications' %}">Publications</a>
@@ -45,6 +48,25 @@
           <p>Coming soon!</p>
         {% endif %}
       {% endfor %}
+    {% endif %}
+  </div>
+  <div role="tabpanel" class="tab-pane{% if tab == 'discussions' %} active{% endif %}" id="discussions">
+    {% if tab == 'discussions' %}
+      {% bootstrap_messages %}
+        <div class="clearfix">
+          <button class="btn btn-primary pull-right" data-toggle="collapse" href="#topic-form">
+            New Discussion
+          </button>
+        </div>
+        <div id="topic-form" class="collapse">
+          <p>Start a discussion or post your ideas</p>
+          {% with button_label='Post' %}
+          {% render_comment_form for user %}
+          {% endwith %}
+        </div>
+      <hr>
+      {% render_comment_list for user %}
+      {% include page_template %}
     {% endif %}
   </div>
 </div>
