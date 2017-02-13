@@ -1,4 +1,5 @@
 from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models.lookups import DateTransform
@@ -73,3 +74,22 @@ class SharedContent(models.Model):
         ct_field='target_type',
         fk_field='target_id',
     )
+
+
+class SharedObjectMixin(models.Model):
+    class Meta:
+        abstract = True
+
+    _related = GenericRelation(
+        SharedContent,
+        content_type_field='target_type',
+        object_id_field='target_id',
+    )
+
+    def get_viewers(self):
+        refs = self._related.select_related('viewer_type').all()
+        return [r.viewer for r in refs]
+
+    def share_with(self, viewers):
+        for viewer in viewers:
+            SharedContent.objects.create(viewer=viewer, target=self)
