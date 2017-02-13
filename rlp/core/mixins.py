@@ -17,16 +17,15 @@ class SharesContentMixin(models.Model):
         object_id_field='viewer_id',
     )
 
-    def get_discussions(self):
-        discussion_type = ContentType.objects.get_for_model(ThreadedComment)
-        disc_refs = self._shared.select_related('target_type').filter(
-            target_type=discussion_type
+    def _get_shared_objects(self, type_class):
+        content_type = ContentType.objects.get_for_model(type_class)
+        refs = self._shared.select_related('target_type').filter(
+            target_type=content_type
         )
-        return [dr.target for dr in disc_refs]
+        return [r.target for r in refs]
+
+    def get_discussions(self):
+        return self._get_shared_objects(ThreadedComment)
 
     def get_casereports(self):
-        report_type = ContentType.objects.get_for_model(CaseReport)
-        cr_refs = self._shared.select_related('target_type').filter(
-            target_type=report_type
-        )
-        return [crr.target for crr in cr_refs]
+        return self._get_shared_objects(CaseReport)
