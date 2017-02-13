@@ -41,6 +41,9 @@
             <li role="presentation"{% if tab == 'discussions' %} class="active"{% endif %}>
                 <a href="{% url 'projects:projects_discussions' pk=project.pk slug=project.slug %}">Discussions</a>
             </li>
+            <li role="presentation"{% if tab == 'casereports' %} class="active"{% endif %}>
+                <a href="{% url 'projects:projects_casereports' pk=project.pk slug=project.slug %}">Case Reports</a>
+            </li>
             <li role="presentation"{% if tab == 'documents' %} class="active"{% endif %}>
                 <a href="{% url 'projects:projects_documents' pk=project.pk slug=project.slug %}">Documents &amp; Media</a>
             </li>
@@ -124,6 +127,20 @@
             <hr>
             {% include page_template %}
             {% endblock project_discussion %}
+          {% endif %}
+        </div>
+        <div role="tabpanel" class="tab-pane{% if tab == 'casereports' %} active{% endif %}" id="casereports">
+          {% if tab == 'casereports' %}
+            {% bootstrap_messages %}
+            {% block project_casereport %}
+            {% for report in case_reports %}
+            <p><a href="{% url 'casereport_detail' case_id=report.id title_slug=report.title|slugify %}">
+              {{ report.title }}
+            </a></p>
+            {% endfor %}
+            <hr>
+            {% include page_template %}
+            {% endblock project_casereport %}
           {% endif %}
         </div>
         <div role="tabpanel" class="tab-pane{% if tab == 'bibliography' %} active{% endif %}" id="bibliography">

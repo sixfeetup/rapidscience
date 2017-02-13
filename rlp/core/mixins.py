@@ -3,6 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 from .models import SharedContent
+from casereport.models import CaseReport
 from rlp.discussions.models import ThreadedComment
 
 
@@ -22,3 +23,10 @@ class SharesContentMixin(models.Model):
             target_type=discussion_type
         )
         return [dr.target for dr in disc_refs]
+
+    def get_casereports(self):
+        report_type = ContentType.objects.get_for_model(CaseReport)
+        cr_refs = self._shared.select_related('target_type').filter(
+            target_type=report_type
+        )
+        return [crr.target for crr in cr_refs]

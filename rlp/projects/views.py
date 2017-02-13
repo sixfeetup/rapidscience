@@ -72,6 +72,9 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
         if request.is_ajax():
             template_name = 'comments/list.html'
         context['page_template'] = 'comments/list.html'
+    elif tab == 'casereports':
+        context['activity_stream'] = []
+        context['case_reports'] = project.get_casereports()
     elif tab == 'bibliography':
         activity_stream = Action.objects.filter(
             action_object_content_type=ContentType.objects.get(app_label='bibliography', model='projectreference'),
