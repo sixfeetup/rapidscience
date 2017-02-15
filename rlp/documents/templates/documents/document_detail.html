@@ -1,7 +1,6 @@
-{% extends 'projects/projects_detail.html' %}{% load comments embed_video_tags %}
+{% extends 'home.html' %}{% load comments embed_video_tags %}
 
-{% block project_documents %}
-  <p><a href="{{ project.get_documents_url }}">&lt; Back to all documents</a></p>
+{% block main_content %}
   <p class="small">
     {% include 'actstream/_action_detail.html' with action=document.action_object_actions.first %}
   </p>
@@ -32,9 +31,6 @@
     </div>
     <div class="col-md-1">
       {% if obj.owner == request.user %}{% include 'forms/_edit_dropdown.html' with edit_url=obj.get_edit_url delete_url=obj.get_delete_url %}{% endif %}
-      {% if request.user.is_authenticated %}
-      {% include 'bookmarks/_form.html' with action=obj.action_object_actions.first %}
-      {% endif %}
     </div>
   </div>
   {% with tags=obj.tags.all %}
@@ -52,4 +48,4 @@
   <br>
   {% render_comment_list for obj %}
 {% endwith %}
-{% endblock project_documents %}
+{% endblock main_content %}

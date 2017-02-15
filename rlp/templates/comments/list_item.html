@@ -19,9 +19,6 @@
     </div>
     <div class="col-md-1">
       {% if comment.user == request.user %}{% include 'forms/_edit_dropdown.html' with edit_url=comment.get_edit_url delete_url=comment.get_delete_url %}{% endif %}
-      {% if request.user.is_authenticated %}
-      {% include 'bookmarks/_form.html' with action=comment.action_object_actions.first %}
-      {% endif %}
     </div>
   </div>
 

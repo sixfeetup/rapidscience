@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
+from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render, Http404
 from django.views.decorators.cache import never_cache
@@ -13,15 +14,13 @@ from taggit.models import Tag
 from rlp.discussions.models import ThreadedComment
 from .forms import FileForm, ImageForm, LinkForm, VideoForm
 from .models import Document
-from rlp.projects.models import Project
 
 
 @never_cache
 @login_required
-def add_document(request, pk, slug, doc_pk=None, template_name='documents/add_document.html'):
-    project = get_object_or_404(Project, pk=pk, slug=slug)
+def add_document(request, doc_pk=None, template_name='documents/add_document.html'):
     if doc_pk:
-        document = get_object_or_404(Document, pk=doc_pk, project=project)
+        document = get_object_or_404(Document, pk=doc_pk)
     else:
         document = None
     form_class = FileForm
@@ -45,7 +44,6 @@ def add_document(request, pk, slug, doc_pk=None, template_name='documents/add_do
             with transaction.atomic():
                 document = form.save(commit=False)
                 document.owner = request.user
-                document.project = project
                 document.save()
                 if tag_ids:
                     try:
@@ -58,13 +56,14 @@ def add_document(request, pk, slug, doc_pk=None, template_name='documents/add_do
                 if doc_pk:
                     message = "Updated successfully!"
                 else:
-                    new_action = action.send(request.user, verb='uploaded', action_object=document, target=project)
+                    # TODO notify based on document.get_viewers()
+                    # new_action = action.send(request.user, verb='uploaded', action_object=document, target=project)
                     message = "Your upload was successful!"
                     # Send email notification
-                    project.notify_members(
-                        '{}: A new document was added'.format(settings.SITE_PREFIX.upper()),
-                        {'action': new_action[0][1]}
-                    )
+                    # project.notify_members(
+                    #     '{}: A new document was added'.format(settings.SITE_PREFIX.upper()),
+                    #     {'action': new_action[0][1]}
+                    # )
                 messages.success(request, message)
             return redirect(document.get_absolute_url())
         else:
@@ -78,7 +77,6 @@ def add_document(request, pk, slug, doc_pk=None, template_name='documents/add_do
     context = {
         'form': form,
         'document': document,
-        'project': project,
         'tab': 'documents',
     }
     return render(request, template_name, context)
@@ -87,9 +85,8 @@ def add_document(request, pk, slug, doc_pk=None, template_name='documents/add_do
 @never_cache
 @login_required
 def add_link(request, pk, slug, doc_pk=None, template_name='documents/add_link.html'):
-    project = get_object_or_404(Project, pk=pk, slug=slug)
     if doc_pk:
-        document = get_object_or_404(Document, pk=doc_pk, project=project)
+        document = get_object_or_404(Document, pk=doc_pk)
     else:
         document = None
     if request.method == 'POST':
@@ -102,7 +99,6 @@ def add_link(request, pk, slug, doc_pk=None, template_name='documents/add_link.h
             with transaction.atomic():
                 link = form.save(commit=False)
                 link.owner = request.user
-                link.project = project
                 link.save()
                 if tag_ids:
                     try:
@@ -115,13 +111,14 @@ def add_link(request, pk, slug, doc_pk=None, template_name='documents/add_link.h
                 if doc_pk:
                     message = "Updated successfully!"
                 else:
-                    new_action = action.send(request.user, verb='added', action_object=link, target=project)
+                    # TODO notify based on document.get_viewers()
+                    # new_action = action.send(request.user, verb='added', action_object=link, target=project)
                     message = "Your link was successfully added!"
                     # Send email notification
-                    project.notify_members(
-                        '{}: A new link was added'.format(settings.SITE_PREFIX.upper()),
-                        {'action': new_action[0][1]}
-                    )
+                    # project.notify_members(
+                    #     '{}: A new link was added'.format(settings.SITE_PREFIX.upper()),
+                    #     {'action': new_action[0][1]}
+                    # )
                 messages.success(request, message)
             return redirect(link.get_absolute_url())
         else:
@@ -134,7 +131,6 @@ def add_link(request, pk, slug, doc_pk=None, template_name='documents/add_link.h
     context = {
         'form': form,
         'document': document,
-        'project': project,
         'tab': 'documents',
     }
     return render(request, template_name, context)
@@ -143,9 +139,8 @@ def add_link(request, pk, slug, doc_pk=None, template_name='documents/add_link.h
 @never_cache
 @login_required
 def add_video(request, pk, slug, doc_pk=None, template_name='documents/add_video.html'):
-    project = get_object_or_404(Project, pk=pk, slug=slug)
     if doc_pk:
-        document = get_object_or_404(Document, pk=doc_pk, project=project)
+        document = get_object_or_404(Document, pk=doc_pk)
     else:
         document = None
     if request.method == 'POST':
@@ -158,7 +153,6 @@ def add_video(request, pk, slug, doc_pk=None, template_name='documents/add_video
             with transaction.atomic():
                 video = form.save(commit=False)
                 video.owner = request.user
-                video.project = project
                 video.save()
                 if tag_ids:
                     try:
@@ -171,13 +165,14 @@ def add_video(request, pk, slug, doc_pk=None, template_name='documents/add_video
                 if doc_pk:
                     message = "Updated successfully!"
                 else:
-                    new_action = action.send(request.user, verb='added', action_object=video, target=project)
+                    # TODO notify based on document.get_viewers()
+                    # new_action = action.send(request.user, verb='added', action_object=video, target=project)
                     message = "Your video was successfully added!"
                     # Send email notification
-                    project.notify_members(
-                        '{}: A new video was added'.format(settings.SITE_PREFIX.upper()),
-                        {'action': new_action[0][1]}
-                    )
+                    # project.notify_members(
+                    #     '{}: A new video was added'.format(settings.SITE_PREFIX.upper()),
+                    #     {'action': new_action[0][1]}
+                    # )
                 messages.success(request, message)
             return redirect(video.get_absolute_url())
         else:
@@ -190,7 +185,6 @@ def add_video(request, pk, slug, doc_pk=None, template_name='documents/add_video
     context = {
         'form': form,
         'document': document,
-        'project': project,
         'tab': 'documents',
     }
     return render(request, template_name, context)
@@ -198,12 +192,10 @@ def add_video(request, pk, slug, doc_pk=None, template_name='documents/add_video
 
 @never_cache
 @login_required
-def document_detail(request, pk, slug, doc_pk, template_name='documents/document_detail.html'):
-    project = get_object_or_404(Project, pk=pk, slug=slug)
-    document = get_object_or_404(Document, pk=doc_pk, project=project)
+def document_detail(request, doc_pk, template_name='documents/document_detail.html'):
+    document = get_object_or_404(Document, pk=doc_pk)
     context = {
         'document': document,
-        'project': project,
         'tab': 'documents',
         'comment_list': document.discussions.all(),
     }
@@ -225,8 +217,7 @@ def document_edit(request, pk, slug, doc_pk, doc_type):
 @never_cache
 @login_required
 def document_delete(request, pk, slug, doc_pk, template_name='documents/delete.html'):
-    project = get_object_or_404(Project, pk=pk, slug=slug)
-    document = get_object_or_404(Document, pk=doc_pk, project=project)
+    document = get_object_or_404(Document, pk=doc_pk)
     if request.user != document.owner:
         messages.error(request, "You do not have permission to delete this.")
         return redirect(document.get_absolute_url())
@@ -247,10 +238,9 @@ def document_delete(request, pk, slug, doc_pk, template_name='documents/delete.h
                 qs_to_delete.delete()
             document.delete()
         messages.success(request, "Successfully deleted '{}'".format(title))
-        return redirect(project.get_documents_url())
+        return redirect(reverse('dashboard'))
     context = {
         'document': document,
-        'project': project,
         'tab': 'documents',
     }
     return render(request, template_name, context)

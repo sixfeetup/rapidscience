@@ -7,13 +7,11 @@ from polymorphic.models import PolymorphicModel
 from taggit.managers import TaggableManager
 
 from rlp.discussions.models import ThreadedComment
-from rlp.projects.models import Project
 
 
 class Document(PolymorphicModel):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    project = models.ForeignKey(Project)
     date_added = models.DateTimeField(auto_now_add=True, db_index=True)
     date_updated = models.DateTimeField(auto_now=True)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL)
@@ -32,27 +30,20 @@ class Document(PolymorphicModel):
 
     def get_absolute_url(self):
         from django.core.urlresolvers import reverse
-        return reverse('projects:document_detail', kwargs={
-            'pk': self.project.pk,
-            'slug': self.project.slug,
-            'doc_pk': self.pk
+        return reverse('documents:document_detail', kwargs={
+            'doc_pk': self.id,
         })
 
     def get_edit_url(self):
         from django.core.urlresolvers import reverse
-        return reverse('projects:document_edit', kwargs={
-            'pk': self.project.pk,
-            'slug': self.project.slug,
-            'doc_pk': self.pk,
-            'doc_type': self.polymorphic_ctype.model,
+        return reverse('documents:document_edit', kwargs={
+            'doc_pk': self.id,
         })
 
     def get_delete_url(self):
         from django.core.urlresolvers import reverse
-        return reverse('projects:document_delete', kwargs={
-            'pk': self.project.pk,
-            'slug': self.project.slug,
-            'doc_pk': self.pk
+        return reverse('documents:document_delete', kwargs={
+            'doc_pk': self.id,
         })
 
     @property

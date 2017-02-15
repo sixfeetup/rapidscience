@@ -71,13 +71,13 @@
             {% bootstrap_messages %}
             {% block project_documents %}
             <div>
-              <a href="{% url 'projects:add_document' pk=project.pk slug=project.slug %}" class="btn btn-primary">
+              <a href="{% url 'documents:add_document' %}" class="btn btn-primary">
                 Add File
               </a>
-              <a href="{% url 'projects:add_link' pk=project.pk slug=project.slug %}" class="btn btn-primary">
+              <a href="{% url 'documents:add_link' %}" class="btn btn-primary">
                 Add Link
               </a>
-              <a href="{% url 'projects:add_video' pk=project.pk slug=project.slug %}" class="btn btn-primary">
+              <a href="{% url 'documents:add_video' %}" class="btn btn-primary">
                 Add Video
               </a>
             </div>
@@ -94,7 +94,6 @@
                 {% with obj=working_document %}
                   {% if obj.owner == request.user %}
                     {% include 'forms/_edit_dropdown.html' with edit_url=obj.get_edit_url delete_url=obj.get_delete_url %}
-                    {% include 'bookmarks/_form.html' with action=obj.action_object_actions.first %}
                   {% endif %}
                 {% endwith %}
               </div>

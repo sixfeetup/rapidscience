@@ -19,9 +19,6 @@
     <li role="presentation"{% if tab == 'activity' %} class="active"{% endif %}>
       <a href="{% url 'dashboard' %}">Activity</a>
     </li>
-    <li role="presentation"{% if tab == 'bookmarks' %} class="active"{% endif %}>
-      <a href="{% url 'dashboard_bookmarks' %}">Bookmarks</a>
-    </li>
   </ul>
 </div>
 <div class="tab-content">
@@ -37,15 +34,6 @@
       <hr>
       {% include page_template %}
     {% endif %}
-  </div>
-  <div role="tabpanel" class="tab-pane{% if tab == 'bookmarks' %} active{% endif %}" id="bookmarks">
-     {% if tab == 'bookmarks' %}
-       {% if bookmarks or bookmarks_folders %}
-         {% include 'bookmarks/_bookmarks.html' %}
-       {% else %}
-         <p>You have not added any bookmarks yet.</p>
-       {% endif %}
-     {% endif %}
   </div>
 </div>
 {% endblock main_content %}

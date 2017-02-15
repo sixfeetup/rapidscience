@@ -13,7 +13,6 @@ urlpatterns = [
         views.projects_detail,
         {'tab': 'documents'},
         name='projects_documents'),
-    url(r'^(?P<pk>\d+)-(?P<slug>[\w\d-]+)/documents/', include('rlp.documents.urls')),
     url(r'^(?P<pk>\d+)-(?P<slug>[\w\d-]+)/discussions/$',
         views.projects_detail,
         {'tab': 'discussions'},

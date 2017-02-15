@@ -58,7 +58,7 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
         context['activity_stream'] = activity_stream
         context['filter_form'] = filter_form
     elif tab == 'documents':
-        working_documents = File.objects.filter(project=project, working_document=True)
+        working_documents = project.get_documents()
         activity_stream = Action.objects.filter(
             action_object_content_type__in=ContentType.objects.filter(app_label='documents'),
             target_object_id=project.id, target_content_type=project_ct

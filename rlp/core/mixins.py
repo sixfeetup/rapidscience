@@ -5,6 +5,7 @@ from django.db import models
 from .models import SharedContent
 from casereport.models import CaseReport
 from rlp.discussions.models import ThreadedComment
+from rlp.documents.models import Document
 
 
 class SharesContentMixin(models.Model):
@@ -29,3 +30,6 @@ class SharesContentMixin(models.Model):
 
     def get_casereports(self):
         return self._get_shared_objects(CaseReport)
+
+    def get_documents(self):
+        return self._get_shared_objects(Document)
