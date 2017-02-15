@@ -7,7 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 
 from django_comments.models import Comment
 
-from rlp.core.models import SharedContent
+from rlp.core.models import SharedObjectMixin
 
 
 def max_thread_level_for_content_type(content_type):
@@ -41,7 +41,7 @@ class ThreadedCommentManager(models.Manager):
         return qs
 
 
-class ThreadedComment(Comment):
+class ThreadedComment(Comment, SharedObjectMixin):
     title = models.CharField(max_length=255, blank=True)
     thread_id = models.IntegerField(default=0, db_index=True)
     parent_id = models.IntegerField(default=0)
@@ -71,11 +71,7 @@ class ThreadedComment(Comment):
             with atomic():
                 if self.id == self.parent_id:
                     # new top-level discussion
-                    shared = SharedContent(
-                        viewer=self.content_object,
-                        target=self,
-                    )
-                    shared.save()
+                    self.share_with([self.content_object])
                 super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
