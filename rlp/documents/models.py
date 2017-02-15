@@ -6,10 +6,11 @@ from embed_video.fields import EmbedVideoField
 from polymorphic.models import PolymorphicModel
 from taggit.managers import TaggableManager
 
+from rlp.core.models import SharedObjectMixin
 from rlp.discussions.models import ThreadedComment
 
 
-class Document(PolymorphicModel):
+class Document(PolymorphicModel, SharedObjectMixin):
     title = models.CharField(max_length=255)
     description = models.TextField()
     date_added = models.DateTimeField(auto_now_add=True, db_index=True)

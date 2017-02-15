@@ -14,6 +14,9 @@ from django.template.loader import render_to_string
 from django.conf import settings
 from django.utils.encoding import python_2_unicode_compatible
 
+from rlp.core.models import SharedObjectMixin
+
+
 __author__ = 'yaseen'
 
 
@@ -94,7 +97,7 @@ class AuthorizedRep(CRDBBase):
 
 
 @python_2_unicode_compatible
-class CaseReport(CRDBBase):
+class CaseReport(CRDBBase, SharedObjectMixin):
     title = models.CharField(max_length=200, null=True, blank=True)
     gender = models.CharField(max_length=20,
                               choices=GENDER,
