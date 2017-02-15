@@ -372,6 +372,18 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
             'activity_stream': activity_stream,
             'filter_form': filter_form,
         })
+    elif tab == 'discussions':
+        context['comment_list'] = request.user.get_discussions()
+        # TODO discussions aren't showing on the page
+        if request.is_ajax():
+            template_name = 'comments/list.html'
+        context['activity_stream'] = []
+    elif tab == 'casereports':
+        context['activity_stream'] = []
+        context['case_reports'] = request.user.get_casereports()
+    elif tab == 'documents':
+        context['activity_stream'] = []
+        context['working_documents'] = request.user.get_documents()
     if extra_context is not None:
         context.update(extra_context)
     return render(request, template_name, context)
@@ -414,18 +426,6 @@ def profile(request, pk, tab='activity', template_name='accounts/profile.html', 
             filter_form = ActionObjectForm()
         context['activity_stream'] = activity_stream
         context['filter_form'] = filter_form
-    elif tab == 'discussions':
-        context['comment_list'] = user.get_discussions()
-        # TODO discussions aren't showing on the page
-        if request.is_ajax():
-            template_name = 'comments/list.html'
-        context['activity_stream'] = []
-    elif tab == 'casereports':
-        context['activity_stream'] = []
-        context['case_reports'] = user.get_casereports()
-    elif tab == 'documents':
-        context['activity_stream'] = []
-        context['documents'] = user.get_documents()
     if extra_context is not None:
         context.update(extra_context)
     return render(request, template_name, context)

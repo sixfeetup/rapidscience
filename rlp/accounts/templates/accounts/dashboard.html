@@ -1,5 +1,5 @@
 {% extends 'accounts/accounts_base.html' %}
-{% load bootstrap3 cms_tags staticfiles %}
+{% load bootstrap3 cms_tags staticfiles comments discussion_tags %}
 
 {% block page_title %}Profile{% endblock page_title %}
 
@@ -19,6 +19,15 @@
     <li role="presentation"{% if tab == 'activity' %} class="active"{% endif %}>
       <a href="{% url 'dashboard' %}">Activity</a>
     </li>
+    <li role="presentation"{% if tab == 'discussions' %} class="active"{% endif %}>
+      <a href="{% url 'dashboard_tab' tab='discussions' %}">Discussions</a>
+    </li>
+    <li role="presentation"{% if tab == 'casereports' %} class="active"{% endif %}>
+      <a href="{% url 'dashboard_tab' tab='casereports' %}">Case Reports</a>
+    </li>
+    <li role="presentation"{% if tab == 'documents' %} class="active"{% endif %}>
+      <a href="{% url 'dashboard_tab' tab='documents' %}">Documents &amp; Media</a>
+    </li>
   </ul>
 </div>
 <div class="tab-content">
@@ -32,6 +41,73 @@
         <input class="profile-update btn btn-primary" type="submit" value="Filter"/>
       </form>
       <hr>
+      {% include page_template %}
+    {% endif %}
+  </div>
+  <div role="tabpanel" class="tab-pane{% if tab == 'discussions' %} active{% endif %}" id="discussions">
+    {% if tab == 'discussions' %}
+      {% bootstrap_messages %}
+        <div class="clearfix">
+          <button class="btn btn-primary pull-right" data-toggle="collapse" href="#topic-form">
+            New Discussion
+          </button>
+        </div>
+        <div id="topic-form" class="collapse">
+          <p>Start a discussion or post your ideas</p>
+          {% with button_label='Post' %}
+          {% render_comment_form for user %}
+          {% endwith %}
+        </div>
+      <hr>
+      {% render_comment_list for user %}
+      {% include page_template %}
+    {% endif %}
+  </div>
+  <div role="tabpanel" class="tab-pane{% if tab == 'casereports' %} active{% endif %}" id="casereports">
+    {% if tab == 'casereports' %}
+      {% bootstrap_messages %}
+      {% for report in case_reports %}
+      <p><a href="{% url 'casereport_detail' case_id=report.id title_slug=report.title|slugify %}">
+        {{ report.title }}
+      </a></p>
+      {% endfor %}
+      <hr>
+      {% include page_template %}
+    {% endif %}
+  </div>
+  <div role="tabpanel" class="tab-pane{% if tab == 'documents' %} active{% endif %}" id="dashboard">
+    {% if tab == 'documents' %}
+      <div>
+        <a href="{% url 'documents:add_document' %}" class="btn btn-primary">
+          Add File
+        </a>
+        <a href="{% url 'documents:add_link' %}" class="btn btn-primary">
+          Add Link
+        </a>
+        <a href="{% url 'documents:add_video' %}" class="btn btn-primary">
+          Add Video
+        </a>
+      </div>
+
+      <hr>
+
+      {% for working_document in working_documents %}
+      <div class="row">
+        <div class="col-md-11">
+          <h3><a href="{{ working_document.get_absolute_url }}">{{ working_document.title }}</a></h3>
+          <p>{{ working_document.description|urlize }}</p>
+        </div>
+        <div class="col-md-1">
+          {% with obj=working_document %}
+            {% if obj.owner == request.user %}
+              {% include 'forms/_edit_dropdown.html' with edit_url=obj.get_edit_url delete_url=obj.get_delete_url %}
+            {% endif %}
+          {% endwith %}
+        </div>
+      </div>
+      <hr>
+      {% endfor %}
+
       {% include page_template %}
     {% endif %}
   </div>

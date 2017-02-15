@@ -6,6 +6,9 @@ from . import views
 
 urlpatterns = [
     url(r'^$', views.dashboard, name='dashboard'),
+    url(r'^dashboard/(?P<tab>\w+)/$',
+        views.dashboard,
+        name='dashboard_tab'),
     url(r'^bookmarks/$',
         views.dashboard,
         {'tab': 'bookmarks'},
