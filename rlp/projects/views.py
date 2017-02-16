@@ -47,9 +47,7 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
             template_name = 'actstream/_activity.html'
         return render(request, template_name, context)
     if tab == 'activity':
-        activity_stream = Action.objects.filter(
-            target_object_id=project.id, target_content_type=project_ct
-        )
+        activity_stream = project.get_activity_stream()
         if 'content_type' in request.GET:
             filter_form = ActionObjectForm(request.GET)
             if filter_form.is_valid() and filter_form.cleaned_data['content_type']:
@@ -61,9 +59,8 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
         context['filter_form'] = filter_form
     elif tab == 'documents':
         working_documents = project.get_shared_content(Document)
-        activity_stream = Action.objects.filter(
-            action_object_content_type__in=ContentType.objects.filter(app_label='documents'),
-            target_object_id=project.id, target_content_type=project_ct
+        activity_stream = project.get_activity_stream(
+            Document
         )
         if working_documents:
             activity_stream = activity_stream.exclude(action_object_object_id__in=[w.id for w in working_documents])
@@ -75,7 +72,9 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
             template_name = 'comments/list.html'
         context['page_template'] = 'comments/list.html'
     elif tab == 'casereports':
-        context['activity_stream'] = []
+        context['activity_stream'] = project.get_activity_stream(
+            CaseReport
+        )
         context['case_reports'] = project.get_shared_content(CaseReport)
     elif tab == 'bibliography':
         activity_stream = Action.objects.filter(
