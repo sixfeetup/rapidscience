@@ -24,9 +24,12 @@ from actstream.models import Action
 from el_pagination.decorators import page_template
 from formtools.wizard.views import SessionWizardView
 
+from casereport.models import CaseReport
 from rlp.bibliography.models import fetch_publications_for_user
 from rlp.core.email import send_transactional_mail
 from rlp.core.views import MESSAGES_DEFAULT_FORM_ERROR
+from rlp.discussions.models import ThreadedComment
+from rlp.documents.models import Document
 from rlp.projects.models import Project, ProjectMembership
 from rlp.search.forms import ActionObjectForm, ProjectContentForm
 
@@ -373,17 +376,19 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
             'filter_form': filter_form,
         })
     elif tab == 'discussions':
-        context['comment_list'] = request.user.get_discussions()
+        context['comment_list'] = request.user.get_shared_content(
+            ThreadedComment
+        )
         # TODO discussions aren't showing on the page
         if request.is_ajax():
             template_name = 'comments/list.html'
         context['activity_stream'] = []
     elif tab == 'casereports':
         context['activity_stream'] = []
-        context['case_reports'] = request.user.get_casereports()
+        context['case_reports'] = request.user.get_shared_content(CaseReport)
     elif tab == 'documents':
         context['activity_stream'] = []
-        context['working_documents'] = request.user.get_documents()
+        context['working_documents'] = request.user.get_shared_content(Document)
     if extra_context is not None:
         context.update(extra_context)
     return render(request, template_name, context)

@@ -5,7 +5,9 @@ from django.views.decorators.cache import never_cache
 from actstream.models import Action
 from el_pagination.decorators import page_template
 
-from rlp.documents.models import File
+from casereport.models import CaseReport
+from rlp.discussions.models import ThreadedComment
+from rlp.documents.models import Document
 from rlp.search.forms import ActionObjectForm
 from .models import Project
 
@@ -58,7 +60,7 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
         context['activity_stream'] = activity_stream
         context['filter_form'] = filter_form
     elif tab == 'documents':
-        working_documents = project.get_documents()
+        working_documents = project.get_shared_content(Document)
         activity_stream = Action.objects.filter(
             action_object_content_type__in=ContentType.objects.filter(app_label='documents'),
             target_object_id=project.id, target_content_type=project_ct
@@ -68,13 +70,13 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
         context['activity_stream'] = activity_stream
         context['working_documents'] = working_documents
     elif tab == 'discussions':
-        context['comment_list'] = project.get_discussions()
+        context['comment_list'] = project.get_shared_content(ThreadedComment)
         if request.is_ajax():
             template_name = 'comments/list.html'
         context['page_template'] = 'comments/list.html'
     elif tab == 'casereports':
         context['activity_stream'] = []
-        context['case_reports'] = project.get_casereports()
+        context['case_reports'] = project.get_shared_content(CaseReport)
     elif tab == 'bibliography':
         activity_stream = Action.objects.filter(
             action_object_content_type=ContentType.objects.get(app_label='bibliography', model='projectreference'),
