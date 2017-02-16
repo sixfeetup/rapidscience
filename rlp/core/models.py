@@ -90,6 +90,21 @@ class SharedObjectMixin(models.Model):
         refs = self._related.select_related('viewer_type').all()
         return [r.viewer for r in refs]
 
+    def get_viewers_as_users(self):
+        '''resolve group viewers into lists of individuals'''
+        users = set()
+        for vwr in self.get_viewers():
+            if hasattr(vwr, 'users'):
+                # project/group
+                users.update(vwr.users.all())
+            else:
+                # individual user
+                users.add(vwr)
+        return users
+
+    def is_shared_with_user(self, user):
+        return user in self.get_viewers_as_users()
+
     def share_with(self, viewers):
         for viewer in viewers:
             SharedContent.objects.create(viewer=viewer, target=self)
