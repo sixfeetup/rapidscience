@@ -84,7 +84,7 @@ def add_document(request, doc_pk=None, template_name='documents/add_document.htm
 
 @never_cache
 @login_required
-def add_link(request, pk, slug, doc_pk=None, template_name='documents/add_link.html'):
+def add_link(request, doc_pk=None, template_name='documents/add_link.html'):
     if doc_pk:
         document = get_object_or_404(Document, pk=doc_pk)
     else:
@@ -138,7 +138,7 @@ def add_link(request, pk, slug, doc_pk=None, template_name='documents/add_link.h
 
 @never_cache
 @login_required
-def add_video(request, pk, slug, doc_pk=None, template_name='documents/add_video.html'):
+def add_video(request, doc_pk=None, template_name='documents/add_video.html'):
     if doc_pk:
         document = get_object_or_404(Document, pk=doc_pk)
     else:
@@ -204,19 +204,19 @@ def document_detail(request, doc_pk, template_name='documents/document_detail.ht
 
 @never_cache
 @login_required
-def document_edit(request, pk, slug, doc_pk, doc_type):
+def document_edit(request, doc_pk, doc_type):
     if doc_type in ['file', 'image']:
-        return add_document(request, pk, slug, doc_pk)
+        return add_document(request, doc_pk)
     elif doc_type == 'link':
-        return add_link(request, pk, slug, doc_pk)
+        return add_link(request, doc_pk)
     elif doc_type == 'video':
-        return add_video(request, pk, slug, doc_pk)
+        return add_video(request, doc_pk)
     raise Http404
 
 
 @never_cache
 @login_required
-def document_delete(request, pk, slug, doc_pk, template_name='documents/delete.html'):
+def document_delete(request, doc_pk, template_name='documents/delete.html'):
     document = get_object_or_404(Document, pk=doc_pk)
     if request.user != document.owner:
         messages.error(request, "You do not have permission to delete this.")
