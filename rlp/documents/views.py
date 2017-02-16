@@ -56,8 +56,11 @@ def add_document(request, doc_pk=None, template_name='documents/add_document.htm
                 if doc_pk:
                     message = "Updated successfully!"
                 else:
-                    # TODO notify based on document.get_viewers()
-                    # new_action = action.send(request.user, verb='uploaded', action_object=document, target=project)
+                    new_action = action.send(
+                        request.user,
+                        verb='uploaded',
+                        action_object=document,
+                    )
                     message = "Your upload was successful!"
                     # Send email notification
                     # project.notify_members(
@@ -111,8 +114,11 @@ def add_link(request, doc_pk=None, template_name='documents/add_link.html'):
                 if doc_pk:
                     message = "Updated successfully!"
                 else:
-                    # TODO notify based on document.get_viewers()
-                    # new_action = action.send(request.user, verb='added', action_object=link, target=project)
+                    new_action = action.send(
+                        request.user,
+                        verb='added',
+                        action_object=link,
+                    )
                     message = "Your link was successfully added!"
                     # Send email notification
                     # project.notify_members(
@@ -165,8 +171,11 @@ def add_video(request, doc_pk=None, template_name='documents/add_video.html'):
                 if doc_pk:
                     message = "Updated successfully!"
                 else:
-                    # TODO notify based on document.get_viewers()
-                    # new_action = action.send(request.user, verb='added', action_object=video, target=project)
+                    new_action = action.send(
+                        request.user,
+                        verb='added',
+                        action_object=video,
+                    )
                     message = "Your video was successfully added!"
                     # Send email notification
                     # project.notify_members(
