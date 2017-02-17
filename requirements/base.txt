@@ -20,6 +20,7 @@ django-embed-video==1.1.0
 django-environ==0.4.1
 django-filer==1.2.6rc2
 django-formtools==1.0
+django-fsm==2.4.0
 django-haystack==2.5.1
 django-inplaceedit-bootstrap==0.2.1
 django-inplaceedit-extra-fields==0.6.1

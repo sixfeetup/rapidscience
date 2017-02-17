@@ -1,5 +1,7 @@
 from django.conf import settings
 from django.db import models
+from django_fsm import FSMField
+from django_fsm import transition
 
 from filer.fields.image import FilerImageField
 from menus.menu_pool import menu_pool
@@ -31,10 +33,17 @@ class Role(models.Model):
         return self.title
 
 
+PROJECT_STATES = (
+    ('open', 'Open'),
+    ('closed', 'Closed'),
+)
+
+
 class Project(SEOMixin, SharesContentMixin):
     cover_photo = FilerImageField(null=True, blank=True, related_name="project_photo")
     institution = models.ForeignKey(Institution, blank=True, null=True)
     topic = models.ForeignKey(Topic, blank=True, null=True)
+    state = FSMField(choices=PROJECT_STATES, default='open')
     approval_required = models.BooleanField(default=True,
                                             help_text='If checked, registrants must be approved before joining.')
     auto_opt_in = models.BooleanField('Automatically opt-in members', default=False,
@@ -89,6 +98,15 @@ class Project(SEOMixin, SharesContentMixin):
         # on save.
         menu_pool.clear()
         super().save(*args, **kwargs)
+
+    @transition(field=state, source='closed', target='open')
+    def open_group(self):
+        pass
+
+    @transition(field=state, source='open', target='closed')
+    def close_group(self):
+        # TODO should all shared content be taken from other groups/users?
+        pass
 
 
 
