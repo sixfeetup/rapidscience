@@ -58,7 +58,10 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
         context['activity_stream'] = activity_stream
         context['filter_form'] = filter_form
     elif tab == 'documents':
-        working_documents = project.get_shared_content(Document)
+        working_documents = [
+            doc for doc in project.get_shared_content(Document)
+            if doc.working_document
+        ]
         activity_stream = project.get_activity_stream(
             Document
         )
