@@ -1,12 +1,13 @@
 from actstream.models import Action
 from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
-from django.db import models
+from django.db.models import Model
+from django.db.models import Q
 
 from .models import SharedContent
 
 
-class SharesContentMixin(models.Model):
+class SharesContentMixin(Model):
     class Meta:
         abstract = True
 
@@ -28,9 +29,14 @@ class SharesContentMixin(models.Model):
 
     def get_activity_stream(self, type_class=None):
         shared = self.get_shared_content(type_class)
-        obj_ids = [obj.id for obj in shared]
-        obj_types = [ContentType.objects.get_for_model(obj) for obj in shared]
-        return Action.objects.filter(
-            action_object_object_id__in=obj_ids,
-            action_object_content_type__in=obj_types,
-        )
+        if not shared:
+            # the empty query would end up returning all rows
+            # so we return "nothing" explicitly
+            return Action.objects.none()
+        query = Q()
+        for obj in shared:
+            obj_type = ContentType.objects.get_for_model(obj)
+            q = Q(action_object_object_id=obj.id) & \
+                Q(action_object_content_type=obj_type)
+            query.add(q, Q.OR)
+        return Action.objects.filter(query)
