@@ -34,7 +34,7 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
     if extra_context is not None:
         context.update(extra_context)
     # Only show the bibliography to anonymous users
-    if request.user.is_anonymous() or (project.approval_required and not request.user.can_access_all_projects):
+    if request.user.is_anonymous() or (project.approval_required and not request.user.can_access_project(project)):
         activity_stream = Action.objects.filter(
             action_object_content_type=ContentType.objects.get(app_label='bibliography', model='projectreference'),
             target_object_id=project.id, target_content_type=project_ct

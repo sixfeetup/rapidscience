@@ -140,8 +140,12 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
 
     @property
     def can_access_all_projects(self):
-        # If the user belongs to a single 'private' project or is an admin, they can access any project on the site
-        return any(self.projectmembership_set.values_list('project__approval_required', flat=True)) or self.is_staff
+        # If the user is an admin, they can access any project on the site
+        return self.is_staff
+
+    def can_access_project(self, project):
+        # if the user belongs to the project, they have access
+        return self.is_staff or self in project.users.all()
 
 
 class UserLogin(models.Model):
