@@ -73,7 +73,6 @@ INSTALLED_APPS = (
     'djangocms_link',
     'djangocms_text_ckeditor',
     'django_comments',
-    'django_fsm',
     'el_pagination',
     'embed_video',
     'polymorphic',
