@@ -43,6 +43,11 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
             return redirect(reverse('login'))
         if not request.user.can_access_project(project):
             raise PermissionDenied
+    # determine if interaction will be allowed
+    context['user_interaction'] = (
+        hasattr(request.user, 'can_access_project') and
+        request.user.can_access_project(project)
+    )
     if tab == 'activity':
         activity_stream = project.get_activity_stream()
         if 'content_type' in request.GET:

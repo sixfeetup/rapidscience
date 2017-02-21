@@ -69,7 +69,7 @@
         <div role="tabpanel" class="tab-pane{% if tab == 'documents' %} active{% endif %}" id="documents">
           {% if tab == 'documents' %}
             {% bootstrap_messages %}
-            {% block project_documents %}
+            {% if user_interaction %}
             <div>
               <a href="{% url 'documents:add_document' %}" class="btn btn-primary">
                 Add File
@@ -83,6 +83,7 @@
             </div>
 
             <hr>
+            {% endif %}
 
             {% for working_document in working_documents %}
             <div class="row">
@@ -102,13 +103,12 @@
             {% endfor %}
 
             {% include page_template %}
-            {% endblock project_documents %}
           {% endif %}
         </div>
         <div role="tabpanel" class="tab-pane{% if tab == 'discussions' %} active{% endif %}" id="discussions">
           {% if tab == 'discussions' %}
             {% bootstrap_messages %}
-            {% block project_discussion %}
+            {% if user_interaction %}
             {% with object=project %}
               <div class="clearfix">
                 <button class="btn btn-primary pull-right" data-toggle="collapse" href="#topic-form">
@@ -124,8 +124,8 @@
 
             {% endwith %}
             <hr>
+            {% endif %}
             {% include page_template %}
-            {% endblock project_discussion %}
           {% endif %}
         </div>
         <div role="tabpanel" class="tab-pane{% if tab == 'casereports' %} active{% endif %}" id="casereports">
@@ -145,15 +145,15 @@
         <div role="tabpanel" class="tab-pane{% if tab == 'bibliography' %} active{% endif %}" id="bibliography">
           {% if tab == 'bibliography' %}
             {% bootstrap_messages %}
-            {% block project_bibliography %}
+            {% if user_interaction %}
             <div>
               <a role="button" href="{% url 'projects:reference_search' pk=project.pk slug=project.slug %}" class="btn btn-primary">
                 Add Reference
               </a>
             </div>
-              <hr>
+            <hr>
+            {% endif %}
             {% include page_template %}
-            {% endblock project_bibliography %}
           {% endif %}
         </div>
     </div>
