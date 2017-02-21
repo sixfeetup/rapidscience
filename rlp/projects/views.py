@@ -1,5 +1,9 @@
 from django.contrib.contenttypes.models import ContentType
-from django.shortcuts import render, get_object_or_404
+from django.core.exceptions import PermissionDenied
+from django.core.urlresolvers import reverse
+from django.shortcuts import get_object_or_404
+from django.shortcuts import redirect
+from django.shortcuts import render
 from django.views.decorators.cache import never_cache
 
 from actstream.models import Action
@@ -33,19 +37,12 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
     # This must come first so we can override the ``page_template`` context variable
     if extra_context is not None:
         context.update(extra_context)
-    # Only show the bibliography to anonymous users
-    if request.user.is_anonymous() or (project.approval_required and not request.user.can_access_project(project)):
-        activity_stream = Action.objects.filter(
-            action_object_content_type=ContentType.objects.get(app_label='bibliography', model='projectreference'),
-            target_object_id=project.id, target_content_type=project_ct
-        )
-        context['activity_stream'] = activity_stream
-        # Set the tab so the snippet label 'Reference' isn't displayed
-        context['tab'] = 'bibliography'
-        template_name = 'projects/projects_detail_public.html'
-        if request.is_ajax():
-            template_name = 'actstream/_activity.html'
-        return render(request, template_name, context)
+    # Hide closed group information from non-members
+    if project.approval_required:
+        if request.user.is_anonymous():
+            return redirect(reverse('login'))
+        if not request.user.can_access_project(project):
+            raise PermissionDenied
     if tab == 'activity':
         activity_stream = project.get_activity_stream()
         if 'content_type' in request.GET:
