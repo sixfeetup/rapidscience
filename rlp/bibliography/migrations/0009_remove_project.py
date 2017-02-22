@@ -23,6 +23,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('bibliography', '0008_referenceshare'),
+        ('core', '0002_shared_content'),
     ]
 
     operations = [
