@@ -4,6 +4,7 @@ import re
 import requests
 
 from django.conf import settings
+from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.postgres.fields import JSONField
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
@@ -15,8 +16,9 @@ from taggit.managers import TaggableManager
 from taggit.models import Tag
 
 from rlp.accounts.models import User
-from . import choices
+from rlp.discussions.models import ThreadedComment
 from rlp.projects.models import Project
+from . import choices
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +33,6 @@ class Reference(models.Model):
     pubmed_id = models.CharField(max_length=100, blank=True, db_index=True)
     doi = models.CharField(max_length=100, blank=True, db_index=True)
     source = models.CharField(max_length=25, db_index=True, choices=choices.SOURCE_CHOICES)
-    project = models.ManyToManyField(Project, through='ProjectReference')
     authors = models.ManyToManyField(User, through='Publication')
     raw_data = JSONField()
     parsed_data = JSONField(default=dict)
@@ -77,10 +78,13 @@ class ReferenceShare(models.Model):
 
 class ProjectReference(models.Model):
     reference = models.ForeignKey(Reference, on_delete=models.CASCADE)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     date_added = models.DateTimeField(auto_now_add=True, db_index=True)
     date_updated = models.DateTimeField(auto_now=True)
+    discussions = GenericRelation(
+        ThreadedComment,
+        object_id_field='object_pk',
+    )
 
     tags = TaggableManager()
 
@@ -88,9 +92,7 @@ class ProjectReference(models.Model):
         verbose_name = 'Reference'
 
     def get_absolute_url(self):
-        return reverse('projects:reference_detail', kwargs={
-            'pk': self.project.pk,
-            'slug': self.project.slug,
+        return reverse('bibliography:reference_detail', kwargs={
             'reference_pk': self.reference.pk,
         })
 
@@ -98,16 +100,12 @@ class ProjectReference(models.Model):
         # Don't provide an edit url for Pubmed/Crossref if there aren't any tags to add (there's nothing else to edit)
         if self.reference.source != choices.MEMBER and not Tag.objects.count():
             return
-        return reverse('projects:reference_edit', kwargs={
-            'pk': self.project.pk,
-            'slug': self.project.slug,
+        return reverse('bibliography:reference_edit', kwargs={
             'reference_pk': self.reference.pk,
         })
 
     def get_delete_url(self):
-        return reverse('projects:reference_delete', kwargs={
-            'pk': self.project.pk,
-            'slug': self.project.slug,
+        return reverse('bibliography:reference_delete', kwargs={
             'reference_pk': self.reference.pk,
         })
 

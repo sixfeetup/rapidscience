@@ -1,6 +1,6 @@
-{% extends 'projects/projects_detail.html' %}
+{% extends 'home.html' %}
 
-{% block project_bibliography %}
+{% block main_content %}
 <h4>{{ obj.reference.title }}</h4>
 <form method="post" action="">
   {% csrf_token %}
@@ -17,4 +17,4 @@
     Cancel
   </a>
 </form>
-{% endblock project_bibliography %}
+{% endblock main_content %}

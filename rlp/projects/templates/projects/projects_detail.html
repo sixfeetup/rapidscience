@@ -147,7 +147,7 @@
             {% bootstrap_messages %}
             {% if user_interaction %}
             <div>
-              <a role="button" href="{% url 'projects:reference_search' pk=project.pk slug=project.slug %}" class="btn btn-primary">
+              <a role="button" href="{% url 'bibliography:reference_search' %}" class="btn btn-primary">
                 Add Reference
               </a>
             </div>

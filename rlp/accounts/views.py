@@ -395,6 +395,14 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
             Document
         )
         context['working_documents'] = request.user.get_shared_content(Document)
+    elif tab == 'bibliography':
+        activity_stream = request.user.get_activity_stream(
+            ContentType.objects.get(
+                app_label='bibliography',
+                model='projectreference',
+            )
+        )
+        context['activity_stream'] = activity_stream
     if extra_context is not None:
         context.update(extra_context)
     return render(request, template_name, context)

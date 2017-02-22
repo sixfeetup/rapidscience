@@ -28,6 +28,9 @@
     <li role="presentation"{% if tab == 'documents' %} class="active"{% endif %}>
       <a href="{% url 'dashboard_tab' tab='documents' %}">Documents &amp; Media</a>
     </li>
+    <li role="presentation"{% if tab == 'bibliography' %} class="active"{% endif %}>
+      <a href="{% url 'dashboard_tab' tab='bibliography' %}">Bibliography</a>
+    </li>
   </ul>
 </div>
 <div class="tab-content">
@@ -108,6 +111,13 @@
       <hr>
       {% endfor %}
 
+      {% include page_template %}
+    {% endif %}
+  </div>
+  <div role="tabpanel" class="tab-pane{% if tab == 'bibliography' %} active{% endif %}" id="bibliography">
+    {% if tab == 'bibliography' %}
+      {% bootstrap_messages %}
+      <hr>
       {% include page_template %}
     {% endif %}
   </div>

@@ -3,6 +3,7 @@ from django.conf.urls import url
 from . import views
 
 
+app_name = 'bibliography'
 urlpatterns = [
     url(r'search/$', views.reference_search, name='reference_search'),
     url(r'add/book/$', views.add_book, name='add_book'),

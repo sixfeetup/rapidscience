@@ -46,6 +46,7 @@ urlpatterns = [
     url(r'^inplaceeditform/', include('inplaceeditform.urls')),
     url(r'^discussions/', include('rlp.discussions.urls_edit_delete')),
     url(r'^documents/', include('rlp.documents.urls')),
+    url(r'^bibliography/', include('rlp.bibliography.urls')),
     url(r'^', include('cms.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

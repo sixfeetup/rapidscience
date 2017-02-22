@@ -25,7 +25,6 @@ urlpatterns = [
         views.projects_detail,
         {'tab': 'bibliography'},
         name='projects_bibliography'),
-    url(r'^(?P<pk>\d+)-(?P<slug>[\w\d-]+)/bibliography/', include('rlp.bibliography.urls')),
     url(r'^(?P<pk>\d+)-(?P<slug>[\w\d-]+)/members/$',
         views.projects_members,
         name='projects_members'),
