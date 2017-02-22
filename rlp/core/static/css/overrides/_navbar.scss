@@ -238,10 +238,32 @@
     margin: ($navbar-padding-vertical / 2) (-$navbar-padding-horizontal);
 
     > li > a {
+        border-top: 3px solid #332f2d;
         padding-top: 10px;
         padding-bottom: 10px;
         line-height: $line-height-computed;
+        -webkit-transition: border-top-color .5s;
+        -moz-transition: border-top-color .5s;
+        -ms-transition: border-top-color .5s;
+        -o-transition: border-top-color .5s;
+        transition: border-top-color .5s;
+
+        &:hover,
+        &:focus {
+            border-top-color: $navbar-default-color;
+            -webkit-transition: border-top-color .5s;
+            -moz-transition: border-top-color .5s;
+            -ms-transition: border-top-color .5s;
+            -o-transition: border-top-color .5s;
+            transition: border-top-color .5s;
+        }
+
     }
+
+    .search-icon {
+        border: none;
+    }
+
 
     @media (max-width: $grid-float-breakpoint-max) {
         // Dropdowns get custom display when collapsed
