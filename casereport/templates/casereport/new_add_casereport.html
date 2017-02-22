@@ -12,7 +12,6 @@
     <!-- Latest compiled and minified CSS -->
 
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-      <link rel="stylesheet" href="{{STATIC_URL}}css/style.css">
       <link rel="stylesheet" href="{{STATIC_URL}}font-awesome/css/font-awesome.css">
 
       <link rel="stylesheet" href="{{STATIC_URL}}css/jquery-ui.css" />
@@ -38,248 +37,68 @@
 
   <div class="container">
       <div class="inside-wrapper">
-      <div  class="form submit-form">
-          <h3>Submit a New Case Report</h3>
+      <div class="form submit-form">
 
     		<form id="caseform" name="caseform" action="{% url 'add_casereport' %}" method="post" enctype="multipart/form-data" >
                 {% csrf_token %}
+                
+                <h4><label for="title">Case Title</label></h4>
+                <input name="title" value="" type="text" class="form-control" id="casetitle">
 
-        <h4 class="title-name">Physician Information</h4>
-            <br />
-                            <div class="required-message">
-                                <p>Please fill the fields marked with asterisk(*).</p>
-                            </div>
-        <div class="physician-div">
-                <div class="row">
-                      <div class="form-group col-xs-6">
-                            <label class="required" >Author/Primary Contact:</label>
-                            <input name="physician" value="{{ physician }}"  type="text" class="form-control placeholder" id="physician_name" placeholder_text="Name">
-                        <div class="physician-message">
-                             <p>This field is required.</p>
-                            </div>
-                      </div>
-
-
-
-                      <div class="form-group col-xs-6">
-                            <label class="required" >Email:</label>
-                            <input name="email" value="{{ email }}"  type="EMAIL" class="form-control placeholder" id="physician_email" placeholder_text="Email">
-                            <div class="mail-message">
-                                <p>Email is required.</p>
-                            </div>
-                          <div class="email-message">
-                                <p>Please enter a valid email.</p>
-                            </div>
-                      </div>
-
+                <h4 class="title-name">Primary Author/Contact</h4>
+                <div class="required-message">
+                    <p>Please fill the fields marked with asterisk(*).</p>
                 </div>
-            </div>
-
-            <i class="fa fa-plus"></i><a class="add_phy_button">Add More</a>
-<br/>
-    <br/>
-                <div class="form-group">
-                      <label class="required" >Institution of Primary Author/Contact:</label>
-                      <input name="institution" value="{{ institution }}"  type="text" class="form-control placeholder" id="institution" placeholder_text="Institution Name">
-                            <div class="institute-message">
-                             <p>This field is required.</p>
-                            </div>
-                </div>
-                <div class="row">
-                  <div class="form-group col-xs-6">
-                        <label class="required" >City:</label>
-                        <input name="city" value="{{ city }}"  type="text" class="form-control placeholder" id="city" placeholder_text="City">
-                            <div class="city-message">
-                             <p>This field is required.</p>
-                            </div>
+                <div>
+                    <label class="required">Author/Primary Contact</label>
+                    <input name="physician" value="{{ physician }}"  type="text" class="form-control" id="physician_name">
+                    <div class="physician-message">
+                        <p>This field is required.</p>
+                    </div>
+                    
+                    <label class="required" for="physicial_email">Additional Authorized Email</label>
+                    <input name="email" value="{{ email }}"  type="EMAIL" class="form-control" id="physician_email">
+                    <div class="helpText">
+                        Healthcare professional or administrator authorized to edit this case report only
+                    </div>
+                    <div class="mail-message">
+                        <p>Email is required.</p>
+                    </div>
+                  <div class="email-message">
+                        <p>Please enter a valid email.</p>
                   </div>
-                  <div class="form-group col-xs-6">
-                        <label class="required">Country:</label>
+              </div>
+              
+              <h4>Co-Authors</h4>
+              <div class="physician-div">
+              </div>
 
-                        <select name="physician_country" id="physician_country" class=" form-control" >
-                          <option value=" " disabled selected>Select Country</option>
-                          {% for key, value in countries %}
-                              <option value="{{ key }}">{{ value }}</option>
-                          {% endfor %}
-                        </select>
-                            <div class="country-message">
-                             <p>Select country from the list.</p>
-                            </div>
-                  </div>
-                </div>
+              <a class="add_phy_button" href="#"><i class="fa fa-plus"></i> Add co-author</a>
 
-
-            <div class="authors-div row">
-            <div class="form-group col-md-8 col-xs-8 ">
-              <label >Authorized Email:</label>
-              <input name="author" value="{{ author }}"  type="EMAIL" class="form-control" id="author_email" placeholder="Healthcare professional or administrator authorized to edit this record">
+        <div class="form-group radio-box">
+        <input {% if formtype == "M" %}checked="checked"{% endif %}  id="id_radio1" type="radio"  class="radiobut" name="entry-type" value="M" />
+        <label for="id_radio1">Use Template</label>
+        <input {% if formtype == "T" %}checked="checked"{% endif %} id="id_radio2" type="radio" class="radiobut"  name="entry-type" value="T" />
+        <label for="id_radio2">Free Text</label>
+        <input {% if formtype == "F" %}checked="checked"{% endif %} id="id_radio3" type="radio" class="radiobut"  name="entry-type" value="F" />
+        <label for="id_radio3">Upload File</label>
+            <div class="choose-message">
+                <p>Choose one of the options.</p>
             </div>
-{#            <div class="form-group col-md-5 col-xs-5 "></div>#}
-         </div>
-          <i class="fa fa-plus"></i><a class="add_field_button">Add More</a>
-          <br />
-          <br />
+        </div>
 
-
-            <div class="form-group radio-box " >
-                <input {% if formtype == "M" %}checked="checked"{% endif %}  id="id_radio1" type="radio"  class="radiobut" name="entry-type" value="M" /> Use Template
-                <input {% if formtype == "T" %}checked="checked"{% endif %} id="id_radio3" type="radio" class="radiobut"  name="entry-type" value="T" /> Enter Free Text
-               <input {% if formtype == "F" %}checked="checked"{% endif %} id="id_radio2" type="radio" class="radiobut"  name="entry-type" value="F" /> Upload File
-                            <div class="choose-message">
-                                <p>Choose one of the options.</p>
-                            </div>
-            </div>
-
-                    <div id="pleasewait" class="progress-indicator">
-                     <img src="{{ static_url }}/static/images/giphy.gif">
+                <div id="pleasewait" class="progress-indicator">
+                 <img src="{{ static_url }}/static/images/giphy.gif">
 {#                        <p>Loading...</p>#}
-                    </div>
+                </div>
                 <div id="myform">
-            {% if formtype == 'M' %}
-                <div class="manual-form">
-        <div class="authors-div">
-            <div class="form-group">
-              <label >Author Email:</label>
-              <input name="author" value="{{ author }}"  type="EMAIL" class="form-control" id="author_email">
-            </div>
-         </div>
-          <i class="fa fa-plus"></i><a class="add_field_button">Add More</a>
-          <br />
-          <br />
-        <div class="form-group">
-          <label >Case Report Title:</label>
-          <input name="title" class="form-control id=" title="" required="required">
-        </div>
-        <div class="row">
-                    <div class="form-group col-xs-6">
-                         <label for="title">AGE:</label>
-                        <input name="age" type="number" min="1" step="1" max="100" class="form-control" required="required" id="age">
-                         <div class="info">The input value for age should be numeric.</div>
-                    </div>
-                    <div class="form-group col-xs-6">
-                      <label >Select Gender:</label>
-                      <select name="gender" class="form-control" id="gender" required="required">
-                          <option value="male">Male</option>
-                          <option value="female">Female</option>
-                      </select>
-                    </div>
-        </div>
-
-
-     <div class="treatment-section-form">
-         <label ><h4>Treatment Section</h4></label>
-        <div class="form-group">
-          <label >Treatment Type:</label>
-          <input name="treatment_type" class="form-control"  required="required">
-        </div>
-
-
-
-       <div class="form-group">
-          <div class="col-xs-6">
-            <label >Treatment Name:</label>
-            <input name="treatment_name" class="form-control" required="required">
-          </div>
-          <div class="col-xs-6">
-            <label >Dose:</label>
-            <input name="dose" class="form-control" required="required">
-          </div>
-        </div>
-
-
-
-            <div class="row ">
-                <div class="form-group col-xs-6">
-                    <label >Treatment length:</label>
-                    <input name="treatment_length" class="form-control test"  required="required">
+                    <!-- 
+                         section filled via JS
+                         manualform.html, free-text.html, or fileform.html
+                    -->
                 </div>
-
-                <div class="form-group col-xs-6">
-                    <label >Performance Status</label>
-                        <input name="status" type="number" min="1" step="1" max="5" class="form-control" required="required" id="status">
-
-                </div>
-            </div>
-
-         <div class="row ">
-                <div class="form-group col-xs-6">
-                    <label >Number of cycles:</label>
-                        <input name="cycles" type="number" min="1" step="1" max="" class="form-control" required="required" id="cycles">
-                </div>
-
-                <div class="form-group col-xs-6">
-                    <label >Size of tumor:</label>
-                  <input type="text" name="tumor_size"  required="required" class="form-control" >
-
-                </div>
-            </div>
-
-         <div class="form-group">
-          <label >Comment:</label>
-          <textarea name="comment"  class="form-control editor" rows="5" cols="73" id="editor"></textarea>
-        </div>
-
-
-
-     </div>
-                <i class="fa fa-plus"></i><a class="add_treatment">Add More Treatment</a>
-
-        <div class="form-group">
-          <label >Time To Progression:</label>
-          <input name="progression" class="form-control id=" title="" required="required">
-        </div>
-
-        <div class="form-group ">
-                      <label >Objective Response:</label>
-                      <select name="response" class="form-control" id="response" required="required">
-                          <option value="">select</option>
-                          <option value="SD">SD</option>
-                          <option value="PR">PR</option>
-                          <option value="PD">PD</option>
-                          <option value="CR">CR</option>
-                      </select>
-                    </div>
-
-        <div class="form-group">
-          <label >Pathology:</label>
-          <textarea name="pathology" required="required" class="form-control editor" rows="5" cols="73" id="editor"></textarea>
-        </div>
-
-        <div class="molecular-abberations">
-             <label for="comment">Molecular Abberations:</label>
-            <div class="row ">
-                <div class="form-group col-xs-6">
-                    <input name="test" class="form-control test"  required="required">
-                </div>
-
-                <div class="form-group col-xs-6">
-                  <input type="text" name="test_result"  required="required" class="form-control" >
-
-                </div>
-            </div>
-        </div>
-        <i class="fa fa-plus"></i><a class="add_button">Add More Molecular Abberations</a>
-
-
-
-
-        <div class="form-group">
-          <label>Additional Comment:</label>
-          <textarea name="additional_comment" class="form-control editor" required="required" ,rows="5" cols="73" id="additional_comment"></textarea>
-        </div>
-</div>
-                     {% elif formtype == 'F' %}
-                        <div class="file-form">
-                    <input  type="file" name="file"  value='{{ file }}' required="required" onchange="checkfile(this);">
-                </div>
-                 {% elif formtype == 'T' %}
-
-
-                    {% endif %}
-
-
-                    </div>
-                <div id="captcha">
+                
+                <!-- <div id="captcha">
                     {{ captchaform }}
                     <span id="invalid_cap" class="hide">Captcha Invalid</span>
                     <button class='js-captcha-refresh btn btn-primary '>refresh</button>
@@ -287,15 +106,18 @@
                      <p>Captcha is required.</p>
                     </div>
                 </div>
-                <br>
-                <div class="">
-                    <input class="agree-checkbox" type="checkbox">
-                    By checking this box, you confirm that you have obtained signed, written consent from the patient or,
-                    if the patient is deceased, the patient’s authorized relative to post this report.
+                <br> -->
+                <div>
+                    <input class="agree-checkbox" type="checkbox" id="agreement">
+                    <label for="agreement">By checking this box, you confirm that you have obtained signed, written consent from the patient or,
+                    if the patient is deceased, the patient’s authorized relative to post this report.</label>
                     <div class="agree-message">
                      <p>Please select the checkbox.</p>
                     </div>
                 </div>
+                
+                <!-- attachments -->
+                <!-- sharing -->
 
                 <div class="submit-button ">
            <button  type="" class="btn btn-primary btn-md"  id="submit-button" >Submit</button>
@@ -315,14 +137,3 @@
   </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-

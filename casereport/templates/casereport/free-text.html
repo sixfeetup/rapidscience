@@ -4,65 +4,54 @@
 
 
 <div class="free-text">
-               <div class="row">
-                    <div class="form-group col-md-4 col-xs-4">
-                         <label class="required">Patient Age(at presentation):</label>
-                        <div class="input-group">
-                              <span class="input-group-btn">
-                                  <button type="button" class="btn btn-default btn-number" data-type="minus" data-field="age-field">
-                                      <span class="glyphicon glyphicon-minus"></span>
-                                  </button>
-                              </span>
-                              <input type="text" name="age-field" id="age-field" class="form-control input-number" onkeypress="return isNumberKey(event)" value="25" min="1" max="100" >
-                              <span class="input-group-btn">
-                                  <button type="button" class="btn btn-default btn-number" data-type="plus" data-field="age-field">
-                                      <span class="glyphicon glyphicon-plus"></span>
-                                  </button>
-                              </span>
-                         </div>
-                             <div class="agefield-message">
-                             <p>This field is required.</p>
-                            </div>
-                    </div>
-                    <div class="form-group col-md-4 col-xs-4">
-                      <label  class="required">Patient Gender:</label>
-                      <select name="gender-field" id="gender-field" class="form-control">
-                          <option selected disabled value="">-------</option>
-                          <option value="male">Male</option>
-                          <option value="female">Female</option>
-                          <option value="transgender male">Transgender Male</option>
-                          <option value="transgender female">Transgender Female</option>
-                      </select>
-                            <div class="genderfield-message">
-                             <p>Select gender.</p>
-                            </div>
-                    </div>
-        </div>
-
-
-         <div class="form-group">
-         <label  class="required">Subtype:</label>
-             <input name="sarcoma" class="form-control" id="subtype-field">
-{#            <select name="sarcoma" class="select2 form-control" id="subtype-field">#}
-{#                  <option value="" disabled selected>select sub type</option>#}
-{#                  {% for key, value in sarcoma %}#}
-{#                      <option value="{{ key }}">{{ value }}</option>#}
-{#                  {% endfor %}#}
-{#            </select>#}
-                            <div class="subtypefield-message">
-                             <p>This field is required.</p>
-                            </div>
-                <div class="form-group others">
-                  <input id="other-sarcoma-field" name="other-sarcoma" class="form-control" placeholder="Enter Sub type here "  >
+    <h4 class="title-name">Diagnosis</h4>
+        <div class="row">
+            <div class="form-group col-xs-2">
+                <label for="age" class="required">Age</label>
+                <input type="text" name="age" id="age" class="form-control">
+                <div class="age-message">
+                        <p>This field is required.</p>
                 </div>
+            </div>
+
+            <div class="form-group col-md-2 col-xs-2">
+              <label for="gender" class="required">Gender</label>
+              <select name="gender" class="form-control" id="gender">
+                  <option selected disabled value=""></option>
+                  <option value="male">M</option>
+                  <option value="female">F</option>
+                  <option value="other">Other</option>
+              </select>
+                     <div class="gender-message">
+                     <p>Select gender.</p>
+                    </div>
+            </div>
+            
+            <div class="form-group col-md-8 col-xs-8">
+                <label class="required" for="subtype"> Subtype:</label>
+                <input name="sarcoma" class="form-control" id="subtype">
+       {#            <select name="sarcoma" class=" form-control" id="subtype">#}
+       {#                  <option value="">select sub type</option>#}
+       {#                  {% for key, value in sarcoma %}#}
+       {#                      <option value="{{ key }}">{{ value }}</option>#}
+       {#                  {% endfor %}#}
+       {#            </select>#}
+               <div class="subtype-message">
+                <p>This field is required.</p>
+               </div>
+               <div class="form-group others">
+                 <input id="other-sarcoma" name="other-sarcoma" class="form-control">
+               </div>
+           </div>
         </div>
 
         <div class="form-group">
-          <label  class="required">Case Details:</label>
-          <textarea name="details" id="details" class="form-control editor" rows="7" cols="73"  placeholder="Enter Case details here"></textarea>
-                        <div class="detail-message">
-                             <p>This field is required.</p>
-                            </div>
+          <label for="details" class="required">Case Details:</label>
+          <textarea name="details" id="details" class="form-control editor" rows="15" cols="73"></textarea>
+          <div class="helpText">Include presentation, pathology, treatments, outcome, objective response</div>
+            <div class="detail-message">
+                <p>This field is required.</p>
+            </div>
         </div>
 </div>
 <script>

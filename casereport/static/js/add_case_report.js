@@ -198,23 +198,24 @@ $(document).ready(function() {
     var phy_wrapper         = $(".physician-div"); //Fields wrapper
     var add_button      = $(".add_phy_button"); //Add button ID
 
-    var x = 1; //initlal text box count
+    var x = 0; //initlal text box count
     $(add_button).click(function(e){ //on add input button click
         e.preventDefault();
         if(x < max_fields){ //max input box allowed
             x++; //text box increment
-            $(phy_wrapper).append('<div>' +
-                            '<div class="row ">'+
-                            '<div class="form-group col-xs-6">'+
-                            '<label for="comment">Author:</label><input name="physician"  required="required" type="text" class="form-control " id="physician_name" placeholder="Name"></div>'+
-                            '<div class="form-group col-xs-6">'+
-                          '<label for="comment">Email:</label><input name="email"  required="required" type="EMAIL" class="form-control " id="physician_email" placeholder="Email"></div>'+
-                    '<a href="#" class="remove_phy"><i class="fa  fa-times"></i></a></div>'); //add input box
+            $(phy_wrapper).append(
+                '<div>' +
+                '<label for="physician_email' + x + '">Email Address</label>' +
+                '<input name="email" type="EMAIL" class="form-control " id="physician_email' + x + '" placeholder="Email">'+
+                '<a href="#" class="remove_phy"><i class="fa fa-times"></i></a>' +
+                '<div class="helpText">' +
+                    'If the email address is not recognized, we will send them an invitation to join Cases Central' +
+                '</div></div>'); //add input box
         }
     });
 
     $(phy_wrapper).on("click",".remove_phy", function(e){ //user click on remove text
-        e.preventDefault(); $(this).parent().parent('div').remove(); x--;
+        e.preventDefault(); $(this).parent('div').remove(); x--;
     })
 
 });

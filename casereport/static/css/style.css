@@ -296,13 +296,6 @@ body{
     font-size: 18px;
     color: #005580;
 }
-
-.radio-box input:nth-child(2){
-    margin-left: 20px;
-}
-.radio-box input:nth-child(3){
-    margin-left: 20px;
-}
 #id_radio1{
     text-transform: uppercase;
     font-size: 14px;
@@ -1021,4 +1014,83 @@ input:focus + div.info {
 }
 .sub-heading-text{
     font-size: 15px;
+}
+
+/* Case Submission Form */
+
+#caseform h4,
+#caseform h4 label {
+	text-transform: uppercase;
+	color: #444444;
+	font-size: 18px;
+	font-weight: bold;
+	text-align: left;
+	text-decoration: none;
+	margin: 2em 0 0.5em;
+}
+#caseform h4 label {
+	margin: 0;
+}
+#caseform label {
+	text-transform: uppercase;
+	color: #888888;
+	font-size: 14px;
+	font-weight: normal;
+	margin-top: 1em;
+}
+#caseform .helpText {
+	background-color: rgb(238, 238, 238);
+	color: #888888;
+	font-size: 13px;
+	font-style: italic;
+	padding: 5px 10px;
+	border-radius: 0 0 4px 4px;
+}
+#caseform .radio-box {
+	background-color: rgb(238, 238, 238);
+	border-radius: 4px;
+	padding: 8px 20px;
+	margin-top: 2em;
+}
+#caseform .radio-box label {
+	color: #3792bf;
+	font-size: 14px;
+	margin: 0;
+	display: inline;
+	text-transform: none;
+	padding-right: 15px;
+}
+#caseform .physician-div input,
+#caseform .physician-div .helpText {
+	width: calc(100% - 50px);
+	display: inline-block;
+}
+#caseform .add_phy_button {
+	margin-top: 1em;
+	display: inline-block;
+}
+#caseform .physician-div .remove_phy {
+	float: none;
+	display: inline-block;
+	padding-top: 0;
+	padding-left: 30px;
+	color: #337ab7;
+	font-size: 27px;
+}
+#caseform .treatment-section-form .form-group {
+	position: relative;
+}
+#caseform .remove_treatment {
+	display: block;
+	font-size: 27px;
+	position: absolute;
+	top: 5px;
+	right: -25px;
+	color: #337ab7;
+}
+#caseform label[for=agreement] {
+	font-size: 16px;
+	color: #444444;
+	text-transform: none;
+	display: inline;
 }
