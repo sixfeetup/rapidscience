@@ -59,17 +59,14 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
         context['activity_stream'] = activity_stream
         context['filter_form'] = filter_form
     elif tab == 'documents':
-        working_documents = [
-            doc for doc in project.get_shared_content(Document)
-            if doc.working_document
-        ]
+        documents = project.get_shared_content(Document)
         activity_stream = project.get_activity_stream(
             Document
         )
-        if working_documents:
-            activity_stream = activity_stream.exclude(action_object_object_id__in=[w.id for w in working_documents])
+        if documents:
+            activity_stream = activity_stream.exclude(action_object_object_id__in=[w.id for w in documents])
         context['activity_stream'] = activity_stream
-        context['working_documents'] = working_documents
+        context['documents'] = documents
     elif tab == 'discussions':
         context['comment_list'] = project.get_shared_content(ThreadedComment)
         if request.is_ajax():

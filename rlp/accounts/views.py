@@ -395,7 +395,7 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
         context['activity_stream'] = request.user.get_activity_stream(
             Document
         )
-        context['working_documents'] = request.user.get_shared_content(Document)
+        context['documents'] = request.user.get_shared_content(Document)
     elif tab == 'bibliography':
         context['references'] = request.user.get_shared_content(
             ProjectReference

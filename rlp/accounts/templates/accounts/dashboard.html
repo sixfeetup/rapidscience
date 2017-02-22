@@ -94,14 +94,14 @@
 
       <hr>
 
-      {% for working_document in working_documents %}
+      {% for doc in documents %}
       <div class="row">
         <div class="col-md-11">
-          <h3><a href="{{ working_document.get_absolute_url }}">{{ working_document.title }}</a></h3>
-          <p>{{ working_document.description|urlize }}</p>
+          <h3><a href="{{ doc.get_absolute_url }}">{{ doc.title }}</a></h3>
+          <p>{{ doc.description|urlize }}</p>
         </div>
         <div class="col-md-1">
-          {% with obj=working_document %}
+          {% with obj=doc %}
             {% if obj.owner == request.user %}
               {% include 'forms/_edit_dropdown.html' with edit_url=obj.get_edit_url delete_url=obj.get_delete_url %}
             {% endif %}
