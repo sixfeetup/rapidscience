@@ -117,6 +117,15 @@
   <div role="tabpanel" class="tab-pane{% if tab == 'bibliography' %} active{% endif %}" id="bibliography">
     {% if tab == 'bibliography' %}
       {% bootstrap_messages %}
+      <div>
+        <a role="button" href="{% url 'bibliography:reference_search' %}" class="btn btn-primary">
+          Add Reference
+        </a>
+      </div>
+      {% for ref in references %}
+        {% if ref.owner == request.user %}{% include 'forms/_edit_dropdown.html' with edit_url=ref.get_edit_url delete_url=ref.get_delete_url %}{% endif %}
+        {% include 'bibliography/_reference.html' with obj=ref.reference %}
+      {% endfor %}
       <hr>
       {% include page_template %}
     {% endif %}

@@ -26,6 +26,7 @@ from formtools.wizard.views import SessionWizardView
 
 from casereport.models import CaseReport
 from rlp.bibliography.models import fetch_publications_for_user
+from rlp.bibliography.models import ProjectReference
 from rlp.core.email import send_transactional_mail
 from rlp.core.views import MESSAGES_DEFAULT_FORM_ERROR
 from rlp.discussions.models import ThreadedComment
@@ -396,12 +397,10 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
         )
         context['working_documents'] = request.user.get_shared_content(Document)
     elif tab == 'bibliography':
-        activity_stream = request.user.get_activity_stream(
-            ContentType.objects.get(
-                app_label='bibliography',
-                model='projectreference',
-            )
+        context['references'] = request.user.get_shared_content(
+            ProjectReference
         )
+        activity_stream = request.user.get_activity_stream(ProjectReference)
         context['activity_stream'] = activity_stream
     if extra_context is not None:
         context.update(extra_context)

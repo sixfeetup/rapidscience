@@ -16,6 +16,7 @@ from taggit.managers import TaggableManager
 from taggit.models import Tag
 
 from rlp.accounts.models import User
+from rlp.core.models import SharedObjectMixin
 from rlp.discussions.models import ThreadedComment
 from rlp.projects.models import Project
 from . import choices
@@ -76,7 +77,7 @@ class ReferenceShare(models.Model):
         return 'Reference'
 
 
-class ProjectReference(models.Model):
+class ProjectReference(SharedObjectMixin):
     reference = models.ForeignKey(Reference, on_delete=models.CASCADE)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     date_added = models.DateTimeField(auto_now_add=True, db_index=True)

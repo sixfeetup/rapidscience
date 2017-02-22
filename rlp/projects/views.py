@@ -6,10 +6,10 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.views.decorators.cache import never_cache
 
-from actstream.models import Action
 from el_pagination.decorators import page_template
 
 from casereport.models import CaseReport
+from rlp.bibliography.models import ProjectReference
 from rlp.discussions.models import ThreadedComment
 from rlp.documents.models import Document
 from rlp.search.forms import ActionObjectForm
@@ -28,7 +28,6 @@ def projects_list(request, template_name="projects/projects_list.html"):
 def projects_detail(request, pk, slug, tab='activity', template_name="projects/projects_detail.html", extra_context=None):
     projects = Project.objects.select_related('institution', 'topic')
     project = get_object_or_404(projects, pk=pk, slug=slug)
-    project_ct = ContentType.objects.get_for_model(Project)
     context = {
         'project': project,
         'projects': projects,
@@ -82,10 +81,8 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
         )
         context['case_reports'] = project.get_shared_content(CaseReport)
     elif tab == 'bibliography':
-        activity_stream = Action.objects.filter(
-            action_object_content_type=ContentType.objects.get(app_label='bibliography', model='projectreference'),
-            target_object_id=project.id, target_content_type=project_ct
-        )
+        context['references'] = project.get_shared_content(ProjectReference)
+        activity_stream = project.get_activity_stream(ProjectReference)
         context['activity_stream'] = activity_stream
     return render(request, template_name, context)
 
