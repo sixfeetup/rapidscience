@@ -112,7 +112,7 @@ small {
     font-size: 14px;
     line-height: 20px;
     font-weight: 600;
-    color: #666;
+    color: $navbar-default-color;
 }
 
 .nav .active, .top-nav .active {
@@ -125,6 +125,15 @@ small {
     -webkit-box-shadow: none;
     box-shadow: none;
     z-index: 1000001;
+}
+
+.navbar .subtitle {
+    font-size: 20px;
+    font-weight: 400;
+    text-transform: uppercase;
+    width: 280px;
+    line-height: 50px;
+    letter-spacing: 1px;
 }
 
 .side-nav, .sub-nav {
