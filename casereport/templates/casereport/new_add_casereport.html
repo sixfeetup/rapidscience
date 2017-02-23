@@ -39,25 +39,19 @@
       <div class="inside-wrapper">
       <div class="form submit-form">
 
-    		<form id="caseform" name="caseform" action="{% url 'add_casereport' %}" method="post" enctype="multipart/form-data" >
+    		<form id="caseform" name="caseform" action="{% url 'add_casereport' %}" method="post">
                 {% csrf_token %}
                 
-                <h4><label for="title">Case Title</label></h4>
-                <input name="title" value="" type="text" class="form-control" id="casetitle">
+                <h4><label for="casetitle">Case Title</label></h4>
+                <input name="casetitle" value="" type="text" class="form-control" id="casetitle">
 
                 <h4 class="title-name">Primary Author/Contact</h4>
                 <div class="required-message">
                     <p>Please fill the fields marked with asterisk(*).</p>
                 </div>
                 <div>
-                    <label class="required">Author/Primary Contact</label>
-                    <input name="physician" value="{{ physician }}"  type="text" class="form-control" id="physician_name">
-                    <div class="physician-message">
-                        <p>This field is required.</p>
-                    </div>
-                    
-                    <label class="required" for="physicial_email">Additional Authorized Email</label>
-                    <input name="email" value="{{ email }}"  type="EMAIL" class="form-control" id="physician_email">
+                    <label class="required" for="physician_email">Additional Authorized Email</label>
+                    <input name="physician_email" value="{{ email }}"  type="EMAIL" class="form-control" id="physician_email">
                     <div class="helpText">
                         Healthcare professional or administrator authorized to edit this case report only
                     </div>
@@ -120,8 +114,8 @@
                 <!-- sharing -->
 
                 <div class="submit-button ">
-           <button  type="" class="btn btn-primary btn-md"  id="submit-button" >Submit</button>
-             </div>
+                    <input type="submit" value="Submit" />
+                </div>
 
    </form>
 

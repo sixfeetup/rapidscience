@@ -54,9 +54,11 @@ class CaseReportDetailView(TemplateView):
 
         return self.render_to_response(dict(casereport=casereport, test=testevents,treatments=treatments))
 
+
 class CaseReportFormView(FormView):
     template_name = 'casereport/new_add_casereport.html'
     form_class = CaptchaForm
+
     def get(self, request, *args, **kwargs):
         captchaform = self.form_class()
         data = request.GET.copy()
@@ -83,12 +85,8 @@ class CaseReportFormView(FormView):
         entry_type = data.get('entry-type')
         refering_doctor = data.getlist('physician', None)
         email = data.getlist('email')
-        institution = data.get('institution')
-        city = data.get('city')
-        country = data.get('physician_country')
         author = data.getlist('author', None)
         author_list = AuthorizedListResource()._post(email=author)
-        institution = InstitutionInstanceResource()._post(institution, city, country)
         physicians = []
         for i in range(0, len(refering_doctor)):
             physician = PhysicianInstanceResource()._post(refering_doctor[i],
