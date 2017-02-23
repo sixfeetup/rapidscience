@@ -108,9 +108,8 @@ class PhysicianInstanceResource:
     def _get(self):
         pass
 
-    def _post(self, name, email, affiliation):
-        phy, created = Physician.objects.get_or_create(name=name,
-            email=email, affiliation=affiliation)
+    def _post(self, email):
+        phy, created = Physician.objects.get_or_create(email=email)
         return phy
 
 
@@ -190,7 +189,7 @@ class TreatmentInstanceResource:
 
     def _post(self, casereport, name, treatment_type, duration=None,
               dose=None, objective_response=None, tumor_size=None, status=None,
-              treatment_outcome=None,notes=None):
+              treatment_outcome=None, notes=None):
         """
 
         :type Treatment: object

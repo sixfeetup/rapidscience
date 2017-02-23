@@ -73,75 +73,77 @@ class CaseReportFormView(FormView):
 
     def post(self, request, *args, **kwargs):
         data = request.POST.copy()
-        if request.is_ajax():
-            captcha_data = dict(captcha_0=data.get('captcha_0'),
-                                captcha_1=data.get('captcha_1'),
-                                csrftoken=data.get("csrfmiddlewaretoken"))
-            is_captcha_valid = self.validate_captcha(captcha_data)
-            if not is_captcha_valid:
-                newcap = self.get_new_captcha()
-                return HttpResponse(json.dumps(newcap), content_type='application/json')
-            return HttpResponse('OK')
+        # if request.is_ajax():
+        #     captcha_data = dict(captcha_0=data.get('captcha_0'),
+        #                         captcha_1=data.get('captcha_1'),
+        #                         csrftoken=data.get("csrfmiddlewaretoken"))
+        #     is_captcha_valid = self.validate_captcha(captcha_data)
+        #     if not is_captcha_valid:
+        #         newcap = self.get_new_captcha()
+        #         return HttpResponse(json.dumps(newcap), content_type='application/json')
+        #     return HttpResponse('OK')
         entry_type = data.get('entry-type')
-        refering_doctor = data.getlist('physician', None)
-        email = data.getlist('email')
+        email = data.getlist('physician_email')
         author = data.getlist('author', None)
         author_list = AuthorizedListResource()._post(email=author)
         physicians = []
-        for i in range(0, len(refering_doctor)):
-            physician = PhysicianInstanceResource()._post(refering_doctor[i],
-                email[i], institution)
+        for i in range(0, len(email)):
+            physician = PhysicianInstanceResource()._post(email[i])
             physicians.append(physician)
         if entry_type == 'F':
-            document = request.FILES['file']
-            file_name = request.FILES['file'].name
-            case = CaseReportListResource()._post(physicians=physicians,
+            document = request.FILES['uploadfile']
+            file_name = request.FILES['uploadfile'].name
+            case = CaseReportListResource()._post(
+                physicians=physicians,
                 document=document, file_name=file_name)
             CaseReportInstanceResource()._addauthor(case, author_list)
         elif entry_type == 'M':
-            title = data.get('title')
+            title = data.get('casetitle')
             age = data.get('age')
             gender = data.get('gender')
-            index = data.get('index')
+            # need to add these to CaseReport model
+            subtype = data.get('subtype')
+            presentation = data.get('presentation')
+            aberrations = data.get('aberrations')
+            biomarkers = data.get('biomarkers')
             pathology = data.get('pathology')
-            progression = data.get('progression')
-            response = data.get('response')
-            treatment_name = data.getlist('treatment_name', None)
-            dose = data.getlist('dose', None)
-            duration = data.getlist('treatment_length', None)
-            status = data.getlist('status', None)
-            objective_response = data.getlist('objective_response', None)
-            tumor_size = data.getlist('tumor_size', None)
-            notes = data.getlist('notes', None)
-            treatment_outcome = data.getlist('treatment_outcome', None)
+            treatment_name_list = data.getlist('treatment_name', None)
+            treatment_duration_list = data.getlist('treatment_duration', None)
+            treatment_type_list = data.getlist('treatment_type', None)
+            treatment_intent_list = data.getlist('treatment_intent', None)
+            treatment_response_list = data.getlist('treatment_response', None)
+            treatment_status_list = data.getlist('treatment_status', None)
+            treatment_outcome_list = data.getlist('treatment_outcome', None)
             additional_comment = data.get('additional_comment')
-            test = data.getlist('test', None)
-            test_result = data.getlist('test_result', None)
-            sarcoma = data.get('sarcoma')
-            other_sarcoma = data.get('other-sarcoma')
-            m_abbs = AbberationListResource()._post(molecule=test, abberation=test_result)
-            case = CaseReportListResource()._post(title=title, age=age,
-                                gender=gender, pathology=pathology,
-                                progression=progression,
-                                response=response,
-                                additional_comment=additional_comment,
-                                index=index, physicians=physicians,sarcoma_type=sarcoma, other_sarcoma=other_sarcoma)
-            for i in range(0, len(treatment_name)):
-                if treatment_name[i]:
-                    treatment_type = data.getlist('treatment_type_%s' %i, None)
-                    duration = data.get('treatment_length_%s' %i, None)
-                    dose = data.get('dose_%s' %i, None)
-                    objective_response = data.get('objective_response_%s' %i, None)
-                    status = data.get('status_%s' %i, None)
-                    tumor_size = data.get('tumor_size_%s' %i, None)
-                    treatment_outcome = data.get('treatment_outcome_%s' %i, None)
-                    notes = data.get('notes_%s' %i, None)
-                    TreatmentInstanceResource()._post(case, treatment_name[i], ','.join(treatment_type), duration=duration, dose=dose,
-                        objective_response = objective_response, tumor_size=tumor_size,
-                        status=status, treatment_outcome=treatment_outcome,notes=notes)
+            case = CaseReportListResource()._post(
+                title=title, age=age,
+                gender=gender, pathology=pathology,
+                additional_comment=additional_comment,
+                physicians=physicians)
+            for i in range(0, len(treatment_name_list)):
+                if treatment_name_list[i]:
+                    treatment_name = treatment_name_list[i]
+                    duration = treatment_duration_list[i]
+                    treatment_type = treatment_type_list[i]
+                    treatment_intent = treatment_intent_list[i]
+                    treatment_response = treatment_response_list[i]
+                    treatment_status = treatment_status_list[i]
+                    treatment_outcome = treatment_outcome_list[i]
+                    # dose = data.get('dose_%s' %i, None)
+                    # objective_response = data.get('objective_response_%s' %i, None)
+                    # status = data.get('status_%s' %i, None)
+                    # tumor_size = data.get('tumor_size_%s' %i, None)
+                    # treatment_outcome = data.get('treatment_outcome_%s' %i, None)
+                    # notes = data.get('notes_%s' %i, None)
+                    TreatmentInstanceResource()._post(
+                        case, treatment_name[i],
+                        ','.join(treatment_type), duration=duration,
+                        objective_response=treatment_response,
+                        status=treatment_status,
+                        treatment_outcome=treatment_outcome)
             CaseReportInstanceResource()._addauthor(case, author_list)
 
-            CaseReportInstanceResource()._addabberations(case, m_abbs)
+            # CaseReportInstanceResource()._addabberations(case, m_abbs)
 
         elif entry_type == 'T':
             age = data.get('age-field')

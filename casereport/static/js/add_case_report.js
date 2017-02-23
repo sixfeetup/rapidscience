@@ -206,7 +206,7 @@ $(document).ready(function() {
             $(phy_wrapper).append(
                 '<div>' +
                 '<label for="physician_email' + x + '">Email Address</label>' +
-                '<input name="physician_email' + x '" type="EMAIL" class="form-control " id="physician_email' + x + '" placeholder="Email">'+
+                '<input name="physician_email" type="EMAIL" class="form-control " id="physician_email' + x + '" placeholder="Email">'+
                 '<a href="#" class="remove_phy"><i class="fa fa-times"></i></a>' +
                 '<div class="helpText">' +
                     'If the email address is not recognized, we will send them an invitation to join Cases Central' +
