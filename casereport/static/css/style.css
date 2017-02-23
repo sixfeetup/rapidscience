@@ -3,7 +3,11 @@ body{
 	/*background-color: #dddedf;*/
     color:#000;
 }
-
+.visualClear {
+	clear: both;
+	height: 0;
+	display: block;
+}
 #search-body{
     /*background-color: #ffffff;*/
 }
@@ -542,13 +546,6 @@ margin-bottom: 30px;}
 }
 .diagnosis-section {
         margin-left: -15px;
-}
-.diagnosis-section-inner:before,.molecule-abberation-inner:before,.treatment-list-inner:before,.procedures-list-inner:before,.author-list-inner:before {
-    content: "\00BB";
-    color: #B0D751;
-    padding-right: 5px;
-    font-size: 16px;
-    position: absolute;
 }
 
 .treatment-list-inner,.procedures-list-inner,.diagnosis-section-inner{
@@ -1093,4 +1090,38 @@ input:focus + div.info {
 	color: #444444;
 	text-transform: none;
 	display: inline;
+}
+
+/* Case View */
+.jumpMenu {
+	list-style: none none;
+	padding-left: 0;
+}
+.jumpMenu li {
+	margin-bottom: 1em;
+}
+.jumpMenu a {
+	color: rgb(55, 146, 191);
+}
+.headingBanner {
+	background-color: rgb(238, 238, 238);
+	padding: 20px;
+}
+.headingBanner h1 {
+	font-size: 32px;
+	color: rgb(68, 68, 68);
+	clear: both;
+}
+.headingBanner p {
+	font-size: 16px;
+	font-weight: bold;
+}
+.case-detail-view h4 {
+	text-transform: uppercase;
+	color: #444444;
+	font-size: 18px;
+	margin-top: 1em;
+}
+#section-primary h4 {
+	margin-top: 0;
 }

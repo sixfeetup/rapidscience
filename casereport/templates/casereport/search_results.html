@@ -9,13 +9,6 @@
 {% endblock %}
 {% block container %}
 <div class="container-detail">
-<div class="back-button pull-left">
-    {% if request.META.HTTP_REFERER %}
-    <a href="{{request.META.HTTP_REFERER}}">Return To Search Results</a>
-        {% else %}
-        <a href="{% url 'haystac' %}">Return To Search Case Reports</a>
-    {% endif %}
-</div>
 
 {#{% if casefile %}#}
   <div class="pills pull-right">
@@ -27,26 +20,46 @@
       </ul>
   </div>
 {#{% endif %}#}
-</br>
-</br>
- <div class="tab-content">
-         <div id="structured" class="tab-pane fade in active"><!--first-tab-->
-             <div class="detail-section">
-    <h3> {{ casereport.title }} </h3>
-    <div class="row detail-result-list">
-        <div class="col-md-2">{{ casereport.age }}</div>
-        <div class="col-md-2">{{ casereport.gender|capfirst }}</div>
-        <div class="col-md-3">{{ casereport.get_sarcoma_type }}</div>
-        <div class="col-md-5">{{ casereport.primary_physician}}-{{ casereport.primary_physician.affiliation }}</div>
-    </div>
 
-      <div class="row author-list ">
-          <h4> Primary Author </h4>
-          <div class="author-list-inner"><span>{{ casereport.primary_physician }} - {{ casereport.primary_physician.affiliation }} - {{ casereport.primary_physician.affiliation.city }} - {{ casereport.primary_physician.affiliation.country }}</span></div>
+<div class="headingBanner">
+    <div>
+        {% if request.META.HTTP_REFERER %}
+        <a href="{{request.META.HTTP_REFERER}}">&laquo; Return To Search Results</a>
+            {% else %}
+            <a href="{% url 'haystac' %}">&laquo; All Cases</a>
+        {% endif %}
+    </div>
+    <h1>{{ casereport.title }}</h1>
+    <p>
+        Case ID: 1234567890 |
+        Submitted: {{ casereport.created_on|date:"M d, Y" }} |
+        Last revision: {{ casereport.modified_on|date:"M d, Y" }}
+    </p>
+</div>
+
+ <div class="tab-content case-detail-view">
+     
+     <div id="structured" class="tab-pane fade in active"><!--first-tab-->
+         <div class="col-md-3 col-xs-3">
+             <ul class="jumpMenu">
+                 <li><a href="#section-primary">Primary Author/Contact</a></li>
+                 <li><a href="#section-coauthors">Co-Authors</a></li>
+                 <li><a href="#section-diagnosis">Diagnosis/Presentation</a></li>
+                 <li><a href="#section-aberrations">Genetic Aberrations</a></li>
+                 <li><a href="#section-pathology">Pathology/Tests</a></li>
+                 <li><a href="#section-treatment">Treatment/Outcome</a></li>
+                 <li><a href="#section-comments">Additional Comments</a></li>
+             </ul>
+         </div>
+         <div class="col-md-9 col-xs-12">
+
+      <div class="row author-list" id="section-primary">
+          <h4>Primary Author/Contact</h4>
+          <p>{{ casereport.primary_physician }} | {{ casereport.primary_physician.affiliation }} | {{ casereport.primary_physician.affiliation.city }} | {{ casereport.primary_physician.affiliation.country }}</p>
       </div>
 
-      <div class="row author-list ">
-          <h4> Co-Authors </h4>
+      <div class="row author-list" id="section-coauthors">
+          <h4>Co-Authors</h4>
           {% for author in casereport.referring_physician.all %}
                   {% if not casereport.primary_physician.email == author.email %}
                       <div class="author-list-inner"><span>{{ author.name}}</span></div>
@@ -59,9 +72,17 @@
       {% endif %}
 
       </div>
+      
+      <div class="row" id="section-diagnosis">
+          <h4>Diagnosis/Presentation</h4>
+          <p>
+              {{ casereport.age }} yr |
+              {{ casereport.gender|capfirst }}
+          </p>
+      </div>
 
       <div class="row">
-          <div class="col-md-8 diagnosis-section">
+          <!-- <div class="col-md-8 diagnosis-section">
               <h4> Conditions/Diagnosis</h4>
               {% for test in casereport.get_diagnosis_events_in_order %}
                   <div class="row diagnosis-section-inner"> <span> {{ test.name }}:</span> <p>{{ test.get_diagnosis_specimen }}   {{ test.get_symptoms }}</p></div>
@@ -69,10 +90,10 @@
               {% empty %}
                 <div>Not Specified</div>
               {% endfor %}
-          </div>
+          </div> -->
 
-          <div class="col-md-4 molecule-abberation">
-              <h4>  Genetic Aberrations</h4>
+          <div class="molecule-abberation" id="section-aberrations">
+              <h4>Genetic Aberrations</h4>
               {% for abb in casereport.molecular_abberations.all %}
                   <div class="row  molecule-abberation-inner"><span><i>{{ abb.molecule }}</i> {{ abb.name }}</span></div>
               {% empty %}
@@ -81,9 +102,13 @@
           </div>
 
       </div>
+      
+      <div class="row" id="section-pathology">
+          <h4>Pathology/Tests</h4>
+      </div>
 
-      <div class="row treatment-list">
-          <h4>  Treatment History: Outcome </h4>
+      <div class="row treatment-list" id="section-treatment">
+          <h4>Treatment/Outcome</h4>
           {% for treatment in casereport.get_treatment_events_in_order %}
               <div class="row treatment-list-inner"><span >{{ treatment.get_dates }} {{ treatment.get_name }}{% if treatment.get_outcome %} :{% endif %}</span><span>{{ treatment.get_outcome }}</span> </div>
           {% empty %}
@@ -102,12 +127,13 @@
               <div>Not Specified</div>
           {% endfor %}
       </div>
-
-      <div class="row">
-          <div class="date-section pull-right">Last Updated: {{ casereport.modified_on|date:"M d, Y" }}</div>
+      
+      <div class="row" id="section-comments">
+          <h4>Additional Comments</h4>
       </div>
 
          </div>
+         <div class="visualClear"><!-- --></div>
     </div>
 
             <div id="raw" class="tab-pane fade"><!--second-tab-->
