@@ -55,15 +55,24 @@ class Project(SEOMixin, SharesContentMixin):
 
     def get_documents_url(self):
         from django.core.urlresolvers import reverse
-        return reverse('projects:projects_documents', kwargs={'pk': self.pk, 'slug': self.slug})
+        return reverse(
+            'projects:projects_tab',
+            kwargs={'pk': self.pk, 'slug': self.slug, 'tab': 'documents'},
+        )
 
     def get_discussions_url(self):
         from django.core.urlresolvers import reverse
-        return reverse('projects:projects_discussions', kwargs={'pk': self.pk, 'slug': self.slug})
+        return reverse(
+            'projects:projects_tab',
+            kwargs={'pk': self.pk, 'slug': self.slug, 'tab': 'discussions'},
+        )
 
     def get_bibliography_url(self):
         from django.core.urlresolvers import reverse
-        return reverse('projects:projects_bibliography', kwargs={'pk': self.pk, 'slug': self.slug})
+        return reverse(
+            'projects:projects_tab',
+            kwargs={'pk': self.pk, 'slug': self.slug, 'tab': 'bibliography'},
+        )
 
     def get_contact_email_addresses(self):
         emails = [pm.user.email for pm in ProjectMembership.objects.filter(role__contact=True, project=self)]
