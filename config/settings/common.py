@@ -277,6 +277,7 @@ STATICFILES_FINDERS = (
     'compressor.finders.CompressorFinder',
 )
 
+COMPRESS_OFFLINE=True
 COMPRESS_CSS_HASHING_METHOD = 'content'
 COMPRESS_CSS_FILTERS = [
     'compressor.filters.css_default.CssAbsoluteFilter',
