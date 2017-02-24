@@ -18,6 +18,7 @@
         {% compress css %}
             <link rel="stylesheet" type="text/x-scss" href="{% static 'css/styles.scss' %}" media="screen">
         {% endcompress %}
+        <link rel="stylesheet" href="{{STATIC_URL}}css/style.css">
     {% endblock css %}
 
     {% render_block 'css' %}

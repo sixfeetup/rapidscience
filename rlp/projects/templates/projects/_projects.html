@@ -1,38 +1,47 @@
-{% load cms_tags staticfiles %}
-<div class="box">
-    <p class="section-label">
-        {% page_url 'project-landing' as landing_url %}
-        {% if request.path != landing_url %}<a href="{{ landing_url }}">{% endif %}
-            All Research
-        {% if request.path != landing_url %}</a>{% endif %}
-    </p>
-    <ul class="list-unstyled item-list">
-        {% for project in top_level_projects %}
-          <li>
-            <a href="{{ project.get_absolute_url }}">
-              <strong>{{ project.title }}</strong>
-            </a>
-            {% if project.institution %}({{ project.institution.name }}){% endif %}
-          </li>
-        {% endfor %}
-        {% for topic in topics %}
-        <li>
-        <a data-toggle="collapse" class="collapsed" href="#{{ topic.title|slugify }}">
-            <span class="glyphicon glyphicon-triangle-right"></span>
-            <span class="glyphicon glyphicon-triangle-bottom"></span>
-            {{ topic.title }}
+{% load cms_tags staticfiles thumbnail %}
+{% for project in top_level_projects %}
+ <div class="project-preview">
+    <h3>
+        <a href="{{ project.get_absolute_url }}">
+            {{ project.title }}
         </a>
-        <ul id="{{ topic.title|slugify }}" class="list-unstyled">
-        {% for project in topic.project_set.all %}
-            <li>
-              <a href="{{ project.get_absolute_url }}">
-                <strong>{{ project.title }}</strong>
-              </a>
-            {% if project.institution %}({{ project.institution.name }}){% endif %}
-            </li>
-        {% endfor %}
-        </ul>
-      </li>
-      {% endfor %}
-    </ul>
+    </h3>
+    <p class="group-status">
+        {% if project.approval_required %}
+            Closed Group
+        {% else %}
+            Open Group
+        {% endif %}
+    </p>
+    <a class="join-button" href="#">
+        <i class="fa fa-plus"></i> Join
+    </a>
+    <img src="{% thumbnail project.cover_photo 570x120 crop upscale subject_location=project.cover_photo.subject_location %}" />
+    {% if project.meta_description %}
+        <p class="project-desc">{{ project.meta_description }}</p>
+    {% endif %}
+    <p>Moderators: </p>
 </div>
+{% endfor %}
+
+<ul>
+{% for topic in topics %}
+<li>
+<a data-toggle="collapse" class="collapsed" href="#{{ topic.title|slugify }}">
+    <span class="glyphicon glyphicon-triangle-right"></span>
+    <span class="glyphicon glyphicon-triangle-bottom"></span>
+    {{ topic.title }}
+</a>
+<ul id="{{ topic.title|slugify }}" class="list-unstyled">
+{% for project in topic.project_set.all %}
+    <li>
+      <a href="{{ project.get_absolute_url }}">
+        <strong>{{ project.title }}</strong>
+      </a>
+    {% if project.institution %}({{ project.institution.name }}){% endif %}
+    </li>
+{% endfor %}
+</ul>
+</li>
+{% endfor %}
+</ul>
