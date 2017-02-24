@@ -1,6 +1,9 @@
+from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import PermissionDenied
+from django.core.mail import send_mass_mail
 from django.core.urlresolvers import reverse
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -9,11 +12,14 @@ from django.views.decorators.cache import never_cache
 from el_pagination.decorators import page_template
 
 from casereport.models import CaseReport
+from rlp.accounts.models import User
 from rlp.bibliography.models import ProjectReference
 from rlp.discussions.models import ThreadedComment
 from rlp.documents.models import Document
 from rlp.search.forms import ActionObjectForm
+from .forms import InviteForm
 from .models import Project
+from .shortcuts import group_invite_choices
 
 
 def projects_list(request, template_name="projects/projects_list.html"):
@@ -81,6 +87,20 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
         context['references'] = project.get_shared_content(ProjectReference)
         activity_stream = project.get_activity_stream(ProjectReference)
         context['activity_stream'] = activity_stream
+    # member invite form
+    invite_data = {
+        'user': request.user.get_full_name(),
+        'group': project.title,
+        # TODO put a real invite link here
+        'link': project.get_absolute_url(),
+    }
+    invite_msg = settings.GROUP_INVITATION_TEMPLATE.format(**invite_data)
+    form = InviteForm(
+        initial={'invitation_message': invite_msg},
+    )
+    form.fields['internal'].choices = group_invite_choices(project)
+    context['form'] = form
+    # response
     return render(request, template_name, context)
 
 
@@ -97,3 +117,36 @@ def projects_members(request, pk, slug, template_name='projects/projects_members
     if extra_context is not None:
         context.update(extra_context)
     return render(request, template_name, context)
+
+
+def invite_members(request, pk, slug):
+    if request.method == 'POST':
+        group = Project.objects.get(id=pk)
+        form = InviteForm(request.POST)
+        form.fields['internal'].choices = group_invite_choices(group)
+        if form.is_valid():
+            iu_ids = form.cleaned_data['internal']
+            internal_addrs = User.objects.filter(
+                id__in=iu_ids
+            ).values_list('email', flat=True)
+            external_addrs = form.cleaned_data['external']
+            recipients = list(internal_addrs) + external_addrs
+            subject = 'Invitation to join {}'.format(group.title)
+            message_data = (
+                (
+                    subject,
+                    form.cleaned_data['invitation_message'],
+                    request.user.email,
+                    [rcp],
+                )
+                for rcp in recipients
+            )
+            send_mass_mail(message_data)
+            return JsonResponse({
+                'success': True,
+                'message': '{} members invited'.format(len(recipients)),
+            })
+    return JsonResponse({
+        'success': False,
+        'message': 'Invitation failed',
+    })

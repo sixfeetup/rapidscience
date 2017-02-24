@@ -421,6 +421,16 @@ LOGGING = {
 
 ACCOUNT_ACTIVATION_DAYS = 14
 
+GROUP_INVITATION_TEMPLATE = '''You are invited by {user} to join the “{group}” group in the Rapid Science Sarcoma Network.
+
+You may click the Join link to be added to the group's membership, or view the Group page before joining.
+
+{link}
+
+If you're not already a Rapid Science member, you will first be asked to register.
+'''
+
+
 # CRDB support
 HAVOC_USER = env('HAVOC_USER')
 HAVOC_TOKEN = env('HAVOC_TOKEN')

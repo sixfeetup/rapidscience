@@ -15,4 +15,9 @@ urlpatterns = [
     url(r'^(?P<pk>\d+)-(?P<slug>[\w\d-]+)/members/$',
         views.projects_members,
         name='projects_members'),
+    url(
+        r'^(?P<pk>\d+)-(?P<slug>[\w\d-]+)/invite$',
+        views.invite_members,
+        name='projects_invite',
+    )
 ]
