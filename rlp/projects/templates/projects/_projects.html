@@ -16,7 +16,13 @@
     <a class="join-button" href="#">
         <i class="fa fa-plus"></i> Join
     </a>
-    <img src="{% thumbnail project.cover_photo 570x120 crop upscale subject_location=project.cover_photo.subject_location %}" />
+    {% if project.cover_photo %}
+        <img src="{% thumbnail project.cover_photo 570x120 crop upscale subject_location=project.cover_photo.subject_location %}" />
+    {% elif project.approval_required %}
+        <img class="default" src='{% static "img/bg-cc-med.jpg" %}'>
+    {% else %}
+        <img class="default" src='{% static "img/bg-group1-med.jpg" %}'>
+    {% endif %}
     {% if project.meta_description %}
         <p class="project-desc">{{ project.meta_description }}</p>
     {% endif %}

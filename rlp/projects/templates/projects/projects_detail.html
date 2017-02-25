@@ -7,10 +7,12 @@
 {% block hero %}
     <div class="hero">
         <div class="image-container">
-            {% if project.institution and project.institution.banner_image %}
-                <img src="{{ project.institution.banner_image.url }}">
+            {% if project.cover_photo %}
+                <img src="{{ project.cover_photo.url }}">
+            {% elif project.approval_required %}
+                <img class="default" src='{% static "img/bg-cc-med.jpg" %}'>
             {% else %}
-                {% include 'projects/_institution_hero_image.html' %}
+                <img class="default" src='{% static "img/bg-group1-med.jpg" %}'>
             {% endif %}
         </div>
         <div class="container">

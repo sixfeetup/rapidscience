@@ -1141,6 +1141,7 @@ input:focus + div.info {
 	color: #444444;
 	font-size: 14px;
 	position: relative;
+	overflow: hidden;
 }
 .project-preview:nth-child(odd) {
 	clear: left;
@@ -1157,6 +1158,10 @@ input:focus + div.info {
 	max-width: 100%;
 	height: auto;
 	margin-bottom: 15px;
+}
+.project-preview img.default {
+	max-width: none;
+	max-height: 116px;
 }
 .project-preview p {
 	font-size: 14px;
