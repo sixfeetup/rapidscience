@@ -106,5 +106,11 @@ class SharedObjectMixin(models.Model):
         return user in self.get_viewers_as_users()
 
     def share_with(self, viewers):
+        target = self
+        if (hasattr(self, 'polymorphic_model_marker')
+           and len(self._meta.parents)):
+            # for polymorphic types, share the parent reference
+            parent_type = list(self._meta.parents)[-1]
+            target = parent_type.objects.non_polymorphic().get(id=self.id)
         for viewer in viewers:
-            SharedContent.objects.create(viewer=viewer, target=self)
+            SharedContent.objects.create(viewer=viewer, target=target)
