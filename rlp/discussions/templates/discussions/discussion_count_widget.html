@@ -1,0 +1,9 @@
+{% load discussion_tags %}
+{% comment  %}
+    displays a glyphicon indicating the size of the associated threaded discussion
+    for the action.action_object
+{%  endcomment %}
+{%  get_threaded_comment_count for action.action_object as comment_count %}
+<a type="button" title="Comments" href="{{ action.action_object.get_absolute_url }}">
+    <span class="glyphicon glyphicon-comment"> {{ comment_count }} </span>
+</a>
