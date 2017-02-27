@@ -1042,6 +1042,7 @@ input:focus + div.info {
 	font-style: italic;
 	padding: 5px 10px;
 	border-radius: 0 0 4px 4px;
+	display: block;
 }
 #caseform .radio-box {
 	background-color: rgb(238, 238, 238);

@@ -439,3 +439,78 @@
         }
     }
 }
+
+/* invite form overlay */
+.overlay-form input.btn-primary {
+    background-color: #3792bf;
+    color: #ffffff;
+}
+.invite-link {
+	float: right;
+	color: #444444;
+    font-size: 20px;
+}
+.overlay-form {
+	display: none;
+	position: fixed;
+	width: 600px;
+    margin-left: -300px;
+    left: 50%;
+	padding: 20px;
+	background-color: #ffffff;
+	border: 1px solid #dddddd;
+	border-radius: 4px;
+    z-index: 1000003;
+    top: 75px;
+}
+i.close-overlay {
+    float: right;
+    font-size: 20px;
+}
+.overlay-form input,
+.overlay-form select,
+.overlay-form textarea {
+    display: block;
+    width: 100%;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.overlay-form textarea {
+    height: 200px;
+}
+.overlay-form label {
+    font-size: 18px;
+    text-transform: uppercase;
+    color: #444444;
+}
+.overlay-form input.btn {
+    width: auto;
+    display: inline-block;
+}
+.overlay-active::before {
+	content: " ";
+	position: absolute;
+    z-index: 1000002;
+	width: 100%;
+	height: 115%;
+    top: -50px;
+	background: rgba(0, 0, 0, 0.8);
+}
+.helptext,
+.helpText {
+	background-color: rgb(238, 238, 238);
+	color: #888888;
+	font-size: 13px;
+	font-style: italic;
+	padding: 5px 10px;
+	border-radius: 0 0 4px 4px;
+    display: block;
+    margin-bottom: 1em;
+}

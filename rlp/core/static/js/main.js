@@ -271,3 +271,13 @@ $('.action-edit').click(function(event){
     event.preventDefault();
     $(this).parents('.bookmarks-single-item').find('.bookmark-edit-form-wrapper').toggle('100');
 });
+
+// Group invite overlay
+$(".invite-link").click(function(){
+    $("#project-invite").fadeIn();
+    $("body").addClass("overlay-active");
+});
+$(".close-overlay").click(function(){
+    $(".overlay-form").fadeOut();
+    $("body").removeClass("overlay-active");
+})

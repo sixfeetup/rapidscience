@@ -32,6 +32,16 @@
   </div>
   {% endif %}
   {% show_project_members project %}
+  
+  <div class="overlay-form" id="project-invite">
+    <form method="post" action="{% url 'projects:projects_invite' project.pk project.slug %}">
+        <i class="fa fa-times-circle-o close-overlay"></i>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Done" class="btn btn-primary">
+        <input type="submit" value="Cancel" class="btn close-overlay">
+    </form>
+  </div>
 {% endblock left_column %}
 
 {% block main_content %}
