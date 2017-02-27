@@ -145,7 +145,7 @@
 
 .navbar-fixed-top {
     top: 0;
-    border-width: 0 0 1px;
+    border: none;
 }
 
 .navbar-fixed-bottom {
@@ -297,7 +297,7 @@
         > li {
             float: left;
             > a {
-                padding-top: $navbar-padding-vertical;
+                padding-top: 12px;
                 padding-bottom: $navbar-padding-vertical;
             }
         }
