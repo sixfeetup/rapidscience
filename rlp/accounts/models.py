@@ -145,7 +145,7 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
 
     def can_access_project(self, project):
         # if the user belongs to the project, they have access
-        return self.is_staff or self in project.users.all()
+        return self.is_staff or self in project.active_members()
 
 
 class UserLogin(models.Model):
