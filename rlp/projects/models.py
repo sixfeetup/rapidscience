@@ -1,5 +1,7 @@
 from django.conf import settings
 from django.db import models
+from django_fsm import FSMField
+from django_fsm import transition
 
 from filer.fields.image import FilerImageField
 from menus.menu_pool import menu_pool
@@ -8,6 +10,13 @@ from rlp.accounts.models import Institution
 from rlp.core.email import send_transactional_mail
 from rlp.core.models import SEOMixin
 from rlp.core.mixins import SharesContentMixin
+
+
+MEMBER_STATES = (
+    ('moderator', 'Moderator'),
+    ('member', 'Member'),
+    ('pending', 'Pending Approval'),
+)
 
 
 class Topic(SEOMixin):
@@ -99,12 +108,15 @@ class Project(SEOMixin, SharesContentMixin):
         menu_pool.clear()
         super().save(*args, **kwargs)
 
+    def active_members(self):
+        return self.users.exclude(projectmembership__state='pending')
 
 
 class ProjectMembership(models.Model):
     project = models.ForeignKey(Project)
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     role = models.ForeignKey(Role, blank=True, null=True)
+    state = FSMField(choices=MEMBER_STATES, default='member')
 
     class Meta:
         unique_together = ['project', 'user']
@@ -112,3 +124,15 @@ class ProjectMembership(models.Model):
 
     def __str__(self):
         return "Project membership for {}".format(self.user.email)
+
+    @transition(field=state, source='*', target='moderator')
+    def promote(self):
+        pass
+
+    @transition(field=state, source='moderator', target='member')
+    def demote(self):
+        pass
+
+    @transition(field=state, source='pending', target='member')
+    def approve(self):
+        pass
