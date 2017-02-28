@@ -351,6 +351,27 @@ small {
   a, a:visited, a:active, a:focus {
     color: #fff;
   }
+
+ .add-links {
+    font-size: 14px;
+    margin-top: 1.2em;
+    position: relative;
+    left: -10px;
+    li {
+      margin-bottom: .8em;
+      .fa {
+        padding-right: 10px;
+      }
+    }
+    a {
+      text-decoration: none;
+    }
+    a:active,
+    a:hover {
+      color: #f6eee3;
+    }
+  }
+
 }
 
 .aside-col {
