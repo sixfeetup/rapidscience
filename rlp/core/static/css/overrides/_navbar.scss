@@ -462,6 +462,7 @@
             &:hover,
             &:focus {
                 color: $navbar-default-link-active-color;
+                background-color: transparent;
             }
         }
         > .disabled > a {

@@ -6,45 +6,37 @@
 {% endblock page_title %}
 {% block canonical %}
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-        <link rel="stylesheet" href="{{STATIC_URL}}css/style.css">
         <link rel="stylesheet" href="{{STATIC_URL}}font-awesome/css/font-awesome.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/5.2.3/css/bootstrap-slider.min.css">
         <link rel="stylesheet" href="{{STATIC_URL}}css/jquery-ui.css" />
         <link rel="stylesheet" href="{{STATIC_URL}}css/select2.min.css" />
         <link href='https://fonts.googleapis.com/css?family=News+Cycle' rel='stylesheet' type='text/css'>
+        
+        {{ block.super }}
+        <link rel="stylesheet" href="{{STATIC_URL}}css/cases.css">
 {% endblock canonical %}
 {% block js-footer %}
-        <script src="{{STATIC_URL}}js/jquery-1.11.3.min.js"></script>
+    {{ block.super }}
         {% inplace_static %}
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/5.2.3/bootstrap-slider.min.js"></script>
-
+        <script src="{{STATIC_URL}}js/bootstrap.min.js"></script>
         <script src="{{STATIC_URL}}js/select2.min.js"></script>
         <script src="{{STATIC_URL}}js/jquery-ui.min.js"></script>
+        <script src="{{STATIC_URL}}js/search.js"></script>
         <script src="{{STATIC_URL}}js/manual_form.js" ></script>
 {% endblock js-footer %}
 
 {% block content %}
         <div class="container">
             {% block container %}
-                <div class="logo-img"><img src="{{STATIC_URL}}images/logo.png"> </div>
-                <div class="tabs-wrapper">
-                    <div class="row">
-                        <div class="col-md-7">
-                            <ul class="nav nav-tabs">
-                                <li class="active"><a data-toggle="tab" href="#search">Search</a></li>
-                                <li ><a data-toggle="tab" id="case-form"  href="#report">Submit</a></li>
-                            </ul>
-                        </div>
-                        <div class="col-md-5">
-                            {% if request.user.is_authenticated %}
-                                <div class="">
-                                    <a  href ='/casereport/reindex' class="btn btn-danger pull-right">Rebuild Solr</a>
-                                </div>
-                            {% endif %}
-                        </div>
+                <div class="row">
+                    <h1>Cases Central</h1>
+                    <a href="/casereport/add" class="btn btn-primary">+ Add Case</a>
+                    <div class="col-md-5">
+                        {% if request.user.is_authenticated %}
+                            <div class="">
+                                <a  href ='/casereport/reindex' class="btn btn-danger pull-right">Rebuild Solr</a>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
 
@@ -195,14 +187,9 @@
 
 
         </div>
-            <div id="report" class="tab-pane fade">
-            {% include 'casereport/new_add_casereport.html' %}
-
-            </div>
 
       </div>
        {% endblock %}
         </div>
     <div class="overlay hide"></div>
-        <script src="{{STATIC_URL}}js/search.js"></script>
 {% endblock content %}

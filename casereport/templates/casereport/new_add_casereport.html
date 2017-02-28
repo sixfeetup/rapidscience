@@ -1,31 +1,11 @@
-<!DOCTYPE html>
+{% extends "casereport/search/search.html" %}
 
-<html>
-  <head>
-      {% load staticfiles %}
-      {% load mytags %}
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>CRDB</title>
-    <!-- Tell the browser to be responsive to screen width -->
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <!-- Latest compiled and minified CSS -->
+{% block js-footer %}
+    {{ block.super }}
+    <script src="{{STATIC_URL}}js/add_case_report.js"></script>
+{% endblock js-footer %}
 
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-      <link rel="stylesheet" href="{{STATIC_URL}}font-awesome/css/font-awesome.css">
-
-      <link rel="stylesheet" href="{{STATIC_URL}}css/jquery-ui.css" />
-
-      <script src="{{STATIC_URL}}js/jquery-1.11.3.min.js"></script>
-      <script src="{{STATIC_URL}}js/bootstrap.min.js"></script>
-      <script type="text/javascript" src="{{STATIC_URL}}js/bootbox.min.js"></script>
-    <script src="{{STATIC_URL}}js/jquery-ui.min.js"></script>
-        <script src="{{STATIC_URL}}js/select2.min.js"></script>
-        <link rel="stylesheet" href="{{STATIC_URL}}css/select2.min.css" />
-
-
-  </head>
-  <body >
+{% block content %}
   <div id="crdb-overlay-loader" class="active">
     <div id="crdb-thinking">
         <div class="crdb-spinner" role="spinner"><div class="crdb-spinner-icon"></div></div>
@@ -123,11 +103,4 @@
       </div>
 </div>
 </div>
-
-
-    <script src="{{STATIC_URL}}js/add_case_report.js">    </script>
-
-
-  </body>
-
-</html>
+{% endblock content %}
