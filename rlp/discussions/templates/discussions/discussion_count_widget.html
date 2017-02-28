@@ -8,5 +8,6 @@
 
 <a style="color:{% if comment_count > 0 %}dimgrey{% else %}lightgrey{% endif %}" type="button" title="Comments" href="{{ action.action_object.get_absolute_url }}">
     <span class="glyphicon glyphicon-comment">{%  if comment_count > 0 %} {{ comment_count }} {% endif %}</span>
+    {% comment %} would prefer:<span class="glyphicons glyphicons-chat"></span> {% endcomment %}
 </a>
 
