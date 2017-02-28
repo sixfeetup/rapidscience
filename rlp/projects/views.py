@@ -1,4 +1,6 @@
 from django.conf import settings
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mass_mail
 from django.core.urlresolvers import reverse
@@ -7,6 +9,7 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.views.decorators.cache import never_cache
+from django.views.generic import View
 
 from el_pagination.decorators import page_template
 
@@ -18,6 +21,7 @@ from rlp.documents.models import Document
 from rlp.search.forms import ActionObjectForm
 from .forms import InviteForm
 from .models import Project
+from .models import ProjectMembership
 from .shortcuts import group_invite_choices
 
 
@@ -149,3 +153,37 @@ def invite_members(request, pk, slug):
         'success': False,
         'message': 'Invitation failed',
     })
+
+
+class JoinGroup(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        project = get_object_or_404(Project, id=pk)
+        if request.user in project.users.all():
+            message = (
+                'You are already a member of the “{}” group, '
+                'or your membership approval is pending'.format(project.title)
+            )
+            messages.error(request, message)
+        elif project.approval_required:
+            ProjectMembership.objects.create(
+                user=request.user,
+                project=project,
+                state='pending',
+            )
+            # TODO send a message to moderators asking for approval
+            message = ('“{}” is a closed group. The moderators have been '
+                       'asked to review your request to '
+                       'join.'.format(project.title))
+            messages.success(request, message)
+        else:
+            # open group - add the user
+            ProjectMembership.objects.create(
+                user=request.user,
+                project=project,
+            )
+            message = 'Welcome to the “{}” group'.format(
+                project.title
+            )
+            messages.success(request, message)
+            return redirect(project.get_absolute_url())
+        return redirect(reverse('projects:projects_list'))

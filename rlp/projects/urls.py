@@ -19,5 +19,10 @@ urlpatterns = [
         r'^(?P<pk>\d+)-(?P<slug>[\w\d-]+)/invite$',
         views.invite_members,
         name='projects_invite',
+    ),
+    url(
+        r'^(?P<pk>\d+)/join$',
+        views.JoinGroup.as_view(),
+        name='projects_join',
     )
 ]
