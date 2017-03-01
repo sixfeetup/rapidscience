@@ -147,6 +147,9 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
         # if the user belongs to the project, they have access
         return self.is_staff or self in project.active_members()
 
+    def active_projects(self):
+        return self.projects.exclude(projectmembership__state='pending')
+
 
 class UserLogin(models.Model):
     user = models.ForeignKey(User)

@@ -339,21 +339,22 @@ class ActivationView(TemplateView):
 @never_cache
 @page_template('actstream/_activity.html')
 def dashboard(request, tab='activity', template_name='accounts/dashboard.html', extra_context=None):
+    projects = request.user.active_projects()
     context = {
         'user': request.user,
         'edit': True,
         'tab': tab,
+        'projects': projects,
     }
     activity_stream = Action.objects.filter(
         public=True
     )
     if tab == 'activity':
-        from rlp.projects.models import Project
         project_ct = ContentType.objects.get_for_model(Project)
         if not request.user.can_access_all_projects:
             activity_stream = activity_stream.filter(
                 target_content_type=project_ct,
-                target_object_id__in=list(Project.objects.filter(approval_required=False).values_list('id', flat=True))
+                target_object_id__in=list(projects.values_list('id', flat=True))
             )
         if 'project' in request.GET or 'content_type' in request.GET or 'user_activity_only' in request.GET:
             filter_form = ProjectContentForm(request.GET, user=request.user)
@@ -414,9 +415,11 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
 def profile(request, pk, tab='activity', template_name='accounts/profile.html', extra_context=None):
     user = get_object_or_404(User, pk=pk)
     user_ct = ContentType.objects.get_for_model(User)
+    projects = user.active_projects()
     context = {
         'user': user,
         'tab': tab,
+        'projects': projects,
     }
     if request.user.is_anonymous() or tab == 'publications':
         if user.orcid:
@@ -432,10 +435,9 @@ def profile(request, pk, tab='activity', template_name='accounts/profile.html', 
     if tab == 'activity':
         if not request.user.can_access_all_projects:
             # Filter activity_stream
-            from rlp.projects.models import Project
             activity_stream = activity_stream.filter(
                 target_content_type=ContentType.objects.get_for_model(Project),
-                target_object_id__in=list(Project.objects.filter(approval_required=False).values_list('id', flat=True))
+                target_object_id__in=list(projects.values_list('id', flat=True))
             )
         if 'content_type' in request.GET:
             filter_form = ActionObjectForm(request.GET)
