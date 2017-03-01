@@ -15,6 +15,7 @@
     {% block canonical %}{% endblock canonical %}
 
     {% block css %}
+        <link rel="stylesheet" href="{{STATIC_URL}}font-awesome/css/font-awesome.css">
         {% compress css %}
             <link rel="stylesheet" type="text/x-scss" href="{% static 'css/styles.scss' %}" media="screen">
         {% endcompress %}
