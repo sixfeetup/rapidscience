@@ -2,18 +2,18 @@ var selectedBookmarksFolderName; // will contain ID of selected bookmarks folder
 
 function remaining_characters(){
     // Magical spell to count characters
-    $('.remaining-characters').one('focus', function() {
+    $('.remaining-characters').each(function() {
         var maxLength = $(this).attr('maxlength');
         var length = $(this).val().length;
         var length = maxLength-length;
-        var paragraph = '<p class="character-count">You have ' + length + ' characters remaining</p>';
+        var paragraph = '<p class="character-count">'+ length + '/' + maxLength + '</p>';
         $(this).after(paragraph);
     });
     $('.remaining-characters').keyup(function() {
         var maxLength = $(this).attr('maxlength');
         var length = $(this).val().length;
         var length = maxLength-length;
-        $(this).next('.character-count').text('You have ' + length + ' characters remaining');
+        $(this).next('.character-count').text(length + '/' + maxLength);
     });
 }
 

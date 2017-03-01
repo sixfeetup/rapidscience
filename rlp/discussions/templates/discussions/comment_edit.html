@@ -1,16 +1,22 @@
-{% extends 'home.html' %}{% load bootstrap3 %}
+{% extends 'base.html' %}{% load bootstrap3 %}
 
-{% block main_content %}
-<h2>Edit Comment</h2>
-<p>{{ comment.comment }}</p>
-<form method="post" action="">
-  {% csrf_token %}
-  {% bootstrap_form form %}
-  <button class="btn btn-primary" type="submit">
-    Edit
-  </button>
-  <a role="button" class="btn btn-default" href="{{ comment.get_absolute_url }}">
-    Cancel
-  </a>
-</form>
-{% endblock main_content %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <h2>Edit Comment</h2>
+            <p>{{ comment.comment }}</p>
+            <form method="post" action="">
+              {% csrf_token %}
+              {% bootstrap_form form %}
+              <button class="btn btn-primary" type="submit">
+                Edit
+              </button>
+              <a role="button" class="btn btn-default" href="{{ comment.get_absolute_url }}">
+                Cancel
+              </a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -1,21 +1,28 @@
-{% extends 'home.html' %}{% load discussion_tags %}
+{% extends 'base.html' %}{% load discussion_tags bootstrap3 %}
 
-{% block main_content %}
-  {% get_threaded_comment_count for comment as comment_count %}
-<h2>Delete Comment</h2>
-<p class="more well">{{ comment.comment|urlize|linebreaksbr }}</p>
-<form method="post" action="">
-  {% csrf_token %}
-  <div class="alert alert-danger alert-dismissable">
-    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&#215;</button>
-    Are you sure you want to delete this?
-    {% if comment_count %}If you do, {{ comment_count }} repl{{ comment_count|pluralize:"y,ies" }} will also be deleted.{% endif %}
-  </div>
-  <button class="btn btn-primary" type="submit">
-    Delete
-  </button>
-  <a role="button" class="btn btn-default" href="{{ comment.get_absolute_url }}">
-    Cancel
-  </a>
-</form>
-{% endblock main_content %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            {% get_threaded_comment_count for comment as comment_count %}
+            <h2>Delete Comment</h2>
+            <p class="more well">{{ comment.comment|urlize|linebreaksbr }}</p>
+            <form method="post" action="">
+              {% csrf_token %}
+              <div class="alert alert-danger alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&#215;</button>
+                Are you sure you want to delete this?
+                {% if comment_count %}If you do, {{ comment_count }} repl{{ comment_count|pluralize:"y,ies" }} will also be deleted.{% endif %}
+              </div>
+              <button class="btn btn-primary" type="submit">
+                Delete
+              </button>
+              <a role="button" class="btn btn-default" href="{{ comment.get_absolute_url }}">
+                Cancel
+              </a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
