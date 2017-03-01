@@ -15,7 +15,7 @@
             {% if edit_url %}<a href="{{ edit_url }}">Edit</a>{% endif %}
         {% endwith %}
       <br />
-      Shared with x
+      Shared with <b>{{ comment.get_viewers|join:"</b>, <b>" }}</b>
     </p>
 
     <p class="initial">
