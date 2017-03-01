@@ -2,12 +2,14 @@ from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
+from django.core.mail import send_mail
 from django.core.mail import send_mass_mail
 from django.core.urlresolvers import reverse
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
+from django.utils.text import slugify
 from django.views.decorators.cache import never_cache
 from django.views.generic import View
 
@@ -154,6 +156,13 @@ def invite_members(request, pk, slug):
         'message': 'Invitation failed',
     })
 
+approval_tmpl = '''{} ({}) has requested access to the closed group “{}”.
+
+A moderator for the group must approve this access. You can view and approve pending members on the group’s langing page:
+
+{}
+'''
+
 
 class JoinGroup(LoginRequiredMixin, View):
     def get(self, request, pk):
@@ -170,7 +179,23 @@ class JoinGroup(LoginRequiredMixin, View):
                 project=project,
                 state='pending',
             )
-            # TODO send a message to moderators asking for approval
+            send_mail(
+                'Request to join group “{}”'.format(project.title),
+                approval_tmpl.format(
+                    request.user.get_full_name(),
+                    request.user.email,
+                    project.title,
+                    request.build_absolute_uri(reverse(
+                        'projects:projects_detail',
+                        kwargs={
+                            'pk': project.id,
+                            'slug': slugify(project.title),
+                        },
+                    )),
+                ),
+                request.user.email,
+                project.get_contact_email_addresses(),
+            )
             message = ('“{}” is a closed group. The moderators have been '
                        'asked to review your request to '
                        'join.'.format(project.title))
