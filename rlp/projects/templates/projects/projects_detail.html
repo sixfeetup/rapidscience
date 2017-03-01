@@ -57,7 +57,7 @@
                 <a href="{% url 'projects:projects_tab' pk=project.pk slug=project.slug tab='casereports' %}">Case Reports</a>
             </li>
             <li role="presentation"{% if tab == 'documents' %} class="active"{% endif %}>
-                <a href="{% url 'projects:projects_tab' pk=project.pk slug=project.slug tab='documents' %}">Documents &amp; Media</a>
+                <a href="{% url 'projects:projects_tab' pk=project.pk slug=project.slug tab='documents' %}">Docs/Media</a>
             </li>
             <li role="presentation"{% if tab == 'bibliography' %} class="active"{% endif %}>
                 <a href="{% url 'projects:projects_tab' pk=project.pk slug=project.slug tab='bibliography' %}">Bibliography</a>
