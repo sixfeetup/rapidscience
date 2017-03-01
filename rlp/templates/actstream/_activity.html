@@ -1,4 +1,5 @@
 {% load bookmarks comments discussion_tags el_pagination_tags %}
+
 {% lazy_paginate activity_stream %}
 {% for action in activity_stream %}
   <div class="activity-stream">
@@ -43,6 +44,10 @@
         {% if model == 'projectreference' and request.user.is_authenticated %}
           {% include 'bibliography/_share_reference.html' %}
         {%  endif %}
+
+        {% include 'discussions/discussion_count_widget.html' %}
+
+
       </div>
       {% endwith %}
     </div>
