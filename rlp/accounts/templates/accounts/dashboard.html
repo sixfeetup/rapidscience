@@ -13,6 +13,22 @@
     {% include "accounts/_hero.html" with user=user edit=True %}
 {% endblock hero %}
 
+{% block left_column %}
+    <div class="cc-box">
+        <img src="{% static "images/logo-CC.png" %}" class="img-responsive"/>
+        <p>Submit and search the database of case reports, N of 1 studies, and clinical trial summaries.</p>
+        <div class="row">
+            <div class="col-xs-6">
+                <a href="" class="btn btn-primary btn-block">Search</a>
+            </div>
+            <div class="col-xs-6">
+             <a href="" class="btn btn-primary btn-block">Submit</a>
+            </div>
+        </div>
+    </div>
+    {{ block.super }}
+{% endblock %}
+
 {% block main_content %}
 <div>
   <ul class="nav nav-tabs" role="tablist">
