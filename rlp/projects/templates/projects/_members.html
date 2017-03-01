@@ -6,7 +6,7 @@
   <p class="section-label">Members</p>
   <ul class="list-unstyled item-list">
     {% for membership in memberships|slice:":11" %}
-      {% with user=membership.user role=membership.role %}
+      {% with user=membership.user state=membership.state %}
       <li class="clearfix">
         <div class="col-xs-3">
         {% if user.photo %}
@@ -24,10 +24,10 @@
               <a href="{{ user.get_absolute_url }}"><strong>{{ user.get_full_name }}</strong></a>{% if user.degrees %}, {{ user.degrees }}{% endif %}
             </small>
           </p>
-          {% if role %}
+          {% if state %}
           <p class="no-margin-bottom">
             <small>
-              {{ role }}
+              {{ state }}
             </small>
           </p>
           {% endif %}

@@ -1,17 +1,12 @@
 from django.contrib import admin
 
-from .models import Topic, Project, ProjectMembership, Role
+from .models import Topic, Project, ProjectMembership
 
 
 class TopicAdmin(admin.ModelAdmin):
     list_display = ['title', 'order']
     list_editable = ['order']
     prepopulated_fields = {'slug': ('title',)}
-
-
-class RoleAdmin(admin.ModelAdmin):
-    list_display = ['title', 'contact', 'order']
-    list_editable = ['order']
 
 
 class ProjectMembershipAdmin(admin.TabularInline):
@@ -30,4 +25,3 @@ class ProjectAdmin(admin.ModelAdmin):
 
 admin.site.register(Topic, TopicAdmin)
 admin.site.register(Project, ProjectAdmin)
-admin.site.register(Role, RoleAdmin)

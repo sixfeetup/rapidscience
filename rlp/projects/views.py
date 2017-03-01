@@ -115,7 +115,7 @@ def projects_members(request, pk, slug, template_name='projects/projects_members
     context = {
         'project': project,
         'projects': projects,
-        'memberships': project.projectmembership_set.filter(user__is_active=True).order_by('role__order', 'user__last_name')
+        'memberships': project.projectmembership_set.filter(user__is_active=True).order_by('state', 'user__last_name')
     }
     if extra_context is not None:
         context.update(extra_context)

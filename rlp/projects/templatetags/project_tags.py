@@ -22,6 +22,5 @@ def show_project_members(project):
     return {
         'project': project,
         'memberships': project.projectmembership_set.filter(
-            user__is_active=True).order_by('role__order', 'user__first_name')
+            user__is_active=True).order_by('state', 'user__first_name')
     }
-

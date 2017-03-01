@@ -5,7 +5,7 @@
 {% if not forloop.counter|divisibleby:"2" %}
 <div class="row">
 {% endif %}
-  {% with user=membership.user role=membership.role %}
+  {% with user=membership.user state=membership.state %}
   <div class="col-md-2 col-xs-3">
   {% if user.photo %}
     {% thumbnail membership.user.photo 120x120 crop upscale as thumbnail %}
@@ -22,10 +22,10 @@
         <a href="{{ user.get_absolute_url }}">{{ user.get_full_name }}</a>{% if user.degrees %}, {{ user.degrees }}{% endif %}
       </small>
     </p>
-    {% if role %}
+    {% if state %}
     <p class="no-margin-bottom">
       <small>
-        {{ role }}
+        {{ state }}
       </small>
     </p>
     {% endif %}

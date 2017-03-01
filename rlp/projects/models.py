@@ -26,20 +26,6 @@ class Topic(SEOMixin):
         ordering = ['order']
 
 
-class Role(models.Model):
-    title = models.CharField(max_length=100)
-    contact = models.BooleanField(default=False,
-                                  help_text="If selected, users assigned this role may be treated as the point of "
-                                            "contact for their project.")
-    order = models.PositiveIntegerField(default=0, db_index=True)
-
-    class Meta:
-        ordering = ['order']
-
-    def __str__(self):
-        return self.title
-
-
 class Project(SEOMixin, SharesContentMixin):
     cover_photo = FilerImageField(null=True, blank=True, related_name="project_photo")
     institution = models.ForeignKey(Institution, blank=True, null=True)
@@ -84,7 +70,10 @@ class Project(SEOMixin, SharesContentMixin):
         )
 
     def get_contact_email_addresses(self):
-        emails = [pm.user.email for pm in ProjectMembership.objects.filter(role__contact=True, project=self)]
+        emails = [
+            pm.user.email for pm in
+            ProjectMembership.objects.filter(state='moderator', project=self)
+        ]
         emails += settings.REGISTRATION_REVIEWERS
         # One-off customization so that a single person could additionally be notified of 'approval required'
         # registrations, but only for projects that specifically require approval. We do NOT send to these recipients
@@ -115,7 +104,6 @@ class Project(SEOMixin, SharesContentMixin):
 class ProjectMembership(models.Model):
     project = models.ForeignKey(Project)
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
-    role = models.ForeignKey(Role, blank=True, null=True)
     state = FSMField(choices=MEMBER_STATES, default='member')
 
     class Meta:

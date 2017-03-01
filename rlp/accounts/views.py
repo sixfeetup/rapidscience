@@ -192,9 +192,10 @@ class Register(SessionWizardView):
             user = form.save(commit=False)
             user.is_active = False
             user.save()
-            project_membership = ProjectMembership.objects.create(user=user,
-                                                                  project=form.cleaned_data['project'],
-                                                                  role=form.cleaned_data['role'])
+            project_membership = ProjectMembership.objects.create(
+                user=user,
+                project=form.cleaned_data['project'],
+            )
             # Automatically add user to 'auto opt-in' projects if applicable
             for project in Project.objects.filter(auto_opt_in=True).exclude(pk=form.cleaned_data['project'].pk):
                 ProjectMembership.objects.create(user=user, project=project)
@@ -220,9 +221,10 @@ class Register(SessionWizardView):
     def process_registration(self, form):
         with transaction.atomic():
             user = form.save()
-            ProjectMembership.objects.create(user=user,
-                                             project=form.cleaned_data['project'],
-                                             role=form.cleaned_data['role'])
+            ProjectMembership.objects.create(
+                user=user,
+                project=form.cleaned_data['project'],
+            )
             # Automatically add user to 'auto opt-in' projects if applicable
             for project in Project.objects.filter(auto_opt_in=True).exclude(pk=form.cleaned_data['project'].pk):
                 ProjectMembership.objects.create(user=user, project=project)
@@ -459,7 +461,7 @@ def profile_edit(request, template_name='accounts/profile_edit.html'):
     ProjectFormset = inlineformset_factory(
         User, ProjectMembership,
         form=project_form,
-        fields=('project', 'role')
+        fields=('project',)
     )
     if request.method == 'POST':
         form = UserProfileForm(request.POST, request.FILES, instance=request.user)

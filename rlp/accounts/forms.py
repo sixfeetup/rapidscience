@@ -1,5 +1,4 @@
 from django import forms
-from django.conf import settings
 from django.contrib.auth.forms import ReadOnlyPasswordHashField, AuthenticationForm as DJAuthForm, \
     PasswordResetForm as DJPasswordResetForm
 from django.contrib.auth.tokens import default_token_generator
@@ -9,7 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from .models import User, Institution
 from rlp.core.email import send_transactional_mail
-from rlp.projects.models import Project, Role, ProjectMembership
+from rlp.projects.models import Project, ProjectMembership
 
 PASSWORD_RESET_SUBJECT = "Reset your password"
 
@@ -108,8 +107,6 @@ class RegistrationForm(UserCreationForm):
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
     project = forms.ModelChoiceField(queryset=Project.objects.all())
-    role = forms.ModelChoiceField(help_text="Leave blank if not applicable",
-                                  queryset=Role.objects.exclude(contact=True), required=False)
 
     class Meta:
         model = User
@@ -155,8 +152,6 @@ class UserChangeForm(forms.ModelForm):
 
 class ProjectMembershipForm(forms.ModelForm):
     project = forms.ModelChoiceField(queryset=Project.objects.exclude(auto_opt_in=True))
-    role = forms.ModelChoiceField(help_text="Leave blank if not applicable",
-                                  queryset=Role.objects.exclude(contact=True), required=False)
     class Meta:
         exclude = ['user']
         model = ProjectMembership
