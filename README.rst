@@ -43,6 +43,9 @@ Load some initial data::
     ./manage.py loaddata auth_permissions.json
     ./manage.py loaddata cms.json
 
+Install solr
+    from here: http://archive.apache.org/dist/lucene/solr/4.10.4/
+
 Now you should be able to successfully::
 
     ./manage.py runserver 0.0.0.0:8000
