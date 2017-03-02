@@ -1091,15 +1091,22 @@ input:focus + div.info {
 .project-preview .group-status {
 	text-transform: uppercase;
 }
+.projects .add-button,
 .project-preview .join-button {
 	position: absolute;
+	z-index: 2;
 	background-color: #ffffff;
 	border: 1px solid rgb(221, 221, 221);
 	border-radius: 4px;
 	padding: 10px 15px;
 	right: 15px;
+	margin-top: -36px;
+	color: #3792bf !important;
+}
+.project-preview .join-button {
 	margin-top: 37px;
 }
+.projects .add-button .fa
 .project-preview .join-button .fa {
 	color: #000000;
 	font-size: 21px;

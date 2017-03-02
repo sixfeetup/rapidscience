@@ -3,13 +3,16 @@
 
 {% block css %}
 {{ block.super }}
-<link rel="stylesheet" href="{{STATIC_URL}}css/style.css">
+<link rel="stylesheet" href="{{STATIC_URL}}css/cases.css">
 {% endblock css %}
 
 {% block hero %}
 <div class="hero projects">
     <div class="container">
       <h1>Groups</h1>
+      <a class="add-button" href="{% url 'projects:projects_add' %}">
+          <i class="fa fa-plus"></i> Create a Group
+      </a>
       <div class="image-container">
         {% placeholder 'hero-image' %}
       </div>
