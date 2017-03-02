@@ -9,6 +9,8 @@
 <link rel="stylesheet" type="text/css" href="{% static 'js/vendor/chosen/chosen.min.css' %}" media="screen">
 {% endblock css %}
 
+{% block body_class %}dashboard{% endblock %}
+
 {% block hero %}
     {% include "accounts/_hero.html" with user=user edit=True %}
 {% endblock hero %}

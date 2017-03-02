@@ -36,3 +36,15 @@ class InviteForm(forms.Form):
     invitation_message = forms.CharField(
         widget=forms.Textarea,
     )
+
+
+class NewGroupForm(forms.Form):
+    group_choices = (
+        (True, 'Open - All validated Rapid Science members can view activity and join to participate'),
+        (False, 'Closed - Moderator must approve / invite members'))
+
+    group_name = forms.CharField(max_length=200)
+    about = forms.CharField(max_length=300, widget=forms.Textarea)
+    # banner_image = forms.ImageField()
+    approval = forms.ChoiceField(
+        widget=forms.RadioSelect, choices=group_choices)
