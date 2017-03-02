@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
@@ -34,6 +35,7 @@ def projects_list(request, template_name="projects/projects_list.html"):
     return render(request, template_name, context)
 
 
+@login_required
 @never_cache
 @page_template('actstream/_activity.html')
 def projects_detail(request, pk, slug, tab='activity', template_name="projects/projects_detail.html", extra_context=None):
