@@ -14,11 +14,13 @@
         {% endif %}
     </p>
     {% if user in project.active_members %}
-    <span class="join-button">Member</span>
+        <span class="join-button">Member</span>
     {% else %}
-    <a class="join-button" href="{% url 'projects:projects_join' project.id %}">
-        <i class="fa fa-plus"></i> Join
-    </a>
+        {% if request.user.is_anonymous %}
+            <a class="join-button" href="{% url 'register'  %}"> <i class="fa fa-plus"></i> Register to Join </a>
+        {% else %}
+            <a class="join-button" href="{% url 'projects:projects_join' project.id %}"> <i class="fa fa-plus"></i> Join </a>
+        {% endif %}
     {% endif %}
     {% if project.cover_photo %}
         <img src="{% thumbnail project.cover_photo 570x120 crop upscale subject_location=project.cover_photo.subject_location %}" />
