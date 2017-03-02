@@ -29,10 +29,12 @@
     {% else %}
         <img class="default" src='{% static "img/bg-group1-med.jpg" %}'>
     {% endif %}
-    {% if project.meta_description %}
-        <p class="project-desc">{{ project.meta_description }}</p>
+    {% if project.goal %}
+        <p class="project-desc">{{ project.goal }}</p>
     {% endif %}
-    <p>Moderators: </p>
+    {% if project.project_mods %}
+        <p>Moderators: {{ project.project_mods }}</p>
+    {% endif %}
 </div>
 {% endfor %}
 

@@ -40,8 +40,8 @@ class InviteForm(forms.Form):
 
 class NewGroupForm(forms.Form):
     group_choices = (
-        (True, 'Open - All validated Rapid Science members can view activity and join to participate'),
-        (False, 'Closed - Moderator must approve / invite members'))
+        (0, 'Open - All validated Rapid Science members can view activity and join to participate'),
+        (1, 'Closed - Moderator must approve / invite members'))
 
     group_name = forms.CharField(max_length=200)
     about = forms.CharField(max_length=300, widget=forms.Textarea)

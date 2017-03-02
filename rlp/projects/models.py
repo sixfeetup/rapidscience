@@ -100,6 +100,10 @@ class Project(SEOMixin, SharesContentMixin):
     def active_members(self):
         return self.users.exclude(projectmembership__state='pending')
 
+    def project_mods(self):
+        mods = self.users.filter(projectmembership__state='moderator')
+        return ' | '.join([x.get_full_name() for x in mods])
+
 
 class ProjectMembership(models.Model):
     project = models.ForeignKey(Project)

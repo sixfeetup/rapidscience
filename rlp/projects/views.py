@@ -225,9 +225,14 @@ class AddGroup(LoginRequiredMixin, FormView):
         new_group = Project(
             title=data['group_name'],
             goal=data['about'],
-            approval_required=data['approval'],
+            approval_required=int(data['approval']),
             slug=slugify(data['group_name']),
             # cover_photo=request.FILES['banner_image'],
         )
         new_group.save()
+        ProjectMembership.objects.create(
+            user=request.user,
+            project=new_group,
+            state='moderator',
+        )
         return redirect(new_group.get_absolute_url())
