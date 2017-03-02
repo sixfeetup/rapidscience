@@ -19,7 +19,7 @@
       <div class="inside-wrapper">
       <div class="form submit-form">
 
-    		<form id="caseform" name="caseform" action="{% url 'add_casereport' %}" method="post">
+    		<form id="caseform" name="caseform" class="rpds-form" action="{% url 'add_casereport' %}" method="post">
                 {% csrf_token %}
                 
                 <h4><label for="casetitle">Case Title</label></h4>

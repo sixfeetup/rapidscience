@@ -24,5 +24,10 @@ urlpatterns = [
         r'^(?P<pk>\d+)/join$',
         views.JoinGroup.as_view(),
         name='projects_join',
+    ),
+    url(
+        r'^add/$',
+        views.AddGroup.as_view(),
+        name='projects_add',
     )
 ]

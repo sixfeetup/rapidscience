@@ -11,7 +11,7 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.utils.text import slugify
 from django.views.decorators.cache import never_cache
-from django.views.generic import View
+from django.views.generic import View, FormView
 
 from el_pagination.decorators import page_template
 
@@ -21,7 +21,7 @@ from rlp.bibliography.models import ProjectReference
 from rlp.discussions.models import ThreadedComment
 from rlp.documents.models import Document
 from rlp.search.forms import ActionObjectForm
-from .forms import InviteForm
+from .forms import InviteForm, NewGroupForm
 from .models import Project
 from .models import ProjectMembership
 from .shortcuts import group_invite_choices
@@ -212,3 +212,20 @@ class JoinGroup(LoginRequiredMixin, View):
             messages.success(request, message)
             return redirect(project.get_absolute_url())
         return redirect(reverse('projects:projects_list'))
+
+
+class AddGroup(LoginRequiredMixin, FormView):
+    form_class = NewGroupForm
+    template_name = 'projects/projects_add.html'
+    
+    def post(self, request, *args, **kwargs):
+        data = self.request.POST
+        new_group = Project(
+            title=data['group_name'],
+            goal=data['about'],
+            approval_required=data['approval'],
+            slug=slugify(data['group_name']),
+            # cover_photo=request.FILES['banner_image'],
+        )
+        new_group.save()
+        return redirect(new_group.get_absolute_url())
