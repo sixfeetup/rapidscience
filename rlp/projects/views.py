@@ -227,8 +227,9 @@ class AddGroup(LoginRequiredMixin, FormView):
             goal=data['about'],
             approval_required=int(data['approval']),
             slug=slugify(data['group_name']),
-            # cover_photo=request.FILES['banner_image'],
         )
+        if 'banner_image' in request.FILES.keys():
+            new_group.cover_photo = request.FILES['banner_image']
         new_group.save()
         ProjectMembership.objects.create(
             user=request.user,

@@ -27,7 +27,7 @@ class Topic(SEOMixin):
 
 
 class Project(SEOMixin, SharesContentMixin):
-    cover_photo = FilerImageField(null=True, blank=True, related_name="project_photo")
+    cover_photo = models.ImageField(null=True, blank=True)
     institution = models.ForeignKey(Institution, blank=True, null=True)
     topic = models.ForeignKey(Topic, blank=True, null=True)
     approval_required = models.BooleanField(default=True,
