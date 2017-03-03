@@ -286,6 +286,8 @@ small {
       border-radius: 50%; /* future proofing */
       -khtml-border-radius: 50%; /* for old Konqueror browsers */
       border: 2px solid #fff;
+      max-width: 100%;
+      height: auto;
     }
   }
   .profile-image + div {
@@ -369,6 +371,7 @@ small {
     }
     a {
       text-decoration: none;
+      font-weight: bold;
     }
     a:active,
     a:hover {

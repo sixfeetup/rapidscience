@@ -20,6 +20,22 @@
                 <h1><a href="{{ project.get_absolute_url }}">{{ project.title }}</a></h1>
                 {% if project.institution %}<p>{{ project.institution }}</p>{% endif %}
             </div>
+            <div class="col-md-3 col-md-push-1">
+                <ul class="fa-ul add-links">
+                    <li><a href="{{ project.get_absolute_url }}discussions#topic-form">
+                        <i class="fa-li fa fa-plus-circle" aria-hidden="true"></i> Discussion
+                    </a></li>
+                    <li><a href="{% url 'crdb:add_casereport' %}">
+                        <i class="fa-li fa fa-plus-circle" aria-hidden="true"></i> Case Report
+                    </a></li>
+                    <li><a href="{% url 'documents:add_document' %}">
+                        <i class="fa-li fa fa-plus-circle" aria-hidden="true"></i> Document / Media
+                    </a></li>
+                    <li><a href="{% url 'bibliography:add_book' %}">
+                        <i class="fa-li fa fa-plus-circle" aria-hidden="true"></i> Reference
+                    </a></li>
+                </ul>
+            </div>
         </div>
     </div>
 {% endblock hero %}

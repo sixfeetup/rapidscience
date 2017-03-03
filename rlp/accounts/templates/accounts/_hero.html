@@ -13,7 +13,7 @@
           <img class="img-circle" height="90px" width="90px" src="{% static 'img/user.jpg' %}">
         {% endif %}
       </div>
-      <div class="col-md-9">
+      <div class="col-md-8">
         <h1>{{ user.get_full_name }}{% if user.degrees %}, {{ user.degrees }}{% endif %} {% if edit %}{% include "accounts/_edit_pencil.html" %}{% endif %}</h1>
 
         <p>
@@ -21,9 +21,9 @@
           {% if user.institution %}{{ user.institution }}{% endif %}
         </p>
       </div>
-      <div class="col-md-2">
+      <div class="col-md-3">
           <ul class="fa-ul add-links">
-              <li><a href=""><i class="fa-li fa fa-plus-circle"></i>Discussion</a></li>
+              <li><a href="{% url 'dashboard' %}dashboard/discussions#topic-form"><i class="fa-li fa fa-plus-circle"></i>Discussion</a></li>
               <li><a href="{% url 'crdb:add_casereport' %}"><i class="fa-li fa fa-plus-circle"></i>Case Report</a></li>
               <li><a href="{% url 'documents:add_document' %}"><i class="fa-li fa fa-plus-circle"></i>Document / Media</a></li>
               <li><a href="{% url 'bibliography:add_book' %}"><i class="fa-li fa fa-plus-circle"></i>Reference</a></li>
