@@ -22,27 +22,12 @@ class ProjectMenu(CMSAttachMenu):
             page.get_absolute_url(),
             page.id
         ))
-        for project in Project.objects.filter(topic__isnull=True):
-            # the menu tree consists of NavigationNode instances
-            # Each NavigationNode takes a label as its first argument, a URL as
-            # its second argument and a (for this tree) unique id as its third
-            # argument.
-            node = NavigationNode(
-                project.title,
-                project.get_absolute_url(),
-                menu_id
-            )
-            nodes.append(node)
-            menu_id += 1
-        for topic in Topic.objects.all():
-            node = NavigationNode(
-                topic.title,
-                '',
-                menu_id
-            )
-            nodes.append(node)
-            menu_id += 1
-            for project in topic.project_set.all():
+        if request.user.is_authenticated():
+            for project in Project.objects.filter(topic__isnull=True):
+                # the menu tree consists of NavigationNode instances
+                # Each NavigationNode takes a label as its first argument, a URL as
+                # its second argument and a (for this tree) unique id as its third
+                # argument.
                 node = NavigationNode(
                     project.title,
                     project.get_absolute_url(),
@@ -50,6 +35,22 @@ class ProjectMenu(CMSAttachMenu):
                 )
                 nodes.append(node)
                 menu_id += 1
+            for topic in Topic.objects.all():
+                node = NavigationNode(
+                    topic.title,
+                    '',
+                    menu_id
+                )
+                nodes.append(node)
+                menu_id += 1
+                for project in topic.project_set.all():
+                    node = NavigationNode(
+                        project.title,
+                        project.get_absolute_url(),
+                        menu_id
+                    )
+                    nodes.append(node)
+                    menu_id += 1
         return nodes
 
 menu_pool.register_menu(ProjectMenu)
