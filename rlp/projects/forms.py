@@ -1,6 +1,9 @@
 from django import forms
 from django.core.validators import EmailValidator
 
+from config.settings.common import GROUP_INVITATION_TEMPLATE
+from rlp.core import fields
+
 
 class CommaSeparatedEmailField(forms.Field):
     def __init__(
@@ -48,3 +51,27 @@ class NewGroupForm(forms.Form):
     banner_image = forms.ImageField()
     approval = forms.ChoiceField(
         widget=forms.RadioSelect, choices=group_choices)
+    invite_members = fields.member_choice_field
+    invite_email = forms.CharField(
+        max_length=400,
+        label='Invite Non-Members',
+        required=False,
+        )
+
+    initial_text = GROUP_INVITATION_TEMPLATE
+    invitation_message = forms.CharField(
+        max_length=600,
+        widget=forms.Textarea,
+        required=False,
+        initial=initial_text,
+    )
+
+    # def __init__(self, *args, **kwargs):
+    #     super(NewGroupForm, self).__init__(*args, **kwargs)
+    #     invite_data = {
+    #         'user': request.user.get_full_name(),
+    #         'group': project.title,
+    #         # TODO put a real invite link here
+    #         'link': project.get_absolute_url(),
+    #     }
+    #     self.fields['invitation_message'].initial = GROUP_INVITATION_TEMPLATE.format(**invite_data)
