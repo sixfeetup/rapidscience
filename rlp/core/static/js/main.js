@@ -20,9 +20,9 @@ function remaining_characters(){
 $(document).on('ready', remaining_characters);
 
 var showChar = 170;
-var ellipsestext = '...';
-var moretext = 'more';
-var lesstext = '<br><br>less';
+var ellipsestext = '&hellip;';
+var moretext = '+';
+var lesstext = '-';
 
 // More or less
 function show_more() {
