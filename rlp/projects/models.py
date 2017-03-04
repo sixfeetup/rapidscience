@@ -15,7 +15,7 @@ from rlp.core.mixins import SharesContentMixin
 MEMBER_STATES = (
     ('moderator', 'Moderator'),
     ('member', 'Member'),
-    ('pending', 'Pending Approval'),
+    ('pending', 'Applicant'),
 )
 
 
@@ -100,9 +100,39 @@ class Project(SEOMixin, SharesContentMixin):
     def active_members(self):
         return self.users.exclude(projectmembership__state='pending')
 
+    def pending_members(self):
+        return self.users.filter(projectmembership__state='pending')
+
     def project_mods(self):
         mods = self.users.filter(projectmembership__state='moderator')
         return ' | '.join([x.get_full_name() for x in mods])
+
+    def add_member(self, user):
+        ''' add user to the project(group)
+            if the user was already a member, no action is taken
+            if the project requires membership approval, the user will be pending.
+            otherwise a normal membership is made.
+
+            Returns the ProjectMemebership  ( pending, member, moderator )
+        '''
+
+        initial_state = 'member'
+        if self.approval_required:
+            initial_state = 'pending'
+
+        membership, is_new = ProjectMembership.objects.get_or_create(
+            project=self,
+            user=user,
+            defaults={'state':initial_state},
+        )
+
+        return membership
+
+    def remove_member(self, user):
+        ''' remove user from the project.
+        '''
+        membership = self.projectmembership_set.get_or_create(user=user)
+        membership.delete()
 
 
 class ProjectMembership(models.Model):
@@ -115,7 +145,7 @@ class ProjectMembership(models.Model):
         ordering = ['project']
 
     def __str__(self):
-        return "Project membership for {}".format(self.user.email)
+        return "{user} is {state} of {project}".format(user=self.user.email, state=self.state, project=self.project.title)
 
     @transition(field=state, source='*', target='moderator')
     def promote(self):
