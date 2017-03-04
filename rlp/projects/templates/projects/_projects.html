@@ -18,6 +18,8 @@
     {% else %}
         {% if request.user.is_anonymous %}
             <a class="join-button" href="{% url 'register'  %}"> <i class="fa fa-plus"></i> Register to Join </a>
+        {%  elif request.user in project.pending_members %}
+            <a class="join-button" href="{% url 'projects:projects_leave' pk=project.pk %}"> <i class="fa fa-minus"></i> Cancel Pending </a>
         {% else %}
             <a class="join-button" href="{% url 'projects:projects_join' project.id %}"> <i class="fa fa-plus"></i> Join </a>
         {% endif %}

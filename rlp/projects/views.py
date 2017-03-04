@@ -165,6 +165,24 @@ A moderator for the group must approve this access. You can view and approve pen
 {}
 '''
 
+class LeaveGroup(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        project = get_object_or_404(Project, id=pk)
+        membership = get_object_or_404(ProjectMembership, project=project, user=request.user)
+        if membership.state == 'moderator' and project.approval_required:
+            message = 'Moderators cannot leave the groups that require moderation.'
+            messages.error(request, message)
+        elif membership.state == 'pending':
+            membership.delete()
+            message = 'Your pending application to the "{}" group has been canceled.'.format(project.title)
+            messages.success(request, message)
+        else:
+            membership.delete()
+            message = 'You have left the "{}" group.'.format(project.title)
+            messages.success(request, message)
+
+        return redirect(reverse('projects:projects_list'))
+
 
 class JoinGroup(LoginRequiredMixin, View):
     def get(self, request, pk):
@@ -175,51 +193,43 @@ class JoinGroup(LoginRequiredMixin, View):
                 'or your membership approval is pending'.format(project.title)
             )
             messages.error(request, message)
-        elif project.approval_required:
-            ProjectMembership.objects.create(
-                user=request.user,
-                project=project,
-                state='pending',
-            )
-            send_mail(
-                'Request to join group “{}”'.format(project.title),
-                approval_tmpl.format(
-                    request.user.get_full_name(),
-                    request.user.email,
-                    project.title,
-                    request.build_absolute_uri(reverse(
-                        'projects:projects_detail',
-                        kwargs={
-                            'pk': project.id,
-                            'slug': slugify(project.title),
-                        },
-                    )),
-                ),
-                request.user.email,
-                project.get_contact_email_addresses(),
-            )
-            message = ('“{}” is a closed group. The moderators have been '
-                       'asked to review your request to '
-                       'join.'.format(project.title))
-            messages.success(request, message)
         else:
-            # open group - add the user
-            ProjectMembership.objects.create(
-                user=request.user,
-                project=project,
-            )
-            message = 'Welcome to the “{}” group'.format(
-                project.title
-            )
-            messages.success(request, message)
-            return redirect(project.get_absolute_url())
+            membership = project.add_member(request.user)
+            if membership.state == 'pending':
+                send_mail(
+                    'Request to join group “{}”'.format(project.title),
+                    approval_tmpl.format(
+                        request.user.get_full_name(),
+                        request.user.email,
+                        project.title,
+                        request.build_absolute_uri(reverse(
+                            'projects:projects_detail',
+                            kwargs={
+                                'pk': project.id,
+                                'slug': slugify(project.title),
+                            },
+                        )),
+                    ),
+                    request.user.email,
+                    project.get_contact_email_addresses(),
+                )
+                message = ('“{}” is a closed group. The moderators have been '
+                           'asked to review your request to '
+                           'join.'.format(project.title))
+                messages.success(request, message)
+            else:
+                message = 'Welcome to the “{}” group'.format(
+                    project.title
+                )
+                messages.success(request, message)
+                return redirect(project.get_absolute_url())
         return redirect(reverse('projects:projects_list'))
 
 
 class AddGroup(LoginRequiredMixin, FormView):
     form_class = NewGroupForm
     template_name = 'projects/projects_add.html'
-    
+
     def post(self, request, *args, **kwargs):
         data = self.request.POST
         new_group = Project(
@@ -237,3 +247,4 @@ class AddGroup(LoginRequiredMixin, FormView):
             state='moderator',
         )
         return redirect(new_group.get_absolute_url())
+

@@ -26,6 +26,11 @@ urlpatterns = [
         name='projects_join',
     ),
     url(
+        r'^(?P<pk>\d+)/leave$',
+        views.LeaveGroup.as_view(),
+        name='projects_leave',
+    ),
+    url(
         r'^add/$',
         views.AddGroup.as_view(),
         name='projects_add',
