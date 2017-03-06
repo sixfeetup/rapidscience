@@ -18,7 +18,7 @@ class ProjectMenu(CMSAttachMenu):
         menu_id = 1000
         page = _get_page_by_untyped_arg('project-landing', request, settings.SITE_ID)
         nodes.append(NavigationNode(
-            'Groups Overview',
+            'All Groups',
             page.get_absolute_url(),
             page.id
         ))
@@ -33,7 +33,11 @@ class ProjectMenu(CMSAttachMenu):
                     project.get_absolute_url(),
                     menu_id
                 )
-                nodes.append(node)
+                # Set Community Commons as second
+                if project.title == 'Community Commons':
+                    nodes.insert(1, node)
+                else:
+                    nodes.append(node)
                 menu_id += 1
             for topic in Topic.objects.all():
                 node = NavigationNode(

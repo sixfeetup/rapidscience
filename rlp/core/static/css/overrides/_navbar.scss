@@ -350,7 +350,7 @@
 
 // Menu position and menu carets
 .navbar-nav > li > .dropdown-menu {
-    margin-top: 0;
+    margin-top: -1px;
     @include border-top-radius(0);
 }
 
