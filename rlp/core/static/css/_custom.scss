@@ -173,6 +173,17 @@ p.small {
     padding: 0;
 }
 
+/* Login screen */
+.login-banner {
+    background-color: rgb(246, 238, 227);
+    margin-bottom: 2em;
+}
+.login-banner h1,
+.login-banner p {
+    line-height: 100px;
+    margin: 0
+}
+
 // Bookmarks tab of account page
 
 #bookmarks {
@@ -619,6 +630,8 @@ a.comment-count.empty {
     	display: block;
     }
     input[type='text'],
+    input[type='email'],
+    input[type='password'],
     textarea {
         display: block;
         width: 100%;
