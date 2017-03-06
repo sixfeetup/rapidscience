@@ -221,6 +221,9 @@ class CaseReport(CRDBBase, SharedObjectMixin):
             events.append(event)
         return events
 
+    def get_treatments(self):
+        return Treatment.objects.filter(casereport_f=self)
+
     def get_treatment_events_in_order(self):
         return self.ordered_event('treatment')
 

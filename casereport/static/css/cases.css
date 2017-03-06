@@ -1036,6 +1036,7 @@ input:focus + div.info {
 .headingBanner p {
 	font-size: 16px;
 	font-weight: bold;
+	margin-bottom: 2em;
 }
 .case-detail-view h4 {
 	text-transform: uppercase;
@@ -1045,6 +1046,14 @@ input:focus + div.info {
 }
 #section-primary h4 {
 	margin-top: 0;
+}
+.case-detail-view .section-details {
+	font-style: italic;
+	margin-bottom: 0;
+}
+.case-detail-view .treatment-name {
+	font-weight: bold;
+	font-size: 16px;
 }
 
 /* Groups landing */

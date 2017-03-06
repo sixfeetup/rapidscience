@@ -31,106 +31,123 @@
     </div>
     <h1>{{ casereport.title }}</h1>
     <p>
-        Case ID: 1234567890 |
+        Case ID: {{ casereport.id }} |
         Submitted: {{ casereport.created_on|date:"M d, Y" }} |
         Last revision: {{ casereport.modified_on|date:"M d, Y" }}
     </p>
 </div>
 
- <div class="tab-content case-detail-view">
+ <div class="case-detail-view">
      
      <div id="structured" class="tab-pane fade in active"><!--first-tab-->
          <div class="col-md-3 col-xs-3">
              <ul class="jumpMenu">
                  <li><a href="#section-primary">Primary Author/Contact</a></li>
-                 <li><a href="#section-coauthors">Co-Authors</a></li>
+                 {% if casereport.referring_physician.all %}
+                     <li><a href="#section-coauthors">Co-Authors</a></li>
+                 {% endif %}
                  <li><a href="#section-diagnosis">Diagnosis/Presentation</a></li>
-                 <li><a href="#section-aberrations">Genetic Aberrations</a></li>
-                 <li><a href="#section-pathology">Pathology/Tests</a></li>
-                 <li><a href="#section-treatment">Treatment/Outcome</a></li>
-                 <li><a href="#section-comments">Additional Comments</a></li>
+                 {% if casereport.aberrations %}
+                     <li><a href="#section-aberrations">Genetic Aberrations</a></li>
+                 {% endif %}
+                 {% if casereport.biomarkers %}
+                     <li><a href="#section-biomarkers">Biomarkers</a></li>
+                 {% endif %}
+                 {% if casereport.pathology %}
+                     <li><a href="#section-pathology">Pathology/Tests</a></li>
+                 {% endif %}
+                 {% if casereport.get_treatments %}
+                     <li><a href="#section-treatment">Treatment/Outcome</a></li>
+                 {% endif %}
+                 {% if casereport.additional_comment %}
+                     <li><a href="#section-comments">Additional Comments</a></li>
+                 {% endif %}
              </ul>
          </div>
          <div class="col-md-9 col-xs-12">
 
       <div class="row author-list" id="section-primary">
           <h4>Primary Author/Contact</h4>
-          <p>{{ casereport.primary_physician }} | {{ casereport.primary_physician.affiliation }} | {{ casereport.primary_physician.affiliation.city }} | {{ casereport.primary_physician.affiliation.country }}</p>
+          <p><strong>{{ casereport.primary_physician }} | 
+             {{ casereport.primary_physician.affiliation }}, 
+             {{ casereport.primary_physician.affiliation.city }} | 
+             {{ casereport.primary_physician.affiliation.country }}</strong></p>
       </div>
 
+      {% if casereport.referring_physician.all %}
       <div class="row author-list" id="section-coauthors">
           <h4>Co-Authors</h4>
           {% for author in casereport.referring_physician.all %}
                   {% if not casereport.primary_physician.email == author.email %}
                       <div class="author-list-inner"><span>{{ author.name}}</span></div>
                   {% endif%}
-          {% empty %}
-
           {% endfor %}
-      {% if casereport.referring_physician.all.count == 1 %}
-          <div class="author-list-inner" ><span>Not Specified</span></div>
-      {% endif %}
-
       </div>
+      {% endif %}
       
       <div class="row" id="section-diagnosis">
           <h4>Diagnosis/Presentation</h4>
-          <p>
+          <p class="section-details">
               {{ casereport.age }} yr |
-              {{ casereport.gender|capfirst }}
+              {{ casereport.gender|capfirst }} |
+              {{ casereport.subtype }}
           </p>
+          <p>{{ casereport.presentation }}</p>
       </div>
 
+      {% if casereport.aberrations %}
       <div class="row">
-          <!-- <div class="col-md-8 diagnosis-section">
-              <h4> Conditions/Diagnosis</h4>
-              {% for test in casereport.get_diagnosis_events_in_order %}
-                  <div class="row diagnosis-section-inner"> <span> {{ test.name }}:</span> <p>{{ test.get_diagnosis_specimen }}   {{ test.get_symptoms }}</p></div>
-
-              {% empty %}
-                <div>Not Specified</div>
-              {% endfor %}
-          </div> -->
-
-          <div class="molecule-abberation" id="section-aberrations">
+         <div class="molecule-abberation" id="section-aberrations">
               <h4>Genetic Aberrations</h4>
-              {% for abb in casereport.molecular_abberations.all %}
-                  <div class="row  molecule-abberation-inner"><span><i>{{ abb.molecule }}</i> {{ abb.name }}</span></div>
-              {% empty %}
-                  <div >Not Specified</div>
-              {% endfor %}
+              <p>{{ casereport.aberrations }}</p>
           </div>
-
       </div>
+      {% endif %}
       
+      {% if casereport.biomarkers %}
+      <div class="row">
+         <div id="section-biomarkers">
+              <h4>Biomarkers</h4>
+              <p>{{ casereport.biomarkers }}</p>
+          </div>
+      </div>
+      {% endif %}
+      
+      {% if casereport.pathology %}
       <div class="row" id="section-pathology">
           <h4>Pathology/Tests</h4>
+          <p>{{ casereport.pathology }}</p>
       </div>
+      {% endif %}
 
-      <div class="row treatment-list" id="section-treatment">
+      {% if casereport.get_treatments %}
+      <div class="row" id="section-treatment">
           <h4>Treatment/Outcome</h4>
-          {% for treatment in casereport.get_treatment_events_in_order %}
-              <div class="row treatment-list-inner"><span >{{ treatment.get_dates }} {{ treatment.get_name }}{% if treatment.get_outcome %} :{% endif %}</span><span>{{ treatment.get_outcome }}</span> </div>
-          {% empty %}
-              <div>Not Specified</div>
+          {% for treatment in casereport.get_treatments %}
+              <div class="row treatment-list-inner">
+                  <div class="treatment-name">
+                      {{ forloop.counter }}.
+                      {{ treatment.name }}
+                  </div>
+                  <p class="section-details">
+                      {% if treatment.duration %}{{ treatment.duration }} | {% endif %}
+                      {% if treatment.treatment_type %}{{ treatment.treatment_type }} | {% endif %}
+                      {% if treatment.treatment_intent %}{{ treatment.treatment_intent }} | {% endif %}
+                      {% if treatment.objective_response %}{{ treatment.objective_response }} | {% endif %}
+                      {% if treatment.status %}PS: {{ treatment.status }} {% endif %}
+                  </p>
+                  <p>{{ treatment.notes }}</p>
+              </div>
           {% endfor %}
-
       </div>
-
-
-
-      <div class="row  procedures-list">
-          <h4>Tests</h4>
-          {% for test in casereport.get_test_events_in_order %}
-              <div class="row procedures-list-inner"><span >{{ test.get_dates }} {{ test.name }} :</span> <span> {{ test.get_test_results }}</span></div>
-          {% empty %}
-              <div>Not Specified</div>
-          {% endfor %}
-      </div>
+      {% endif %}
       
+      {% if casereport.additional_comment %}
       <div class="row" id="section-comments">
           <h4>Additional Comments</h4>
+          <p>{{ casereport.additional_comment }}</p>
       </div>
+      {% endif %}
 
          </div>
          <div class="visualClear"><!-- --></div>

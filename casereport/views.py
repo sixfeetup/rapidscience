@@ -131,7 +131,7 @@ class CaseReportFormView(FormView):
                     treatment_status = treatment_status_list[i]
                     treatment_outcome = treatment_outcome_list[i]
                     TreatmentInstanceResource()._post(
-                        case, treatment_name[i],
+                        case, treatment_name,
                         duration=duration,
                         treatment_type=treatment_type,
                         treatment_intent=treatment_intent,
