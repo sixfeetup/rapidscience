@@ -4,8 +4,6 @@ __author__ = 'yaseen'
 GENDER = (
     ('male', 'Male'),
     ('female', 'Female'),
-    ('transgender male', 'Transgender Male'),
-    ('transgender female', 'Transgender Female'),
 )
 
 
@@ -35,6 +33,12 @@ TYPE = (
 
     )
 
+TREATMENT_INTENT = (
+    ('Neoadjuvant', 'Neoadjuvant'),
+    ('Adjuvant', 'Adjuvant'),
+    ('Metastatic/Advanced', 'Metastatic/Advanced'),
+    ('Palliative', 'Palliative'),
+)
 
 APPROVED = 'approved'
 
@@ -509,15 +513,18 @@ PERFORMANCE_STATUS = (
 )
 
 OBJECTIVE_RESPONSES = (
-    ('SD', 'Stable Disease'),
-    ('PR', 'Partial Response'),
-    ('PD', 'Progressive Disease'),
-    ('CR', 'Complete Response')
+    ('No Response', 'No Response'),
+    ('Partial Response', 'Partial Response'),
+    ('Diseage Progression', 'Diseage Progression'),
+    ('Complete Response', 'Complete Response')
 )
 
 TREATMENT_TYPES = (
     ('Chemoradiotherapy', 'Chemoradiotherapy'),
+    ('Chemotherapy', 'Chemotherapy'),
+    ('Immunotherapy', 'Immunotherapy'),
     ('Radiotherapy', 'Radiotherapy'),
     ('Surgery', 'Surgery'),
     ('Systemic Therapy', 'Systemic Therapy'),
+    ('Targeted Therapy', 'Targeted Therapy'),
 )

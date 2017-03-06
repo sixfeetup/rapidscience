@@ -19,9 +19,9 @@ class CaseReportListResource:
         pass
 
     def _post(self, physicians, title=None, file_name=None,  age=None,
-              gender=None, progression=None, pathology=None, index=None,
-              response=None, additional_comment=None, document=None,
-              details=None, sarcoma_type=None, other_sarcoma=None):
+              gender=None, pathology=None, subtype=None, presentation=None,
+              aberrations=None, biomarkers=None, additional_comment=None,
+              document=None, details=None):
         """
 
         :type clinical_outcome: object
@@ -31,16 +31,12 @@ class CaseReportListResource:
             document = CaseFile(document=document, name=file_name)
             document.save()
 
-        # if details:
-        #     details = CaseReport(age=age, gender=gender,sarcoma_type=sarcoma_type,history=details, other_sarcoma_type=other_sarcoma)
-        #     details.save()
         result = CaseReport(title=title, age=age, gender=gender,
-                            progression=progression, casefile_f=document,
-                            pathology=pathology, response=response,
+                            casefile_f=document, subtype=subtype,
+                            presentation=presentation, aberrations=aberrations,
+                            biomarkers=biomarkers, pathology=pathology,
                             additional_comment=additional_comment,
-                            index=index, sarcoma_type=sarcoma_type,
-                            history=details, primary_physician=physicians[0],
-                            other_sarcoma_type=other_sarcoma)
+                            primary_physician=physicians[0])
         result.save()
         for physician in physicians:
             result.referring_physician.add(physician)
@@ -187,9 +183,9 @@ class TreatmentInstanceResource:
     def _get(self):
         pass
 
-    def _post(self, casereport, name, treatment_type, duration=None,
-              dose=None, objective_response=None, tumor_size=None, status=None,
-              treatment_outcome=None, notes=None):
+    def _post(self, casereport, name, duration=None, treatment_type=None,
+              treatment_intent=None, objective_response=None, status=None,
+              notes=None):
         """
 
         :type Treatment: object
@@ -198,13 +194,10 @@ class TreatmentInstanceResource:
         result.casereport_f = casereport
         result.name = name
         result.treatment_type = treatment_type
-        result.status = status if status else None
-        result.duration = duration if duration else None
-        result.dose = dose  if dose  else None
-        result.objective_response = objective_response  if objective_response  else None
-        result.tumor_size = tumor_size if tumor_size else None
-        result.treatment_outcome = treatment_outcome
-        result.notes = notes if notes else None
+        result.status = status
+        result.duration = duration
+        result.objective_response = objective_response
+        result.notes = notes
         result.save()
         return result
 

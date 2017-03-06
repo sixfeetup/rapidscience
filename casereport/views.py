@@ -101,7 +101,6 @@ class CaseReportFormView(FormView):
             title = data.get('casetitle')
             age = data.get('age')
             gender = data.get('gender')
-            # need to add these to CaseReport model
             subtype = data.get('subtype')
             presentation = data.get('presentation')
             aberrations = data.get('aberrations')
@@ -119,7 +118,9 @@ class CaseReportFormView(FormView):
                 title=title, age=age,
                 gender=gender, pathology=pathology,
                 additional_comment=additional_comment,
-                physicians=physicians)
+                physicians=physicians, subtype=subtype,
+                presentation=presentation, aberrations=aberrations,
+                biomarkers=biomarkers)
             for i in range(0, len(treatment_name_list)):
                 if treatment_name_list[i]:
                     treatment_name = treatment_name_list[i]
@@ -129,18 +130,14 @@ class CaseReportFormView(FormView):
                     treatment_response = treatment_response_list[i]
                     treatment_status = treatment_status_list[i]
                     treatment_outcome = treatment_outcome_list[i]
-                    # dose = data.get('dose_%s' %i, None)
-                    # objective_response = data.get('objective_response_%s' %i, None)
-                    # status = data.get('status_%s' %i, None)
-                    # tumor_size = data.get('tumor_size_%s' %i, None)
-                    # treatment_outcome = data.get('treatment_outcome_%s' %i, None)
-                    # notes = data.get('notes_%s' %i, None)
                     TreatmentInstanceResource()._post(
                         case, treatment_name[i],
-                        ','.join(treatment_type), duration=duration,
+                        duration=duration,
+                        treatment_type=treatment_type,
+                        treatment_intent=treatment_intent,
                         objective_response=treatment_response,
-                        status=treatment_status,
-                        treatment_outcome=treatment_outcome)
+                        status=int(treatment_status),
+                        notes=treatment_outcome)
             CaseReportInstanceResource()._addauthor(case, author_list)
 
             # CaseReportInstanceResource()._addabberations(case, m_abbs)

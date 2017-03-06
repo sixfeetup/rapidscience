@@ -6,6 +6,7 @@ from casereport.constants import CASE_STATUS
 from casereport.constants import TYPE
 from casereport.constants import PERFORMANCE_STATUS
 from casereport.constants import OBJECTIVE_RESPONSES
+from casereport.constants import TREATMENT_INTENT
 from casereport.constants import INDEXES
 from django_countries.fields import CountryField
 from django.db import models
@@ -108,33 +109,18 @@ class CaseReport(CRDBBase, SharedObjectMixin):
                                           related_name='primary_case')
     referring_physician = models.ManyToManyField(Physician, blank=True)
     authorized_reps = models.ManyToManyField(AuthorizedRep, blank=True)
-    sarcoma_type = models.CharField(max_length=100,
-                                    choices=sorted(SARCOMA_TYPE),
-                                    null=True,
-                                    blank=True)
-    other_sarcoma_type = models.CharField(max_length=200,
-                                          null=True,
-                                          blank=True)
-    molecular_abberations = models.ManyToManyField(MolecularAbberation,
-                                                   blank=True)
-    history = models.TextField(null=True, blank=True)
-    precision_treatment = models.TextField(null=True, blank=True)
-    specimen_analyzed = models.TextField(null=True, blank=True)
+    subtype = models.CharField(max_length=200, null=True, blank=True)
+    presentation = models.TextField(null=True, blank=True)
+    aberrations = models.CharField(max_length=200, null=True, blank=True)
+    biomarkers = models.TextField(null=True, blank=True)
+    pathology = models.TextField(null=True, blank=True)
     additional_comment = models.TextField(null=True, blank=True)
-    previous_treatments = models.TextField(null=True, blank=True)
     status = models.CharField(max_length=50, choices=STATUS,
                               default='processing')
     casefile_f = models.ForeignKey(
         CaseFile, null=True, blank=True,
         verbose_name='Case File',
     )
-    index = models.IntegerField(choices=INDEXES, null=True, blank=True)
-    pathology = models.TextField(null=True, blank=True)
-    progression = models.CharField(max_length=250, null=True, blank=True)
-    response = models.CharField(max_length=2, choices=OBJECTIVE_RESPONSES,
-                                null=True, blank=True)
-    tumor_location = models.CharField(max_length=200, null=True, blank=True)
-    molecular_abberations.verbose_name = 'Genetic Aberrations'
 
     def __str__(self):
         return self.title if self.title else '---'
@@ -247,10 +233,10 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     def get_physicians_info(self):
         physicians = ''
         for physician in self.referring_physician.all():
-            physicians += '%s, ' %physician.name
+            physicians += '%s, ' % physician.name
         else:
             physicians = physicians[:-2]
-            physicians += ' - %s' %(physician.affiliation)
+            physicians += ' - %s' % (physician.affiliation)
         return physicians
 
     def get_physician(self):
@@ -283,11 +269,20 @@ class Treatment(CRDBBase):
     name = models.CharField(max_length=250)
     treatment_type = models.CharField(max_length=250)
     duration = models.CharField(max_length=250, null=True, blank=True)
-    dose = models.CharField(max_length=250, null=True, blank=True)
-    objective_response = models.CharField(max_length=2, choices=OBJECTIVE_RESPONSES, null=True, blank=True)
-    tumor_size = models.CharField(max_length=50, null=True, blank=True)
-    status = models.IntegerField(choices=PERFORMANCE_STATUS, null=True, blank=True)
-    treatment_outcome = models.TextField(null=True, blank=True)
+    treatment_intent = models.CharField(
+        max_length=20,
+        null=True,
+        blank=True,
+        choices=TREATMENT_INTENT)
+    objective_response = models.CharField(
+        max_length=50,
+        choices=OBJECTIVE_RESPONSES,
+        null=True,
+        blank=True)
+    status = models.IntegerField(
+        choices=PERFORMANCE_STATUS,
+        null=True,
+        blank=True)
     notes = models.TextField(null=True, blank=True)
 
     def __str__(self):
