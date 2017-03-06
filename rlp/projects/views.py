@@ -219,21 +219,58 @@ class JoinGroup(LoginRequiredMixin, View):
 class AddGroup(LoginRequiredMixin, FormView):
     form_class = NewGroupForm
     template_name = 'projects/projects_add.html'
-    
-    def post(self, request, *args, **kwargs):
-        data = self.request.POST
+
+    def get_form(self, form_class):
+        # super.get_form() handles POST data if available
+        form = super(AddGroup, self).get_form(form_class)
+        invite_choices = (
+            (user.id, user.get_full_name())
+            for user in User.objects.all()
+            if user != self.request.user
+        )
+        form.fields['internal'].choices = invite_choices
+        return form
+
+    def form_valid(self, form):
+        data = form.cleaned_data
+        user = self.request.user
         new_group = Project(
             title=data['group_name'],
             goal=data['about'],
             approval_required=int(data['approval']),
             slug=slugify(data['group_name']),
         )
-        if 'banner_image' in request.FILES.keys():
-            new_group.cover_photo = request.FILES['banner_image']
+        if 'banner_image' in self.request.FILES.keys():
+            new_group.cover_photo = self.request.FILES['banner_image']
         new_group.save()
         ProjectMembership.objects.create(
-            user=request.user,
+            user=user,
             project=new_group,
             state='moderator',
         )
-        return redirect(new_group.get_absolute_url())
+        group_url = new_group.get_absolute_url()
+        invite_data = {
+            'user': user.get_full_name(),
+            'group': new_group.title,
+            # TODO put a real invite link here
+            'link': group_url,
+        }
+        invite_msg = settings.GROUP_INVITATION_TEMPLATE.format(**invite_data)
+        iu_ids = data['internal']
+        internal_addrs = User.objects.filter(
+            id__in=iu_ids
+        ).values_list('email', flat=True)
+        external_addrs = data['external']
+        recipients = list(internal_addrs) + external_addrs
+        subject = 'Invitation to join {}'.format(new_group.title)
+        message_data = (
+            (
+                subject,
+                invite_msg,
+                user.email,
+                [rcp],
+            )
+            for rcp in recipients
+        )
+        send_mass_mail(message_data)
+        return redirect(group_url)

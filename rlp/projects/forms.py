@@ -1,9 +1,6 @@
 from django import forms
 from django.core.validators import EmailValidator
 
-from config.settings.common import GROUP_INVITATION_TEMPLATE
-from rlp.core import fields
-
 
 class CommaSeparatedEmailField(forms.Field):
     def __init__(
@@ -24,18 +21,23 @@ class CommaSeparatedEmailField(forms.Field):
         return addrs
 
 
+internal_member_field = forms.MultipleChoiceField(
+    label='Invite Rapid Science Members',
+    help_text='Type name; separate with commas',
+    choices=(),  # gets filled in by the view
+    required=False,
+)
+external_member_field = CommaSeparatedEmailField(
+    label='Invite Non-members',
+    help_text='Enter institutional e-mails; separate with commas',
+    max_length=400,
+    required=False,
+)
+
+
 class InviteForm(forms.Form):
-    internal = forms.MultipleChoiceField(
-        label='Invite Rapid Science Members',
-        help_text='Type name; separate with commas',
-        choices=(),  # gets filled in by the view
-        required=False,
-    )
-    external = CommaSeparatedEmailField(
-        label='Invite Non-members',
-        help_text='Enter institutional e-mails; separate with commas',
-        required=False,
-    )
+    internal = internal_member_field
+    external = external_member_field
     invitation_message = forms.CharField(
         widget=forms.Textarea,
     )
@@ -43,7 +45,8 @@ class InviteForm(forms.Form):
 
 class NewGroupForm(forms.Form):
     group_choices = (
-        (0, 'Open - All validated Rapid Science members can view activity and join to participate'),
+        (0, ('Open - All validated Rapid Science members can'
+             'view activity and join to participate')),
         (1, 'Closed - Moderator must approve / invite members'))
 
     group_name = forms.CharField(max_length=200)
@@ -51,27 +54,10 @@ class NewGroupForm(forms.Form):
     banner_image = forms.ImageField()
     approval = forms.ChoiceField(
         widget=forms.RadioSelect, choices=group_choices)
-    invite_members = fields.member_choice_field
-    invite_email = forms.CharField(
-        max_length=400,
-        label='Invite Non-Members',
-        required=False,
-        )
-
-    initial_text = GROUP_INVITATION_TEMPLATE
-    invitation_message = forms.CharField(
-        max_length=600,
-        widget=forms.Textarea,
-        required=False,
-        initial=initial_text,
-    )
-
-    # def __init__(self, *args, **kwargs):
-    #     super(NewGroupForm, self).__init__(*args, **kwargs)
-    #     invite_data = {
-    #         'user': request.user.get_full_name(),
-    #         'group': project.title,
-    #         # TODO put a real invite link here
-    #         'link': project.get_absolute_url(),
-    #     }
-    #     self.fields['invitation_message'].initial = GROUP_INVITATION_TEMPLATE.format(**invite_data)
+    internal = internal_member_field
+    external = external_member_field
+    # invitation_message = forms.CharField(
+    #     max_length=600,
+    #     widget=forms.Textarea,
+    #     required=False,
+    # )
