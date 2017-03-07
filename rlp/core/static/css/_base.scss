@@ -430,13 +430,24 @@ small {
       color: #256180;
     }
   }
-  .activity-actions button {
+  .activity-actions {
+    button {
       color: #ddd;
       font-size: 24px;
       &:focus,
       &:hover {
         color: #444;
       }
+      &.dropdown-toggle {
+      font-size: 12px;
+      line-height: 20px;
+      margin-bottom: 3px;
+      }
+    }
+    .dropdown-menu {
+      right: 0;
+      left: auto;
+    }
   }
 }
 
