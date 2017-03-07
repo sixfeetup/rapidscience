@@ -42,3 +42,17 @@ group_choice_field = forms.MultipleChoiceField(
     choices=(),  # override this in the view with group_choices()
     required=False,
 )
+
+
+class SendToForm(forms.Form):
+    groups = group_choice_field
+    members = member_choice_field
+
+
+def get_sendto_form(user, content, data=None):
+    '''populate a SendToForm with appropriate choices'''
+
+    form = SendToForm(data)
+    form.fields['groups'].choices = group_choices(user, content)
+    form.fields['members'].choices = member_choices(content)
+    return form
