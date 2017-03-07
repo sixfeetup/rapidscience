@@ -77,19 +77,16 @@
                     <li><a href="javascript:void(0)" class="no-side-padding">|</a></li>
                     <li><a href="{% url 'register' %}">Register</a></li>
                 {% endif %}
-                <li class="navbar-secondary">
-                    <a class="search-icon" href="#search-form" data-toggle="collapse">
-                        <i class="glyphicon glyphicon-search invert-horizontal"></i>
-                    </a>
+                <li class="navbar-secondary search-widget">
                     <div id="search-form" class="collapse">
                         <form class="clearfix" action="{% url 'haystack_search' %}" method="get">
                           <label for="search" class="sr-only">Search: </label>
                           <input class="form-control" type="text" name="q" placeholder="Search">
-                          <button class="btn btn-primary" type="submit">
-                            Search
-                          </button>
                       </form>
                     </div>
+                    <a class="search-icon" href="#search-form" data-toggle="collapse">
+                        <i class="glyphicon glyphicon-search invert-horizontal"></i>
+                    </a>
                 </li>
             </ul>
         </div>

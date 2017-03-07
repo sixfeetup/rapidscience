@@ -260,8 +260,19 @@
 
     }
 
+    .search-widget {
+        padding: 0;
+        border-top: none;
+        #search-form {
+            position: relative;
+            z-index:10;
+        }
+    }
     .search-icon {
         border: none;
+        padding-top: 15px;
+        padding-bottom: 15px;
+        float: right;
     }
 
 
