@@ -47,6 +47,11 @@ urlpatterns = [
     url(r'^discussions/', include('rlp.discussions.urls_edit_delete')),
     url(r'^documents/', include('rlp.documents.urls')),
     url(r'^bibliography/', include('rlp.bibliography.urls')),
+    url(
+        r'^send/(?P<app_label>\w+)/(?P<model_name>\w+)/(?P<object_id>\d+)/$',
+        views.SendToView.as_view(),
+        name='sendto',
+    ),
     url(r'^', include('cms.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
