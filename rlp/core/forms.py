@@ -1,6 +1,23 @@
 from django import forms
 
 from rlp.accounts.models import User
+from rlp.projects.models import Project
+
+
+class MemberListField(forms.MultipleChoiceField):
+    def __init__(self, *args, **kwargs):
+        super(MemberListField, self).__init__(*args, **kwargs)
+
+    def clean(self, value):
+        return User.objects.filter(id__in=value)
+
+
+class GroupListField(forms.MultipleChoiceField):
+    def __init__(self, *args, **kwargs):
+        super(GroupListField, self).__init__(*args, **kwargs)
+
+    def clean(self, value):
+        return Project.objects.filter(id__in=value)
 
 
 def member_choices(content):
@@ -29,14 +46,14 @@ def group_choices(user, content):
             yield (group.id, group.title)
 
 
-member_choice_field = forms.MultipleChoiceField(
+member_choice_field = MemberListField(
     label='Members',
     help_text='Type name; separate with commas',
     choices=(),  # override this in the view with member_choices()
     required=False,
 )
 
-group_choice_field = forms.MultipleChoiceField(
+group_choice_field = GroupListField(
     label='Groups',
     help_text='Type name; separate with commas',
     choices=(),  # override this in the view with group_choices()
