@@ -237,10 +237,10 @@
 .navbar-nav {
     margin: ($navbar-padding-vertical / 2) (-$navbar-padding-horizontal);
 
-    > li > a {
+    > li {
         border-top: 3px solid #332f2d;
-        padding-top: 10px;
-        padding-bottom: 10px;
+        padding-top: 12px;
+        padding-bottom: 15px;
         line-height: $line-height-computed;
         -webkit-transition: border-top-color .5s;
         -moz-transition: border-top-color .5s;
@@ -297,8 +297,8 @@
         > li {
             float: left;
             > a {
-                padding-top: 12px;
-                padding-bottom: $navbar-padding-vertical;
+                padding-top: 0;
+                padding-bottom: 0;
             }
         }
     }
@@ -440,7 +440,17 @@
     .navbar-nav {
 
         &.navbar-secondary, > li.navbar-secondary {
-            border-left: 1px solid $navbar-default-color;
+
+            .user-menu .dropdown-toggle {
+                padding-top: 0;
+                padding-bottom: 0;
+                border-top-width: 0;
+                border-left-width: 1px;
+                border-right-width: 1px;
+                border-bottom-width: 0;
+                border-color: #4f4f4f;
+                border-style: solid;
+            }
 
             .glyphicon-search {
                 font-size: 1.25em;

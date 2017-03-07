@@ -61,7 +61,17 @@
             </ul>
             <ul class="nav navbar-nav navbar-secondary">
                 {% if request.user.is_authenticated %}
-                    <li><a href="{% url 'logout' %}">Sign out</a></li>
+                    <li class="dropdown user-menu">
+                        <a href="" class="dropdown-toggle">
+                            {{ user.get_full_name }}
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{% url 'profile' user.id %}">View profile</a></li>
+                            <li><a href="{% url 'profile_edit' %}">Edit profile</a></li>
+                            <li><a href="{% url 'logout' %}">Sign out</a></li>
+                        </ul>
+                    </li>
                 {% else %}
                     <li><a href="{% url 'login' %}">Sign in</a></li>
                     <li><a href="javascript:void(0)" class="no-side-padding">|</a></li>
