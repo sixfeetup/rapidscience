@@ -260,9 +260,6 @@ class CaseReport(CRDBBase, SharedObjectMixin):
             event = None
         return event.date_point if event else event
 
-    def get_sarcoma_type(self):
-        return self.sarcoma_type if not self.sarcoma_type == 'Other' else self.other_sarcoma_type
-
 
 @python_2_unicode_compatible
 class Treatment(CRDBBase):

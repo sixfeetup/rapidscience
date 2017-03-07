@@ -17,10 +17,7 @@ class CaseReportIndex(indexes.SearchIndex, indexes.Indexable):
     title = indexes.CharField(model_attr='title')
     gender = indexes.CharField(model_attr='gender', faceted=True)
     age = indexes.IntegerField(model_attr='age', faceted=True)
-    molecular_abberations = indexes.MultiValueField(faceted=True)
-    molecules = indexes.MultiValueField(faceted=True)
-    treatments = indexes.MultiValueField(faceted=True)
-    cr_tests = indexes.MultiValueField(faceted=True)
+    abberations = indexes.CharField(faceted=True)
     created_on = indexes.DateTimeField(model_attr='created_on')
     modified_on = indexes.DateTimeField(model_attr='modified_on')
     treatment_type = indexes.MultiValueField(faceted=True)
@@ -40,20 +37,13 @@ class CaseReportIndex(indexes.SearchIndex, indexes.Indexable):
         return cases
 
     def prepare_text(self, obj):
-        synonyms = self.get_synonyms(obj)
+        # synonyms = self.get_synonyms(obj)
         reported_date = obj.get_reported_date()
-        outcomes = self.get_outcomes(obj)
-        results = self.get_results(obj)
-        test_names = self.prepare_cr_tests(obj)
         treatment_names = self.prepare_treatments(obj)
         searchstring = render_to_string(
             'casereport/search/indexes/casereport/casereport_text.txt',
             {'object': obj,
-             'synonyms': synonyms,
-             'outcomes': outcomes,
-             'results': results,
              'reported_date': reported_date,
-             'test_names': test_names,
              'treatment_names': treatment_names})
         return searchstring
 
@@ -61,27 +51,11 @@ class CaseReportIndex(indexes.SearchIndex, indexes.Indexable):
         physician = obj.primary_physician
         return [physician.get_country()]
 
-    def prepare_molecular_abberations(self, obj):
-        names = obj.molecular_abberations.all()
-        names = [i for i in names]
-        return names
-
-    def prepare_molecules(self, obj):
-        mols = obj.molecular_abberations.all()
-        molecules = [i.molecule for i in mols]
-        return molecules
-
     def prepare_treatments(self, obj):
         events = obj.event_set.filter(event_type='treatment')
         treatments = {i.name.strip().capitalize() for i in events}
         treatments = list(treatments)
         return treatments
-
-    def prepare_cr_tests(self, obj):
-        events = obj.event_set.filter(event_type='test')
-        tests = {i.name.strip().capitalize() for i in events}
-        tests = list(tests)
-        return tests
 
     def get_synonyms(self, obj):
         terms = []

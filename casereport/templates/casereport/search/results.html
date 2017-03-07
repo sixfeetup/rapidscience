@@ -14,7 +14,6 @@
 
                     <a href="{% url 'casereport_detail' result.object.id  result.object.title|slugify %}">
                     <div class=" nav-item">{{ result.object.gender|capfirst }}  {{ result.object.age }} y</div>
-                    <div class="nav-item">{{ result.object.get_sarcoma_type|capfirst }}{% if result.object.tumor_location %}, {{ result.object.tumor_location }}{% endif %}</div>
 
                     </a>
                 </div>
