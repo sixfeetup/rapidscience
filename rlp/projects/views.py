@@ -132,12 +132,11 @@ def invite_members(request, pk, slug):
         form = InviteForm(request.POST)
         form.fields['internal'].choices = group_invite_choices(group)
         if form.is_valid():
-            iu_ids = form.cleaned_data['internal']
-            internal_addrs = User.objects.filter(
-                id__in=iu_ids
-            ).values_list('email', flat=True)
+            internal_addrs = [
+                user.email for user in form.cleaned_data['internal']
+            ]
             external_addrs = form.cleaned_data['external']
-            recipients = list(internal_addrs) + external_addrs
+            recipients = internal_addrs + external_addrs
             subject = 'Invitation to join {}'.format(group.title)
             message_data = (
                 (
@@ -266,12 +265,11 @@ class AddGroup(LoginRequiredMixin, FormView):
             'link': group_url,
         }
         invite_msg = settings.GROUP_INVITATION_TEMPLATE.format(**invite_data)
-        iu_ids = data['internal']
-        internal_addrs = User.objects.filter(
-            id__in=iu_ids
-        ).values_list('email', flat=True)
+        internal_addrs = [
+            member.email for member in form.cleaned_data['internal']
+        ]
         external_addrs = data['external']
-        recipients = list(internal_addrs) + external_addrs
+        recipients = internal_addrs + external_addrs
         subject = 'Invitation to join {}'.format(new_group.title)
         message_data = (
             (

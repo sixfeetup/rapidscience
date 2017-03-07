@@ -1,6 +1,8 @@
 from django import forms
 from django.core.validators import EmailValidator
 
+from rlp.core.forms import MemberListField
+
 
 class CommaSeparatedEmailField(forms.Field):
     def __init__(
@@ -21,7 +23,7 @@ class CommaSeparatedEmailField(forms.Field):
         return addrs
 
 
-internal_member_field = forms.MultipleChoiceField(
+internal_member_field = MemberListField(
     label='Invite Rapid Science Members',
     help_text='Type name; separate with commas',
     choices=(),  # gets filled in by the view
