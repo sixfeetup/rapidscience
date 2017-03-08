@@ -114,3 +114,14 @@ class SharedObjectMixin(models.Model):
             target = parent_type.objects.non_polymorphic().get(id=self.id)
         for viewer in viewers:
             SharedContent.objects.create(viewer=viewer, target=target)
+
+    def get_content_type(self, resolve_polymorphic=True):
+        target = self
+        if (resolve_polymorphic
+           and hasattr(self, 'polymorphic_model_marker')
+           and len(self._meta.parents)):
+            # for polymorphic types, share the parent reference
+            parent_type = list(self._meta.parents)[-1]
+            target = parent_type.objects.non_polymorphic().get(id=self.id)
+        content_type = ContentType.objects.get_for_model(target)
+        return content_type.natural_key()
