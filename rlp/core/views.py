@@ -45,7 +45,9 @@ class SendToView(LoginRequiredMixin, View):
         shared_content = get_object_or_404(model, pk=object_id)
         form = get_sendto_form(request.user, shared_content, request.POST)
         if form.is_valid():
-            members = form.cleaned_data['members']
+            members = list(form.cleaned_data['members'])
+            if form.cleaned_data['to_dashboard']:
+                members.append(request.user)
             if members:
                 shared_content.share_with(members)
             groups = form.cleaned_data['groups']
