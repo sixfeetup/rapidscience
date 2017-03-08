@@ -30,7 +30,8 @@ class SendToView(LoginRequiredMixin, View):
         ctype = ContentType.objects.get_by_natural_key(app_label, model_name)
         model = ctype.model_class()
         shared_content = get_object_or_404(model, pk=object_id)
-        form = get_sendto_form(request.user, shared_content)
+        type_key = (app_label, model_name)
+        form = get_sendto_form(request.user, shared_content, type_key)
         context = {
             'form': form,
             'app_label': app_label,
@@ -43,7 +44,13 @@ class SendToView(LoginRequiredMixin, View):
         ctype = ContentType.objects.get_by_natural_key(app_label, model_name)
         model = ctype.model_class()
         shared_content = get_object_or_404(model, pk=object_id)
-        form = get_sendto_form(request.user, shared_content, request.POST)
+        type_key = (app_label, model_name)
+        form = get_sendto_form(
+            request.user,
+            shared_content,
+            type_key,
+            request.POST,
+        )
         if form.is_valid():
             members = list(form.cleaned_data['members'])
             if form.cleaned_data['to_dashboard']:

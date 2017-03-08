@@ -458,3 +458,11 @@ EDITED = "Case Report Edited"
 TOKEN_SALT = env('TOKEN_SALT')
 CRDB_SERVER_EMAIL = env('CRDB_SERVER_EMAIL')
 CRDB_BCC_LIST = env.list('CRDB_BCC_LIST')
+
+# map content types to display names
+TYPE_DISPLAY_NAMES = {
+    ('discussions', 'threadedcomment'): 'Discussions',
+    ('documents', 'document'): 'Docs/Media',
+    ('bibliography', 'projectreference'): 'Bibliography',
+    ('casereport', 'casereport'): 'Case Reports',
+}
