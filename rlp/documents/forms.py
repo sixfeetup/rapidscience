@@ -6,6 +6,8 @@ from .models import Document, File, Image, Link, Video
 
 
 class BaseDocumentForm(forms.ModelForm):
+    share_with = forms.CharField(widget=forms.HiddenInput()) # for now, project id only
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if Tag.objects.count():
