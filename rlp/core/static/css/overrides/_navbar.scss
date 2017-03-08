@@ -263,9 +263,31 @@
     .search-widget {
         padding: 0;
         border-top: none;
+        position: static;
         #search-form {
-            position: relative;
-            z-index:10;
+            position: absolute;
+            z-index: 1000005;
+            top: 5px;
+            height: 45px;
+            left: 0;
+            width: calc(100% - 50px);
+            background-color: #332f2d;
+        }
+        input.form-control {
+            background-color: #444444;
+            border: none;
+            border-radius: 0;
+            height: 47px;
+            min-width: 430px;
+            color: #f6eee3;
+            font-weight: normal;
+            position: absolute;
+            right: 0;
+        }
+        input.form-control::placeholder {
+            color: #f6eee3;
+            font-style: italic;
+            font-weight: normal;
         }
     }
     .search-icon {
@@ -273,6 +295,10 @@
         padding-top: 15px;
         padding-bottom: 15px;
         float: right;
+    }
+    .search-icon:focus,
+    .search-icon:active {
+        outline: none;
     }
 
 
@@ -509,6 +535,7 @@
     .navbar-collapse,
     .navbar-form {
         border-color: $navbar-default-border;
+        position: relative;
     }
 
     // Dropdown menu items
