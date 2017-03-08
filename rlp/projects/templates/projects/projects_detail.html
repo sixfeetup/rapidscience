@@ -47,7 +47,7 @@
   </div>
   {% endif %}
   {% show_project_members project %}
-  
+
   <div class="overlay-form" id="project-invite">
     <form method="post" action="{% url 'projects:projects_invite' project.pk project.slug %}">
         <i class="fa fa-times-circle-o close-overlay"></i>
@@ -98,7 +98,7 @@
             {% bootstrap_messages %}
             {% if user_interaction %}
             <div>
-              <a href="{% url 'documents:add_document' %}" class="btn btn-primary">
+              <a href="{% url 'documents:add_document' %}?share_with={{ project.pk }}" class="btn btn-primary">
                 Add File
               </a>
               <a href="{% url 'documents:add_link' %}" class="btn btn-primary">
