@@ -20,17 +20,17 @@ class GroupListField(forms.MultipleChoiceField):
         return Project.objects.filter(id__in=value)
 
 
-def member_choices(content):
+def member_choices(user, content):
     '''return (ID, name) pairs for any member not viewing this content'''
     if content:
         current = [
             vwr for vwr in content.get_viewers()
             if not hasattr(vwr, 'users')  # skip groups
         ]
-        for user in User.objects.all():
-            if user in current:
+        for member in User.objects.all():
+            if member == user or member in current:
                 continue
-            yield (user.id, user.get_full_name())
+            yield (member.id, member.get_full_name())
 
 
 def group_choices(user, content):
@@ -71,5 +71,5 @@ def get_sendto_form(user, content, data=None):
 
     form = SendToForm(data)
     form.fields['groups'].choices = group_choices(user, content)
-    form.fields['members'].choices = member_choices(content)
+    form.fields['members'].choices = member_choices(user, content)
     return form
