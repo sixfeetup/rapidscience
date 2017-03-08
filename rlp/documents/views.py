@@ -51,7 +51,7 @@ def add_document(request, doc_pk=None, template_name='documents/add_document.htm
                 document = form.save(commit=False)
                 document.owner = request.user
                 document.save()
-                share_with = form.cleaned_data.get(share_with,None)
+                share_with = form.cleaned_data.get('share_with',None)
                 if share_with:
                     try:
                         project = Project.objects.get( pk = share_with )
