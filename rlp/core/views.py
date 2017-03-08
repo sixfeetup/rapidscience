@@ -34,9 +34,6 @@ class SendToView(LoginRequiredMixin, View):
         form = get_sendto_form(request.user, shared_content, type_key)
         context = {
             'form': form,
-            'app_label': app_label,
-            'model': model,
-            'object_id': object_id,
         }
         return render(request, 'core/send_to.html', context)
 
