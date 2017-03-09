@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import F, Max, Min
@@ -7,6 +8,7 @@ from django.contrib.contenttypes.models import ContentType
 
 from django_comments.models import Comment
 
+from rlp.accounts.models import User
 from rlp.core.models import SharedObjectMixin
 from rlp.projects.models import Project
 
@@ -70,9 +72,15 @@ class ThreadedComment(Comment, SharedObjectMixin):
                     raise MaxThreadLevelExceededException(self.content_type)
             kwargs["force_insert"] = False
             with atomic():
-                if self.id == self.parent_id:
-                    # new top-level discussion
-                    self.share_with([self.content_object])
+                if (
+                    self.id == self.parent_id and
+                    (isinstance(self.content_object, Project) or
+                     isinstance(self.content_object, User))
+                ):
+                    # attach to the site instead of a member or group
+                    site_type = ContentType.objects.get_for_model(Site)
+                    self.content_type = site_type
+                    self.content_object = Site.objects.first()
                 super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):

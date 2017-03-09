@@ -13,7 +13,6 @@
     {% bootstrap_field form.object_pk %}
     {% bootstrap_field form.timestamp %}
     {% bootstrap_field form.security_hash %}
-    {% get_next_for_comment form.target_object as next %}
     <input type="hidden" name="next" value="{{ next }}"/>
     <button class="btn btn-primary" type="submit">
       {{ button_label|default:"Comment" }}
