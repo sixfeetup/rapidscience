@@ -40,10 +40,13 @@ def group_choices(user, content):
     '''
     return (ID, name) pairs for any group where
       * the user is in the group
+      * the group is open
       * the group is not already viewing this content
     '''
     if user and content:
         for group in user.active_projects():
+            if group.approval_required:
+                continue
             if group in content.get_viewers():
                 continue
             yield (group.id, group.title)
