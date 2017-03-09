@@ -22,7 +22,7 @@
         {{ comment.comment|urlize|linebreaksbr }}
     </p>
 
-    {% if comment.allow_thread %}
+    {% if comment.allow_thread and user_interaction %}
       <div id="reply-form-{{ comment.id }}">
         <h3>Add Comment</h3>
         {% get_reply_form comment %}

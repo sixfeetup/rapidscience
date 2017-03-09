@@ -37,7 +37,7 @@ def comment_detail(request, comment_pk, template_name='discussions/comment_detai
     """
     comment = get_object_or_404(ThreadedComment, pk=comment_pk)
 
-    user_can_comment = comment.get_project() == None or request.user in comment.get_project().active_members()
+    user_can_comment = comment.is_shared_with_user(request.user)
 
     context = {
         'comment': comment,
