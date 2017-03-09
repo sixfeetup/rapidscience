@@ -16,7 +16,7 @@
 
     {% block css %}
         <link rel="stylesheet" href="{{STATIC_URL}}font-awesome/css/font-awesome.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" />
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" />
         {% compress css %}
             <link rel="stylesheet" type="text/x-scss" href="{% static 'css/styles.scss' %}" media="screen">
         {% endcompress %}
@@ -106,7 +106,7 @@
 
 <script src="{% static 'js/vendor/jquery-3.1.1.min.js' %}"></script>
 <script src="{% static 'js/vendor/jquery.transit.min.js' %}"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 <script src="{{STATIC_URL}}js/vendor/django_select2.js"></script>
 <script type="text/javascript">
 (function($) { $(function() {
