@@ -464,7 +464,7 @@ p.small {
     font-size: 20px;
 }
 .overlay-form {
-	display: none;
+    display: none;
 	position: fixed;
 	width: 600px;
     margin-left: -300px;
@@ -515,6 +515,12 @@ i.close-overlay {
 	height: 115%;
     top: -50px;
 	background: rgba(0, 0, 0, 0.8);
+}
+span.select2.select2-container {
+    width: 100% !important;
+}
+.select2-container--open {
+    z-index: 1000004;
 }
 .helptext,
 .helpText {
