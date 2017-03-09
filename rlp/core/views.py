@@ -27,6 +27,7 @@ def server_error(request, template='500.html'):
 
 class SendToView(LoginRequiredMixin, View):
     def get(self, request, app_label, model_name, object_id):
+        request.session['referrer'] = request.META['HTTP_REFERER']
         ctype = ContentType.objects.get_by_natural_key(app_label, model_name)
         model = ctype.model_class()
         shared_content = get_object_or_404(model, pk=object_id)
@@ -57,6 +58,9 @@ class SendToView(LoginRequiredMixin, View):
             groups = form.cleaned_data['groups']
             if groups:
                 shared_content.share_with(groups)
+            url = request.session['referrer']
+            if url:
+                return redirect(url)
             return JsonResponse({
                 'success': True,
                 'message': 'Item sent',

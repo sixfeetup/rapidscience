@@ -535,15 +535,18 @@ span.select2.select2-container {
 }
 
 /* discussion */
-a.comment-count {
+a.comment-count,
+a.share-link {
     color: #444444;
     display: inline-block;
     text-align: center;
     font-size: 14px;
     line-height: 15px;
     font-weight: bold;
+    margin-bottom: 10px;
 }
-.comment-count i {
+.comment-count i,
+.share-link i {
     font-size: 20px;
 }
 a.comment-count.empty {

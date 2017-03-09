@@ -17,6 +17,7 @@ class MemberListField(forms.MultipleChoiceField):
 class GroupListField(forms.MultipleChoiceField):
     def __init__(self, *args, **kwargs):
         super(GroupListField, self).__init__(*args, **kwargs)
+        self.widget.attrs['class'] = 'select2'
 
     def clean(self, value):
         return Project.objects.filter(id__in=value)
