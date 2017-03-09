@@ -23,7 +23,10 @@
       <p class="more">{{ comment.comment|urlize|linebreaksbr }}</p>
     </div>
     <div class="col-md-1">
-      {% include 'discussions/discussion_count_widget.html' %}
+        {% if expand_comments %} <!-- count ommited because we're expanding the whole discussion -->
+        {%  else %}
+          {% include 'discussions/discussion_count_widget.html' %}
+         {% endif %}
     </div>
   </div>
 
@@ -33,6 +36,12 @@
       {% get_reply_form comment %}
     </div>
   {% endif %}
+  {% if expand_comments %}
+      <!-- show the children -->
+      <p>{% render_comment_list for comment %}</p>
+      {%  else %}
+      <!-- comments not expanded -->
+  {%  endif %}
 
 {%  comment  %}{% render_comment_list for comment %} {%  endcomment %}
 </div>

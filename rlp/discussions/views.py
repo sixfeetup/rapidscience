@@ -44,6 +44,7 @@ def comment_detail(request, comment_pk, template_name='discussions/comment_detai
         'comment_list': comment.children(),
         'tab': 'discussions',
         'user_interaction': user_can_comment,
+        'expand_comments': True,
     }
     return render(request, template_name, context)
 
