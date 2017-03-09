@@ -137,11 +137,6 @@
             {% bootstrap_messages %}
             {% if user_interaction %}
             {% with object=project %}
-              <div class="clearfix">
-                <button class="btn btn-primary pull-right" data-toggle="collapse" href="#topic-form">
-                  New Comment
-                </button>
-              </div>
               <div id="topic-form" class="collapse">
                 <p>Start a discussion or post your ideas</p>
                 {% with button_label='Post' %}
@@ -150,7 +145,6 @@
               </div>
 
             {% endwith %}
-            <hr>
             {% endif %}
             {% include page_template %}
           {% endif %}

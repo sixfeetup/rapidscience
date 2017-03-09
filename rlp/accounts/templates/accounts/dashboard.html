@@ -68,18 +68,12 @@
   <div role="tabpanel" class="tab-pane{% if tab == 'discussions' %} active{% endif %}" id="discussions">
     {% if tab == 'discussions' %}
       {% bootstrap_messages %}
-        <div class="clearfix">
-          <button class="btn btn-primary pull-right" data-toggle="collapse" href="#topic-form">
-            New Discussion
-          </button>
-        </div>
         <div id="topic-form" class="collapse">
           <p>Start a discussion or post your ideas</p>
           {% with button_label='Post' %}
           {% render_comment_form for user %}
           {% endwith %}
         </div>
-      <hr>
       {% render_comment_list for user %}
       {% include page_template %}
     {% endif %}

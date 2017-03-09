@@ -285,6 +285,9 @@ $(".close-overlay").click(function(){
 // Open Discussion form if #topic-form in path
 (function($) { $(function() {
     if (window.location.hash == '#topic-form') {
-        $("button[href='#topic-form']").click();
+        $("#topic-form").removeClass("collapse");
     }
+    $("#topic-form .cancel-button-collapse").click(function(){
+        $("#topic-form").addClass("collapse");
+    });
 }); })(jQuery);
