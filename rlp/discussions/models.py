@@ -8,6 +8,7 @@ from django.contrib.contenttypes.models import ContentType
 from django_comments.models import Comment
 
 from rlp.core.models import SharedObjectMixin
+from rlp.projects.models import Project
 
 
 def max_thread_level_for_content_type(content_type):
@@ -139,3 +140,18 @@ class ThreadedComment(Comment, SharedObjectMixin):
             parent_id=self.id
         ).exclude(id=self.id)
         return children
+
+    def get_project(self):
+        """ return the root project for a thread.
+            this will recurse up the self.content_object tree until it hit a project or None
+            TODO: there could be an optimization hiding here to go straight to the root.
+        """
+        if self.content_object:
+            if isinstance( self.content_object, Project ):
+                return self.content_object
+            else:
+                if isinstance(self.content_object, ThreadedComment):
+                    return self.content_object.get_project()
+        return None
+
+

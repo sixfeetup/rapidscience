@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import never_cache
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
@@ -28,12 +29,21 @@ def post_redirect(request, content_type_id, object_id):
 
 
 @login_required
+@never_cache   # hamfisted.
 def comment_detail(request, comment_pk, template_name='discussions/comment_detail.html'):
+    """ Comment detail page.
+        If the comment can be traced back to a project, then the user must be an active member of the group
+        in order to turn on the ability to comment.
+    """
     comment = get_object_or_404(ThreadedComment, pk=comment_pk)
+
+    user_can_comment = comment.get_project() == None or request.user in comment.get_project().active_members()
+
     context = {
         'comment': comment,
         'comment_list': comment.children(),
         'tab': 'discussions',
+        'user_interaction': user_can_comment,
     }
     return render(request, template_name, context)
 
@@ -74,6 +84,7 @@ def comment_delete(request, comment_pk, template_name='discussions/comment_delet
     if request.method == 'POST':
         comment.delete()
         messages.success(request, "Comment successfully deleted!")
+        # TODO: invalidate the cache on the comment_detail page
         return redirect(reverse('dashboard'))
     context = {
         'comment': comment,
