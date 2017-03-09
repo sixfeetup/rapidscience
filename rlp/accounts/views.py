@@ -346,6 +346,7 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
         'tab': tab,
         'projects': projects,
     }
+    request.session['last_viewed_path'] = request.get_full_path()
     activity_stream = Action.objects.filter(
         public=True
     )

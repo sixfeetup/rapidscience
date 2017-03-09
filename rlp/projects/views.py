@@ -46,6 +46,8 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
         'projects': projects,
         'tab': tab,
     }
+    # URL to redirect to after content is posted
+    request.session['last_viewed_path'] = request.get_full_path()
     # This must come first so we can override the ``page_template`` context variable
     if extra_context is not None:
         context.update(extra_context)
