@@ -40,12 +40,16 @@ def comment_detail(request, comment_pk, template_name='discussions/comment_detai
 
     user_can_comment = comment.is_shared_with_user(request.user)
 
+    last_viewed_path = request.session.get('last_viewed_path')
+    if last_viewed_path == request.get_full_path():
+        last_viewed_path = None
     context = {
         'comment': comment,
         'comment_list': comment.children(),
         'tab': 'discussions',
         'user_interaction': user_can_comment,
         'expand_comments': True,
+        'last_viewed_path': last_viewed_path,
     }
     request.session['last_viewed_path'] = request.get_full_path()
     return render(request, template_name, context)
