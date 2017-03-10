@@ -143,6 +143,12 @@ class ThreadedComment(Comment, SharedObjectMixin):
             return True
         return False
 
+    @property
+    def is_discussion(self):
+        '''stand-alone discussion, or comments on other content?'''
+        # stand-alone discussions are attached to the site
+        return self.content_object == Site.objects.first()
+
     def children(self):
         children = ThreadedComment.objects.filter(
             parent_id=self.id
