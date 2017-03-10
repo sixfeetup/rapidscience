@@ -97,7 +97,8 @@ def comment_delete(request, comment_pk, template_name='discussions/comment_delet
 
 
 def comment_done(request, *args, **kwargs):
-    url = request.session.get('last_viewed_path')
-    if url:
-        return redirect(url)
-    return dc_done(request, *args, **kwargs)
+    comment_pk = request.GET.get('c')
+    comment = ThreadedComment.objects.get(id=comment_pk)
+    # redirect to the top-level of this thread
+    url = reverse('comments-detail', kwargs={'comment_pk': comment.thread_id})
+    return redirect(url)
