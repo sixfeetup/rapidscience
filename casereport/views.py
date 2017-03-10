@@ -47,12 +47,25 @@ class CaseReportDetailView(TemplateView):
         casereport = CaseReport.objects.get(id=case_id)
         treatments = Treatment.objects.filter(casereport_f_id=case_id)
         testevents = casereport.event_set.select_related('testevent')
+        last_viewed_path = request.session.get('last_viewed_path')
         if casereport.casefile_f:
-            return self.render_to_response(dict(casereport=casereport,
-                                                test=testevents,
-                                                casefile=casereport.casefile_f))
+            return self.render_to_response(
+                dict(
+                    casereport=casereport,
+                    test=testevents,
+                    casefile=casereport.casefile_f,
+                    last_viewed_path=last_viewed_path,
+                )
+            )
 
-        return self.render_to_response(dict(casereport=casereport, test=testevents,treatments=treatments))
+        return self.render_to_response(
+            dict(
+                casereport=casereport,
+                test=testevents,
+                treatments=treatments,
+                last_viewed_path=last_viewed_path,
+            )
+        )
 
 
 class CaseReportFormView(FormView):
@@ -257,6 +270,7 @@ class MyFacetedSearchView(FacetedSearchView):
         data = self.request.GET.copy()
         sortby = data.get('sortby', 'relevance')
         sortorder = data.get('sortorder', 'desc')
+        del(self.request.session['last_viewed_path'])
         context = {
             'query': self.query,
             'form': self.form,

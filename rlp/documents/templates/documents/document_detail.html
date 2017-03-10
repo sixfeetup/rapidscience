@@ -7,6 +7,9 @@
   {% with obj=document %}
   <div class="row">
     <div class="col-md-11">
+      {% if last_viewed_path %}
+      <p><a href="{{ last_viewed_path }}">&larr; Back</a></p>
+      {% endif %}
       <h4>{{ obj.title }}</h4>
       {% if obj.description %}<p>{{ obj.description|urlize }}</p>{% endif %}
       {% if document.polymorphic_ctype.model == 'file' %}

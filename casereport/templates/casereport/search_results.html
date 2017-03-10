@@ -23,7 +23,9 @@
 
 <div class="headingBanner">
     <div>
-        {% if request.META.HTTP_REFERER %}
+        {% if last_viewed_path %}
+        <p><a href="{{ last_viewed_path }}">&larr; Back</a></p>
+        {% elif request.META.HTTP_REFERER %}
         <a href="{{request.META.HTTP_REFERER}}">&laquo; Return To Search Results</a>
             {% else %}
             <a href="{% url 'haystac' %}">&laquo; All Cases</a>

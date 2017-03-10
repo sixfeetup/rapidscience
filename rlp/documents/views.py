@@ -219,10 +219,12 @@ def add_video(request, doc_pk=None, template_name='documents/add_video.html'):
 @login_required
 def document_detail(request, doc_pk, template_name='documents/document_detail.html'):
     document = get_object_or_404(Document, pk=doc_pk)
+    last_viewed_path = request.session.get('last_viewed_path')
     context = {
         'document': document,
         'tab': 'documents',
         'comment_list': document.discussions.all(),
+        'last_viewed_path': last_viewed_path,
     }
     return render(request, template_name, context)
 
