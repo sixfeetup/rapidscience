@@ -384,28 +384,16 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
         context['comment_list'] = request.user.get_shared_content(
             ThreadedComment
         )
-        # TODO discussions aren't showing on the page
         if request.is_ajax():
             template_name = 'comments/list.html'
-        context['activity_stream'] = request.user.get_activity_stream(
-            ThreadedComment
-        )
     elif tab == 'casereports':
-        context['activity_stream'] = request.user.get_activity_stream(
-            CaseReport
-        )
         context['case_reports'] = request.user.get_shared_content(CaseReport)
     elif tab == 'documents':
-        context['activity_stream'] = request.user.get_activity_stream(
-            Document
-        )
         context['documents'] = request.user.get_shared_content(Document)
     elif tab == 'bibliography':
         context['references'] = request.user.get_shared_content(
             ProjectReference
         )
-        activity_stream = request.user.get_activity_stream(ProjectReference)
-        context['activity_stream'] = activity_stream
     if extra_context is not None:
         context.update(extra_context)
     return render(request, template_name, context)

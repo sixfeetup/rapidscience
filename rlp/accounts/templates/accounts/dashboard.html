@@ -74,8 +74,7 @@
           {% render_comment_form for user %}
           {% endwith %}
         </div>
-      {% render_comment_list for user %}
-      {% include page_template %}
+      {% include 'comments/list.html' %}
     {% endif %}
   </div>
   <div role="tabpanel" class="tab-pane{% if tab == 'casereports' %} active{% endif %}" id="casereports">
@@ -87,7 +86,6 @@
       </a></p>
       {% endfor %}
       <hr>
-      {% include page_template %}
     {% endif %}
   </div>
   <div role="tabpanel" class="tab-pane{% if tab == 'documents' %} active{% endif %}" id="dashboard">
@@ -122,8 +120,6 @@
       </div>
       <hr>
       {% endfor %}
-
-      {% include page_template %}
     {% endif %}
   </div>
   <div role="tabpanel" class="tab-pane{% if tab == 'bibliography' %} active{% endif %}" id="bibliography">
@@ -138,8 +134,6 @@
         {% if ref.owner == request.user %}{% include 'forms/_edit_dropdown.html' with edit_url=ref.get_edit_url delete_url=ref.get_delete_url %}{% endif %}
         {% include 'bibliography/_reference.html' with obj=ref.reference %}
       {% endfor %}
-      <hr>
-      {% include page_template %}
     {% endif %}
   </div>
 </div>

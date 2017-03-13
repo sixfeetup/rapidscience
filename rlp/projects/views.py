@@ -75,12 +75,6 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
         context['filter_form'] = filter_form
     elif tab == 'documents':
         documents = project.get_shared_content(Document)
-        activity_stream = project.get_activity_stream(
-            Document
-        )
-        if documents:
-            activity_stream = activity_stream.exclude(action_object_object_id__in=[w.id for w in documents])
-        context['activity_stream'] = activity_stream
         context['documents'] = documents
     elif tab == 'discussions':
         context['comment_list'] = project.get_shared_content(ThreadedComment)
@@ -88,14 +82,9 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
             template_name = 'comments/list.html'
         context['page_template'] = 'comments/list.html'
     elif tab == 'casereports':
-        context['activity_stream'] = project.get_activity_stream(
-            CaseReport
-        )
         context['case_reports'] = project.get_shared_content(CaseReport)
     elif tab == 'bibliography':
         context['references'] = project.get_shared_content(ProjectReference)
-        activity_stream = project.get_activity_stream(ProjectReference)
-        context['activity_stream'] = activity_stream
     # member invite form
     invite_data = {
         'user': request.user.get_full_name(),
