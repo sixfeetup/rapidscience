@@ -28,6 +28,7 @@ from .models import ProjectMembership
 from .shortcuts import group_invite_choices
 
 
+@never_cache
 def projects_list(request, template_name="projects/projects_list.html"):
     context = {
         'projects': Project.objects.select_related('institution', 'topic')

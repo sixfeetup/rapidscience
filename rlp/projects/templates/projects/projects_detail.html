@@ -21,18 +21,29 @@
             </div>
             <div class="col-md-3 col-md-push-1">
                 <ul class="fa-ul add-links">
-                    <li><a href="{{ project.get_absolute_url }}discussions#topic-form">
-                        <i class="fa-li fa fa-plus-circle" aria-hidden="true"></i> Discussion
-                    </a></li>
-                    <li><a href="{% url 'crdb:add_casereport' %}">
-                        <i class="fa-li fa fa-plus-circle" aria-hidden="true"></i> Case Report
-                    </a></li>
-                    <li><a href="{% url 'documents:add_document' %}">
-                        <i class="fa-li fa fa-plus-circle" aria-hidden="true"></i> Document / Media
-                    </a></li>
-                    <li><a href="{% url 'bibliography:add_book' %}">
-                        <i class="fa-li fa fa-plus-circle" aria-hidden="true"></i> Reference
-                    </a></li>
+                    {% if request.user in project.active_members %}
+                        <li><a href="{{ project.get_absolute_url }}discussions#topic-form">
+                            <i class="fa-li fa fa-plus-circle" aria-hidden="true"></i> Discussion
+                        </a></li>
+                        <li><a href="{% url 'crdb:add_casereport' %}">
+                            <i class="fa-li fa fa-plus-circle" aria-hidden="true"></i> Case Report
+                        </a></li>
+                        <li><a href="{% url 'documents:add_document' %}">
+                            <i class="fa-li fa fa-plus-circle" aria-hidden="true"></i> Document / Media
+                        </a></li>
+                        <li><a href="{% url 'bibliography:add_book' %}">
+                            <i class="fa-li fa fa-plus-circle" aria-hidden="true"></i> Reference
+                        </a></li>
+                    {%  else %}
+                        {%  comment %} TODO: make this a component:  join_botton {% endcomment %}
+                        {% if request.user.is_anonymous %}
+                            <a class="join-button" href="{% url 'register'  %}"> <i class="fa fa-plus"></i> Register to Join </a>
+                        {%  elif request.user in project.pending_members %}
+                            <span class="join-button"> Membership Pending </span>
+                        {% else %}
+                            <a class="join-button" href="{% url 'projects:projects_join' project.id %}"> <i class="fa fa-plus"></i> Join </a>
+                        {% endif %}
+                    {%  endif %}
                 </ul>
             </div>
         </div>

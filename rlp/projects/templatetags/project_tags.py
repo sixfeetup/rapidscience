@@ -17,10 +17,12 @@ def projects_sidebar(context):
 
 @register.inclusion_tag(
     'projects/_members.html',
+    takes_context=True,
 )
-def show_project_members(project):
+def show_project_members(context, project):
     return {
         'project': project,
+        'request': context['request'],
         'memberships': project.projectmembership_set.filter(
             user__is_active=True).order_by('state', 'user__first_name')
     }

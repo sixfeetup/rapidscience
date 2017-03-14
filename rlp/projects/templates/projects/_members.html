@@ -27,7 +27,7 @@
           {% if state %}
           <p class="no-margin-bottom">
             <small>
-              {{ state }}
+              {{ state }}{% if request.user == user %}  <a class="leave-button" href="{% url 'projects:projects_leave' project.id %}"> <i class="fa fa-times-circle-o"></i></a>{% endif %}
             </small>
           </p>
           {% endif %}
