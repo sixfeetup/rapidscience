@@ -53,7 +53,7 @@ class NewGroupForm(forms.Form):
 
     group_name = forms.CharField(max_length=200)
     about = forms.CharField(max_length=300, widget=forms.Textarea)
-    banner_image = forms.ImageField()
+    banner_image = forms.ImageField(required=False)
     approval = forms.ChoiceField(
         widget=forms.RadioSelect, choices=group_choices)
     internal = internal_member_field
