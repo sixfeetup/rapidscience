@@ -121,10 +121,4 @@ class ModifyGroupForm( BaseGroupForm):
     banner_image = forms.ImageField(required=False, widget=SimpleImageWidget() )
 
     approval = forms.IntegerField(widget=forms.HiddenInput())
-
-    def __init__(self, *args, **kwargs):
-        # remember to ensure that approval doesn't change, and the the user is a moderator for the group
-        #self.fields.pop( 'approval' ) # approval = forms.ChoiceField(widget=forms.HiddenInput())
-        super(ModifyGroupForm,self).__init__(*args,**kwargs)
-
-
+    # remember to ensure that approval doesn't change, and the the user is a moderator for the group
