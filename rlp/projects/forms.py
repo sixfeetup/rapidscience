@@ -13,7 +13,10 @@ class CommaSeparatedEmailField(forms.Field):
         self.validators.append(EmailValidator())
 
     def to_python(self, value):
-        return list({addr.strip() for addr in value.split(',')})
+        if value:
+            return list({addr.strip() for addr in value.split(',')})
+        else:
+            return []
 
     def clean(self, value):
         addrs = self.to_python(value)
