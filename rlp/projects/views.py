@@ -232,6 +232,14 @@ class AddGroup(LoginRequiredMixin, FormView):
         form.fields['internal'].choices = invite_choices
         return form
 
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            messages.error(request, "Please correct the errors below")
+            return self.form_invalid(form)
+
     def form_valid(self, form):
         data = form.cleaned_data
         user = self.request.user

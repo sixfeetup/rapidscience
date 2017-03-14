@@ -47,6 +47,15 @@ class InviteForm(forms.Form):
         widget=forms.Textarea,
     )
 
+static_invite_text = 'You are invited by [First Name, Last Name of \
+moderator] to join the [Group Name] group in Sarcoma Central, a Rapid \
+Science channel.\
+\n\nAs a member of Sarcoma Central, you may view the Group \
+page and click the Join button if you wish to be added to the Group. \
+If you\'re not already a Rapid Science member, you must first register \
+here. You will then be subscribed to Sarcoma Central, and directed to \
+the [Group Name] page.'
+
 
 class NewGroupForm(forms.Form):
     group_choices = (
@@ -61,8 +70,19 @@ class NewGroupForm(forms.Form):
         widget=forms.RadioSelect, choices=group_choices)
     internal = internal_member_field
     external = external_member_field
-    # invitation_message = forms.CharField(
-    #     max_length=600,
-    #     widget=forms.Textarea,
-    #     required=False,
-    # )
+    initial_text = static_invite_text
+    invitation_message = forms.CharField(
+        max_length=600,
+        widget=forms.Textarea,
+        required=False,
+        disabled=True,
+        initial=initial_text,
+    )
+    custom_invite_message = forms.CharField(
+        max_length=600,
+        widget=forms.Textarea,
+        required=False,
+    )
+
+    field_order = ['group_name', 'about', 'banner_image', 'approval',
+                   'internal', 'external']
