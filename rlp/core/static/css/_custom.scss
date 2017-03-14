@@ -535,6 +535,11 @@ span.select2.select2-container {
 }
 
 /* discussion */
+#discussions .comment-item {
+    padding-bottom: 2em;
+    border-bottom: 1px solid #dddddd;
+    margin-bottom: 2em;
+}
 a.comment-count,
 a.share-link {
     color: #444444;
