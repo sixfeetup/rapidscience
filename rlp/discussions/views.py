@@ -127,10 +127,12 @@ class CreateDiscussion(LoginRequiredMixin, FormView):
     template_name = 'discussions/discussion_create.html'
 
     def get_form(self, form_class):
+        came_from = self.request.GET.get('id')
         form = super(CreateDiscussion, self).get_form(form_class)
         user = self.request.user
         form.fields['members'].choices = member_choices(user)
         form.fields['groups'].choices = group_choices(user)
+        form.fields['groups'].initial = [came_from, ]
         return form
 
     def post(self, request, *args, **kwargs):
