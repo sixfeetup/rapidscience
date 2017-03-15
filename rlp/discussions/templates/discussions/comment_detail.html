@@ -5,27 +5,34 @@
 <div class="container">
 <div class="row" id="discussion-detail">
     <div class="col-md-9 col-xs-12 col-md-push-2">
-    {% if last_viewed_path %}
-    <p><a href="{{ last_viewed_path }}">&larr; Back</a></p>
-    {% endif %}
-    {% if comment.title %}<h1>{{ comment.title }}</h1>{% endif %}
-    <p class="small">
-      Posted by
-      <a href="{{ comment.user.get_absolute_url }}">
-        {{ comment.user.get_full_name }}
-      </a>
-      | {{ comment.submit_date|date:"j M Y" }}
-      | {% with edit_url=comment.get_edit_url %}
-            {% if edit_url %}<a href="{{ edit_url }}">Edit</a>{% endif %}
-        {% endwith %}
-      <br />
-      Shared with <b>{{ comment.get_viewers|join:"</b>, <b>" }}</b>
-    </p>
+        {% if last_viewed_path %}
+        <p><a href="{{ last_viewed_path }}">&larr; Back</a></p>
+        {% endif %}
+    </div>
+    <div class="col-md-8 col-xs-10 col-md-push-2">
+        {% if comment.title %}<h1>{{ comment.title }}</h1>{% endif %}
+        <p class="small">
+          Posted by
+          <a href="{{ comment.user.get_absolute_url }}">
+            {{ comment.user.get_full_name }}
+          </a>
+          | {{ comment.submit_date|date:"j M Y" }}
+          | {% with edit_url=comment.get_edit_url %}
+                {% if edit_url %}<a href="{{ edit_url }}">Edit</a>{% endif %}
+            {% endwith %}
+          <br />
+          Shared with <b>{{ comment.get_viewers|join:"</b>, <b>" }}</b>
+        </p>
 
-    <p class="initial">
-        {{ comment.comment|urlize|linebreaksbr }}
-    </p>
-
+        <p class="initial">
+            {{ comment.comment|urlize|linebreaksbr }}
+        </p>
+    </div>
+    <div class="col-md-1 col-xs-2 col-md-push-2">
+        <a class="share-link" href="/send/discussions/threadedcomment/{{ comment.id }}"><i class="fa fa-share"></i></a>
+    </div>
+</div>
+<div class="row"><div class="col-md-9 col-xs-12 col-md-push-2">
     {% if comment.allow_thread and user_interaction %}
       <div id="reply-form-{{ comment.id }}">
         <h3>Add Comment</h3>
@@ -37,7 +44,7 @@
         {% render_comment_list for comment %}
     </div>
 
-</div>
+</div></div>
 </div>
     <!-- /comment_detail -->
 {% endblock content %}

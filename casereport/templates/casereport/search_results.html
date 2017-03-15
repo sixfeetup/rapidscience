@@ -65,6 +65,16 @@
                      <li><a href="#section-comments">Additional Comments</a></li>
                  {% endif %}
              </ul>
+             <hr />
+             <a class="share-link pull-right" href="/send/casereport/casereport/{{ casereport.id }}"><i class="fa fa-share"></i></a>
+             <h4>Sharing</h4>
+             {% if casereport.get_viewers %}
+             <ul class="jumpMenu">
+                 <li>
+                     {{ casereport.get_viewers|join:"</li><li>" }}
+                 </li>
+             </ul>
+             {% endif %}
          </div>
          <div class="col-md-9 col-xs-12">
 
