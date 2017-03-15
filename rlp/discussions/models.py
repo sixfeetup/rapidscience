@@ -155,17 +155,7 @@ class ThreadedComment(Comment, SharedObjectMixin):
         ).exclude(id=self.id)
         return children
 
-    def get_project(self):
-        """ return the root project for a thread.
-            this will recurse up the self.content_object tree until it hit a project or None
-            TODO: there could be an optimization hiding here to go straight to the root.
-        """
-        if self.content_object:
-            if isinstance( self.content_object, Project ):
-                return self.content_object
-            else:
-                if isinstance(self.content_object, ThreadedComment):
-                    return self.content_object.get_project()
-        return None
-
+    @property
+    def discussion_root(self):
+        return ThreadedComment.objects.get(id=self.thread_id)
 
