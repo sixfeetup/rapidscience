@@ -125,3 +125,13 @@ class SharedObjectMixin(models.Model):
             target = parent_type.objects.non_polymorphic().get(id=self.id)
         content_type = ContentType.objects.get_for_model(target)
         return content_type.natural_key()
+
+    def notify_viewers(self, subject, context, template='emails/notification'):
+        from rlp.core.email import send_transactional_mail
+        for viewer in self.get_viewers_as_users():
+            send_transactional_mail(
+                viewer.email,
+                subject,
+                template,
+                context
+            )

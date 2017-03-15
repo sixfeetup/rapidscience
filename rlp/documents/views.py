@@ -65,10 +65,10 @@ def add_document(request, doc_pk=None, template_name='documents/add_document.htm
                     )
                     message = "Your upload was successful!"
                     # Send email notification
-                    # project.notify_members(
-                    #     '{}: A new document was added'.format(settings.SITE_PREFIX.upper()),
-                    #     {'action': new_action[0][1]}
-                    # )
+                    document.notify_viewers(
+                        '{}: A new document was added'.format(settings.SITE_PREFIX.upper()),
+                        {'action': new_action[0][1]}
+                    )
                 messages.success(request, message)
             return redirect(document.get_absolute_url())
         else:
@@ -123,10 +123,10 @@ def add_link(request, doc_pk=None, template_name='documents/add_link.html'):
                     )
                     message = "Your link was successfully added!"
                     # Send email notification
-                    # project.notify_members(
-                    #     '{}: A new link was added'.format(settings.SITE_PREFIX.upper()),
-                    #     {'action': new_action[0][1]}
-                    # )
+                    link.notify_viewers(
+                        '{}: A new link was added'.format(settings.SITE_PREFIX.upper()),
+                        {'action': new_action[0][1]}
+                    )
                 messages.success(request, message)
             return redirect(link.get_absolute_url())
         else:
@@ -180,10 +180,10 @@ def add_video(request, doc_pk=None, template_name='documents/add_video.html'):
                     )
                     message = "Your video was successfully added!"
                     # Send email notification
-                    # project.notify_members(
-                    #     '{}: A new video was added'.format(settings.SITE_PREFIX.upper()),
-                    #     {'action': new_action[0][1]}
-                    # )
+                    video.notify_viewers(
+                        '{}: A new video was added'.format(settings.SITE_PREFIX.upper()),
+                        {'action': new_action[0][1]}
+                    )
                 messages.success(request, message)
             return redirect(video.get_absolute_url())
         else:
