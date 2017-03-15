@@ -99,12 +99,13 @@ def comment_delete(request, comment_pk, template_name='discussions/comment_delet
 def comment_done(request, *args, **kwargs):
     comment_pk = request.GET.get('c')
     comment = ThreadedComment.objects.get(id=comment_pk)
-    if comment.is_discussion:
+    top_comment = comment.discussion_root
+    if top_comment.is_discussion:
         # redirect to the top-level of this thread
         url = reverse(
             'comments-detail',
-            kwargs={'comment_pk': comment.thread_id},
+            kwargs={'comment_pk': top_comment.id},
         )
     else:
-        url = comment.content_object.get_absolute_url()
+        url = top_comment.content_object.get_absolute_url()
     return redirect(url)

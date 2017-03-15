@@ -30,7 +30,7 @@ def create_comment_activity(**kwargs):
     )
     # find the object being commented on
     top_comment = comment.discussion_root
-    if comment.is_discussion:
+    if top_comment.is_discussion:
         content = top_comment
     else:
         content = top_comment.content_object
