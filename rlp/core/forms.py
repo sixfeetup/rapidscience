@@ -23,33 +23,35 @@ class GroupListField(forms.MultipleChoiceField):
         return Project.objects.filter(id__in=value)
 
 
-def member_choices(user, content):
+def member_choices(user, content=None):
     '''return (ID, name) pairs for any member not viewing this content'''
+    current = []
     if content:
         current = [
             vwr for vwr in content.get_viewers()
             if not hasattr(vwr, 'users')  # skip groups
         ]
-        for member in User.objects.all():
-            if member == user or member in current:
-                continue
-            yield (member.id, member.get_full_name())
+    for member in User.objects.all():
+        if member == user or member in current:
+            continue
+        yield (member.id, member.get_full_name())
 
 
-def group_choices(user, content):
+def group_choices(user, content=None):
     '''
     return (ID, name) pairs for any group where
       * the user is in the group
       * the group is open
       * the group is not already viewing this content
     '''
-    if user and content:
-        for group in user.active_projects():
-            if group.approval_required:
-                continue
-            if group in content.get_viewers():
-                continue
-            yield (group.id, group.title)
+    if not user and not content:
+        return
+    for group in user.active_projects():
+        if group.approval_required:
+            continue
+        if content and group in content.get_viewers():
+            continue
+        yield (group.id, group.title)
 
 
 member_choice_field = MemberListField(

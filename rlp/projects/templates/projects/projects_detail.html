@@ -22,7 +22,7 @@
             <div class="col-md-3 col-md-push-1">
                 <ul class="fa-ul add-links">
                     {% if request.user in project.active_members %}
-                        <li><a href="{{ project.get_absolute_url }}discussions#topic-form">
+                        <li><a href="{% url 'discussion-create' %}">
                             <i class="fa-li fa fa-plus-circle" aria-hidden="true"></i> Discussion
                         </a></li>
                         <li><a href="{% url 'crdb:add_casereport' %}">

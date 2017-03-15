@@ -1,14 +1,24 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.contenttypes.models import ContentType
 from django.views.decorators.cache import never_cache
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
+from django.contrib.sites.models import Site
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django import http
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.generic import FormView
 
+from rlp.core.forms import member_choices, group_choices
+from rlp.core.views import SendToView
 from rlp.projects.models import Project
-from .forms import ThreadedCommentEditForm, ThreadedCommentWithTitleEditForm
+from .forms import (
+    ThreadedCommentEditForm,
+    ThreadedCommentWithTitleEditForm,
+    NewDiscussionForm
+)
 from .models import ThreadedComment
 from .shortcuts import get_url_for_comment
 
@@ -109,3 +119,42 @@ def comment_done(request, *args, **kwargs):
     else:
         url = top_comment.content_object.get_absolute_url()
     return redirect(url)
+
+
+class CreateDiscussion(LoginRequiredMixin, FormView):
+    form_class = NewDiscussionForm
+    success_url = '/'
+    template_name = 'discussions/discussion_create.html'
+
+    def get_form(self, form_class):
+        form = super(CreateDiscussion, self).get_form(form_class)
+        user = self.request.user
+        form.fields['members'].choices = member_choices(user)
+        form.fields['groups'].choices = group_choices(user)
+        return form
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            messages.error(request, "Please correct the errors below")
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        data = form.cleaned_data
+        ct = ContentType.objects.get_for_model(Site)
+        site = Site.objects.first()
+        new_discussion = ThreadedComment(
+            title=data['discussion_title'],
+            comment=data['discussion_body'],
+            content_type=ct,
+            site_id=site.id,
+            object_pk=site.id,
+        )
+        new_discussion.save()
+
+        discussion_url = new_discussion.get_absolute_url()
+        SendToView.post(self, self.request, 'discussions', 'threadedcomment',
+                        new_discussion.id)
+        return redirect(discussion_url)

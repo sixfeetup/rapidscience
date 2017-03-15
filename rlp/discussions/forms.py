@@ -2,6 +2,7 @@ from django.conf import settings
 from django import forms
 from django_comments.forms import CommentForm as BaseCommentForm
 
+from rlp.core.forms import MemberListField, GroupListField
 from rlp.discussions.models import ThreadedComment
 
 
@@ -58,3 +59,30 @@ class ThreadedCommentWithTitleEditForm(forms.ModelForm):
     class Meta:
         model = ThreadedComment
         fields = ['title', 'comment']
+
+
+internal_member_field = MemberListField(
+    label='Members',
+    help_text='Separate names with commas',
+    choices=(),  # gets filled in by the view
+    required=False,
+)
+group_field = GroupListField(
+    label='My Groups',
+    help_text='Separate names with commas',
+    choices=(),  # gets filled in by the view
+    required=False,
+)
+
+
+class NewDiscussionForm(forms.Form):
+    discussion_title = forms.CharField(label='Title', required=True)
+    discussion_body = forms.CharField(
+        widget=forms.Textarea(attrs={'class': 'remaining-characters'}),
+        max_length=settings.COMMENT_MAX_LENGTH
+    )
+    members = internal_member_field
+    groups = group_field
+
+    field_order = ['discussion_title', 'discussion_body', 'members',
+                   'groups']
