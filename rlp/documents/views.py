@@ -12,7 +12,6 @@ from PIL import Image
 from taggit.models import Tag
 
 from rlp.discussions.models import ThreadedComment
-from rlp.projects.models import Project
 from .forms import FileForm, ImageForm, LinkForm, VideoForm
 from .models import Document
 
@@ -20,10 +19,7 @@ from .models import Document
 @never_cache
 @login_required
 def add_document(request, doc_pk=None, template_name='documents/add_document.html', ):
-    """ accept a new file upload.
-        a project_id can be passed in the query string as 'share_with' and this view will share
-        the upload with the given project, if the user is an active member of the project.
-    """
+    """ accept a new file upload """
     if doc_pk:
         document = get_object_or_404(Document, pk=doc_pk)
     else:
@@ -51,16 +47,6 @@ def add_document(request, doc_pk=None, template_name='documents/add_document.htm
                 document = form.save(commit=False)
                 document.owner = request.user
                 document.save()
-                share_with = form.cleaned_data.get('share_with',None)
-                if share_with:
-                    try:
-                        project = Project.objects.get( pk = share_with )
-                        if request.user in project.active_members():
-                            document.share_with([project,])
-                        else:
-                            print("silently ignoring attempt to share with a foreign project")
-                    except Project.DoesNotExist as e:
-                        print( "silently ignoring attempt to share with non-existing project", form.share_with)
                 if tag_ids:
                     try:
                         tags = Tag.objects.filter(id__in=tag_ids)
@@ -89,7 +75,7 @@ def add_document(request, doc_pk=None, template_name='documents/add_document.htm
             messages.error(request, "Check the errors below.")
 
     else:
-        initial = dict(share_with=request.GET.get('share_with', ''))
+        initial = {}
         if document and document.tags.count():
             initial['tags'] = document.tags.all()
         form = form_class(instance=document, initial=initial)

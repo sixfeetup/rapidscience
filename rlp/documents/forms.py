@@ -6,7 +6,6 @@ from .models import Document, File, Image, Link, Video
 
 
 class BaseDocumentForm(forms.ModelForm):
-    share_with = forms.CharField(widget=forms.HiddenInput(), required=False) # for now, project id only
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
