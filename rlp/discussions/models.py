@@ -159,3 +159,8 @@ class ThreadedComment(Comment, SharedObjectMixin):
     def discussion_root(self):
         return ThreadedComment.objects.get(id=self.thread_id)
 
+    def get_viewers(self):
+        '''override to get the viewers for the discussion'''
+        top_comment = self.discussion_root
+        refs = top_comment._related.select_related('viewer_type').all()
+        return [r.viewer for r in refs]
