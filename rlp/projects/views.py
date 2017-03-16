@@ -150,14 +150,10 @@ def invite_members(request, pk, slug):
                 for rcp in recipients
             )
             send_mass_mail(message_data)
-            return JsonResponse({
-                'success': True,
-                'message': '{} members invited'.format(len(recipients)),
-            })
-    return JsonResponse({
-        'success': False,
-        'message': 'Invitation failed',
-    })
+            messages.success(request, '{} members invited'.format(len(recipients)))
+            return redirect(request.META['HTTP_REFERER'])
+    messages.error(request, 'Invitation failed')
+    return redirect(request.META['HTTP_REFERER'])
 
 approval_tmpl = '''{} ({}) has requested access to the closed group “{}”.
 
