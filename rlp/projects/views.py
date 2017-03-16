@@ -345,4 +345,3 @@ class EditGroup( LoginRequiredMixin,FormView ):
         project.save()
         return redirect( project.get_absolute_url())
 
-
