@@ -281,3 +281,26 @@ $(".close-overlay").click(function(){
     $(".overlay-form").fadeOut();
     $("body").removeClass("overlay-active");
 });
+
+// Edit Group overlay
+/* disabled in favor of page-based forms
+$(".edit-group-link").click(function(){
+    $("#edit-group").fadeIn();
+    $("body").addClass("overlay-active");
+});
+$(".close-overlay").click(function(){
+    $(".overlay-form").fadeOut();
+    $("body").removeClass("overlay-active");
+});
+*/
+
+
+// Open Discussion form if #topic-form in path
+(function($) { $(function() {
+    if (window.location.hash == '#topic-form') {
+        $("#topic-form").removeClass("collapse");
+    }
+    $("#topic-form .cancel-button-collapse").click(function(){
+        $("#topic-form").addClass("collapse");
+    });
+}); })(jQuery);

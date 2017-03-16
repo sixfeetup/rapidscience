@@ -34,5 +34,10 @@ urlpatterns = [
         r'^add/$',
         views.AddGroup.as_view(),
         name='projects_add',
-    )
-]
+    ),
+    url(
+        r'^(?P<pk>\d+)-(?P<slug>[\w\d-]+)/edit$',
+        views.EditGroup.as_view(),
+        name='projects_edit',
+    ),
+ ]

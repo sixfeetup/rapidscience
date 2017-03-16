@@ -51,12 +51,15 @@
 {% endblock hero %}
 
 {% block left_column %}
-  {% if project.goal %}
   <div class="box">
-    <p class="section-label">Goal</p>
+    <p class="section-label">About<span style="float:right">{%  if request.user in project.moderators %} <a href="{%  url 'projects:projects_edit' project.pk project.slug %}#" class="edit-group-link" title="Edit group">
+      <i class="fa fa-cog"></i>
+    </a>{%  endif %}</span></p>
+    <p>{% if project.approval_required %}PRIVATE/CLOSED{% else %}OPEN{% endif %}</p>
+  {% if project.goal %}
     <p>{{ project.goal }}</p>
-  </div>
   {% endif %}
+  </div>
   {% show_project_members project %}
 
   <div class="overlay-form" id="project-invite">
@@ -68,6 +71,21 @@
         <input type="submit" value="Cancel" class="btn close-overlay">
     </form>
   </div>
+
+
+  <div class="overlay-form" id="edit-group">
+    <form method="post" action="{% url 'projects:projects_edit' project.pk project.slug %}">
+        <i class="fa fa-times-circle-o close-overlay"></i>
+        {% csrf_token %}
+        {{ edit_group_form.as_p }}
+        <input type="submit" value="Done" class="btn btn-primary">
+        <input type="submit" value="Cancel" class="btn close-overlay">
+    </form>
+  </div>
+
+
+
+
 {% endblock left_column %}
 
 {% block main_content %}

@@ -3,6 +3,26 @@ from django.core.validators import EmailValidator
 
 from rlp.core.forms import MemberListField
 
+from django import forms
+from django.utils.safestring import mark_safe
+
+class SimpleImageWidget(forms.FileInput):
+    def __init__(self, attrs={}):
+        super(SimpleImageWidget, self).__init__(attrs)
+
+    def render(self, name, value, attrs=None):
+        print("simpleImageWidget: name:", name)
+        print("simpleImageWidget: value:", value)
+        print("simpleImageWidget: attrs:", attrs)
+        print("simpleImageWidget: self:", dir(self))
+        output = []
+        if value:
+            output.append(('<img src="%s" style="height: 40;" /> ' % (value, )))
+        output.append(super(SimpleImageWidget, self).render(name, value, attrs))
+        return mark_safe(u''.join(output))
+
+
+
 
 class CommaSeparatedEmailField(forms.Field):
     def __init__(
@@ -56,18 +76,23 @@ If you\'re not already a Rapid Science member, you must first register \
 here. You will then be subscribed to Sarcoma Central, and directed to \
 the [Group Name] page.'
 
+GROUP_APPROVAL_CHOICES = (
+    (0, ('Open - All validated Rapid Science members can'
+         'view activity and join to participate')),
+    (1, 'Closed - Moderator must approve / invite members'))
 
-class NewGroupForm(forms.Form):
-    group_choices = (
-        (0, ('Open - All validated Rapid Science members can'
-             'view activity and join to participate')),
-        (1, 'Closed - Moderator must approve / invite members'))
 
+class BaseGroupForm(forms.Form):
     group_name = forms.CharField(max_length=200)
     about = forms.CharField(max_length=300, widget=forms.Textarea)
     banner_image = forms.ImageField(required=False)
     approval = forms.ChoiceField(
-        widget=forms.RadioSelect, choices=group_choices)
+        widget=forms.RadioSelect, choices=GROUP_APPROVAL_CHOICES)
+
+class NewGroupForm(BaseGroupForm):
+    """ Adds invites to the ModifyGroupForm to create a new group.
+        TODO: seems like it could mixin the InviteForm too
+    """
     internal = internal_member_field
     external = external_member_field
     initial_text = static_invite_text
@@ -86,3 +111,20 @@ class NewGroupForm(forms.Form):
 
     field_order = ['group_name', 'about', 'banner_image', 'approval',
                    'internal', 'external']
+
+class ModifyGroupForm( BaseGroupForm):
+    """ Hides the approval field and adds a hidden group id to the base form.
+    """
+    group_id = forms.IntegerField(widget=forms.HiddenInput())
+
+    # friendlier image widget
+    banner_image = forms.ImageField(required=False, widget=SimpleImageWidget() )
+
+    approval = forms.IntegerField(widget=forms.HiddenInput())
+
+    def __init__(self, *args, **kwargs):
+        # remember to ensure that approval doesn't change, and the the user is a moderator for the group
+        #self.fields.pop( 'approval' ) # approval = forms.ChoiceField(widget=forms.HiddenInput())
+        super(ModifyGroupForm,self).__init__(*args,**kwargs)
+
+

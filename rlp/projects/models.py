@@ -103,6 +103,9 @@ class Project(SEOMixin, SharesContentMixin):
     def pending_members(self):
         return self.users.filter(projectmembership__state='pending')
 
+    def moderators(self):
+        return self.users.filter(projectmembership__state='moderator')
+
     def project_mods(self):
         mods = self.users.filter(projectmembership__state='moderator')
         return ' | '.join([x.get_full_name() for x in mods])

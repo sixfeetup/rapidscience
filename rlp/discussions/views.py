@@ -11,6 +11,7 @@ from django import http
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import FormView
 
+from rlp.accounts.models import User
 from rlp.core.forms import member_choices, group_choices
 from rlp.core.views import SendToView
 from rlp.projects.models import Project
@@ -130,9 +131,11 @@ class CreateDiscussion(LoginRequiredMixin, FormView):
         came_from = self.request.GET.get('id')
         form = super(CreateDiscussion, self).get_form(form_class)
         user = self.request.user
-        form.fields['members'].choices = member_choices(user)
+        members = ((member.id, member.get_full_name()) for member in User.objects.all())
+        form.fields['members'].choices = members
+        form.fields['members'].initial = [user.id]
         form.fields['groups'].choices = group_choices(user)
-        form.fields['groups'].initial = [came_from, ]
+        form.fields['groups'].initial = [came_from]
         return form
 
     def post(self, request, *args, **kwargs):

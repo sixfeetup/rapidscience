@@ -12,7 +12,7 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.utils.text import slugify
 from django.views.decorators.cache import never_cache
-from django.views.generic import View, FormView
+from django.views.generic import View, FormView, UpdateView
 
 from el_pagination.decorators import page_template
 
@@ -22,7 +22,7 @@ from rlp.bibliography.models import ProjectReference
 from rlp.discussions.models import ThreadedComment
 from rlp.documents.models import Document
 from rlp.search.forms import ActionObjectForm
-from .forms import InviteForm, NewGroupForm
+from .forms import InviteForm, NewGroupForm, ModifyGroupForm
 from .models import Project
 from .models import ProjectMembership
 from .shortcuts import group_invite_choices
@@ -99,6 +99,16 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
     )
     form.fields['internal'].choices = group_invite_choices(project)
     context['form'] = form
+
+    # inject the edit-form
+    edit_form = ModifyGroupForm(initial=dict(
+        group_id=project.id,
+        group_name = project.title,
+        approval = project.approval_required,
+        banner_image = project.cover_photo,
+    ) )
+    context['edit_group_form'] = edit_form
+
     # response
     return render(request, template_name, context)
 
@@ -282,3 +292,57 @@ class AddGroup(LoginRequiredMixin, FormView):
         )
         send_mass_mail(message_data)
         return redirect(group_url)
+
+class EditGroup( LoginRequiredMixin,FormView ):
+    form_class = ModifyGroupForm
+    template_name = 'projects/projects_edit.html' # re-using
+    def get(self, request, pk, slug):
+        project = get_object_or_404(Project, id=pk)
+        if request.user not in project.moderators():
+            message = (
+                'You are not a moderator of the “{}” group, '.format(project.title)
+            )
+            messages.error(request, message)
+            return redirect(project.get_absolute_url())
+        else:
+            form = self.form_class(initial=dict(
+                group_id=project.id,
+                group_name = project.title,
+                about = project.goal,
+                approval = 1 if project.approval_required else 0,
+                banner_image = project.cover_photo.url,
+            ))
+        return self.render_to_response(self.get_context_data(form=form, project=project),)
+
+
+    def post(self, request, *args, **kwargs):
+        """ Handle the POSTed form data.
+            This overrides the FormView impl only to add the messages.error call
+        """
+        form=self.get_form()
+        if form.is_valid():
+            res =  self.form_valid(form)
+            messages.info(request, "Edits saved!")
+            return res
+        else:
+            messages.error(request, "Please correct the errors below")
+            return self.form_invalid(form) # we can't do this because we were in an overlay on another page
+            # This really should be a rest POST and return a json success/error message
+
+    def form_valid(self, form):
+        data = form.cleaned_data
+        user = self.request.user
+        # update the Project
+
+        print( "form:", form)
+        print( "data:", data)
+        print( "user:", user)
+        project = Project.objects.get( pk=data['group_id'])
+        project.title = data['group_name']
+        project.goal = data['about']
+        if data['banner_image']:
+            print('TODO: handle replacement photo', data['banner_image'], self.request.FILES)
+        project.save()
+        return redirect( project.get_absolute_url())
+
+
