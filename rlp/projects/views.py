@@ -296,6 +296,7 @@ class AddGroup(LoginRequiredMixin, FormView):
 class EditGroup( LoginRequiredMixin,FormView ):
     form_class = ModifyGroupForm
     template_name = 'projects/projects_edit.html' # re-using
+
     def get(self, request, pk, slug):
         project = get_object_or_404(Project, id=pk)
         if request.user not in project.moderators():
@@ -344,5 +345,4 @@ class EditGroup( LoginRequiredMixin,FormView ):
             print('TODO: handle replacement photo', data['banner_image'], self.request.FILES)
         project.save()
         return redirect( project.get_absolute_url())
-
 
