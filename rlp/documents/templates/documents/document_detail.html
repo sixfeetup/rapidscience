@@ -1,9 +1,9 @@
-{% extends 'home.html' %}{% load comments embed_video_tags %}
+{% extends 'base.html' %}{% load comments embed_video_tags %}
 
-{% block main_content %}
-  <p class="small">
-    {% include 'actstream/_action_detail.html' with action=document.action_object_actions.first %}
-  </p>
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-md-push-2">
   {% with obj=document %}
   <div class="row">
     <div class="col-md-11">
@@ -11,7 +11,10 @@
       <p><a href="{{ last_viewed_path }}">&larr; Back</a></p>
       {% endif %}
       <a class="share-link pull-right" href="/send/documents/document/{{ obj.id }}"><i class="fa fa-share"></i></a>
-      <h4>{{ obj.title }}</h4>
+      <h2>{{ obj.title }}</h2>
+      <p class="small">
+        {% include 'actstream/_action_detail.html' with action=document.action_object_actions.first %}
+      </p>
       {% if obj.description %}<p>{{ obj.description|urlize }}</p>{% endif %}
       {% if document.polymorphic_ctype.model == 'file' %}
         <a class="btn btn-primary" href="{{ obj.upload.url }}" target="_blank">
@@ -51,5 +54,8 @@
   {% render_comment_form for obj %}
   <br>
   {% render_comment_list for obj %}
+</div>
+</div>
+</div>
 {% endwith %}
-{% endblock main_content %}
+{% endblock content %}

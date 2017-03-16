@@ -123,18 +123,36 @@
             <hr>
             {% endif %}
 
-            {% for doc in documents %}
+            {% for obj in documents %}
             <div class="row">
               <div class="col-md-11">
-                <h3><a href="{{ doc.get_absolute_url }}">{{ doc.title }}</a></h3>
-                <p>{{ doc.description|urlize }}</p>
+                <h4><a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a></h4>
+                {% if 'Image' in obj.display_type %}
+                    {% load thumbnail %}
+                    {% thumbnail obj.upload 700x160 crop upscale HIGH_RESOLUTION as thumbnail %}
+                    <a href="{{ obj.upload.url }}" target="_blank">
+                      <img class="thumbnail-image" alt="{{ obj.title }}" src="{{ thumbnail.url }}" width="100%">
+                    </a>
+                {% endif %}
+                {% if obj.display_type == "Video" %}
+                    {% load embed_video_tags %}
+                    {% video obj.share_link as shared_video %}
+                    {% video shared_video 'small' %}
+                    {% endvideo %}
+                {% endif %}
+                <p class="small">
+                    Posted by
+                  <a href="{{ obj.owner.get_absolute_url }}">
+                    {{ obj.owner.get_full_name }}
+                  </a>
+                  | {{ obj.date_added|date:"j M Y" }}<br />
+                  Shared with {{ obj.get_viewers|join:", " }}
+                </p>
+                <p class="more">{{ obj.description|urlize|linebreaksbr }}</p>
               </div>
               <div class="col-md-1">
-                {% with obj=doc %}
-                  {% if obj.owner == request.user %}
-                    {% include 'forms/_edit_dropdown.html' with edit_url=obj.get_edit_url delete_url=obj.get_delete_url %}
-                  {% endif %}
-                {% endwith %}
+                {% include 'discussions/discussion_count_widget.html' %}
+                <a class="share-link" href="/send/documents/document/{{ obj.id }}"><i class="fa fa-share"></i></a>
               </div>
             </div>
             <hr>
