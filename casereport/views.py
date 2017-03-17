@@ -72,30 +72,10 @@ class CaseReportFormView(FormView):
     template_name = 'casereport/new_add_casereport.html'
     form_class = CaptchaForm
 
-    def get(self, request, *args, **kwargs):
-        captchaform = self.form_class()
-        data = request.GET.copy()
-        cap_only = data.get('caponly', None)
-        if request.is_ajax():
-            if 'casereport' in request.META['HTTP_REFERER'] or cap_only:
-                newcap = self.get_new_captcha()
-                return HttpResponse(json.dumps(newcap), content_type='application/json')
-            return self.render_to_response(dict(captchaform=captchaform, countries=COUNTRIES))
-
-        return self.render_to_response(dict(captchaform=captchaform, countries=COUNTRIES))
-
     def post(self, request, *args, **kwargs):
         data = request.POST.copy()
-        # if request.is_ajax():
-        #     captcha_data = dict(captcha_0=data.get('captcha_0'),
-        #                         captcha_1=data.get('captcha_1'),
-        #                         csrftoken=data.get("csrfmiddlewaretoken"))
-        #     is_captcha_valid = self.validate_captcha(captcha_data)
-        #     if not is_captcha_valid:
-        #         newcap = self.get_new_captcha()
-        #         return HttpResponse(json.dumps(newcap), content_type='application/json')
-        #     return HttpResponse('OK')
         entry_type = data.get('entry-type')
+        title = data.get('casetitle')
         email = data.getlist('physician_email')
         author = data.getlist('author', None)
         author_list = AuthorizedListResource()._post(email=author)
@@ -111,7 +91,6 @@ class CaseReportFormView(FormView):
                 document=document, file_name=file_name)
             CaseReportInstanceResource()._addauthor(case, author_list)
         elif entry_type == 'M':
-            title = data.get('casetitle')
             age = data.get('age')
             gender = data.get('gender')
             subtype = data.get('subtype')
@@ -153,15 +132,14 @@ class CaseReportFormView(FormView):
                         notes=treatment_outcome)
             CaseReportInstanceResource()._addauthor(case, author_list)
 
-            # CaseReportInstanceResource()._addabberations(case, m_abbs)
-
         elif entry_type == 'T':
-            age = data.get('age-field')
-            gender = data.get('gender-field')
-            sarcoma = data.get('sarcoma')
-            other_sarcoma = data.get('other-sarcoma')
+            age = data.get('age')
+            gender = data.get('gender')
+            subtype = data.get('subtype')
             details = data.get('details')
-            case = CaseReportListResource()._post(physicians=physicians,age=age,gender=gender, sarcoma_type=sarcoma, other_sarcoma=other_sarcoma, details=details)
+            case = CaseReportListResource()._post(
+                title=title, physicians=physicians, age=age, gender=gender,
+                subtype=subtype, details=details)
             CaseReportInstanceResource()._addauthor(case, author_list)
 
         self.template_name = 'casereport/add_casereport_success.html'
