@@ -87,7 +87,7 @@ class CaseReportFormView(FormView):
             document = request.FILES['uploadfile']
             file_name = request.FILES['uploadfile'].name
             case = CaseReportListResource()._post(
-                physicians=physicians,
+                title=title, physicians=physicians,
                 document=document, file_name=file_name)
             CaseReportInstanceResource()._addauthor(case, author_list)
         elif entry_type == 'M':
