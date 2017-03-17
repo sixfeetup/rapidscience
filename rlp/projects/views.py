@@ -306,7 +306,7 @@ class EditGroup( LoginRequiredMixin,FormView ):
                 group_name = project.title,
                 about = project.goal,
                 approval = 1 if project.approval_required else 0,
-                banner_image = project.cover_photo.url,
+                banner_image = project.cover_photo,
             ))
         return self.render_to_response(self.get_context_data(form=form, project=project),)
 
@@ -327,17 +327,15 @@ class EditGroup( LoginRequiredMixin,FormView ):
 
     def form_valid(self, form):
         data = form.cleaned_data
-        user = self.request.user
         # update the Project
-
-        print( "form:", form)
-        print( "data:", data)
-        print( "user:", user)
         project = Project.objects.get( pk=data['group_id'])
         project.title = data['group_name']
         project.goal = data['about']
         if data['banner_image']:
-            print('TODO: handle replacement photo', data['banner_image'], self.request.FILES)
+            fcontent = self.request.FILES['banner_image']
+            fname = fcontent.name
+            project.cover_photo.save(fname, fcontent)
+
         project.save()
         return redirect( project.get_absolute_url())
 
