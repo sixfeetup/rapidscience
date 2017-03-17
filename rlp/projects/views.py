@@ -250,6 +250,7 @@ class AddGroup(LoginRequiredMixin, FormView):
             messages.error(request, "Please correct the errors below")
             return self.form_invalid(form)
 
+
     def form_valid(self, form):
         data = form.cleaned_data
         user = self.request.user
@@ -267,30 +268,8 @@ class AddGroup(LoginRequiredMixin, FormView):
             project=new_group,
             state='moderator',
         )
-        group_url = new_group.get_absolute_url()
-        invite_data = {
-            'user': user.get_full_name(),
-            'group': new_group.title,
-            # TODO put a real invite link here
-            'link': group_url,
-        }
-        invite_msg = settings.GROUP_INVITATION_TEMPLATE.format(**invite_data)
-        internal_addrs = [
-            member.email for member in form.cleaned_data['internal']
-        ]
-        external_addrs = data['external']
-        recipients = internal_addrs + external_addrs
-        subject = 'Invitation to join {}'.format(new_group.title)
-        message_data = (
-            (
-                subject,
-                invite_msg,
-                user.email,
-                [rcp],
-            )
-            for rcp in recipients
-        )
-        send_mass_mail(message_data)
+        new_project.invite_registered_users(self, form.cleaned_data['internal'] )
+        new_project.invite_external_emails(self, form.cleaned_data['external'] )
         return redirect(group_url)
 
 class EditGroup( LoginRequiredMixin,FormView ):
@@ -323,13 +302,28 @@ class EditGroup( LoginRequiredMixin,FormView ):
         if form.is_valid():
             res =  self.form_valid(form)
             messages.info(request, "Edits saved!")
+
+            # internal invites
+            new_invitees = [ invitee for invitee in form.cleaned_data['internal'] if invitee not in project.active_members() ]
+            project.invite_registered_users(new_invitees)
+
+            # external invites
+            # TODO: if the email matches an internal user, upgrade the invite
+            project.invite_external_emails(form.cleaned_data['external'])
+
+            messages.info(request, "Invites Sent!")
+
             return res
+
         else:
             messages.error(request, "Please correct the errors below")
             return self.form_invalid(form) # we can't do this because we were in an overlay on another page
             # This really should be a rest POST and return a json success/error message
 
     def form_valid(self, form):
+        """ Update the Project and send any new invites.
+            Won't send invites to those who are already members.
+        """
         data = form.cleaned_data
         # update the Project
         project = Project.objects.get( pk=data['group_id'])
@@ -341,5 +335,6 @@ class EditGroup( LoginRequiredMixin,FormView ):
             project.cover_photo.save(fname, fcontent)
 
         project.save()
+
         return redirect( project.get_absolute_url())
 

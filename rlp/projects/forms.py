@@ -112,7 +112,7 @@ class NewGroupForm(BaseGroupForm):
     field_order = ['group_name', 'about', 'banner_image', 'approval',
                    'internal', 'external']
 
-class ModifyGroupForm( BaseGroupForm):
+class ModifyGroupForm( NewGroupForm):
     """ Hides the approval field and adds a hidden group id to the base form.
     """
     group_id = forms.IntegerField(widget=forms.HiddenInput())

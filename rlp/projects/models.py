@@ -91,6 +91,41 @@ class Project(SEOMixin, SharesContentMixin):
                 context
             )
 
+    def invite_registered_users(self, users, subject=None, message=None, inviter=None, extra_template_vars=None):
+        emails = [ u.email for u in users if u.email ]
+        return self.invite_external_emails( emails, subject, message, inviter, extra_template_vars)
+
+
+    def invite_external_emails(self, emails, subject=None, message=None, inviter=None, extra_template_vars=None):
+        """ Send an invitation by email to each of the emails given.
+            TODO: we dont yet uyse the sites framework, so we cant create fully qualified urls
+        """
+        subject = subject or 'Invitation to join {}'.format(self.title)
+        message = message or settings.GROUP_INVITATION_TEMPLATE
+        inviter = inviter or self.moderators().first()
+
+        # format the message
+        from collections import defaultdict
+        context = defaultdict(str, user=inviter.email, group=self.title, link=self.get_absolute_url() )
+        if extra_template_vars:
+            context.update( extra_template_vars )
+        message = message.format(**context)
+
+        message_data = (
+            (
+                subject,
+                message,
+                inviter.email,
+                [rcp],
+            )
+            for rcp in emails
+        )
+        print( "sending", message_data)
+        from django.core.mail import send_mass_mail #stubbornly expecting pycharm to move this
+        send_mass_mail(message_data)
+
+
+
     def save(self, *args, **kwargs):
         # Groups are in the top level navigation and need to clear the cache
         # on save.
