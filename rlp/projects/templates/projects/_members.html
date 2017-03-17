@@ -5,39 +5,51 @@
   </a>
   <p class="section-label">Members</p>
   <ul class="list-unstyled item-list">
-    {% for membership in memberships|slice:":11" %}
+      {% for membership in moderators %}
+        {% with user=membership.user state=membership.state %}
+        <li class="clearfix">
+          <div class="col-xs-3">
+          {% if user.photo %}
+            {% thumbnail membership.user.photo 120x120 crop upscale as thumbnail %}
+            <img class="contain-img img-circle"
+                 src="{{ thumbnail.url }}">
+          {% else %}
+            <img class="contain-img img-circle"
+                 src="{% static 'img/user.jpg' %}">
+          {% endif %}
+          </div>
+          <div class="col-xs-9">
+            <p class="no-margin-bottom">
+              <small>
+                <a href="{{ user.get_absolute_url }}"><strong>{{ user.get_full_name }}</strong></a>{% if user.degrees %}, {{ user.degrees }}{% endif %}
+              </small>
+            </p>
+            {% if state %}
+            <p class="no-margin-bottom">
+              <small>
+                {{ state }}{% if request.user == user %}  <a class="leave-button" href="{% url 'projects:projects_leave' project.id %}"> <i class="fa fa-times-circle-o"></i></a>{% endif %}
+              </small>
+            </p>
+            {% endif %}
+          </div>
+        </li>
+        {% endwith %}
+      {% endfor %}
+      
+    {% for membership in memberships %}
       {% with user=membership.user state=membership.state %}
       <li class="clearfix">
-        <div class="col-xs-3">
-        {% if user.photo %}
-          {% thumbnail membership.user.photo 120x120 crop upscale as thumbnail %}
-          <img class="contain-img img-circle"
-               src="{{ thumbnail.url }}">
-        {% else %}
-          <img class="contain-img img-circle"
-               src="{% static 'img/user.jpg' %}">
-        {% endif %}
-        </div>
-        <div class="col-xs-9">
+        <div class="col-xs-12">
           <p class="no-margin-bottom">
             <small>
               <a href="{{ user.get_absolute_url }}"><strong>{{ user.get_full_name }}</strong></a>{% if user.degrees %}, {{ user.degrees }}{% endif %}
             </small>
+            {% if request.user == user %}  <a class="leave-button" href="{% url 'projects:projects_leave' project.id %}"> <i class="fa fa-times-circle-o"></i></a>{% endif %}
           </p>
-          {% if state %}
-          <p class="no-margin-bottom">
-            <small>
-              {{ state }}{% if request.user == user %}  <a class="leave-button" href="{% url 'projects:projects_leave' project.id %}"> <i class="fa fa-times-circle-o"></i></a>{% endif %}
-            </small>
-          </p>
-          {% endif %}
         </div>
       </li>
       {% endwith %}
     {% endfor %}
-    {% if memberships|length > 12 %}
-      <li><a href="{% url 'projects:projects_members' pk=project.pk slug=project.slug %}">View all</a></li>
-    {% endif %}
   </ul>
 </div>
 

@@ -23,6 +23,10 @@ def show_project_members(context, project):
     return {
         'project': project,
         'request': context['request'],
+        'moderators': project.projectmembership_set.filter(
+            user__is_active=True, state='moderator').order_by(
+            'state', 'user__first_name'),
         'memberships': project.projectmembership_set.filter(
-            user__is_active=True).order_by('state', 'user__first_name')
+            user__is_active=True).exclude(state='moderator').order_by(
+            'state', 'user__first_name')
     }
