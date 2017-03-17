@@ -121,7 +121,7 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
         swappable = 'AUTH_USER_MODEL'
 
     def __str__(self):
-        return "{0} {1} ({2})".format(self.first_name, self.last_name, self.email)
+        return "{0} {1}".format(self.first_name, self.last_name)
 
     def get_absolute_url(self):
         from django.core.urlresolvers import reverse
