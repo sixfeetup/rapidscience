@@ -310,7 +310,7 @@ class EditGroup( LoginRequiredMixin,FormView ):
                 group_name = project.title,
                 about = project.goal,
                 approval = 1 if project.approval_required else 0,
-                banner_image = project.cover_photo,
+                banner_image = project.cover_photo.url if project.cover_photo else None,
             ))
         return self.render_to_response(self.get_context_data(form=form, project=project),)
 

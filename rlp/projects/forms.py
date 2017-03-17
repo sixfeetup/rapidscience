@@ -17,7 +17,7 @@ class SimpleImageWidget(forms.FileInput):
         print("simpleImageWidget: self:", dir(self))
         output = []
         if value:
-            output.append(('<img src="%s" style="height: 40;" /> ' % (value, )))
+            output.append(('<img src="%s" style="height:160px;" /> ' % (value, )))
         output.append(super(SimpleImageWidget, self).render(name, value, attrs))
         return mark_safe(u''.join(output))
 
