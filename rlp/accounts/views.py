@@ -381,8 +381,10 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
             'filter_form': filter_form,
         })
     elif tab == 'discussions':
-        context['comment_list'] = request.user.get_shared_content(
-            ThreadedComment
+        context['comment_list'] = sorted(
+            request.user.get_shared_content(ThreadedComment),
+            key=lambda c: c.submit_date,
+            reverse=True,
         )
         if request.is_ajax():
             template_name = 'comments/list.html'

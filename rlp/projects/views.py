@@ -78,7 +78,11 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
         documents = project.get_shared_content(Document)
         context['documents'] = documents
     elif tab == 'discussions':
-        context['comment_list'] = project.get_shared_content(ThreadedComment)
+        context['comment_list'] = sorted(
+            project.get_shared_content(ThreadedComment),
+            key=lambda c: c.submit_date,
+            reverse=True,
+        )
         if request.is_ajax():
             template_name = 'comments/list.html'
         context['page_template'] = 'comments/list.html'
