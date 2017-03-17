@@ -451,6 +451,8 @@ EDITED_MESSAGE = (
 )
 CASE_SUBMIT = 'Your case report submission'
 NEW_CASE = "New Case Report"
+CASE_READY_SUBJECT = "A new case awaits your approval"
+CASE_APPROVED_SUBJECT = "Case Approved"
 DATA_SCIENCE_TEAM = ['nadeemaslam@trialx.com', 'priya@trialx.com']
 BCC_LIST = ['nadeemaslam@trialx.com', 'sg@rapidscience.org']
 EDITED = "Case Report Edited"

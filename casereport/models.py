@@ -168,7 +168,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
                         'title': self.title,
                         'name': recipient.get_name(),
                         'token': token,
-                        'DOMAIN': settings.DOMAIN,
+                        'DOMAIN': getattr(settings, 'DOMAIN', ''),
                         'Date': self.created_on,
                         'primary_physician': self.primary_physician.get_name()
                                                 })
@@ -191,7 +191,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
                                     'title': self.title,
                                     'name': primary_recipient.get_name(),
                                     # 'token': token,
-                                    'DOMAIN': settings.DOMAIN,
+                                    'DOMAIN': getattr(settings,'DOMAIN',''),
                                     'Date': self. created_on,
                                     'status': self.status,
                                     'history_object': history_obj,
