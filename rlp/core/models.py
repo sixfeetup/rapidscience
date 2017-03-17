@@ -75,6 +75,8 @@ class SharedContent(models.Model):
         fk_field='target_id',
     )
 
+    def __str__(self):
+        return u'"%s" shared with "%s"' % (self.target, self.viewer)
 
 class SharedObjectMixin(models.Model):
     class Meta:
