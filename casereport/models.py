@@ -260,6 +260,15 @@ class CaseReport(CRDBBase, SharedObjectMixin):
             event = None
         return event.date_point if event else event
 
+    def get_absolute_url(self):
+        from django.core.urlresolvers import reverse
+        from django.utils.text import slugify
+        slug = slugify(self.title)
+        return reverse(
+            'casereport_detail',
+            kwargs={'case_id': self.pk, 'title_slug': slug},
+        )
+
 
 @python_2_unicode_compatible
 class Treatment(CRDBBase):
