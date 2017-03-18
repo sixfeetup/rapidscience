@@ -1,15 +1,16 @@
+from collections import defaultdict
+
 from django.conf import settings
+from django.core.mail import send_mass_mail
 from django.db import models
 from django_fsm import FSMField
 from django_fsm import transition
-
-from filer.fields.image import FilerImageField
 from menus.menu_pool import menu_pool
 
 from rlp.accounts.models import Institution
 from rlp.core.email import send_transactional_mail
-from rlp.core.models import SEOMixin
 from rlp.core.mixins import SharesContentMixin
+from rlp.core.models import SEOMixin
 
 
 MEMBER_STATES = (
@@ -105,7 +106,6 @@ class Project(SEOMixin, SharesContentMixin):
         inviter = inviter or self.moderators().first()
 
         # format the message
-        from collections import defaultdict
         context = defaultdict(str, user=inviter.email, group=self.title, link=self.get_absolute_url() )
         if extra_template_vars:
             context.update( extra_template_vars )
@@ -121,7 +121,6 @@ class Project(SEOMixin, SharesContentMixin):
             for rcp in emails
         )
         print( "sending", message_data)
-        from django.core.mail import send_mass_mail #stubbornly expecting pycharm to move this
         send_mass_mail(message_data)
 
 
