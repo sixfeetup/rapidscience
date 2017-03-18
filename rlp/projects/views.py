@@ -39,7 +39,8 @@ def projects_list(request, template_name="projects/projects_list.html"):
 @login_required
 @never_cache
 @page_template('actstream/_activity.html')
-def projects_detail(request, pk, slug, tab='activity', template_name="projects/projects_detail.html", extra_context=None):
+def projects_detail(request, pk, slug, tab='activity', template_name="projects/projects_detail.html",
+                    extra_context=None):
     projects = Project.objects.select_related('institution', 'topic')
     project = get_object_or_404(projects, pk=pk, slug=slug)
     context = {
@@ -107,10 +108,10 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
     # inject the edit-form
     edit_form = ModifyGroupForm(initial=dict(
         group_id=project.id,
-        group_name = project.title,
-        approval = project.approval_required,
-        banner_image = project.cover_photo,
-    ) )
+        group_name=project.title,
+        approval=project.approval_required,
+        banner_image=project.cover_photo,
+    ))
     context['edit_group_form'] = edit_form
 
     # response
@@ -140,7 +141,7 @@ def invite_members(request, pk, slug):
         if form.is_valid():
             internal_addrs = [
                 user.email for user in form.cleaned_data['internal']
-            ]
+                ]
             external_addrs = form.cleaned_data['external']
             recipients = internal_addrs + external_addrs
             subject = 'Invitation to join {}'.format(group.title)
@@ -159,12 +160,14 @@ def invite_members(request, pk, slug):
     messages.error(request, 'Invitation failed')
     return redirect(request.META['HTTP_REFERER'])
 
+
 approval_tmpl = '''{} ({}) has requested access to the closed group “{}”.
 
 A moderator for the group must approve this access. You can view and approve pending members on the group’s langing page:
 
 {}
 '''
+
 
 class LeaveGroup(LoginRequiredMixin, View):
     def get(self, request, pk):
@@ -250,7 +253,6 @@ class AddGroup(LoginRequiredMixin, FormView):
             messages.error(request, "Please correct the errors below")
             return self.form_invalid(form)
 
-
     def form_valid(self, form):
         data = form.cleaned_data
         user = self.request.user
@@ -268,13 +270,15 @@ class AddGroup(LoginRequiredMixin, FormView):
             project=new_group,
             state='moderator',
         )
-        new_project.invite_registered_users(self, form.cleaned_data['internal'] )
-        new_project.invite_external_emails(self, form.cleaned_data['external'] )
+        new_project.invite_registered_users(self, form.cleaned_data['internal'])
+        new_project.invite_external_emails(self, form.cleaned_data['external'])
         return redirect(group_url)
 
-class EditGroup( LoginRequiredMixin,FormView ):
+
+class EditGroup(LoginRequiredMixin, FormView):
     form_class = ModifyGroupForm
-    template_name = 'projects/projects_edit.html' # re-using
+    template_name = 'projects/projects_edit.html'  # re-using
+
     def get(self, request, pk, slug):
         project = get_object_or_404(Project, id=pk)
         if request.user not in project.moderators():
@@ -286,25 +290,25 @@ class EditGroup( LoginRequiredMixin,FormView ):
         else:
             form = self.form_class(initial=dict(
                 group_id=project.id,
-                group_name = project.title,
-                about = project.goal,
-                approval = 1 if project.approval_required else 0,
-                banner_image = project.cover_photo.url if project.cover_photo else None,
+                group_name=project.title,
+                about=project.goal,
+                approval=1 if project.approval_required else 0,
+                banner_image=project.cover_photo.url if project.cover_photo else None,
             ))
-        return self.render_to_response(self.get_context_data(form=form, project=project),)
-
+        return self.render_to_response(self.get_context_data(form=form, project=project), )
 
     def post(self, request, *args, **kwargs):
         """ Handle the POSTed form data.
             This overrides the FormView impl only to add the messages.error call
         """
-        form=self.get_form()
+        form = self.get_form()
         if form.is_valid():
-            res =  self.form_valid(form)
+            res = self.form_valid(form)
             messages.info(request, "Edits saved!")
 
             # internal invites
-            new_invitees = [ invitee for invitee in form.cleaned_data['internal'] if invitee not in project.active_members() ]
+            new_invitees = [invitee for invitee in form.cleaned_data['internal'] if
+                            invitee not in project.active_members()]
             project.invite_registered_users(new_invitees)
 
             # external invites
@@ -317,7 +321,7 @@ class EditGroup( LoginRequiredMixin,FormView ):
 
         else:
             messages.error(request, "Please correct the errors below")
-            return self.form_invalid(form) # we can't do this because we were in an overlay on another page
+            return self.form_invalid(form)  # we can't do this because we were in an overlay on another page
             # This really should be a rest POST and return a json success/error message
 
     def form_valid(self, form):
@@ -326,7 +330,7 @@ class EditGroup( LoginRequiredMixin,FormView ):
         """
         data = form.cleaned_data
         # update the Project
-        project = Project.objects.get( pk=data['group_id'])
+        project = Project.objects.get(pk=data['group_id'])
         project.title = data['group_name']
         project.goal = data['about']
         if data['banner_image']:
@@ -336,5 +340,4 @@ class EditGroup( LoginRequiredMixin,FormView ):
 
         project.save()
 
-        return redirect( project.get_absolute_url())
-
+        return redirect(project.get_absolute_url())

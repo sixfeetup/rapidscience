@@ -12,7 +12,6 @@ from rlp.core.email import send_transactional_mail
 from rlp.core.mixins import SharesContentMixin
 from rlp.core.models import SEOMixin
 
-
 MEMBER_STATES = (
     ('moderator', 'Moderator'),
     ('member', 'Member'),
@@ -74,7 +73,7 @@ class Project(SEOMixin, SharesContentMixin):
         emails = [
             pm.user.email for pm in
             ProjectMembership.objects.filter(state='moderator', project=self)
-        ]
+            ]
         emails += settings.REGISTRATION_REVIEWERS
         # One-off customization so that a single person could additionally be notified of 'approval required'
         # registrations, but only for projects that specifically require approval. We do NOT send to these recipients
@@ -93,9 +92,8 @@ class Project(SEOMixin, SharesContentMixin):
             )
 
     def invite_registered_users(self, users, subject=None, message=None, inviter=None, extra_template_vars=None):
-        emails = [ u.email for u in users if u.email ]
-        return self.invite_external_emails( emails, subject, message, inviter, extra_template_vars)
-
+        emails = [u.email for u in users if u.email]
+        return self.invite_external_emails(emails, subject, message, inviter, extra_template_vars)
 
     def invite_external_emails(self, emails, subject=None, message=None, inviter=None, extra_template_vars=None):
         """ Send an invitation by email to each of the emails given.
@@ -106,9 +104,9 @@ class Project(SEOMixin, SharesContentMixin):
         inviter = inviter or self.moderators().first()
 
         # format the message
-        context = defaultdict(str, user=inviter.email, group=self.title, link=self.get_absolute_url() )
+        context = defaultdict(str, user=inviter.email, group=self.title, link=self.get_absolute_url())
         if extra_template_vars:
-            context.update( extra_template_vars )
+            context.update(extra_template_vars)
         message = message.format(**context)
 
         message_data = (
@@ -120,10 +118,8 @@ class Project(SEOMixin, SharesContentMixin):
             )
             for rcp in emails
         )
-        print( "sending", message_data)
+        print("sending", message_data)
         send_mass_mail(message_data)
-
-
 
     def save(self, *args, **kwargs):
         # Groups are in the top level navigation and need to clear the cache
@@ -160,7 +156,7 @@ class Project(SEOMixin, SharesContentMixin):
         membership, is_new = ProjectMembership.objects.get_or_create(
             project=self,
             user=user,
-            defaults={'state':initial_state},
+            defaults={'state': initial_state},
         )
 
         return membership
@@ -182,7 +178,8 @@ class ProjectMembership(models.Model):
         ordering = ['project']
 
     def __str__(self):
-        return "{user} is {state} of {project}".format(user=self.user.email, state=self.state, project=self.project.title)
+        return "{user} is {state} of {project}".format(user=self.user.email, state=self.state,
+                                                       project=self.project.title)
 
     @transition(field=state, source='*', target='moderator')
     def promote(self):

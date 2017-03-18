@@ -6,6 +6,7 @@ from rlp.core.forms import MemberListField
 from django import forms
 from django.utils.safestring import mark_safe
 
+
 class SimpleImageWidget(forms.FileInput):
     def __init__(self, attrs={}):
         super(SimpleImageWidget, self).__init__(attrs)
@@ -17,11 +18,9 @@ class SimpleImageWidget(forms.FileInput):
         print("simpleImageWidget: self:", dir(self))
         output = []
         if value:
-            output.append(('<img src="%s" style="height:160px;" /> ' % (value, )))
+            output.append(('<img src="%s" style="height:160px;" /> ' % (value,)))
         output.append(super(SimpleImageWidget, self).render(name, value, attrs))
         return mark_safe(u''.join(output))
-
-
 
 
 class CommaSeparatedEmailField(forms.Field):
@@ -67,6 +66,7 @@ class InviteForm(forms.Form):
         widget=forms.Textarea,
     )
 
+
 static_invite_text = 'You are invited by [First Name, Last Name of \
 moderator] to join the [Group Name] group in Sarcoma Central, a Rapid \
 Science channel.\
@@ -88,6 +88,7 @@ class BaseGroupForm(forms.Form):
     banner_image = forms.ImageField(required=False)
     approval = forms.ChoiceField(
         widget=forms.RadioSelect, choices=GROUP_APPROVAL_CHOICES)
+
 
 class NewGroupForm(BaseGroupForm):
     """ Adds invites to the ModifyGroupForm to create a new group.
@@ -112,13 +113,14 @@ class NewGroupForm(BaseGroupForm):
     field_order = ['group_name', 'about', 'banner_image', 'approval',
                    'internal', 'external']
 
-class ModifyGroupForm( NewGroupForm):
+
+class ModifyGroupForm(NewGroupForm):
     """ Hides the approval field and adds a hidden group id to the base form.
     """
     group_id = forms.IntegerField(widget=forms.HiddenInput())
 
     # friendlier image widget
-    banner_image = forms.ImageField(required=False, widget=SimpleImageWidget() )
+    banner_image = forms.ImageField(required=False, widget=SimpleImageWidget())
 
     approval = forms.IntegerField(widget=forms.HiddenInput())
     # remember to ensure that approval doesn't change, and the the user is a moderator for the group
