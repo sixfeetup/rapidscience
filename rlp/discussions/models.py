@@ -80,7 +80,7 @@ class ThreadedComment(Comment, SharedObjectMixin):
                     # attach to the site instead of a member or group
                     site_type = ContentType.objects.get_for_model(Site)
                     self.content_type = site_type
-                    self.content_object = Site.objects.first()
+                    self.content_object = Site.objects.get_current()
                 super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
@@ -147,7 +147,7 @@ class ThreadedComment(Comment, SharedObjectMixin):
     def is_discussion(self):
         '''stand-alone discussion, or comments on other content?'''
         # stand-alone discussions are attached to the site
-        return self.content_object == Site.objects.first()
+        return self.content_object == Site.objects.get_current()
 
     def children(self):
         children = ThreadedComment.objects.filter(
