@@ -37,9 +37,14 @@ from casereport.models import CaseFile
 from casereport.models import Treatment
 from django.core.mail import EmailMessage
 
+from rlp.core.utils import enforce_sharedobject_permissions
+from functools import partial
+
 __author__ = 'yaseen'
 
 
+
+@partial(enforce_sharedobject_permissions, obj_class=CaseReport, id_name='case_id')
 class CaseReportDetailView(TemplateView):
     template_name = 'casereport/search_results.html'
 
