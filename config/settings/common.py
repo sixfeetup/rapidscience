@@ -422,13 +422,17 @@ LOGGING = {
 
 ACCOUNT_ACTIVATION_DAYS = 14
 
-GROUP_INVITATION_TEMPLATE = '''You are invited by {user} to join the “{group}” group in the Rapid Science Sarcoma Network.
-
-You may click the Join link to be added to the group's membership, or view the Group page before joining.
+GROUP_INVITATION_TEMPLATE = '''{user} has approved your request to join the “{group}” group.
 
 {link}
 
-If you're not already a Rapid Science member, you will first be asked to register.
+You may post discussions, files, case reports, and references to this group, and participate in member discussions. If you wish to invite others to join the group, please contact the moderator(s).
+
+If you have questions, please contact us at ​info@rapidscience.org.
+
+Best wishes,
+
+The Rapid Science Team
 '''
 
 
