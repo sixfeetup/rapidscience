@@ -253,7 +253,10 @@ class MyFacetedSearchView(FacetedSearchView):
         data = self.request.GET.copy()
         sortby = data.get('sortby', 'relevance')
         sortorder = data.get('sortorder', 'desc')
-        del(self.request.session['last_viewed_path'])
+        if self.request.session.get('last_viewed_path',None):
+            del(self.request.session['last_viewed_path'])
+        else:
+            print("casereport.views.create_response tried to delete last_viewed_path that did not exist.")
         context = {
             'query': self.query,
             'form': self.form,
