@@ -1,6 +1,7 @@
 from collections import defaultdict
 
 from django.conf import settings
+from django.contrib.sites.models import Site
 from django.core.mail import send_mass_mail
 from django.db import models
 from django_fsm import FSMField
@@ -96,15 +97,20 @@ class Project(SEOMixin, SharesContentMixin):
         return self.invite_external_emails(emails, subject, message, inviter, extra_template_vars)
 
     def invite_external_emails(self, emails, subject=None, message=None, inviter=None, extra_template_vars=None):
-        """ Send an invitation by email to each of the emails given.
-            TODO: we dont yet uyse the sites framework, so we cant create fully qualified urls
-        """
+        """Send an invitation by email to each of the emails given."""
         subject = subject or 'Invitation to join {}'.format(self.title)
         message = message or settings.GROUP_INVITATION_TEMPLATE
         inviter = inviter or self.moderators().first()
 
         # format the message
-        context = defaultdict(str, user=inviter.email, group=self.title, link=self.get_absolute_url())
+        site = Site.objects.get_current()
+        project_url = 'https://' + site.domain + self.get_absolute_url()
+        context = defaultdict(
+            str,
+            user=inviter.email,
+            group=self.title,
+            link=project_url,
+        )
         if extra_template_vars:
             context.update(extra_template_vars)
         message = message.format(**context)

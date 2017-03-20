@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
+from django.contrib.sites.models import Site
 from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
 from django.core.mail import send_mass_mail
@@ -92,11 +93,12 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
     elif tab == 'bibliography':
         context['references'] = project.get_shared_content(ProjectReference)
     # member invite form
+    site = Site.objects.get_current()
+    project_url = 'https://' + site.domain + project.get_absolute_url()
     invite_data = {
         'user': request.user.get_full_name(),
         'group': project.title,
-        # TODO put a real invite link here
-        'link': project.get_absolute_url(),
+        'link': project_url,
     }
     invite_msg = settings.GROUP_INVITATION_TEMPLATE.format(**invite_data)
     form = InviteForm(
