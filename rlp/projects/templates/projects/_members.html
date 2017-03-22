@@ -20,7 +20,7 @@
           </div>
           <div class="col-xs-8">
             <p class="no-margin-bottom">
-                <a href="{{ user.get_absolute_url }}"><strong>{{ user.get_full_name }}</strong>{% if user.degrees %}, {{ user.degrees }}{% endif %}</a>
+                <a href="{{ user.get_absolute_url }}"><strong>{{ user.get_full_name }}{% if user.degrees %}, {{ user.degrees }}{% endif %}</strong></a>
                 {% if state %}<br /><small>{{ state|title }}</small>{% endif %}
             </p>
           </div>
