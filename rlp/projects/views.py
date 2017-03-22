@@ -172,9 +172,10 @@ A moderator for the group must approve this access. You can view and approve pen
 
 
 class LeaveGroup(LoginRequiredMixin, View):
-    def get(self, request, pk):
+    def get(self, request, pk, user):
         project = get_object_or_404(Project, id=pk)
-        membership = get_object_or_404(ProjectMembership, project=project, user=request.user)
+        membership = get_object_or_404(ProjectMembership, project=project, user=user)
+        user = get_object_or_404(User, id=user)
         if membership.state == 'moderator' and project.approval_required:
             message = 'Moderators cannot leave the groups that require moderation.'
             messages.error(request, message)
@@ -184,7 +185,7 @@ class LeaveGroup(LoginRequiredMixin, View):
             messages.success(request, message)
         else:
             membership.delete()
-            message = 'You have left the "{}" group.'.format(project.title)
+            message = '{} has been removed from the "{}" group.'.format(user.get_full_name(), project.title)
             messages.success(request, message)
 
         return redirect(reverse('projects:projects_list'))

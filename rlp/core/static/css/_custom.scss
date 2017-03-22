@@ -125,6 +125,59 @@ p.small {
     border-top: 1px dotted #ddd;
 }
 
+.members-list {
+    .item-list > li + li {
+        border-top: none;
+    }
+    .btn-group {
+        position: relative;
+        right: 15px;
+    }
+    .leave-button {
+        position: relative;
+        right: 13px;
+        font-size: 1.4em;
+        color: #444;
+    }
+    .panel-group {
+        margin-top: 1.5em;
+        .panel {
+            border: none;
+            box-shadow: none;
+            .panel-heading {
+                padding: 0;
+                background-color: transparent;
+                border-bottom: none;
+                a {
+                    text-decoration: none;
+                    .caret {
+                        transform: rotate(180deg);
+                        border-top: 6px dashed;
+                        border-top: 6px solid \9;
+                        border-right: 6px solid transparent;
+                        border-left: 6px solid transparent;
+                        color: #444;
+                    }
+                    &.collapsed .caret {
+                        transform: rotate(360deg);
+                    }
+                }
+            }
+            .panel-body {
+                padding: 0;
+                border-top: none;
+                ul {
+                    list-style-type: none;
+                    padding-left: 0;
+                    li {
+                        padding-top: 10px;
+                    }
+                }
+            }
+        }
+    }
+}
+
 .tags {
     margin-bottom: 10px;
 }

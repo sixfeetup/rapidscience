@@ -1,5 +1,5 @@
 {% load static thumbnail %}
-<div class="box">
+<div class="box members-list">
   <a href="#" class="invite-link" title="Invite members to group">
       <i class="fa fa-plus"></i>
   </a>
@@ -7,7 +7,7 @@
   <ul class="list-unstyled item-list">
       {% for membership in moderators %}
         {% with user=membership.user state=membership.state %}
-        <li class="clearfix">
+        <li class="clearfix row">
           <div class="col-xs-3">
           {% if user.photo %}
             {% thumbnail membership.user.photo 120x120 crop upscale as thumbnail %}
@@ -18,39 +18,75 @@
                  src="{% static 'img/user.jpg' %}">
           {% endif %}
           </div>
-          <div class="col-xs-9">
+          <div class="col-xs-8">
             <p class="no-margin-bottom">
-              <small>
-                <a href="{{ user.get_absolute_url }}"><strong>{{ user.get_full_name }}</strong></a>{% if user.degrees %}, {{ user.degrees }}{% endif %}
-              </small>
+                <a href="{{ user.get_absolute_url }}"><strong>{{ user.get_full_name }}</strong>{% if user.degrees %}, {{ user.degrees }}{% endif %}</a>
+                {% if state %}<br /><small>{{ state|title }}</small>{% endif %}
             </p>
-            {% if state %}
-            <p class="no-margin-bottom">
-              <small>
-                {{ state }}{% if request.user == user %}  <a class="leave-button" href="{% url 'projects:projects_leave' project.id %}"> <i class="fa fa-times-circle-o"></i></a>{% endif %}
-              </small>
-            </p>
+          </div>
+          <div class="col-xs-1">
+            {% if request.user in project.moderators %}
+                <div class="btn-group">
+                  <button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li><a href="#">Remove as moderator</a></li>
+                    <li><a href="{% url 'projects:projects_leave' pk=project.id user=user.id %}">Remove from group</a></li>
+                  </ul>
+                </div>
+            {% else %}
+                {% if request.user == user %}<a class="leave-button" href="{% url 'projects:projects_leave' pk=project.id user=user.id %}"> <i class="fa fa-times-circle-o"></i></a>{% endif %}
             {% endif %}
           </div>
         </li>
         {% endwith %}
       {% endfor %}
-      
-    {% for membership in memberships %}
-      {% with user=membership.user state=membership.state %}
-      <li class="clearfix">
-        <div class="col-xs-12">
-          <p class="no-margin-bottom">
-            <small>
-              <a href="{{ user.get_absolute_url }}"><strong>{{ user.get_full_name }}</strong></a>{% if user.degrees %}, {{ user.degrees }}{% endif %}
-            </small>
-            {% if request.user == user %}  <a class="leave-button" href="{% url 'projects:projects_leave' project.id %}"> <i class="fa fa-times-circle-o"></i></a>{% endif %}
-          </p>
-        </div>
-      </li>
-      {% endwith %}
-    {% endfor %}
   </ul>
+  <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+      <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingOne">
+            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" class="collapsed">
+                See all members <span class="caret"></span>
+            </a>
+        </div>
+        <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+          <div class="panel-body">
+              <ul>
+                {% for membership in memberships %}
+                  {% with user=membership.user state=membership.state %}
+                  <li class="clearfix row">
+                    <div class="col-xs-11">
+                      <p class="no-margin-bottom">
+                        <small>
+                          <a href="{{ user.get_absolute_url }}"><strong>{{ user.get_full_name }}</strong></a>{% if user.degrees %}, {{ user.degrees }}{% endif %}
+                        </small>
+                        {% if request.user == user %}  <a class="leave-button" href="{% url 'projects:projects_leave' project.id %}"> <i class="fa fa-times-circle-o"></i></a>{% endif %}
+                      </p>
+                    </div>
+                    <div class="col-xs-1">
+                        {% if request.user in project.moderators %}
+                            <div class="btn-group">
+                              <button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="caret"></span>
+                              </button>
+                              <ul class="dropdown-menu">
+                                <li><a href="#">Make a moderator</a></li>
+                                <li><a href="{% url 'projects:projects_leave' pk=project.id user=user.id %}">Remove from group</a></li>
+                              </ul>
+                            </div>
+                        {% else %}
+                            {% if request.user == user %}<a class="leave-button" href="{% url 'projects:projects_leave' pk=project.id user=user.id %}"> <i class="fa fa-times-circle-o"></i></a>{% endif %}
+                        {% endif %}
+                    </div>
+                  </li>
+                  {% endwith %}
+                {% endfor %}
+              </ul>
+          </div>
+        </div>
+      </div>
+  </div>
 </div>
 
 
