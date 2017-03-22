@@ -18,6 +18,9 @@ class Institution(models.Model):
     name = models.CharField(max_length=255)
     banner_image = models.ImageField(upload_to='institutions', blank=True)
     thumbnail_image = models.ImageField(upload_to='institutions', blank=True)
+    city = models.CharField(_('city'), max_length=255, blank=True)
+    state = models.CharField(_('state'), max_length=255, blank=True)
+    country = models.CharField(_('country'), max_length=255, blank=True)
     website = models.URLField(blank=True)
 
     class Meta:
