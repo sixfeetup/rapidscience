@@ -104,8 +104,8 @@ class PhysicianInstanceResource:
     def _get(self):
         pass
 
-    def _post(self, email):
-        phy, created = Physician.objects.get_or_create(email=email)
+    def _post(self, name, email):
+        phy, created = Physician.objects.get_or_create(name=name, email=email)
         return phy
 
 

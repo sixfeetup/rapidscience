@@ -82,11 +82,12 @@ class CaseReportFormView(FormView):
         entry_type = data.get('entry-type')
         title = data.get('casetitle')
         email = data.getlist('physician_email')
+        name = data.getlist('physician_name')
         author = data.getlist('author', None)
         author_list = AuthorizedListResource()._post(email=author)
         physicians = []
-        for i in range(0, len(email)):
-            physician = PhysicianInstanceResource()._post(email[i])
+        for i in range(0, len(name)):
+            physician = PhysicianInstanceResource()._post(name[i], email[i])
             physicians.append(physician)
         if entry_type == 'F':
             document = request.FILES['uploadfile']
