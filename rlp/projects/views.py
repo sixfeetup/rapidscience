@@ -306,6 +306,7 @@ class EditGroup(LoginRequiredMixin, FormView):
         """
         form = self.get_form()
         if form.is_valid():
+            project = get_object_or_404(Project, id=kwargs['pk'])
             res = self.form_valid(form)
             messages.info(request, "Edits saved!")
 
