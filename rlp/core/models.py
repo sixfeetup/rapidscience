@@ -105,7 +105,7 @@ class SharedObjectMixin(models.Model):
         return users
 
     def is_shared_with_user(self, user):
-        return user in self.get_viewers_as_users()
+        return (user in self.get_viewers_as_users()) or user.is_superuser
 
     def share_with(self, viewers):
         target = self
