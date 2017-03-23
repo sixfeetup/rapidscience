@@ -1140,11 +1140,6 @@ input:focus + div.info {
 	text-transform: none;
 	padding-right: 15px;
 }
-#caseform .physician-div input,
-#caseform .physician-div .helpText {
-	width: calc(100% - 50px);
-	display: inline-block;
-}
 #caseform .add_phy_button {
 	margin-top: 1em;
 	display: inline-block;

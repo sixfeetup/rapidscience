@@ -204,18 +204,37 @@ $(document).ready(function() {
         if(x < max_fields){ //max input box allowed
             x++; //text box increment
             $(phy_wrapper).append(
-                '<div>' +
-                '<label for="physician_email' + x + '">Email Address</label>' +
-                '<input name="physician_email" type="EMAIL" class="form-control " id="physician_email' + x + '" placeholder="Email">'+
-                '<a href="#" class="remove_phy"><i class="fa fa-times"></i></a>' +
+                '<div class="row physician"><div class="form-group col-md-6">' +
+                '<label for="physician_name' + x + '">Name</label>' +
+                '<input name="physician_name" type="text" class="form-control" id="physician_name' + x + '" placeholder="First and Last Name">'+
                 '<div class="helpText">' +
-                    'If the email address is not recognized, we will send them an invitation to join Cases Central' +
-                '</div></div>'); //add input box
+                    'ex: John Smith, MD, PhD' +
+                '</div>' +
+                '</div><div class="form-group col-md-5">' +
+                '<label for="physician_email' + x + '">Email Address</label>' +
+                '<input name="physician_email" type="EMAIL" class="form-control" id="physician_email' + x + '" placeholder="Email">'+
+                '<div class="helpText">' +
+                    'You must use an institutional email address' +
+                '</div>' +
+                '</div><div class="col-md-1"><a href="#" class="remove_phy"><i class="fa fa-times"></i></a></div></div>'
+            );
+            if ($('.row.physician').length > 0) {
+                $(".add_phy_button_text").text('Add another co-author');
+            }
+            if ($('.row.physician').length >= max_fields) {
+                add_button.hide();
+            }
         }
     });
 
     $(phy_wrapper).on("click",".remove_phy", function(e){ //user click on remove text
-        e.preventDefault(); $(this).parent('div').remove(); x--;
+        e.preventDefault(); $(this).parents('.row.physician').remove();
+        if ($('.row.physician').length == 0) {
+            $(".add_phy_button_text").text('Add co-author');
+        }
+        if ($('.row.physician').length <= max_fields) {
+            $(".add_phy_button").show();
+        }
     })
 
 });
