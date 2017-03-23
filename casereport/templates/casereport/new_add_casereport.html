@@ -103,8 +103,9 @@
                 <!-- attachments -->
                 <!-- sharing -->
 
-                <div class="submit-button ">
-                    <input type="submit" value="Submit" />
+                <div class="submit-button">
+                    <input class="btn btn-primary" type="submit" value="Submit" />
+                    <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-default">Cancel</a>
                 </div>
 
    </form>
