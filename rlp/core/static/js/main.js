@@ -1,6 +1,6 @@
 var selectedBookmarksFolderName; // will contain ID of selected bookmarks folder
 
-function remaining_characters(){
+(function($) { $(function() {
     // Magical spell to count characters
     $('.remaining-characters').each(function() {
         var maxLength = $(this).attr('maxlength');
@@ -15,17 +15,13 @@ function remaining_characters(){
         var length = maxLength-length;
         $(this).next('.character-count').text(length + '/' + maxLength);
     });
-}
 
-$(document).on('ready', remaining_characters);
+    var showChar = 170;
+    var ellipsestext = '&hellip;';
+    var moretext = '+';
+    var lesstext = '-';
 
-var showChar = 170;
-var ellipsestext = '&hellip;';
-var moretext = '+';
-var lesstext = '-';
-
-// More or less
-function show_more() {
+    // More or less
     $('.more').each(function() {
         var content = $(this).html();
 
@@ -40,9 +36,9 @@ function show_more() {
         }
 
     });
-}
+}); })(jQuery);
 
-$(document).on('ready', show_more);
+
 
 $('.container').on('click', '.morelink', function(event){
     if($(this).hasClass('less')) {
