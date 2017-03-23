@@ -59,9 +59,8 @@
                     <div class="col-xs-11">
                       <p class="no-margin-bottom">
                         <small>
-                          <a href="{{ user.get_absolute_url }}"><strong>{{ user.get_full_name }}</strong></a>{% if user.degrees %}, {{ user.degrees }}{% endif %}
+                          <a href="{{ user.get_absolute_url }}">{{ user.get_full_name }}{% if user.degrees %}, {{ user.degrees }}{% endif %}</a>
                         </small>
-                        {% if request.user == user %}  <a class="leave-button" href="{% url 'projects:projects_leave' pk=project.id user=user.id %}"> <i class="fa fa-times-circle-o"></i></a>{% endif %}
                       </p>
                     </div>
                     <div class="col-xs-1">
