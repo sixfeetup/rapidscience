@@ -1047,6 +1047,19 @@ input:focus + div.info {
 #section-primary h4 {
 	margin-top: 0;
 }
+.case-detail-view .authors-list {
+    list-style-type: none;
+    padding-left: 0;
+}
+.case-detail-view .authors-list li {
+    display: inline;
+}
+.case-detail-view .authors-list li:after {
+    content: ';';
+}
+.case-detail-view .authors-list li:last-of-type:after {
+    content: '';
+}
 .case-detail-view .section-details {
 	font-style: italic;
 	margin-bottom: 0;

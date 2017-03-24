@@ -89,11 +89,13 @@
       {% if casereport.referring_physician.all %}
       <div class="row author-list" id="section-coauthors">
           <h4>Co-Authors</h4>
+          <ol class="authors-list">
           {% for author in casereport.referring_physician.all %}
                   {% if not casereport.primary_physician.email == author.email %}
-                      <div class="author-list-inner"><span>{{ author.name}}</span></div>
+                      <li>{{ author.name }}</li>
                   {% endif%}
           {% endfor %}
+          </ol>
       </div>
       {% endif %}
       
