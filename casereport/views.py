@@ -112,13 +112,27 @@ class CaseReportFormView(FormView):
             treatment_status_list = data.getlist('treatment_status', None)
             treatment_outcome_list = data.getlist('treatment_outcome', None)
             additional_comment = data.get('additional_comment')
+            attachment1 = request.FILES.get('attachment1')
+            attachment2 = request.FILES.get('attachment2')
+            attachment3 = request.FILES.get('attachment3')
+            attachment1_title = data.get('attachment1_title')
+            attachment2_title = data.get('attachment2_title')
+            attachment3_title = data.get('attachment3_title')
+            attachment1_description = data.get('attachment1_description')
+            attachment2_description = data.get('attachment2_description')
+            attachment3_description = data.get('attachment3_description')
             case = CaseReportListResource()._post(
                 title=title, age=age,
                 gender=gender, pathology=pathology,
                 additional_comment=additional_comment,
                 physicians=physicians, subtype=subtype,
                 presentation=presentation, aberrations=aberrations,
-                biomarkers=biomarkers)
+                biomarkers=biomarkers,
+                attachment1=attachment1, attachment2=attachment2, attachment3=attachment3,
+                attachment1_title=attachment1_title, attachment2_title=attachment2_title,
+                attachment3_title=attachment3_title,
+                attachment1_description=attachment1_description, attachment2_description=attachment2_description,
+                attachment3_description=attachment3_description)
             for i in range(0, len(treatment_name_list)):
                 if treatment_name_list[i]:
                     treatment_name = treatment_name_list[i]

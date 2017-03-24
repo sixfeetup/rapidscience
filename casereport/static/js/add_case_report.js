@@ -11,6 +11,30 @@ function checkfile(sender) {
     else return true;
 }
 
+function checkatt(sender) {
+    var validExts = [".pdf", ".jpeg",".jpg",'.png','.tif','.tiff'];
+    var fileExt = sender.value;
+    var message = '';
+    fileExt = fileExt.substring(fileExt.lastIndexOf('.'));
+    if (validExts.indexOf(fileExt) < 0) {
+        message += 'Invalid file selected, valid files are of ' + validExts.toString() + ' types.';
+    }
+    if (sender.files[0].size > 2*1024*1024) {
+        message += ' File size must be smaller than 2MB.';
+    }
+    if (message != '') {
+        $(sender).parent().before(
+            '<div class="alert alert-danger alert-dismissible fade in" role="alert">'+
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+                '<span aria-hidden="true">&times;</span>'+
+            '</button>'+ message + '</div>'
+        );
+        $(sender).val('');
+        return false
+    }
+    else return true;
+}
+
 $(document).ready(function() {
     var max_fields      = 20; //maximum input boxes allowed
     var wrapper         = $(".authors-div"); //Fields wrapper
@@ -390,9 +414,18 @@ function freetext_validate(){
 
 }
 
-$('#submit-button').click(function(e){
-    e.preventDefault()
-    validate(e)
+// $('#submit-button').click(function(e){
+//     e.preventDefault()
+//     validate(e)
+// });
+
+$('input[type=submit]').click(function(e) {
+    if ($('#agreement').prop('checked')) {
+        return true
+    }
+    e.preventDefault();
+    $(".agree-message").show();
+    return false
 });
 
 $('.agree-checkbox').click(function(){
@@ -400,16 +433,49 @@ $('.agree-checkbox').click(function(){
 });
 
 
+//for attachments
 
+$( document ).ajaxComplete(function( event, xhr, settings ) {
+  if ( settings.url === "/casereport/formtype/?ftype=M" ) {
 
+    var max_fields      = 3; //maximum input boxes allowed
+    var att_wrapper         = $(".attachments-div"); //Fields wrapper
+    var add_button      = $(".add_att_button"); //Add button ID
 
+    var x = 1; //initlal text box count
 
+    $(add_button).click(function(e){ //on add input button click
+        e.preventDefault();
+        if(x < max_fields){ //max input box allowed
+            x++; //text box increment
+            $(att_wrapper).append(
+                '<div class="attachment row"><div class="col-md-11">'+
+                    '<div class="figure">Fig ' + x + '</div>'+
+                    '<div class="form-control">'+
+                        '<input type="file" name="attachment' + x + '" id="attachment' + x + '" onchange="checkatt(this);">'+
+                    '</div>'+
+                    '<div class="helpText">JPG, PDF, PNG, TIFF file types; max file size 2MB; minimum width 770px'+
+                                          '<br/>Be sure to explicitly cite this figure\'s name in relevant text above</div>'+
+                    '<label for="attachment' + x + '_title">Title</label>'+
+                    '<input id="attachment' + x + '_title" name="attachment' + x + '_title" class="form-control attachment' + x + '_title">'+
+                    '<label for="attachment1_description">Description</label>'+
+                    '<textarea id="attachment' + x + '_description" name="attachment' + x + '_description"'+
+                              'rows="4" cols="73" class="form-control attachment' + x + '_description editor"></textarea>'+
+                '</div><div class="col-md-1"><a href="#" class="remove_att"><i class="fa fa-times"></i></a></div></div>'
+            );
+            if ($('.row.attachment').length >= max_fields) {
+                add_button.hide();
+            }
+        }
+    });
 
+    $(att_wrapper).on("click",".remove_att", function(e){ //user click on remove text
+        e.preventDefault(); $(this).parents('.row.attachment').remove();
+        if ($('.row.attachment').length <= max_fields) {
+            add_button.show();
+        }
+    });
 
-
-
-
-
-
-
+  }
+});
 

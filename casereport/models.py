@@ -121,6 +121,15 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         CaseFile, null=True, blank=True,
         verbose_name='Case File',
     )
+    attachment1 = models.FileField(null=True)
+    attachment1_title = models.CharField(max_length=200, null=True, blank=True)
+    attachment1_description = models.TextField(null=True, blank=True)
+    attachment2 = models.FileField(null=True)
+    attachment2_title = models.CharField(max_length=200, null=True, blank=True)
+    attachment2_description = models.TextField(null=True, blank=True)
+    attachment3 = models.FileField(null=True)
+    attachment3_title = models.CharField(max_length=200, null=True, blank=True)
+    attachment3_description = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.title if self.title else '---'

@@ -152,10 +152,39 @@
       <h4><label for="additional_comment">Additional comments</label></h4>
       <textarea name="additional_comment" class="form-control editor" rows="5" cols="73" id="additional_comment"></textarea>
     </div>
-    
+
+    <h4>Attachments</h4>
+    <div class="attachments-div">
+
+        <div class="attachment row"><div class="col-md-11">
+            <div class="figure">Fig 1</div>
+            <div class="form-control">
+                <input type="file" name="attachment1" id="attachment1" onchange="checkatt(this);">
+            </div>
+            <div class="helpText">JPG, PDF, PNG, TIFF file types; max file size 2MB; minimum width 770px
+                                  <br/>Be sure to explicitly cite this figure's name in relevant text above</div>
+
+            <label for="attachment1_title">Title</label>
+            <input id="attachment1_title" name="attachment1_title" class="form-control attachment1_title">
+
+            <label for="attachment1_description">Description</label>
+            <textarea id="attachment1_description" name="attachment1_description"
+                      rows="4" cols="73" class="form-control attachment1_description editor"></textarea>
+        </div><div class="col-md-1"></div></div>
+
+    </div>
+
+    <a class="add_att_button" href="#"><i class="fa fa-plus"></i> <span class="add_att_button_text">Add another attachment</a></a>
+
 </div>
 
-
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      ...
+    </div>
+  </div>
+</div>
 
 <script>
     $('body').on('focusin','#subtype',function() {

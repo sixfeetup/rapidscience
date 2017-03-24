@@ -21,7 +21,11 @@ class CaseReportListResource:
     def _post(self, physicians, title=None, file_name=None,  age=None,
               gender=None, pathology=None, subtype=None, presentation=None,
               aberrations=None, biomarkers=None, additional_comment=None,
-              document=None, details=None):
+              document=None, details=None, attachment1=None,
+              attachment2=None, attachment3=None, attachment1_title=None,
+              attachment2_title=None, attachment3_title=None,
+              attachment1_description=None, attachment2_description=None,
+              attachment3_description=None):
         """
 
         :type clinical_outcome: object
@@ -36,7 +40,14 @@ class CaseReportListResource:
                             presentation=presentation, aberrations=aberrations,
                             biomarkers=biomarkers, pathology=pathology,
                             additional_comment=additional_comment,
-                            primary_physician=physicians[0])
+                            primary_physician=physicians[0], attachment1=attachment1,
+                            attachment2=attachment2, attachment3=attachment3,
+                            attachment1_title=attachment1_title,
+                            attachment2_title=attachment2_title,
+                            attachment3_title=attachment3_title,
+                            attachment1_description=attachment1_description,
+                            attachment2_description=attachment2_description,
+                            attachment3_description=attachment3_description)
         result.save()
         for physician in physicians:
             result.referring_physician.add(physician)

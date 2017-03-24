@@ -1157,7 +1157,8 @@ input:focus + div.info {
 	margin-top: 1em;
 	display: inline-block;
 }
-#caseform .physician-div .remove_phy {
+#caseform .physician-div .remove_phy,
+#caseform .attachments-div .remove_att {
 	float: none;
 	display: inline-block;
 	padding-top: 0;
@@ -1181,4 +1182,22 @@ input:focus + div.info {
 	color: #444444;
 	text-transform: none;
 	display: inline;
+}
+.attachments-div {
+    position: relative;
+    margin-bottom: 1em;
+}
+.attachment {
+    margin-bottom: 1em;
+}
+.figure {
+    background-color: #eee;
+    border-radius: 10px;
+    color: #888;
+    font-weight: bold;
+    left: -80px;
+    position: absolute;
+    text-align: center;
+    text-transform: uppercase;
+    width: 50px;
 }
