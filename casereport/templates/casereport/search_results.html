@@ -76,7 +76,7 @@
              </ul>
              {% endif %}
          </div>
-         <div class="col-md-9 col-xs-12">
+         <div class="col-md-9 col-xs-12 content">
 
       <div class="row author-list" id="section-primary">
           <h4>Primary Author/Contact</h4>
@@ -161,6 +161,21 @@
           <h4>Additional Comments</h4>
           <p>{{ casereport.additional_comment }}</p>
       </div>
+      {% endif %}
+
+      {% if casereport.attachment1 or casereport.attachment2 or casereport.attachment3 %}
+      <div class="row" id="section-attachments">
+          <h4>Attachments</h4>
+          {% for attachment in attachments %}
+          {% if attachment.file %}
+              <img src="{{ attachment.file.url }}" alt="{{ attachment.title }}"/>
+              <p>
+                  <strong>{{ forloop.counter }}. {% if attachment.title %}{{ attachment.title }}{% endif %}</strong>
+                  {% if attachment.description %}<br />{{ attachment.description }}{% endif %}
+                  <br /><a href="{{ attachment.file.url }}" target="_blank" class="download">Download full image</a>
+              </p>
+          {% endif %}
+          {% endfor %}
       {% endif %}
 
          </div>

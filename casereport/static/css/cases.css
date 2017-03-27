@@ -1068,6 +1068,14 @@ input:focus + div.info {
 	font-weight: bold;
 	font-size: 16px;
 }
+.case-detail-view .content img {
+    width: 100%;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+.case-detail-view .content .download {
+    font-size: 14px;
+}
 
 /* Groups landing */
 .projects.hero {

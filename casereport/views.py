@@ -52,6 +52,16 @@ class CaseReportDetailView(TemplateView):
         casereport = CaseReport.objects.get(id=case_id)
         treatments = Treatment.objects.filter(casereport_f_id=case_id)
         testevents = casereport.event_set.select_related('testevent')
+        attachments = [
+            {'file': casereport.attachment1,
+             'title':casereport.attachment1_title,
+             'description':casereport.attachment1_description},
+            {'file': casereport.attachment2,
+             'title':casereport.attachment2_title,
+             'description':casereport.attachment2_description},
+            {'file': casereport.attachment3,
+             'title':casereport.attachment3_title,
+             'description':casereport.attachment3_description},]
         last_viewed_path = request.session.get('last_viewed_path')
         if casereport.casefile_f:
             return self.render_to_response(
@@ -68,6 +78,7 @@ class CaseReportDetailView(TemplateView):
                 casereport=casereport,
                 test=testevents,
                 treatments=treatments,
+                attachments=attachments,
                 last_viewed_path=last_viewed_path,
             )
         )
