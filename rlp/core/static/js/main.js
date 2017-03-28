@@ -36,22 +36,21 @@ var selectedBookmarksFolderName; // will contain ID of selected bookmarks folder
         }
 
     });
+
+    $('.container').on('click', '.morelink', function(event){
+        if($(this).hasClass('less')) {
+            $(this).removeClass('less');
+            $(this).html(moretext);
+        } else {
+            $(this).addClass('less');
+            $(this).html(lesstext);
+        }
+        $(this).parent().prev().toggle();
+        $(this).prev().toggle();
+        return false;
+    });
+
 }); })(jQuery);
-
-
-
-$('.container').on('click', '.morelink', function(event){
-    if($(this).hasClass('less')) {
-        $(this).removeClass('less');
-        $(this).html(moretext);
-    } else {
-        $(this).addClass('less');
-        $(this).html(lesstext);
-    }
-    $(this).parent().prev().toggle();
-    $(this).prev().toggle();
-    return false;
-});
 
 // Collapse forms on cancel
 $('.cancel-button-collapse').on('click', function(event) {
