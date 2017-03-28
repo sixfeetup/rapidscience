@@ -97,6 +97,8 @@ class CaseReportFormView(FormView):
         author = data.getlist('author', None)
         author_list = AuthorizedListResource()._post(email=author)
         physicians = []
+        primary_physician = PhysicianInstanceResource()._post(request.user.get_full_name(), request.user.email)
+        physicians.append(primary_physician)
         for i in range(0, len(name)):
             physician = PhysicianInstanceResource()._post(name[i], email[i])
             physicians.append(physician)
