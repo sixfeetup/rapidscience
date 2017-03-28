@@ -4,6 +4,9 @@ __author__ = 'yaseen'
 GENDER = (
     ('male', 'Male'),
     ('female', 'Female'),
+    ('transgender_male', 'Transgender Male'),
+    ('transgender_female', 'Transgender Female'),
+    ('other', 'Other'),
 )
 
 
