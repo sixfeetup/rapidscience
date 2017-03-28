@@ -60,9 +60,15 @@
 
     <div class="molecular-abberations">
         <h4><label for="aberrations">Genetic Aberrations</label></h4>
-        <input type="text" name="aberrations" id="aberrations" class="form-control">
-        <div class="helpText">
-            Separate with commas
+            <select name="aberrations" class="form-control" id="aberrations">
+                <option value="">select aberration</option>
+                {% for key, value in sarcoma %}
+                    <option value="{{ key }}">{{ value }}</option>
+                {% endfor %}
+            </select>
+        <div class="form-group">
+            <label for="aberrations">Other</label>
+            <input type="text" name="aberrations_other" id="aberrations_other" class="form-control">
         </div>
     </div>
 
