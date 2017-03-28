@@ -28,6 +28,7 @@ from casereport.api import CaseReportHistoryInstanceResource
 from casereport.api import TreatmentInstanceResource
 from casereport.constants import GENDER
 from casereport.constants import SARCOMA_TYPE
+from casereport.constants import ABERRATIONS
 from casereport.decorator import validate_token
 from casereport.forms import CaptchaForm
 from casereport.forms import FacetedSearchForm
@@ -115,6 +116,7 @@ class CaseReportFormView(FormView):
             subtype = data.get('subtype')
             presentation = data.get('presentation')
             aberrations = data.get('aberrations')
+            aberrations_other = data.get('aberrations_other')
             biomarkers = data.get('biomarkers')
             pathology = data.get('pathology')
             treatment_name_list = data.getlist('treatment_name', None)
@@ -139,7 +141,7 @@ class CaseReportFormView(FormView):
                 gender=gender, pathology=pathology,
                 additional_comment=additional_comment,
                 physicians=physicians, subtype=subtype,
-                presentation=presentation, aberrations=aberrations,
+                presentation=presentation, aberrations=aberrations, aberrations_other=aberrations_other,
                 biomarkers=biomarkers,
                 attachment1=attachment1, attachment2=attachment2, attachment3=attachment3,
                 attachment1_title=attachment1_title, attachment2_title=attachment2_title,
@@ -222,13 +224,14 @@ class FormTypeView(TemplateView):
     def get(self, request, **kwargs):
         ftype = request.GET.get('ftype', '')
         sarcoma = sorted(SARCOMA_TYPE)
+        aberrations = ABERRATIONS
         if ftype == 'F':
             self.template_name = 'casereport/fileform.html'
         elif ftype == "T":
 
             self.template_name = 'casereport/free-text.html'
             return self.render_to_response(dict(sarcoma=sarcoma))
-        return self.render_to_response(dict(sarcoma=sarcoma))
+        return self.render_to_response(dict(sarcoma=sarcoma, aberrations=aberrations))
 
 
 class MyFacetedSearchView(FacetedSearchView):

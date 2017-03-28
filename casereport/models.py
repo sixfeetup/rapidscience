@@ -112,6 +112,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     subtype = models.CharField(max_length=200, null=True, blank=True)
     presentation = models.TextField(null=True, blank=True)
     aberrations = models.CharField(max_length=200, null=True, blank=True)
+    aberrations_other = models.CharField(max_length=200, null=True, blank=True)
     biomarkers = models.TextField(null=True, blank=True)
     pathology = models.TextField(null=True, blank=True)
     additional_comment = models.TextField(null=True, blank=True)

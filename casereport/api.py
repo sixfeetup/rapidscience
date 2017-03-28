@@ -20,7 +20,8 @@ class CaseReportListResource:
 
     def _post(self, physicians, title=None, file_name=None,  age=None,
               gender=None, pathology=None, subtype=None, presentation=None,
-              aberrations=None, biomarkers=None, additional_comment=None,
+              aberrations=None, aberrations_other=None,
+              biomarkers=None, additional_comment=None,
               document=None, details=None, attachment1=None,
               attachment2=None, attachment3=None, attachment1_title=None,
               attachment2_title=None, attachment3_title=None,
@@ -38,6 +39,7 @@ class CaseReportListResource:
         result = CaseReport(title=title, age=age, gender=gender,
                             casefile_f=document, subtype=subtype,
                             presentation=presentation, aberrations=aberrations,
+                            aberrations_other=aberrations_other,
                             biomarkers=biomarkers, pathology=pathology,
                             additional_comment=additional_comment,
                             primary_physician=physicians[0], attachment1=attachment1,
