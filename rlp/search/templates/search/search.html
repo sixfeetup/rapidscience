@@ -1,31 +1,35 @@
-{% extends 'left_col.html' %}{% load bootstrap3 cms_tags %}
+{% extends 'right_col.html' %}{% load bootstrap3 cms_tags %}
 
 {% block page_title %}Search{% endblock page_title %}
 
 {% block title %}Search{% endblock title %}
 
-{% block left_column %}
+{% block right_column %}
 <div class="box">
     <form  class="sub-menu" method="get" action="{% url 'haystack_search' %}{% if query %}?q={{ query }}{% endif %}" autocomplete="off">
         <div class="refine-search">
-            <div class="form-group">
-                <input id="id_q" name="q" type="search" class="form-control" placeholder="Search" value="{{ query }}">
-            </div>
+            <input id="id_q_hidden" name="q" type="hidden" value="{{ query }}">
             <p class="section-label">Filter By<i class="fa fa-caret-down visible-xs-inline visible-sm-inline"></i></p>
             {% bootstrap_field form.models show_label=False %}
-            {% bootstrap_field form.tags %}
             <button class="btn btn-primary" type="submit">
-              Search
+              Update
             </button>
         </div>
     </form>
 </div>
-{% endblock left_column %}
+{% endblock right_column %}
 
 {% block main_content %}
-    <div class="box main-content plugin-form">
+    <div class="box main-content search-page plugin-form">
+    <h1>Search</h1>
+    {% if object_list %}<div class="result-count">{{ object_list|length }} result{% if object_list|length > 1 %}s{% endif %}</div>{% endif %}
+    <form class="keywords" method="get" action="{% url 'haystack_search' %}{% if query %}?q={{ query }}{% endif %}" autocomplete="off">
+        <div class="form-group">
+            <input id="id_q" name="q" type="search" class="form-control clear-input" placeholder="Search" value="{{ query }}">
+            <span class="glyphicon glyphicon-remove"></span>
+        </div>
+    </form>
     {% if object_list %}
-        <h1>Search results</h1>
         <p><em>Results are sorted by keyword relevance.</em></p>
         {% include 'search/_results.html' %}
     {% else %}
