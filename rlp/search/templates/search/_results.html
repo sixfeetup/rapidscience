@@ -3,9 +3,9 @@
 {% for result in object_list %}
 
   {% if result.content_type == "cms.title" %}
-    {% include "_item.html" with title=result.title link=result.object.page.get_absolute_url description=result.text highlighted=result.highlighted %}
+    {% include "search/_result_item.html" with title=result.title link=result.object.page.get_absolute_url description=result.text highlighted=result.highlighted %}
   {% elif 'newsfeed.' in result.content_type or 'accounts.' in result.content_type %}
-    {% include "_item.html" with label=result.verbose_name title=result.title link=result.link description=result.text highlighted=result.highlighted %}
+    {% include "search/_result_item.html" with label=result.verbose_name title=result.title link=result.link description=result.text highlighted=result.highlighted %}
   {% elif result.content_type == 'bibliography.projectreference' %}
     {# We only override this one because we need to pass in the actual Reference, not the ProjectReference #}
     <p class="small">
@@ -13,16 +13,9 @@
     </p>
     {% include 'bibliography/_reference.html' with obj=result.object.reference %}
   {% elif 'casereport.' in result.content_type %}
-    {% include '_item.html' with label=result.status title=result.title link=result.link description=result.text %}
+    {% include 'search/_result_item.html' with label=result.status title=result.title link=result.link description=result.text %}
   {% else %}
-    {% with action=result.object.action_object_actions.first %}
-      {% if action %}
-      <p class="small">
-        {% include 'actstream/_action_detail.html' %}
-      </p>
-      {% endif %}
-    {% endwith %}
-    {% include "_item.html" with title=result.title link=result.link description=result.text highlighted=result.highlighted %}
+    {% include "search/_result_item.html" with title=result.title link=result.link description=result.text highlighted=result.highlighted %}
   {% endif %}
   <hr>
 {% empty %}
