@@ -1,21 +1,19 @@
 function checkfile(sender) {
-    var validExts = [".pdf", ".doc", ".jpeg",".jpg",".docx",'.png','.doc'];
-    var fileExt = sender.value;
-    fileExt = fileExt.substring(fileExt.lastIndexOf('.'));
-    if (validExts.indexOf(fileExt) < 0) {
-        bootbox.alert("Invalid file selected, valid files are of " +
-               validExts.toString() + " types.");
-        $('#uploadfile').val('');
-      return false;
+    if (!sender.value) {
+        return false;
     }
-    else return true;
-}
-
-function checkatt(sender) {
-    var validExts = [".pdf", ".jpeg",".jpg",'.png','.tif','.tiff'];
+    var validExts = [];
+    var validAttachExts = [".pdf", ".jpeg", ".jpg", '.png', '.tif', '.tiff'];
+    var validFileExts = [".doc", ".docx", ".epub", ".html", ".odt", ".pdf", ".rtf", ".txt", ".zip"];
     var fileExt = sender.value;
-    var message = '';
     fileExt = fileExt.substring(fileExt.lastIndexOf('.'));
+    var attachexpr = "/attachment/";
+    if (sender.id == 'uploadfile') {
+        validExts = validFileExts;
+    } else if (attachexpr.search(sender.name)) {
+        validExts = validAttachExts;
+    }
+    var message = '';
     if (validExts.indexOf(fileExt) < 0) {
         message += 'Invalid file selected, valid files are of ' + validExts.toString() + ' types.';
     }
@@ -30,7 +28,7 @@ function checkatt(sender) {
             '</button>'+ message + '</div>'
         );
         $(sender).val('');
-        return false
+        return false;
     }
     else return true;
 }
@@ -452,7 +450,7 @@ $( document ).ajaxComplete(function( event, xhr, settings ) {
                 '<div class="attachment row"><div class="col-md-11">'+
                     '<div class="figure">Fig ' + x + '</div>'+
                     '<div class="form-control">'+
-                        '<input type="file" name="attachment' + x + '" id="attachment' + x + '" onchange="checkatt(this);">'+
+                        '<input type="file" name="attachment' + x + '" id="attachment' + x + '" onchange="checkfile(this);">'+
                     '</div>'+
                     '<div class="helpText">JPG, PDF, PNG, TIFF file types; max file size 2MB; minimum width 770px'+
                                           '<br/>Be sure to explicitly cite this figure\'s name in relevant text above</div>'+
