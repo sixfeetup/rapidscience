@@ -221,9 +221,39 @@ p.small {
     }
 }
 
+.search-page h1 {
+    text-transform: none;
+    margin-top: 0;
+    margin-bottom: 30px;
+    font-size: 32px;
+}
+
+.search-page .form-group {
+    position: relative;
+}
+
+.search-page h4 {
+    font-size: 20px;
+    font-weight: normal;
+    line-height: 21px;
+    margin-bottom: 10px;
+}
+
 .refine-search ul {
     list-style: none;
     padding: 0;
+}
+
+.clear-input+.glyphicon-remove {
+    position: absolute;
+    right: 5px;
+    top: 0;
+    bottom: 0;
+    height: 20px;
+    margin: auto;
+    font-size: 20px;
+    cursor: pointer;
+    color: rgb(55,146,191);
 }
 
 /* Login screen */
