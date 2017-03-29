@@ -299,3 +299,23 @@ $(".close-overlay").click(function(){
         $("#topic-form").addClass("collapse");
     });
 }); })(jQuery);
+
+// check for content in a field
+$(".clear-input").on('input, keyup', function() {
+    if ($(this).val() == '') {
+        $(this).siblings('.glyphicon-remove').css('display', 'none');
+    } else {
+        $(this).siblings('.glyphicon-remove').css('display', 'block');
+    }
+});
+
+// clear content of a field
+$(".clear-input+.glyphicon-remove").on('click', function(){
+    $(this).siblings('.clear-input').val('');
+    $(".clear-input").keyup();
+});
+
+// on submit of refine, copy potentially changed keywords from search input
+$(".sub-menu").on('submit', function(e) {
+    $("#id_q_hidden").val($("#id_q").val());
+})
