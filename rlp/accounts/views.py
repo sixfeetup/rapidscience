@@ -389,7 +389,8 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
         if request.is_ajax():
             template_name = 'comments/list.html'
     elif tab == 'casereports':
-        context['case_reports'] = request.user.get_shared_content(CaseReport)
+        reports = request.user.get_shared_content(CaseReport)
+        context['case_reports'] = [r for r in reports if r.status == 'approved']
     elif tab == 'documents':
         context['documents'] = request.user.get_shared_content(Document)
     elif tab == 'bibliography':

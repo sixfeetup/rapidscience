@@ -30,7 +30,7 @@ from casereport.constants import GENDER
 from casereport.constants import SARCOMA_TYPE
 from casereport.constants import ABERRATIONS
 from casereport.decorator import validate_token
-from casereport.forms import CaptchaForm
+from casereport.forms import CaseForm
 from casereport.forms import FacetedSearchForm
 from casereport.havoc_interface import havoc_results
 from casereport.models import CaseReport
@@ -38,6 +38,9 @@ from casereport.models import CaseFile
 from casereport.models import Treatment
 from django.core.mail import EmailMessage
 
+from rlp.accounts.models import User
+from rlp.core.forms import group_choices
+from rlp.core.views import SendToView
 from rlp.core.utils import enforce_sharedobject_permissions
 from functools import partial
 
@@ -87,7 +90,18 @@ class CaseReportDetailView(TemplateView):
 
 class CaseReportFormView(FormView):
     template_name = 'casereport/new_add_casereport.html'
-    form_class = CaptchaForm
+    form_class = CaseForm
+
+    def get_form(self, form_class):
+        came_from = self.request.GET.get('id')
+        form = super(CaseReportFormView, self).get_form(form_class)
+        user = self.request.user
+        all_members = ((member.id, member.get_full_name()) for member in User.objects.all())
+        form.fields['members'].choices = all_members
+        form.fields['members'].initial = [user.id]
+        form.fields['groups'].choices = group_choices(user)
+        form.fields['groups'].initial = [came_from]
+        return form
 
     def post(self, request, *args, **kwargs):
         data = request.POST.copy()
@@ -177,6 +191,8 @@ class CaseReportFormView(FormView):
                 subtype=subtype, details=details)
             CaseReportInstanceResource()._addauthor(case, author_list)
 
+        SendToView.post(self, self.request, 'casereport', 'casereport',
+                        case.id)
         self.template_name = 'casereport/add_casereport_success.html'
         self.case_success_mail(physicians, author_list)
         return self.render_to_response({})
@@ -305,7 +321,7 @@ class MyFacetedSearchView(FacetedSearchView):
                 context['suggestions'] = []
 
         context.update(self.extra_context())
-        form_class = CaptchaForm
+        form_class = CaseForm
         captchaform = form_class()
         data = self.request.GET.copy()
         cap_only = data.get('caponly', None)
@@ -321,7 +337,6 @@ class MyFacetedSearchView(FacetedSearchView):
             self.template, context,
             context_instance=RequestContext(self.request),
         )
-
 
 
 def ajax_lookup(request, channel):

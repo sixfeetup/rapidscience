@@ -1,13 +1,37 @@
 __author__ = 'yaseen'
 
-from captcha.fields import CaptchaField
 from haystack.forms import SearchForm
 
 from django import forms
 
+from rlp.core.forms import MemberListField, GroupListField
+from rlp.projects.forms import CommaSeparatedEmailField
 
-class CaptchaForm(forms.Form):
-    captcha = CaptchaField()
+
+class CaseForm(forms.Form):
+    members = MemberListField(
+        label='Invite Members',
+        help_text='Separate names with commas',
+        choices=(),  # gets filled in by the view
+        required=False,
+    )
+    external = CommaSeparatedEmailField(
+        label='Invite Non-members',
+        help_text='Enter institutional e-mails; separate with commas',
+        max_length=400,
+        required=False,
+    )
+    groups = GroupListField(
+        label='Invite My Groups',
+        help_text='Separate names with commas',
+        choices=(),  # gets filled in by the view
+        required=False,
+    )
+    invitation_message = forms.CharField(
+        max_length=600,
+        widget=forms.Textarea,
+        required=False,
+    )
 
 
 class FacetedSearchForm(SearchForm):
