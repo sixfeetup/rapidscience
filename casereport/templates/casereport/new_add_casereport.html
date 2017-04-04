@@ -96,6 +96,20 @@
                 
                 <!-- attachments -->
                 <!-- sharing -->
+                {% for field in form %}
+                    <div class="fieldWrapper">
+                        {{ field.errors }}
+                        {% if field.auto_id != 'id_approval' %}
+                        <label for="{{ field.id_for_label }}">
+                            {{ field.label }}{% if field.field.required %} <span class="required">*</span>{% endif %}
+                        </label>
+                        {% endif %}
+                        {{ field }}
+                        {% if field.help_text %}
+                        <p class="helptext">{{ field.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
 
                 <div class="submit-button">
                     <input class="btn btn-primary" type="submit" value="Submit" />
