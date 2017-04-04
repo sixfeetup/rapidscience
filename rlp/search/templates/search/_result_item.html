@@ -23,7 +23,11 @@ In some cases such as Youtube videos, we don't have local images so we can't mak
         {% if title %}
         <h4>
             {% if link %}
-                <a {% if target_blank or 'http' in link %}target="_blank" {% endif %}href="{{ link }}">{{ title }}</a>
+                <a {% if target_blank or 'http' in link %}target="_blank" {% endif %}href="{{ link }}">
+                    {% autoescape off %}
+                    {%  if highlighted.title %}{{ highlighted.title.0 }}{% else %}{{ title }}{% endif %}
+                    {% endautoescape %}
+                </a>
             {% else %}
                 {{ title }}
             {% endif %}
@@ -42,12 +46,14 @@ In some cases such as Youtube videos, we don't have local images so we can't mak
 
         {% if description %}
         <p class="more small">
-            {% if highlighted %}
+            {% if highlighted.text %}
               {% autoescape off %}
-              {{ highlighted|join:'...' }}
+              {{ highlighted.text.0 }}
               {% endautoescape %}
             {% else %}
+              {% autoescape off %}
               {{ description|striptags }}
+              {% endautoescape %}
             {% endif %}
         </p>
         {% endif %}
