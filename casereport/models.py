@@ -122,6 +122,8 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         CaseFile, null=True, blank=True,
         verbose_name='Case File',
     )
+    date_added = models.DateTimeField(auto_now_add=True, db_index=True)
+    date_updated = models.DateTimeField(auto_now=True)
     attachment1 = models.FileField(null=True, blank=True)
     attachment1_title = models.CharField(max_length=200, null=True, blank=True)
     attachment1_description = models.TextField(null=True, blank=True)

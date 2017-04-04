@@ -80,12 +80,26 @@
   <div role="tabpanel" class="tab-pane{% if tab == 'casereports' %} active{% endif %}" id="casereports">
     {% if tab == 'casereports' %}
       {% bootstrap_messages %}
-      {% for report in case_reports %}
-      <p><a href="{% url 'casereport_detail' case_id=report.id title_slug=report.title|slugify %}">
-        {{ report.title }}
-      </a></p>
+
+      {% for obj in case_reports %}
+      <div class="row comment-item">
+          <div class="col-md-11">
+            <h4><a href="{% url 'casereport_detail' case_id=obj.id title_slug=obj.title|slugify %}">
+              {{ obj.title }}
+            </a></h4>
+            <p class="small">
+                Posted by {{ obj.primary_physician }}
+              | {{ obj.date_added|date:"j M Y" }}<br />
+              Shared with {{ obj.get_viewers|join:", " }}
+            </p>
+            <p class="more">{{ obj.description|urlize|linebreaksbr }}</p>
+          </div>
+          <div class="col-md-1">
+            {% include 'discussions/discussion_count_widget.html' %}
+            <a class="share-link" href="/send/casereport/casereport/{{ obj.id }}"><i class="fa fa-share"></i></a>
+          </div>
+      </div>
       {% endfor %}
-      <hr>
     {% endif %}
   </div>
   <div role="tabpanel" class="tab-pane{% if tab == 'documents' %} active{% endif %}" id="dashboard">

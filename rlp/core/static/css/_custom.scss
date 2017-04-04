@@ -617,6 +617,15 @@ span.select2.select2-container {
     margin-bottom: 1em;
 }
 
+/* case reports tab */
+#casereports {
+    .comment-item {
+        padding-bottom: 2em;
+        border-bottom: 1px solid #dddddd;
+        margin-bottom: 2em;
+    }
+}
+
 /* discussion */
 #discussions .comment-item {
     padding-bottom: 2em;
