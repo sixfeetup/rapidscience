@@ -402,6 +402,7 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
     return render(request, template_name, context)
 
 
+@login_required
 @never_cache
 @page_template('actstream/_activity.html')
 def profile(request, pk, tab='activity', template_name='accounts/profile.html', extra_context=None):
