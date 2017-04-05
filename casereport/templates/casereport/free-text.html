@@ -10,7 +10,7 @@
                 <label for="age" class="required">Age</label>
                 <input type="text" name="age" id="age" class="form-control">
                 <div class="age-message">
-                        <p>This field is required.</p>
+                        <p>Field required.</p>
                 </div>
             </div>
 
@@ -31,7 +31,7 @@
             
             <div class="form-group col-md-8 col-xs-8">
                 <label class="required" for="subtype"> Subtype:</label>
-                   <select name="subtype" class=" form-control" id="subtype">
+                   <select name="subtype" class="form-control" id="subtype">
                          <option value="">select sub type</option>
                          {% for key, value in sarcoma %}
                              <option value="{{ key }}">{{ value }}</option>

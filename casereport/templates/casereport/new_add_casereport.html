@@ -36,15 +36,12 @@
                         {% if request.user.institution.country %}| {{ request.user.institution.country }}{% endif %}
                    {% endif %}</strong>
                 <br />{{ request.user.email }}</p>
-                <div class="required-message">
-                    <p>Please fill the fields marked with asterisk(*).</p>
+                <div class="alert alert-danger required-message" role="alert">
+                    <p>Please fill the fields marked with asterisk. (*)</p>
                 </div>
                 <div>
                     <label for="author">Alternative Correspondence Email Address</label>
                     <input name="author" value="{{ email }}"  type="EMAIL" class="form-control" id="author">
-                  <div class="email-message">
-                        <p>Please enter a valid email.</p>
-                  </div>
               </div>
               
               <h4>Co-Authors</h4>
@@ -112,7 +109,7 @@
                 {% endfor %}
 
                 <div class="submit-button">
-                    <input class="btn btn-primary" type="submit" value="Submit" />
+                    <input id="submit-button" class="btn btn-primary" type="submit" value="Submit" />
                     <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-default">Cancel</a>
                 </div>
 
