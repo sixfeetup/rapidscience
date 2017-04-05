@@ -40,12 +40,14 @@
               {% endfor %}
               <div class="helpText"><a href="{% url 'password_reset' %}">Forgot password?</a></div>
               <input type="hidden" name="next" value="{{ next }}" />
-              <button type="submit" class="btn btn-primary">
-                Sign in
-              </button>
-              <a class="btn" href="{% url 'pages-root' %}">
-                Cancel
-              </a>
+              <div class="signin-buttons">
+                  <button type="submit" class="btn btn-primary btn-lg">
+                    Sign in
+                  </button>
+                  <a class="btn btn-default btn-lg" href="{% url 'pages-root' %}">
+                    Cancel
+                  </a>
+              </div>
             </form>
         </div>
     </div>
