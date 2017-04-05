@@ -107,15 +107,16 @@ class RegistrationForm(UserCreationForm):
         label="Primary Institution",
         queryset=Institution.objects.all(),
         empty_label='Other', required=False)
-    position = forms.CharField(max_length=80, required=False)
+    title = forms.CharField(label="Position", max_length=80, required=False)
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
-    field_order = ['first_name', 'last_name', 'institution', 'position',
+    field_order = ['first_name', 'last_name', 'institution', 'title',
                    'email', 'email_confirmation', 'password1', 'password2']
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'institution', 'email', 'email_confirmation']
+        fields = ['first_name', 'last_name', 'institution', 'title',
+                  'email', 'email_confirmation']
 
     def email_domain_matches(self):
         if not self.cleaned_data:
