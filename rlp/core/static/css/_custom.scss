@@ -266,6 +266,9 @@ p.small {
     line-height: 100px;
     margin: 0
 }
+.login-banner.register {
+    margin-bottom: 0;
+}
 
 .login-banner h1 {
     text-transform: none;
@@ -761,6 +764,7 @@ a.comment-count.empty {
     input[type='text'],
     input[type='email'],
     input[type='password'],
+    select,
     textarea {
         display: block;
         width: 100%;
@@ -799,5 +803,18 @@ a.comment-count.empty {
     }
     .user-meta {
         color: #444;
+    }
+    .float-buttons {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: rgb(238, 238, 238);
+        padding: 20px 0;
+        text-align: center;
+    }
+    .float-buttons .btn {
+        font-size: 16px;
+        padding: 12px 50px;
     }
 }
