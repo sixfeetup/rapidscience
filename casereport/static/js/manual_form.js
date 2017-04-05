@@ -50,7 +50,7 @@ $(document).ready(function() {
 $(document).ready(function() {
     var max_fields = 20; //maximum input boxes allowed
     var treatment_wrapper = $(".treatment-section-form"); //Fields wrapper
-    var treatment_content = $(".treatment-section-form .form-group").html();
+    var treatment_content = $(".treatment-section-form .row").html();
     var field_count = 1; //initial text box count
     var level = 1;
     var label_value = 2;
@@ -65,8 +65,7 @@ $(document).ready(function() {
         }
         $('.remove_treatment').on("click", function(e){
             e.preventDefault();
-            console.log("OH HAI");
-            $(this).parent('.form-group').remove();
+            $(this).parent('.row').remove();
         });
     });
 

@@ -9,7 +9,7 @@
                         <label for="age" class="required">Age</label>
                         <input type="text" name="age" id="age" class="form-control">
                         <div class="age-message">
-                                <p>This field is required.</p>
+                                <p>Field required.</p>
                         </div>
                     </div>
 
@@ -47,15 +47,12 @@
 
 
      <div class="form-group">
-         <label class="required" for="presentation">Presentation</label>
+         <label for="presentation">Presentation</label>
          <textarea name="presentation" class="form-control editor" rows="2" cols="73" id="presentation"></textarea>
          <div class="helpText">
              Observed condition, previous treatments, co-morbidities, etc.<br />
              Separate with line breaks
          </div>
-         <div class="pathology-message">
-             <p>This field is required.</p>
-        </div>
      </div>
 
     <div class="molecular-abberations">
@@ -80,28 +77,37 @@
    </div>
    
    <div class="form-group">
-       <h4><label for="pathology" class="required">Pathology/Tests</label></h4>
+       <h4><label for="pathology">Pathology/Tests</label></h4>
        <textarea name="pathology" class="form-control editor" rows="4" cols="73" id="pathology"></textarea>
        <div class="helpText">
            Test results (e.g., biopsy, scans, immunohistochemistry): tumor size, location, physical description, stage<br />
            Separate with line breaks
        </div>
-       <div class="pathology-message">
-           <p>This field is required.</p>
-      </div>
    </div>
 
      <div class="treatment-section-form"><!--treatment-section start -->
         <h4>Treatment/Outcome</h4>
-        <div class="form-group row">
+        <div class="row treatment">
           <div class="col-md-6 col-xs-12">
-              <label for="treatment_name_0">Treatment Name</label>
+
+              <div class="form-group">
+              <label for="treatment_name_0" class="required">Treatment Name</label>
               <input id="treatment_name_0" name="treatment_name" class="form-control treatment_name">
-              
-              <label for="treatment_duration_0">Dates/Duration</label>
+               <div class="treatment-name-message">
+                 <p>This field is required.</p>
+               </div>
+              </div>
+
+              <div class="form-group">
+              <label for="treatment_duration_0" class="required">Dates/Duration</label>
               <input id="treatment_duration_0" name="treatment_duration" class="form-control treatment_name">
-              
-              <label for="treatment_type_0">Treatment Type</label>
+               <div class="treatment-duration-message">
+                 <p>This field is required.</p>
+               </div>
+              </div>
+
+              <div class="form-group">
+              <label for="treatment_type_0" class="required">Treatment Type</label>
               <select id="treatment_type_0" name="treatment_type" class="form-control treatment_type">
                   <option value="" selected></option>
                   <option value="Chemoradiotherapy">Chemoradiotherapy</option>
@@ -112,7 +118,11 @@
                   <option value="Systemic Therapy">Systemic Therapy</option>
                   <option value="Targeted Therapy">Targeted Therapy</option>
               </select>
-              
+               <div class="treatment-type-message">
+                 <p>Select a treatment type.</p>
+               </div>
+              </div>
+
               <label for="treatment_intent_0">Treatment Intent</label>
               <select id="treatment_intent_0" name="treatment_intent" class="form-control">
                   <option value="" selected></option>
@@ -150,7 +160,7 @@
         </div>
         
      </div><!--treatment-section end -->
-     <a class="add_treatment" href="#"><i class="fa fa-plus"></i> Add another treatment</a>
+    <a class="add_treatment" href="#"><i class="fa fa-plus"></i> Add another treatment</a>
 
     <div class="form-group">
       <h4><label for="additional_comment">Additional comments</label></h4>

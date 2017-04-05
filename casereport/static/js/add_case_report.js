@@ -260,97 +260,57 @@ $(document).ready(function() {
     })
 
 });
-function validateEmail(emailField){
-    var filter=/^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
-    if (!filter.test(emailField)){
-        $(".email-message").show();
-        $("#physician_email").focus();
-        return false
-    }
-    $(".email-message").hide();
-    return true;
-}
 
 
 function validate(ev) {
     ev.preventDefault()
-    var phy = $('#physician_name').val();
-    var phy_email = $('#physician_email').val();
-    var radio = $('.radiobut').val();
-
-    if(phy == '') {
-    caseform.physician.focus()
-    $(".required-message").show();
-    $(".physician-message").show();
-    return false;
-        }$(".physician-message").hide();
-    if(phy_email == '') {
-    caseform.email.focus()
-    $(".required-message").show();
-    $(".mail-message").show();
-    return false;
-    }$(".mail-message").hide();
-    if(phy_email !=''){
-         var error = validateEmail(phy_email);
-          if (!error){
-           return false;
-          }
-
-    }
-
-    var e = $('.radiobut:checked').length > 0;
-    if(e != true) {
-    $(".radiobut").focus()
-    $(".choose-message").show();
     $(".required-message").hide();
-    return false;
-    }else{
+    var radio = $('.radiobut').val();
+    var e = $('.radiobut:checked').length > 0;
+    if (e != true) {
+        $(".radiobut").focus();
+        $(".choose-message").show();
+        return false;
+    } else {
         $(".choose-message").hide();
-        if ($("#id_radio2").is(':checked')) {
-         return file_validate();
-        }else if ($("#id_radio1").is(':checked')) {
+        if ($("#id_radio3").is(':checked')) {
+            return file_validate();
+        } else if ($("#id_radio1").is(':checked')) {
             return manual_validate();
-        }else{
+        } else {
             return freetext_validate();
         }
     }
-
 }
 
 
 function file_validate() {
-    var file = $('#uploadfile').val();
+    var uploadfile = $('#uploadfile').val();
 
-    if(file == '') {
-    caseform.file.focus()
+    if(uploadfile == '') {
+    caseform.uploadfile.focus();
     $(".required-message").show();
     $(".file-message").show();
     return false;
         }$(".file-message").hide();
-    return captcha();
+    $('#caseform').submit();
 }
 
 function manual_validate() {
-    var title = $('#title').val();
-    var gender = $('#gender').val();
     var age = $('#age').val();
+    var gender = $('#gender').val();
     var subtype = $('#subtype').val();
-    var pathology = $('#pathology').val();
+    var treatment_names = $('input[name=treatment_name]');
+    var treatment_durations = $('input[name=treatment_duration]');
+    var treatment_types = $('select[name=treatment_type]');
+    var stop = false;
 
-    if(title == '') {
-    caseform.title.focus()
+    if (age == '') {
+    caseform.age.focus();
     $(".required-message").show();
-    $(".title-message").show();
-    return false;
-        }$(".title-message").hide();
-
-    if(age == '') {
-    caseform.age.focus()
-    $(".required-message").show();
-    $(".age-message").hide();
+    $(".age-message").show();
     return false;
     }$(".age-message").hide();
-
     if(gender == null) {
     caseform.gender.focus()
     $(".required-message").show();
@@ -363,44 +323,78 @@ function manual_validate() {
     $(".subtype-message").show();
     return false;
     }$(".subtype-message").hide();
-    if(pathology == '') {
-    caseform.pathology.focus()
+    treatment_names.each(function() {
+        if ($(this).val() == '') {
+            $(".required-message").show();
+            $(this).siblings('.treatment-name-message').show();
+            $(this).focus();
+            stop = true;
+        } else {
+            $(this).siblings('.treatment-name-message').hide();
+        }
+    });
+    if (stop) { return false; }
+    treatment_durations.each(function() {
+        if ($(this).val() == '') {
+            $(".required-message").show();
+            $(this).siblings('.treatment-duration-message').show();
+            $(this).focus();
+            stop = true;
+        } else {
+            $(this).siblings('.treatment-duration-message').hide();
+        }
+    });
+    if (stop) { return false; }
+    treatment_types.each(function() {
+        if ($(this).val() == '') {
+            $(".required-message").show();
+            $(this).siblings('.treatment-type-message').show();
+            $(this).focus();
+            stop = true;
+        } else {
+            $(this).siblings('.treatment-type-message').hide();
+        }
+    });
+    if (stop) { return false; }
+
+
+
+    if(treatment_name_0 == '') {
+    caseform.treatment_name_0.focus()
     $(".required-message").show();
-    $(".pathology-message").show();
+    $(".treatment-name-0-message").show();
     return false;
-    }$(".pathology-message").hide();
+    }$(".treatment-name-0-message").hide();
 
-
-    return captcha();
+    $('#caseform').submit();
 }
 
 
 function freetext_validate(){
-    var gender = $('#gender-field').val();
-    var age = $('#age-field').val();
-    var subtype = $('#subtype-field').val();
+    var gender = $('#gender').val();
+    var age = $('#age').val();
+    var subtype = $('#subtype').val();
     var detail = $('#details').val();
 
 
     if(age == '') {
-    $('#age-field').focus();
+    $('#age').focus();
     $(".required-message").show();
-    $(".agefield-message").show();
+    $(".age-message").show();
     return false;
-    }$(".agefield-message").hide();
-
+    }$(".age-message").hide();
     if(gender == null) {
-    $('#gender-field').focus();
+    $('#gender').focus();
     $(".required-message").show();
-    $(".genderfield-message").show();
+    $(".gender-message").show();
     return false;
-    }$(".genderfield-message").hide();
-    if(subtype == null) {
-    $('#subtype-field').focus();
+    }$(".gender-message").hide();
+    if(subtype == '') {
+    $('#subtype').focus();
     $(".required-message").show();
-    $(".subtypefield-message").show();
+    $(".subtype-message").show();
     return false;
-    }$(".subtypefield-message").hide();
+    }$(".subtype-message").hide();
     if(detail == '') {
     caseform.details.focus();
     $(".required-message").show();
@@ -408,14 +402,14 @@ function freetext_validate(){
     return false;
     }$(".detail-message").hide();
 
-     return captcha();
+    $('#caseform').submit();
 
 }
 
-// $('#submit-button').click(function(e){
-//     e.preventDefault()
-//     validate(e)
-// });
+$('#submit-button').click(function(e){
+    e.preventDefault()
+    validate(e)
+});
 
 $('input[type=submit]').click(function(e) {
     if ($('#agreement').prop('checked')) {

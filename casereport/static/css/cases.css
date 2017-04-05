@@ -908,8 +908,6 @@ input:focus + div.info {
 
 .required-message{
     display:none;
-    padding: 5px !important;
-    color: red;
 }
 
 .choose-message{
@@ -919,13 +917,21 @@ input:focus + div.info {
 
 }
 
-.email-message,.mail-message,.physician-message,.institute-message,.country-message,.city-message,.title-message,.age-message,
-.gender-message,.subtype-message,.pathology-message,.file-message,.agefield-message,.genderfield-message,
-.subtypefield-message,.detail-message,.captcha-message,.agree-message{
+.age-message,
+.gender-message,
+.subtype-message,
+.file-message,
+.agefield-message,
+.genderfield-message,
+.subtypefield-message,
+.detail-message,
+.captcha-message,
+.agree-message,
+.treatment-name-message,
+.treatment-duration-message,
+.treatment-type-message {
     display:none;
-    padding: 5px !important;
     color: red;
-
 }
 
 
@@ -1174,8 +1180,9 @@ input:focus + div.info {
 	color: #337ab7;
 	font-size: 27px;
 }
-#caseform .treatment-section-form .form-group {
+#caseform .treatment-section-form .row {
 	position: relative;
+    margin-bottom: 1em;
 }
 #caseform .remove_treatment {
 	display: block;
