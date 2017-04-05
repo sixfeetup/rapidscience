@@ -28,6 +28,13 @@
                 <div class="row">
                     <h1>Cases Central</h1>
                     <a href="{% url 'crdb:add_casereport' %}" class="btn btn-primary">+ Add Case</a>
+                    <div class="col-md-5">
+                        {% if request.user.is_authenticated %}
+                            <div class="">
+                                <a  href ='/casereport/reindex' class="btn btn-danger pull-right">Rebuild Solr</a>
+                            </div>
+                        {% endif %}
+                    </div>
                 </div>
 
             <div class="tab-content search-page-tab-content">
@@ -56,31 +63,6 @@
 
                                         </form>
                             </div>
-
-                                <div class="row">
-
-                                     <div class="sortresults pull-right">
-                                      <div class="col-md-5">
-                                         Sort by
-                                         <select id="sort"  name="sortby" class="sorting form-control " onchange="handleSelect()">
-                                             <option  value="relevance" {% if sortby == 'relevance' %}selected{% endif %}>Relevance</option>
-                                             <option value="created_on" {% if sortby == 'created_on' %}selected{% endif %}>Submit date</option>
-                                         </select>
-                                      </div>
-                                      <div class="col-md-5">
-                                         Order
-                                         <select  {% if sortby == 'relevance' %}disabled {% endif %} id="order-sort" name="sortorder" class="sorting form-control col-md-2" >
-                                             <option value="desc" {% if sortorder == 'desc' %}selected{% endif %}>Descending</option>
-                                             <option value="asc" {% if sortorder == 'asc' %}selected{% endif %}>Ascending</option>
-                                         </select>
-                                      </div>
-                                     <div class="col-md-2 sortbtn">
-
-                                         <button id="sort_button" class="btn btn-primary">Sort</button>
-                                      </div>
-                                     </div>
-
-                                     </div>
 
                                     <div class="result_block">
                                         {% include 'casereport/search/results.html' %}
