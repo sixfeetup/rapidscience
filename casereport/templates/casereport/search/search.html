@@ -28,13 +28,6 @@
                 <div class="row">
                     <h1>Cases Central</h1>
                     <a href="{% url 'crdb:add_casereport' %}" class="btn btn-primary">+ Add Case</a>
-                    <div class="col-md-5">
-                        {% if request.user.is_authenticated %}
-                            <div class="">
-                                <a  href ='/casereport/reindex' class="btn btn-danger pull-right">Rebuild Solr</a>
-                            </div>
-                        {% endif %}
-                    </div>
                 </div>
 
             <div class="tab-content search-page-tab-content">
