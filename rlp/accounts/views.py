@@ -229,6 +229,17 @@ class Register(SessionWizardView):
 
     def done(self, form_list, form_dict, **kwargs):
         form = form_dict['register']
+        if form.cleaned_data['honeypot']:
+            messages.error(
+                self.request,
+                "Authentication failed: you appear to be a bot.")
+            return render(
+                self.request,
+                'registration/register.html',
+                {
+                    'form': form,
+                },
+            )
         if form.email_domain_matches():
             return self.process_registration(form)
         else:
