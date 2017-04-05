@@ -112,6 +112,9 @@ class RegistrationForm(UserCreationForm):
     password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
     field_order = ['first_name', 'last_name', 'institution', 'title',
                    'email', 'email_confirmation', 'password1', 'password2']
+    honeypot = forms.CharField(
+        label="If you are human, leave this field blank",
+        max_length=30, required=False)
 
     class Meta:
         model = User
