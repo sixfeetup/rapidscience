@@ -192,27 +192,18 @@ class Register(SessionWizardView):
             user = form.save(commit=False)
             user.is_active = False
             user.save()
-            project_membership = ProjectMembership.objects.create(
-                user=user,
-                project=form.cleaned_data['project'],
-            )
-            # Automatically add user to 'auto opt-in' projects if applicable
-            for project in Project.objects.filter(auto_opt_in=True).exclude(pk=form.cleaned_data['project'].pk):
-                ProjectMembership.objects.create(user=user, project=project)
             messages.success(self.request, PENDING_REGISTRATION_MESSAGE)
             # Email the contacts for this project
-            contact_email_addresses = project_membership.project.get_contact_email_addresses()
             subject = PENDING_APPROVAL_SUBJECT
             email_context = {
                 'user': user,
-                'project': project_membership.project,
                 'site': get_current_site(self.request),
                 'activation_key': self.get_activation_key(user),
             }
             template = 'emails/pending_registration'
             message = render_to_string('{}.txt'.format(template), email_context)
             html_message = render_to_string('{}.html'.format(template), email_context)
-            mail = EmailMultiAlternatives(subject, message, settings.DEFAULT_FROM_EMAIL, contact_email_addresses)
+            mail = EmailMultiAlternatives(subject, message, settings.DEFAULT_FROM_EMAIL)
             mail.attach_alternative(html_message, 'text/html')
             mail.send()
             sync_user.send(sender=user.__class__, user=user)
@@ -221,13 +212,6 @@ class Register(SessionWizardView):
     def process_registration(self, form):
         with transaction.atomic():
             user = form.save()
-            ProjectMembership.objects.create(
-                user=user,
-                project=form.cleaned_data['project'],
-            )
-            # Automatically add user to 'auto opt-in' projects if applicable
-            for project in Project.objects.filter(auto_opt_in=True).exclude(pk=form.cleaned_data['project'].pk):
-                ProjectMembership.objects.create(user=user, project=project)
             # This is not a proper view but a reusable function to remove duplication from views
             user = authenticate(email=user.email, password=form.cleaned_data['password1'])
             # We don't check `if user is not None` because if authenticate failed
@@ -245,8 +229,6 @@ class Register(SessionWizardView):
 
     def done(self, form_list, form_dict, **kwargs):
         form = form_dict['register']
-        if form.cleaned_data['project'].approval_required:
-            return self.process_approval(form)
         if form.email_domain_matches():
             return self.process_registration(form)
         else:

@@ -25,6 +25,7 @@
           <form class="rpds-form" method="post" action="">
             {% include "forms/_non_field_errors.html" %}
             {% csrf_token %}
+            {{ wizard.management_form }}
             {% for field in form %}
                 <div class="fieldWrapper">
                     {{ field.errors }}
