@@ -3,7 +3,6 @@ from ajax_select import registry
 from captcha.helpers import captcha_image_url
 from captcha.models import CaptchaStore
 from django.conf import settings
-from django.core import management
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
 from django.template.loader import render_to_string
@@ -365,11 +364,6 @@ def ajax_lookup(request, channel):
     ])
 
     return HttpResponse(results, content_type='application/json')
-
-
-def reindexsolr(request):
-    management.call_command('rebuild_index', interactive=False)
-    return HttpResponse('Indexing Complete')
 
 
 def downloadfile(request, file_id):
