@@ -58,14 +58,7 @@ class SendToView(LoginRequiredMixin, View):
             groups = form.cleaned_data['groups']
             if groups:
                 shared_content.share_with(groups)
-            url = request.session['referrer']
-            if url:
-                return redirect(url)
-            return JsonResponse({
-                'success': True,
-                'message': 'Item sent',
-            })
-        return JsonResponse({
-            'success': False,
-            'message': 'Sending item failed',
-        })
+            if 'referrer' in request.session:
+                url = request.session['referrer']
+                if url:
+                    return redirect(url)
