@@ -28,7 +28,6 @@ from casereport.api import CaseReportHistoryInstanceResource
 from casereport.api import TreatmentInstanceResource
 from casereport.constants import GENDER
 from casereport.constants import SARCOMA_TYPE
-from casereport.constants import ABERRATIONS
 from casereport.decorator import validate_token
 from casereport.forms import CaseForm
 from casereport.forms import FacetedSearchForm
@@ -36,6 +35,7 @@ from casereport.havoc_interface import havoc_results
 from casereport.models import CaseReport
 from casereport.models import CaseFile
 from casereport.models import Treatment
+from casereport.models import MolecularAbberation
 from django.core.mail import EmailMessage
 
 from rlp.accounts.models import User
@@ -129,7 +129,7 @@ class CaseReportFormView(FormView):
             gender = data.get('gender')
             subtype = data.get('subtype')
             presentation = data.get('presentation')
-            aberrations = data.get('aberrations')
+            aberrations = data.getlist('aberrations', None)
             aberrations_other = data.get('aberrations_other')
             biomarkers = data.get('biomarkers')
             pathology = data.get('pathology')
@@ -240,7 +240,7 @@ class FormTypeView(TemplateView):
     def get(self, request, **kwargs):
         ftype = request.GET.get('ftype', '')
         sarcoma = sorted(SARCOMA_TYPE)
-        aberrations = ABERRATIONS
+        aberrations = MolecularAbberation.objects.all()
         if ftype == 'F':
             self.template_name = 'casereport/fileform.html'
         elif ftype == "T":

@@ -111,7 +111,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     authorized_reps = models.ManyToManyField(AuthorizedRep, blank=True)
     subtype = models.CharField(max_length=200, null=True, blank=True)
     presentation = models.TextField(null=True, blank=True)
-    aberrations = models.CharField(max_length=200, null=True, blank=True)
+    aberrations = models.ManyToManyField(MolecularAbberation, blank=True)
     aberrations_other = models.CharField(max_length=200, null=True, blank=True)
     biomarkers = models.TextField(null=True, blank=True)
     pathology = models.TextField(null=True, blank=True)
