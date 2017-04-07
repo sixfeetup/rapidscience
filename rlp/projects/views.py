@@ -276,9 +276,9 @@ class AddGroup(LoginRequiredMixin, FormView):
             project=new_group,
             state='moderator',
         )
-        new_project.invite_registered_users(self, form.cleaned_data['internal'])
-        new_project.invite_external_emails(self, form.cleaned_data['external'])
-        return redirect(group_url)
+        new_group.invite_registered_users(form.cleaned_data['internal'])
+        new_group.invite_external_emails(form.cleaned_data['external'])
+        return redirect(new_group.get_absolute_url())
 
 
 class EditGroup(LoginRequiredMixin, FormView):
