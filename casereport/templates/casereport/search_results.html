@@ -109,11 +109,12 @@
           <p>{{ casereport.presentation }}</p>
       </div>
 
-      {% if casereport.aberrations %}
+      {% if casereport.aberrations.all|length > 0 %}
       <div class="row">
          <div class="molecule-abberation" id="section-aberrations">
               <h4>Genetic Aberrations</h4>
-              <p>{{ casereport.aberrations }}</p>
+              <p>{% for aberration in casereport.aberrations.all %}{{ aberration.molecule }}: {{ aberration.name }}<br />{% endfor %}
+              </p>
           </div>
       </div>
       {% endif %}

@@ -38,7 +38,7 @@ class CaseReportListResource:
 
         result = CaseReport(title=title, age=age, gender=gender,
                             casefile_f=document, subtype=subtype,
-                            presentation=presentation, aberrations=aberrations,
+                            presentation=presentation,
                             aberrations_other=aberrations_other,
                             biomarkers=biomarkers, pathology=pathology,
                             additional_comment=additional_comment,
@@ -51,6 +51,7 @@ class CaseReportListResource:
                             attachment2_description=attachment2_description,
                             attachment3_description=attachment3_description)
         result.save()
+        result.aberrations.add(*aberrations)
         for physician in physicians:
             result.referring_physician.add(physician)
         return result
