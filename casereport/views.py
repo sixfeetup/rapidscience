@@ -254,11 +254,8 @@ class MyFacetedSearchView(FacetedSearchView):
     def __init__(self, *args, **kwargs):
         sqs = SearchQuerySet().models(CaseReport).facet('gender', sort='index')\
             .facet('age', sort='index')\
-            .facet('molecular_abberations', sort='count')\
+            .facet('abberations', sort='count')\
             .facet('country', sort='count')\
-            .facet('molecules', sort='count')\
-            .facet('treatments', sort='count')\
-            .facet('cr_tests', sort='count')\
             .facet('treatment_type', sort='count')\
             .highlight(fragsize=200)
         kwargs.update({'form_class': FacetedSearchForm, 'searchqueryset': sqs})
@@ -418,7 +415,7 @@ class CaseReportEditView(TemplateView):
             tests = data.get('tests', None)
             treatments = data.get('treatments', None)
             diagnosis = data.get('diagnosis', None)
-            molecular_abberations = data.get('molecular_abberations', None)
+            molecular_abberations = data.get('abberations', None)
             CaseReportInstanceResource().update(case_id=case_id, title=title,
                 age=age, gender=gender, sarcoma_type=sarcoma_type)
             CaseReportHistoryInstanceResource().post(case=case, physician=physician,
