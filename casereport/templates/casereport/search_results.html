@@ -168,35 +168,6 @@
          <div class="visualClear"><!-- --></div>
     </div>
 
-            <div id="raw" class="tab-pane fade"><!--second-tab-->
-                <div class="raw-text-section">
-                  {% comment %}
-                    {% if not casefile %}
-            <h3>{{ casereport.title }}  </h3>
-                <h4>   {{ casereport.gender|capfirst }}, {{ casereport.age }}</h4>
-               <h4>History</h4> <p >{{ casereport.history }}</p>
-            <h4>Precision Treatment</h4><p >{{ casereport.precision_treatment }}</p>
-            <h4>Specimen Analyzed</h4><p >{{ casereport.specimen_analyzed }}</p>
-            <h4>Outcome</h4><p >{{ casereport.clinical_outcome }}</p>
-                {% else %}
-                {% endcomment %}
-                    {% if casefile %}
-                        <div class="raw-text-file">
-                       <h3>Case Report File Uploaded:</h3>
-
-                        {% if casefile.document.name|check_is_image %}
-                            <img src="/media/{{ casefile.document.name|cut:"./" }}">
-
-                            {% else %}
-                       File Name:- <a href="/casereport/download/{{ casefile.id }}">{{ casefile.name }}</a> (click to download)
-                        {% endif %}
-                        </div>
-                        {% else %}
-                            {% include 'casereport/original_case_text.html' %}
-                    {% endif %}
-                 </div><!--raw-text-section-end-->
-            </div>
-
  </div><!--tab content-end-->
 
 
