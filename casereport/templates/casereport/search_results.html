@@ -31,7 +31,7 @@
  <div class="case-detail-view">
      
      <div id="structured" class="tab-pane fade in active"><!--first-tab-->
-         <div class="col-md-3 col-xs-3">
+         <div class="col-md-3 col-xs-3 menu">
              <ul class="jumpMenu">
                  <li><a href="#section-primary">Primary Author/Contact</a></li>
                  {% if casereport.referring_physician.all %}
@@ -67,7 +67,7 @@
          </div>
          <div class="col-md-9 col-xs-12 content">
 
-      <div class="row author-list" id="section-primary">
+      <div class="author-list" id="section-primary">
           <h4>Primary Author/Contact</h4>
           <p><strong>{{ casereport.primary_physician }} | 
              {{ casereport.primary_physician.affiliation }}, 
@@ -76,7 +76,7 @@
       </div>
 
       {% if casereport.referring_physician.all %}
-      <div class="row author-list" id="section-coauthors">
+      <div class="author-list" id="section-coauthors">
           <h4>Co-Authors</h4>
           <ol class="authors-list">
           {% for author in casereport.referring_physician.all %}
@@ -88,7 +88,7 @@
       </div>
       {% endif %}
       
-      <div class="row" id="section-diagnosis">
+      <div id="section-diagnosis">
           <h4>Diagnosis/Presentation</h4>
           <p class="section-details">
               {{ casereport.age }} yr |
@@ -99,33 +99,29 @@
       </div>
 
       {% if casereport.aberrations.all|length > 0 %}
-      <div class="row">
          <div class="molecule-abberation" id="section-aberrations">
               <h4>Genetic Aberrations</h4>
               <p>{% for aberration in casereport.aberrations.all %}{{ aberration.molecule }}: {{ aberration.name }}<br />{% endfor %}
               </p>
           </div>
-      </div>
       {% endif %}
       
       {% if casereport.biomarkers %}
-      <div class="row">
          <div id="section-biomarkers">
               <h4>Biomarkers</h4>
               <p>{{ casereport.biomarkers }}</p>
           </div>
-      </div>
       {% endif %}
       
       {% if casereport.pathology %}
-      <div class="row" id="section-pathology">
+      <div id="section-pathology">
           <h4>Pathology/Tests</h4>
           <p>{{ casereport.pathology }}</p>
       </div>
       {% endif %}
 
       {% if casereport.get_treatments %}
-      <div class="row" id="section-treatment">
+      <div id="section-treatment">
           <h4>Treatment/Outcome</h4>
           {% for treatment in casereport.get_treatments %}
               <div class="row treatment-list-inner">
@@ -147,7 +143,7 @@
       {% endif %}
       
       {% if casereport.additional_comment %}
-      <div class="row" id="section-comments">
+      <div id="section-comments">
           <h4>Additional Comments</h4>
           <p>{{ casereport.additional_comment }}</p>
       </div>
