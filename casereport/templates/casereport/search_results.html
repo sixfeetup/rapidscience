@@ -80,7 +80,8 @@
           <h4>Co-Authors</h4>
           <ol class="authors-list">
           {% for author in casereport.get_coauthors %}
-              <li>{{ author }}</li>
+              <li>{{ author }}{% if not forloop.last %}; {% endif %}
+              </li>
           {% endfor %}
           </ol>
       </div>
