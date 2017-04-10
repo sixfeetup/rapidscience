@@ -1078,8 +1078,16 @@ input:focus + div.info {
 	font-weight: bold;
 	margin-bottom: 30px;
 }
-.case-detail-view {
+.case-detail-view .menu,
+.case-detail-view .content {
 	padding-top: 25px;
+}
+.case-detail-view .menu hr {
+	margin-right: -15px;
+}
+.case-detail-view .content {
+	border-left: 1px solid #eeeeee;
+	padding-left: 30px;
 }
 .case-detail-view h4 {
 	text-transform: uppercase;
