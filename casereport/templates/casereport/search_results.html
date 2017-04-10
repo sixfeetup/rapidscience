@@ -75,14 +75,12 @@
              {{ casereport.primary_physician.affiliation.country }}</strong></p>
       </div>
 
-      {% if casereport.referring_physician.all %}
+      {% if casereport.get_coauthors %}
       <div class="author-list" id="section-coauthors">
           <h4>Co-Authors</h4>
           <ol class="authors-list">
-          {% for author in casereport.referring_physician.all %}
-                  {% if not casereport.primary_physician.email == author.email %}
-                      <li>{{ author.name }}</li>
-                  {% endif%}
+          {% for author in casereport.get_coauthors %}
+              <li>{{ author }}</li>
           {% endfor %}
           </ol>
       </div>

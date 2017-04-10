@@ -257,6 +257,14 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     def get_physician(self):
         return self.primary_physician.name
 
+    def get_coauthors(self):
+        # return referring_physicians that are not the primary author
+        coauthors = []
+        for ref in self.referring_physician.all():
+            if ref.pk != self.primary_physician.pk:
+                coauthors.append(ref.name)
+        return coauthors
+
     def get_presented(self):
         event = Event.objects.filter(casereport_f=self,
                                      parent_event__isnull=True)
