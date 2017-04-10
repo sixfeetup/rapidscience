@@ -1,7 +1,6 @@
 {% load mytags %}
-<p> <span>{{ page.paginator.count }}</span> Search Results</p>
+<p class="numresults"><span>{{ page.paginator.count }}</span> Total Cases</p>
 
-{#<div class="row">#}
         <div class="results">
 
 {% for result in page.object_list %}
@@ -9,48 +8,60 @@
             <!--search-->
     <div class="searchresult">
 
-            <div class="row">
-                <div class="result_list col-md-12">
-
-                    <a href="{% url 'casereport_detail' result.object.id  result.object.title|slugify %}">
-                    <div class=" nav-item">{{ result.object.gender|capfirst }}  {{ result.object.age }} y</div>
-
-                    </a>
+            <div class="row titlerow">
+                <div class="col-md-10">
+                    <h3>
+                        <a href="{% url 'casereport_detail' result.object.id  result.object.title|slugify %}">
+                            {{ result.object.title }}
+                        </a>
+                    </h3>
+                    Case ID: {{ result.object.id }} | {{ result.object.get_physician|capfirst }}</span>,  {{ result.object.get_physician.affiliation.country }} |  {{ result.object.created_on|date:"M d, Y" }}
+                </div>
+                <div class="col-md-2 crstatus">
+                    {% if False %}
+                        <i class="fa fa-check" aria-hidden="true"></i><br />
+                        Submitted
+                    {% endif %}
+                    
+                    <i class="fa fa-file-text-o" aria-hidden="true"></i><br />
+                    Posted
+                    
+                    {% if False %}
+                        <i class="fa fa-clock-o" aria-hidden="true"></i><br />
+                        Saved
+                    {% endif %}
                 </div>
             </div>
 
+
             <div class="row">
-                <div class="physician-result-list">
-                    <div class="col-md-12 ">
-                        <li><span>{{ result.object.get_physician|capfirst }}</span>,   {{ result.object.get_physician_affiliation|capfirst }}  |  {{ result.object.created_on|date:"M d, Y" }}</li>
-                    </div>
+                {% if result.object.aberrations.all|length > 0 %}
+                <div class="col-md-6">
+                    <h4>Aberrations</h4>
+                    {% for aberration in result.object.aberrations.all %}
+                        {{ aberration.molecule }}: {{ aberration.name }}{% if not forloop.last %},{% endif %}
+                    {% endfor %}
                 </div>
-            </div>
-
-{#            <div class="row">#}
-{#                <div class="case_presented col-md-12">#}
-{#                    <li>{{ result.object.get_presented }}</li>#}
-{#                </div>#}
-{#            </div>#}
-
-
-                <div class="row">
-                    <div class="col-md-8 treatment-result-list">
-                    <h4>Treatment / Response</h4>
-                        {% for treatment in result.object.get_treatment_events_in_order|slice:":3" %}
-                            {% if treatment.get_outcome %}<div class="row treatments"><span > {{ treatment.get_dates }} {{ treatment.get_name }}</span> <span >{{ treatment.get_outcome |truncatewords:20 }}</span></div>{% endif %}
-                        {% endfor %}
-                    </div>
-                    <div class="col-md-4 search-abberations">
-                    <h4>Genetic Aberrations</h4>
-                        {% for abb in result.object.molecular_abberations.all|slice:":3" %}
-                            <div class="abberations"><span><i>{{ abb.molecule }}</i>  {{ abb.name }}</span></div>
-                        {% endfor %}
-                    </div>
+                {% endif %}
+                {% if result.object.biomarkers %}
+                <div class="col-md-6">
+                    <h4>Biomarkers</h4>
+                    {{ result.object.biomarkers }}
+                </div>
+                {% endif %}
+                {% if result.object.get_treatments %}
+                <div class="col-md-12">
+                    <h4>Treatments/Outcomes</h4>
+                    {% for treatment in result.object.get_treatments %}
+                        <div class="row treatments">
+                            {{ treatment.name }} &raquo; {{ treatment.objective_response }}
+                        </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
             </div>
 
     </div>
-    </br>
     {% comment %}
         {% if page.has_previous or page.has_next %}
             <div>
