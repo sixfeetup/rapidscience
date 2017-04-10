@@ -572,7 +572,16 @@ background: linear-gradient(to bottom, rgba(226,226,226,1) 0%, rgba(209,209,209,
 .detail-result-list{
 margin-bottom: 30px;}
 
-.diagnosis-section,.treatment-list,.procedures-list, .molecule-abberation{
+#section-primary,
+#section-coauthors,
+#section-diagnosis,
+#section-aberrations,
+#section-biomarkers,
+#section-pathology,
+#section-treatment,
+#section-comments {
+	margin-top: -50px;
+	padding-top: 50px;
     margin-bottom: 20px;
 }
 .molecule-abberation div span{
