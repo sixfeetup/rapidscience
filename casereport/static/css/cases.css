@@ -1040,7 +1040,7 @@ input:focus + div.info {
 }
 .headingBanner {
 	background-color: rgb(238, 238, 238);
-	padding: 20px;
+	padding: 20px 20px 5px;
 }
 .headingBanner h1 {
 	font-size: 32px;
@@ -1050,13 +1050,16 @@ input:focus + div.info {
 .headingBanner p {
 	font-size: 16px;
 	font-weight: bold;
-	margin-bottom: 2em;
+	margin-bottom: 30px;
+}
+.case-detail-view {
+	padding-top: 25px;
 }
 .case-detail-view h4 {
 	text-transform: uppercase;
 	color: #444444;
 	font-size: 18px;
-	margin-top: 1em;
+	margin: 1em 0 8px;
 }
 #section-primary h4 {
 	margin-top: 0;
