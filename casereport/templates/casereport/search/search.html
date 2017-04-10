@@ -25,12 +25,13 @@
 {% block content %}
         <div class="container">
             {% block container %}
-                <div class="row">
-                    <h1>Cases Central</h1>
-                    <a href="{% url 'crdb:add_casereport' %}" class="btn btn-primary">+ Add Case</a>
-                    
+                <div class="row cases-central-header">
+
                     <div class=" col-md-9 main-content ">
-                       <div class="row search-div">
+                       <div class="search-div">
+
+                           <h1>Cases Central <a href="{% url 'crdb:add_casereport' %}" class="btn btn-primary"><span class="enbiggen">+</span> Add Case</a></h1>
+
 
                                 <form method="get" action=".">
 
