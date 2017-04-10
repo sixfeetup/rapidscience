@@ -28,39 +28,34 @@
                 <div class="row">
                     <h1>Cases Central</h1>
                     <a href="{% url 'crdb:add_casereport' %}" class="btn btn-primary">+ Add Case</a>
+                    
+                    <div class=" col-md-9 main-content ">
+                       <div class="row search-div">
+
+                                <form method="get" action=".">
+
+
+                                    <div class="input-group">
+                                      <input type="text" class="form-control search" placeholder="Authors, institutions, drugs..."  onfocus="this.placeholder = ''" onblur="this.placeholder = 'Authors, institutions, drugs...'"  name="q" id="" value="{% if query %}{{ query }}{% else %}{% endif %}" >
+                                 <span class="input-group-btn">
+                                   <button type="submit" class="btn btn-primary search-button" type="button"><i class="fa fa-search"></i></button>
+                                 </span>
+                               </div><!-- /input-group -->
+                             </div><!-- /.col-lg-12 -->
+
+
+
+                                   </form>
+                       </div>
                 </div>
 
-            <div class="tab-content search-page-tab-content">
+            <div class="search-page-tab-content row">
                 <div id="search" class="tab-pane fade in active">
                         <div class="row">
 
-                         <div class=" col-md-9 main-content ">
-                            <div class="row search-div">
-
-                                     <form method="get" action=".">
-                                     <div class="col-md-12">
-{#                                           <input type="text" class="form-control search" placeholder="Sarcoma"  onfocus="this.placeholder = ''" onblur="this.placeholder = 'Sarcoma'"  name="q" id="" value="{% if query %}{{ query }}{% else %}{% endif %}" >#}
-{#                                         <button class="btn btn-md btn-primary">Search <i class="fa fa-search"></i></button>#}
-{#                                            </div>#}
-
-
-                                         <div class="input-group">
-                                           <input type="text" class="form-control search" placeholder="Authors, institutions, drugs..."  onfocus="this.placeholder = ''" onblur="this.placeholder = 'Authors, institutions, drugs...'"  name="q" id="" value="{% if query %}{{ query }}{% else %}{% endif %}" >
-                                      <span class="input-group-btn">
-                                        <button type="submit" class="btn btn-primary search-button" type="button"><i class="fa fa-search"></i></button>
-                                      </span>
-                                    </div><!-- /input-group -->
-                                  </div><!-- /.col-lg-12 -->
-
-
-
-                                        </form>
+                            <div class="result_block col-md-9">
+                                {% include 'casereport/search/results.html' %}
                             </div>
-
-                                    <div class="result_block">
-                                        {% include 'casereport/search/results.html' %}
-                                    </div>
-                                </div>
 
 
                           <div class="col-md-3 filter-section">
@@ -91,29 +86,7 @@
                                             {% endfor %}
                                         </select>
                                     </div>
-{#                                  </br>#}
-{#                                    <div class="abberations-section">#}
-{#                                        <h5>Genetic Aberrations</h5>#}
-{#                                        <select class="form-control select2" multiple >#}
-{#                                            {% for molecular_abberation in facets.fields.molecular_abberations %}#}
-{#                                                {% if molecular_abberation.1 > 0 %}#}
-{#                                                    <option value="selected_facets=molecular_abberations_exact:{{ molecular_abberation.0|urlencode }}" {% check_value_is_active "molecular_abberations" molecular_abberation.0 request.get_full_path %}>{{ molecular_abberation.0 }} ({{ molecular_abberation.1 }})</option>#}
-{#                                                {% endif %}#}
-{#                                            {% endfor %}#}
-{#                                        </select>#}
-{#                                    </div>#}
-{#                                    </br>#}
-{##}
-{#                                    <div class="treatments-section">#}
-{#                                        <h5>Treatments</h5>#}
-{#                                        <select class="form-control select2" multiple>#}
-{#                                            {% for treatment in facets.fields.treatments %}#}
-{#                                                {% if treatment.1 > 0 %}#}
-{#                                                    <option value="selected_facets=treatments_exact:{{ treatment.0|urlencode }}" {% check_value_is_active "treatments" treatment.0 request.get_full_path %}>{{ treatment.0 }} ({{ treatment.1 }})</option>#}
-{#                                                {% endif %}#}
-{#                                            {% endfor %}#}
-{#                                        </select>#}
-{#                                    </div>#}
+
                                   </br>
 
                                     <div class="treatment_type-section">
@@ -130,25 +103,9 @@
 
                                         </select>
                                     </div>
-                                    </br>
-{#                                    <div class="tests-section">#}
-{#                                        <h5>Tests</h5>#}
-{#                                        <select class="form-control select2" multiple>#}
-{#                                            {% for test in facets.fields.cr_tests %}#}
-{#                                                {% if test.1 > 0 %}#}
-{#                                                    <option value="selected_facets=cr_tests_exact:{{ test.0|urlencode }}" {% check_value_is_active "cr_tests" test.0 request.get_full_path %}>{{ test.0 }} ({{ test.1 }})</option>#}
-{#                                                {% endif %}#}
-{#                                            {% endfor %}#}
-{#                                        </select>#}
-{#                                    </div>#}
 
 
                                 </div>
-
-
-
-
-                    </div>
 
 
         </div>
