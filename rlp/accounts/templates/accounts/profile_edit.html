@@ -4,6 +4,8 @@
     {% include "accounts/_hero.html" with user=user %}
 {% endblock hero %}
 
+{% block body_class %}edit-profile{% endblock %}
+
 {% block main_content %}
 <div class="plugin-form">
     <h2>Edit your profile</h2>
@@ -17,12 +19,14 @@
         <legend>Your Projects</legend>
         {% bootstrap_formset formset layout='horizontal' %}
       </fieldset>
-        <button class="btn btn-primary" type="submit">
-          Update
-        </button>
-        <a role="button" class="btn btn-default" href="{% url 'dashboard' %}">
-          Cancel
-        </a>
+        <div class="buttonbar">
+            <button class="btn btn-primary btn-lg" type="submit">
+              Save
+            </button>
+            <a role="button" class="btn btn-default btn-lg" href="{% url 'dashboard' %}">
+              Cancel
+            </a>
+        </div>
     </form>
 </div>
 {% endblock main_content %}
