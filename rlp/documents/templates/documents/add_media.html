@@ -1,0 +1,39 @@
+{% extends 'base.html' %}{% load bootstrap3 %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-md-push-2">
+<h2>New Document/Media</h2>
+
+{% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    {{ message }}
+    </div>
+{% endfor %}
+
+<form method="post" enctype="multipart/form-data" action="">
+  {% csrf_token %}
+  
+  <input name="filetype" id="file" type="radio" value="file" checked>
+  <label for="file">Upload file</label>
+
+  <input name="filetype" id="link" type="radio" value="link">
+  <label for="link">Add link</label>
+  
+  <input name="filetype" id="video" type="radio" value="video">
+  <label for="video">Embed video</label>
+  
+  {% bootstrap_form form %}
+  <button class="btn btn-primary" type="submit">
+    Save
+  </button>
+  <a role="button" class="btn btn-default" href="{% url 'dashboard' %}">
+    Cancel
+  </a>
+</form>
+</div>
+</div>
+</div>
+{% endblock content %}
