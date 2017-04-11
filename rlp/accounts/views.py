@@ -396,44 +396,13 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
 
 
 @login_required
-@never_cache
-@page_template('actstream/_activity.html')
-def profile(request, pk, tab='activity', template_name='accounts/profile.html', extra_context=None):
+def profile(request, pk, template_name='accounts/profile.html', extra_context=None):
     user = get_object_or_404(User, pk=pk)
-    user_ct = ContentType.objects.get_for_model(User)
     projects = user.active_projects()
     context = {
         'user': user,
-        'tab': tab,
         'projects': projects,
     }
-    if request.user.is_anonymous() or tab == 'publications':
-        if user.orcid:
-            if not user.publication_set.count():
-                fetch_publications_for_user(user)
-            context['publications'] = user.publication_set.all()
-    # Bail early for the public view
-    if request.user.is_anonymous():
-        return render(request, 'accounts/profile_public.html', context)
-    activity_stream = Action.objects.filter(
-        actor_object_id=user.id, actor_content_type=user_ct
-    )
-    if tab == 'activity':
-        if not request.user.can_access_all_projects:
-            # Filter activity_stream
-            activity_stream = activity_stream.filter(
-                target_content_type=ContentType.objects.get_for_model(Project),
-                target_object_id__in=list(projects.values_list('id', flat=True))
-            )
-        if 'content_type' in request.GET:
-            filter_form = ActionObjectForm(request.GET)
-            if filter_form.is_valid() and filter_form.cleaned_data['content_type']:
-                activity_stream = activity_stream.filter(
-                    action_object_content_type=filter_form.cleaned_data['content_type'])
-        else:
-            filter_form = ActionObjectForm()
-        context['activity_stream'] = activity_stream
-        context['filter_form'] = filter_form
     if extra_context is not None:
         context.update(extra_context)
     return render(request, template_name, context)

@@ -63,7 +63,4 @@ urlpatterns = [
     url(r'^profile/(?P<pk>\d+)/$',
         views.profile,
         name='profile'),
-    url(r'^profile/(?P<pk>\d+)/(?P<tab>\w+)/$',
-        views.profile,
-        name='profile_tab'),
 ]
