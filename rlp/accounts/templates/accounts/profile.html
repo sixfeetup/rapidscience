@@ -38,6 +38,7 @@
                     </ul>
                 </div>
             {% endif %}
+
             {% if user.id == request.user.id %}
                 <div class="buttonbar">
                     <a role="button" class="btn btn-primary btn-lg" href="{% url 'profile_edit' %}">
