@@ -12,5 +12,34 @@
 {% endblock hero %}
 
 {% block main_content %}
+    <div class="row">
+        <div class="col-md-7 col-md-offset-3">
+            {% if user.bio %}
+                <div class="section">
+                    <p class="section-label">Biography</p>
+                    {{ user.bio|linebreaks }}
+                </div>
+            {% endif %}
+            {% if user.research_interests %}
+                <div class="section">
+                    <p class="section-label">Research Interests</p>
+                    <p>{{ user.research_interests }}</p>
+                </div>
+            {% endif %}
+            {% if projects %}
+                <div class="section">
+                    <p class="section-label">Groups</p>
+                    <ul class="fa-ul">
+                        {% for project in projects %}
+                            <li><i class="fa-li fa fa-angle-right" aria-hidden="true"></i>
+                                <a href="{% url 'projects:projects_detail' project.id project.slug %}">{{ project.title }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
 
 {% endblock main_content %}

@@ -381,30 +381,43 @@ small {
 
 }
 
-.profile-public .hero {
-  .profile-image {
-    padding-top: 30px;
-    text-align: right;
-  }
-  h1 {
-    margin-top: 10px;
-    margin-bottom: 8px;
-  }
-}
-
-.hero p.profile-title {
-    font-size: 16px;
-    margin-bottom: 8px;
-}
-
-.hero p.profile-meta {
-    font-size: 14px;
-    .fa {
-      font-size: 18px;
-      position: relative;
-      top: 2px;
-      margin-right: 5px;
+.profile-public {
+  .hero {
+    .profile-image {
+      padding-top: 30px;
+      text-align: right;
     }
+    p.profile-title {
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+    p.profile-meta {
+      font-size: 14px;
+      .fa {
+        font-size: 18px;
+        position: relative;
+        top: 2px;
+        margin-right: 5px;
+      }
+    }
+    h1 {
+      margin-top: 10px;
+      margin-bottom: 8px;
+    }
+  }
+  .section {
+    margin-bottom: 2em;
+  }
+  p {
+    font-size: 14px;
+  }
+  p.section-label {
+    font-size: 18px;
+    margin-bottom: .5em;
+  }
+  .fa-ul li {
+    margin-bottom: 1em;
+  }
 }
 
 .aside-col {
