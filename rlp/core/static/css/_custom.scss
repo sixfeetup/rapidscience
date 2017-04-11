@@ -221,6 +221,15 @@ p.small {
     }
 }
 
+body.search .main > .container > .row > .col-md-8.col-md-offset-1 {
+    margin-top: 0;
+        border-right: 1px solid #eee;
+    }
+
+body.search .box.main-content {
+    padding-top: 35px;
+}
+
 .search-page h1 {
     text-transform: none;
     margin-top: 0;
@@ -235,8 +244,21 @@ p.small {
     font-weight: bold;
 }
 
-.search-page .form-group {
+.search-page .input-group {
     position: relative;
+}
+
+.search-page input,
+.search-page .input-group-btn button {
+    font-size: 18px;
+    height: 50px;
+}
+
+.search-page input::placeholder {
+    font-style: italic;
+}
+.search-page input::-webkit-input-placeholder {
+    font-style: italic;
 }
 
 .search-page h4 {
@@ -246,6 +268,10 @@ p.small {
     margin-bottom: 10px;
 }
 
+.search-page .relevance {
+    margin: 1em 0;
+}
+
 .refine-search ul {
     list-style: none;
     padding: 0;
@@ -253,7 +279,7 @@ p.small {
 
 .clear-input+.glyphicon-remove {
     position: absolute;
-    right: 5px;
+    right: 54px;
     top: 0;
     bottom: 0;
     height: 20px;
@@ -261,6 +287,7 @@ p.small {
     font-size: 20px;
     cursor: pointer;
     color: rgb(55,146,191);
+    z-index: 10;
 }
 
 
