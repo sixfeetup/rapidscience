@@ -60,16 +60,27 @@
 
 
                           <div class="col-md-3 filter-section">
-                             <h2>Filter Articles</h2>
-                                    <br/>
-                                    <div class="gender-section ">
-                                        <h5>Gender:</h5>
-                                        {% with facets.fields.gender as gender %}
-                                            <label  class="checkbox-inline "><input class="filter-checkbox" type="checkbox" id="inlineCheckbox1" value="1}" name="gender" data-url="selected_facets=gender_exact:male" {% check_value_is_active "gender" "male" request.get_full_path %} />Male ({% if gender.1.0 == "male" %}{{ gender.1.1 }}{% else %}{% if gender.0.0 == "male" %}{{ gender.0.1 }}{% else %}0{% endif %}{% endif %})</label>
-                                            <label  class="checkbox-inline"><input class="filter-checkbox" type="checkbox" id="inlineCheckbox2" value="0" name="gender" data-url="selected_facets=gender_exact:female"{% check_value_is_active "gender" "female" request.get_full_path %}/>Female ({% if gender.1.0 == "female" %}{{ gender.1.1 }}{% else %}{% if gender.0.0 == "female" %}{{ gender.0.1 }}{% else %}0{% endif %}{% endif %})</label>
-                                        {% endwith %}
-                                    </div>
-                                    </br>
+                             <h2>Filter Cases</h2>
+                             <div class="category-section">
+                                 <h5>Categories</h5>
+                                 <input class="filter-checkbox" type="checkbox" id="category1" value="0" name="category"  />
+                                 <label for="category1">All cases</label>
+                                 <input class="filter-checkbox" type="checkbox" id="category2" value="1" name="category"  />
+                                 <label for="category2">My cases</label>
+                                 <input class="filter-checkbox" type="checkbox" id="category3" value="2" name="category"  />
+                                 <label for="category3">My draft cases</label>
+                             </div>
+                         
+                            <div class="gender-section">
+                                <h5>Gender</h5>
+                                {% with facets.fields.gender as gender %}
+                                    <input class="filter-checkbox" type="checkbox" id="inlineCheckbox1" value="1}" name="gender" data-url="selected_facets=gender_exact:male" {% check_value_is_active "gender" "male" request.get_full_path %} />
+                                    <label class="checkbox-inline" for="inlineCheckbox1">Male ({% if gender.1.0 == "male" %}{{ gender.1.1 }}{% else %}{% if gender.0.0 == "male" %}{{ gender.0.1 }}{% else %}0{% endif %}{% endif %})</label>
+                                    
+                                    <input class="filter-checkbox" type="checkbox" id="inlineCheckbox2" value="0" name="gender" data-url="selected_facets=gender_exact:female"{% check_value_is_active "gender" "female" request.get_full_path %}/>
+                                    <label class="checkbox-inline" for="inlineCheckbox2">Female ({% if gender.1.0 == "female" %}{{ gender.1.1 }}{% else %}{% if gender.0.0 == "female" %}{{ gender.0.1 }}{% else %}0{% endif %}{% endif %})</label>
+                                {% endwith %}
+                            </div>
                         <p>
                           <label class="age" for="amount">Age range:</label>
                           <input type="text" id="amount" readonly value="{% age_range request.get_full_path facets.fields.age %}">
