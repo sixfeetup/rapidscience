@@ -5,6 +5,7 @@ from . import views
 
 app_name = 'documents'
 urlpatterns = [
+    url(r'add/media/$', views.AddMedia.as_view(), name='add_media'),
     url(r'add/document/$', views.add_document, name='add_document'),
     url(r'add/link/$', views.add_link, name='add_link'),
     url(r'add/video/$', views.add_video, name='add_video'),

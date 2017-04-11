@@ -6,14 +6,48 @@ from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render, Http404
 from django.views.decorators.cache import never_cache
+from django.views.generic.edit import FormView
 
 from actstream import action
 from PIL import Image
 from taggit.models import Tag
 
 from rlp.discussions.models import ThreadedComment
-from .forms import FileForm, ImageForm, LinkForm, VideoForm
+from .forms import AddMediaForm, FileForm, ImageForm, LinkForm, VideoForm
 from .models import Document
+
+
+class AddMedia(FormView):
+    form_class = AddMediaForm
+    template_name = 'documents/add_media.html'
+    success_url = '/'
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        data = request.POST.copy()
+        filetype = data.get('filetype')
+        if filetype == 'file':
+            if not data['upload']:
+                messages.error(request, "Please upload a file")
+                return self.form_invalid(form)
+        elif filetype == 'link':
+            if not data['url']:
+                messages.error(request, "Please add a link")
+                return self.form_invalid(form)
+        elif filetype == 'video':
+            if not data['share_link']:
+                messages.error(request, "Please add a video link")
+                return self.form_invalid(form)
+        if form.is_valid():
+            return self.form_valid(form, filetype)
+        else:
+            messages.error(request, "Please correct the errors below")
+            return self.form_invalid(form)
+
+    def form_valid(self, form, filetype):
+        data = form.cleaned_data
+        # TODO: create appropriate type based on `filetype`
+        # use code in add_document, add_link and add_video below
 
 
 @never_cache

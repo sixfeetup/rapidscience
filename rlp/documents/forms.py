@@ -1,14 +1,35 @@
 from django import forms
 
+from embed_video.fields import EmbedVideoFormField
+from taggit.managers import TaggableManager
 from taggit.models import Tag
 
 from .models import Document, File, Image, Link, Video
+
+CLABEL = "Please check this box if you are not the copyright owner of \
+           this material or if it is not under license for public \
+           viewing. This will ensure that only validated participants \
+           of this project can access it."
+
+
+class AddMediaForm(forms.Form):
+    upload = forms.FileField(
+        required=False,
+        help_text="PDF, Word Doc, Google Doc file types; max file size 2MB")
+    url = forms.URLField(required=False)
+    share_link = EmbedVideoFormField(help_text='YouTube URL', required=False)
+    title = forms.CharField(max_length=400)
+    description = forms.CharField(widget=forms.Textarea)
+    tags = TaggableManager()  # TODO: not showing up
+    copyright = forms.BooleanField(label=CLABEL, required=False)
+    # TODO: need sharing fields
 
 
 class BaseDocumentForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['copyright'].label = CLABEL
         if Tag.objects.count():
             self.fields['tags'] = forms.ModelMultipleChoiceField(
                 widget=forms.CheckboxSelectMultiple(),
@@ -26,8 +47,8 @@ class BaseDocumentForm(forms.ModelForm):
 class FileForm(BaseDocumentForm):
     class Meta:
         model = File
-        exclude = [
-            'owner', 'date_added', 'date_updated', 'project', 'tags',
+        fields = [
+            'upload', 'title', 'description', 'tags', 'copyright',
         ]
 
 
@@ -43,7 +64,7 @@ class LinkForm(BaseDocumentForm):
     class Meta:
         model = Link
         fields = [
-            'title', 'url', 'description',
+            'url', 'title', 'description', 'tags', 'copyright',
         ]
 
 
@@ -51,5 +72,5 @@ class VideoForm(BaseDocumentForm):
     class Meta:
         model = Video
         fields = [
-            'title', 'share_link', 'description',
+            'share_link', 'title', 'description', 'tags', 'copyright',
         ]

@@ -22,6 +22,7 @@ class Document(PolymorphicModel, SharedObjectMixin):
     )
 
     tags = TaggableManager()
+    copyright = models.BooleanField(blank=True, default=False)
 
     class Meta:
         ordering = ['-date_added']
@@ -86,21 +87,21 @@ class Document(PolymorphicModel, SharedObjectMixin):
         refs = doc_obj._related.select_related('viewer_type').all()
         return [r.viewer for r in refs]
 
+
 class File(Document):
     upload = models.FileField(upload_to="docs/%Y/%m/%d")
-    working_document = models.BooleanField(default=False,
-                                           verbose_name="Core Project Document (will appear as top-listed document)")
 
 
 class Image(Document):
-    upload = models.ImageField(upload_to="docs/images/%Y/%m/%d", max_length=255,
-                             height_field='height', width_field='width')
+    upload = models.ImageField(upload_to="docs/images/%Y/%m/%d",
+                               max_length=255,
+                               height_field='height', width_field='width')
     height = models.PositiveIntegerField()
     width = models.PositiveIntegerField()
 
 
 class Video(Document):
-    share_link = EmbedVideoField(help_text='Should be a Youtube or Vimeo share link e.g. https://youtu.be/xyz123')
+    share_link = EmbedVideoField(help_text='YouTube URL')
 
     @property
     def display_type(self):
