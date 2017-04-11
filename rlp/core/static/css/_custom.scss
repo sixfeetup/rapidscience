@@ -226,6 +226,13 @@ p.small {
     margin-top: 0;
     margin-bottom: 30px;
     font-size: 32px;
+    display: inline-block;
+}
+
+.search-page .result-count {
+    float: right;
+    line-height: 46px;
+    font-weight: bold;
 }
 
 .search-page .form-group {
@@ -255,6 +262,7 @@ p.small {
     cursor: pointer;
     color: rgb(55,146,191);
 }
+
 
 /* Login screen */
 .login-banner {
