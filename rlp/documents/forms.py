@@ -4,6 +4,7 @@ from embed_video.fields import EmbedVideoFormField
 from taggit.managers import TaggableManager
 from taggit.models import Tag
 
+from rlp.core.forms import MemberListField, GroupListField
 from .models import Document, File, Image, Link, Video
 
 CLABEL = "Please check this box if you are not the copyright owner of \
@@ -20,9 +21,19 @@ class AddMediaForm(forms.Form):
     share_link = EmbedVideoFormField(help_text='YouTube URL', required=False)
     title = forms.CharField(max_length=400)
     description = forms.CharField(widget=forms.Textarea)
-    tags = TaggableManager()  # TODO: not showing up
+    # tags = TaggableManager()  # TODO: not showing up
     copyright = forms.BooleanField(label=CLABEL, required=False)
-    # TODO: need sharing fields
+    members = MemberListField(
+        label='Members',
+        help_text='Type name; separate with commas',
+        choices=(),  # gets filled in by the view
+        required=False,)
+    groups = GroupListField(
+        label='My Groups',
+        help_text='Separate names with commas',
+        choices=(),  # gets filled in by the view
+        required=False,
+    )
 
 
 class BaseDocumentForm(forms.ModelForm):
@@ -48,7 +59,7 @@ class FileForm(BaseDocumentForm):
     class Meta:
         model = File
         fields = [
-            'upload', 'title', 'description', 'tags', 'copyright',
+            'upload', 'title', 'description', 'copyright',
         ]
 
 
@@ -64,7 +75,7 @@ class LinkForm(BaseDocumentForm):
     class Meta:
         model = Link
         fields = [
-            'url', 'title', 'description', 'tags', 'copyright',
+            'url', 'title', 'description', 'copyright',
         ]
 
 
@@ -72,5 +83,5 @@ class VideoForm(BaseDocumentForm):
     class Meta:
         model = Video
         fields = [
-            'share_link', 'title', 'description', 'tags', 'copyright',
+            'share_link', 'title', 'description', 'copyright',
         ]
