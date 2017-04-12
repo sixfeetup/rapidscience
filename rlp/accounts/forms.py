@@ -173,12 +173,14 @@ class RestrictedProjectMembershipForm(ProjectMembershipForm):
 class UserProfileForm(forms.ModelForm):
     first_name = forms.CharField(max_length=30, required=True)
     last_name = forms.CharField(max_length=30, required=True)
+    title = forms.CharField(max_length=255, required=True, label='Position')
 
     class Meta:
         model = User
         fields = [
-            'first_name', 'last_name', 'bio', 'photo', 'degrees', 'institution', 'title', 'department',
-            'research_interests', 'website', 'orcid', 'linkedin', 'twitter',
+            'photo', 'first_name', 'last_name', 'degrees', 'title',
+            'department', 'institution', 'email', 'website',
+            'orcid', 'linkedin', 'twitter', 'bio', 'research_interests',
         ]
         widgets = {
             'bio': forms.Textarea(attrs={'class': 'remaining-characters'}),
