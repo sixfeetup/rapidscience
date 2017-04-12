@@ -21,7 +21,10 @@ class AddMediaForm(forms.Form):
     share_link = EmbedVideoFormField(help_text='YouTube URL', required=False)
     title = forms.CharField(max_length=400)
     description = forms.CharField(widget=forms.Textarea)
-    # tags = TaggableManager()  # TODO: not showing up
+    tags = forms.CharField(
+        max_length=400,
+        required=False,
+        help_text="Separate tags with commas")
     copyright = forms.BooleanField(label=CLABEL, required=False)
     members = MemberListField(
         label='Members',

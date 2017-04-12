@@ -103,9 +103,9 @@ def add_document(request, add_form=None, doc_pk=None, template_name='documents/a
                 if tag_ids:
                     try:
                         tags = Tag.objects.filter(id__in=tag_ids)
+                        document.tags.set(*tags)
                     except:
-                        tags = []
-                    document.tags.set(*tags)
+                        document.tags.add(*tag_ids[0].split(","))
                     # Trigger any post-save signals (e.g. Haystack's real-time indexing)
                     document.save()
                 if doc_pk:
@@ -164,9 +164,9 @@ def add_link(request, add_form=None, doc_pk=None, template_name='documents/add_l
                 if tag_ids:
                     try:
                         tags = Tag.objects.filter(id__in=tag_ids)
+                        link.tags.set(*tags)
                     except:
-                        tags = []
-                    link.tags.set(*tags)
+                        link.tags.add(*tag_ids[0].split(","))
                     # Trigger any post-save signals (e.g. Haystack's real-time indexing)
                     link.save()
                 if doc_pk:
@@ -224,9 +224,9 @@ def add_video(request, add_form=None, doc_pk=None, template_name='documents/add_
                 if tag_ids:
                     try:
                         tags = Tag.objects.filter(id__in=tag_ids)
+                        video.tags.set(*tags)
                     except:
-                        tags = []
-                    video.tags.set(*tags)
+                        video.tags.add(*tag_ids[0].split(","))
                     # Trigger any post-save signals (e.g. Haystack's real-time indexing)
                     video.save()
                 if doc_pk:
