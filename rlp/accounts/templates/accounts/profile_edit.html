@@ -1,5 +1,7 @@
 {% extends 'single_col.html' %}{% load bootstrap3 cms_tags %}
 
+{% block body_class %}edit-profile{% endblock %}
+
 {% block hero %}
     {% include "accounts/_hero_edit.html" with user=user %}
 {% endblock hero %}

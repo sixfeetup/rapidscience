@@ -616,7 +616,8 @@ span.select2.select2-container {
     z-index: 1000004;
 }
 .helptext,
-.helpText {
+.helpText,
+span.help-block {
 	background-color: rgb(238, 238, 238);
 	color: #888888;
 	font-size: 13px;
@@ -625,6 +626,7 @@ span.select2.select2-container {
 	border-radius: 0 0 4px 4px;
     display: block;
     margin-bottom: 1em;
+    margin-top: 0;
 }
 
 /* case reports tab */
