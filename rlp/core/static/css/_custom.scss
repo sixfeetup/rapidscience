@@ -22,6 +22,16 @@ p.small {
     transform: rotateY(180deg);
 }
 
+.bannerTitle {
+    background-color: rgb(136, 136, 136);
+    padding: 20px 0 30px;
+}
+.bannerTitle h1 {
+    color: #ffffff;
+    text-transform: none;
+    font-size: 32px;
+}
+
 .nav-tabs {
     display: flex;
     & > li {
@@ -704,6 +714,40 @@ a.comment-count.empty {
     }
 }
 
+/* Document Upload */
+.rpds-form .type-choices label {
+    color: #3792bf;
+    text-transform: none;
+    padding-right: 20px
+}
+#wrapper-id_url,
+#wrapper-id_share_link {
+    display: none;
+}
+#wrapper-id_upload label::after,
+#wrapper-id_url label::after,
+#wrapper-id_share_link label::after {
+    content: ' *';
+}
+#wrapper-id_copyright {
+    margin-top: 2em;
+}
+#wrapper-id_copyright input {
+    float: left;
+}
+#wrapper-id_copyright label {
+    text-transform: none;
+    font-size: 16px;
+    margin-left: 20px;
+    display: block;
+}
+#wrapper-id_members h4 label,
+#wrapper-id_groups h4 label {
+    font-size: 14px;
+    color: #888888;
+    font-weight: normal;
+}
+
 /* Form */
 
 .rpds-form {
@@ -738,6 +782,8 @@ a.comment-count.empty {
     }
     input[type='text'],
     input[type='email'],
+    input[type='url'],
+    input[type='file'],
     input[type='password'],
     textarea {
         display: block;
@@ -756,6 +802,10 @@ a.comment-count.empty {
         -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
         -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
         transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    }
+    input[type='file'] {
+        font-size: 12px;
+        padding: 0;
     }
     textarea {
         height: auto;

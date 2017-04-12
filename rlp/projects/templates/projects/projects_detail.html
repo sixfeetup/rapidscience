@@ -125,21 +125,6 @@
         <div role="tabpanel" class="tab-pane{% if tab == 'documents' %} active{% endif %}" id="documents">
           {% if tab == 'documents' %}
             {% bootstrap_messages %}
-            {% if user_interaction %}
-            <div>
-              <a href="{% url 'documents:add_document' %}" class="btn btn-primary">
-                Add File
-              </a>
-              <a href="{% url 'documents:add_link' %}" class="btn btn-primary">
-                Add Link
-              </a>
-              <a href="{% url 'documents:add_video' %}" class="btn btn-primary">
-                Add Video
-              </a>
-            </div>
-
-            <hr>
-            {% endif %}
 
             {% for obj in documents %}
             <div class="row">
