@@ -1101,14 +1101,6 @@ input:focus + div.info {
 }
 .case-detail-view {
 	padding-top: 25px;
-
-}
-.case-detail-view .menu hr {
-	margin-right: -15px;
-}
-.case-detail-view .content {
-	border-left: 1px solid #eeeeee;
-	padding-left: 30px;
 }
 .case-detail-view h4 {
 	text-transform: uppercase;
