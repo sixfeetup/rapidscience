@@ -12,6 +12,9 @@ from actstream import action
 from PIL import Image
 from taggit.models import Tag
 
+from rlp.accounts.models import User
+from rlp.core.forms import group_choices
+from rlp.core.views import SendToView
 from rlp.discussions.models import ThreadedComment
 from .forms import AddMediaForm, FileForm, ImageForm, LinkForm, VideoForm
 from .models import Document
@@ -21,13 +24,24 @@ class AddMedia(FormView):
     form_class = AddMediaForm
     template_name = 'documents/add_media.html'
     success_url = '/'
+    
+    def get_form(self, form_class):
+        came_from = self.request.GET.get('id')
+        form = super(AddMedia, self).get_form(form_class)
+        user = self.request.user
+        all_members = ((member.id, member.get_full_name()) for member in User.objects.all())
+        form.fields['members'].choices = all_members
+        form.fields['members'].initial = [user.id]
+        form.fields['groups'].choices = group_choices(user)
+        form.fields['groups'].initial = [came_from]
+        return form
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
         data = request.POST.copy()
         filetype = data.get('filetype')
         if filetype == 'file':
-            if not data['upload']:
+            if 'upload' not in self.request.FILES.keys():
                 messages.error(request, "Please upload a file")
                 return self.form_invalid(form)
         elif filetype == 'link':
@@ -39,20 +53,25 @@ class AddMedia(FormView):
                 messages.error(request, "Please add a video link")
                 return self.form_invalid(form)
         if form.is_valid():
-            return self.form_valid(form, filetype)
+            return self.form_valid(request, filetype)
         else:
             messages.error(request, "Please correct the errors below")
             return self.form_invalid(form)
 
-    def form_valid(self, form, filetype):
-        data = form.cleaned_data
-        # TODO: create appropriate type based on `filetype`
-        # use code in add_document, add_link and add_video below
+    def form_valid(self, request, filetype):
+        form = self.get_form()
+        if filetype == 'file':
+            return add_document(request, form)
+        elif filetype == 'link':
+            return add_link(request, form)
+        elif filetype == 'video':
+            return add_video(request, form)
+        return render(request, 'documents/add_media.html')
 
 
 @never_cache
 @login_required
-def add_document(request, doc_pk=None, template_name='documents/add_document.html', ):
+def add_document(request, add_form=None, doc_pk=None, template_name='documents/add_document.html', ):
     """ accept a new file upload """
     if doc_pk:
         document = get_object_or_404(Document, pk=doc_pk)
@@ -104,6 +123,9 @@ def add_document(request, doc_pk=None, template_name='documents/add_document.htm
                         {'action': new_action[0][1]}
                     )
                 messages.success(request, message)
+                if add_form:
+                    SendToView.post(add_form, request, 'documents',
+                                    'document', document.id)
             return redirect(document.get_absolute_url())
         else:
             messages.error(request, "Check the errors below.")
@@ -123,7 +145,7 @@ def add_document(request, doc_pk=None, template_name='documents/add_document.htm
 
 @never_cache
 @login_required
-def add_link(request, doc_pk=None, template_name='documents/add_link.html'):
+def add_link(request, add_form=None, doc_pk=None, template_name='documents/add_link.html'):
     if doc_pk:
         document = get_object_or_404(Document, pk=doc_pk)
     else:
@@ -162,6 +184,9 @@ def add_link(request, doc_pk=None, template_name='documents/add_link.html'):
                         {'action': new_action[0][1]}
                     )
                 messages.success(request, message)
+                if add_form:
+                    SendToView.post(add_form, request, 'documents',
+                                    'document', link.id)
             return redirect(link.get_absolute_url())
         else:
             messages.error(request, "Check the errors below.")
@@ -180,7 +205,7 @@ def add_link(request, doc_pk=None, template_name='documents/add_link.html'):
 
 @never_cache
 @login_required
-def add_video(request, doc_pk=None, template_name='documents/add_video.html'):
+def add_video(request, add_form=None, doc_pk=None, template_name='documents/add_video.html'):
     if doc_pk:
         document = get_object_or_404(Document, pk=doc_pk)
     else:
@@ -219,6 +244,9 @@ def add_video(request, doc_pk=None, template_name='documents/add_video.html'):
                         {'action': new_action[0][1]}
                     )
                 messages.success(request, message)
+                if add_form:
+                    SendToView.post(add_form, request, 'documents',
+                                    'document', video.id)
             return redirect(video.get_absolute_url())
         else:
             messages.error(request, "Check the errors below.")

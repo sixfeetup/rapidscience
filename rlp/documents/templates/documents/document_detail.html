@@ -13,7 +13,8 @@
       <a class="share-link pull-right" href="/send/documents/document/{{ obj.id }}"><i class="fa fa-share"></i></a>
       <h2>{{ obj.title }}</h2>
       <p class="small">
-        {% include 'actstream/_action_detail.html' with action=document.action_object_actions.first %}
+        {% include 'actstream/_action_detail.html' with action=document.action_object_actions.first %}<br />
+        Shared with <b>{{ obj.get_viewers|join:"</b>, <b>" }}</b>
       </p>
       {% if obj.description %}<p>{{ obj.description|urlize }}</p>{% endif %}
       {% if document.polymorphic_ctype.model == 'file' %}
