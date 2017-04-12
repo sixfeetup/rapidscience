@@ -452,21 +452,10 @@ def profile_edit(request, template_name='accounts/profile_edit.html'):
         project_form = RestrictedProjectMembershipForm
     else:
         project_form = ProjectMembershipForm
-    ProjectFormset = inlineformset_factory(
-        User, ProjectMembership,
-        form=project_form,
-        fields=('project',)
-    )
     if request.method == 'POST':
         form = UserProfileForm(request.POST, request.FILES, instance=request.user)
-        formset = ProjectFormset(
-            request.POST,
-            instance=request.user,
-            queryset=request.user.projectmembership_set.exclude(project__auto_opt_in=True)
-        )
-        if form.is_valid() and formset.is_valid():
+        if form.is_valid():
             form.save()
-            formset.save()
             messages.success(request, "Profile updated successfully")
             sync_user.send(sender=request.user.__class__, user=request.user)
             return redirect('dashboard')
@@ -474,15 +463,10 @@ def profile_edit(request, template_name='accounts/profile_edit.html'):
             messages.error(request, MESSAGES_DEFAULT_FORM_ERROR)
     else:
         form = UserProfileForm(instance=request.user)
-        formset = ProjectFormset(
-            instance=request.user,
-            queryset=request.user.projectmembership_set.exclude(project__auto_opt_in=True)
-        )
         if not request.user.bio:
             messages.info(request, "Please add your bio and any other details you'd like to share.")
     context = {
         'form': form,
-        'formset': formset,
     }
     return render(request, template_name, context)
 
