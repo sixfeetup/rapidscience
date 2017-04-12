@@ -97,7 +97,8 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
                     'active. Unselect this instead of deleting accounts.'))
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
 
-    title = models.CharField(max_length=255, blank=True, verbose_name='Title, Department')
+    title = models.CharField(max_length=255, blank=True, verbose_name='Position')
+    department = models.CharField(max_length=255, blank=True, verbose_name='Department')
     degrees = models.CharField(max_length=20, blank=True, help_text='MD, PhD, etc.')
     bio = models.TextField(blank=True, max_length=3000)
     research_interests = models.CharField(max_length=255, blank=True)

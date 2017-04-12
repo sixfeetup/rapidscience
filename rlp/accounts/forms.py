@@ -168,7 +168,7 @@ class UserProfileForm(forms.ModelForm):
     class Meta:
         model = User
         fields = [
-            'first_name', 'last_name', 'bio', 'photo', 'degrees', 'institution', 'title',
+            'first_name', 'last_name', 'bio', 'photo', 'degrees', 'institution', 'title', 'department',
             'research_interests', 'website', 'orcid', 'linkedin', 'twitter',
         ]
         widgets = {
