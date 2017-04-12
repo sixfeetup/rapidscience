@@ -882,12 +882,19 @@ a.comment-count.empty {
     }
 }
 
-/* profile */
+/* edit profile */
 
-.edit-profile .main {
-    padding-bottom: 0;
-}
-
-.edit-profile .main-footer {
-    margin-bottom: 100px;
+.edit-profile {
+    .hero {
+        height: 100px;
+        h1 {
+            margin-top: 1em;
+        }
+    }
+    .main {
+        padding-bottom: 0;
+    }
+    .main-footer {
+        margin-bottom: 100px;
+    }
 }
