@@ -307,9 +307,9 @@ class EditGroup(LoginRequiredMixin, FormView):
         """ Handle the POSTed form data.
             This overrides the FormView impl only to add the messages.error call
         """
+        project = get_object_or_404(Project, id=kwargs['pk'])
         form = self.get_form()
         if form.is_valid():
-            project = get_object_or_404(Project, id=kwargs['pk'])
             res = self.form_valid(form)
             messages.info(request, "Edits saved!")
 
@@ -328,7 +328,7 @@ class EditGroup(LoginRequiredMixin, FormView):
 
         else:
             messages.error(request, "Please correct the errors below")
-            return self.form_invalid(form)  # we can't do this because we were in an overlay on another page
+            return self.render_to_response(self.get_context_data(form=form, project=project), )  # we can't do this because we were in an overlay on another page
             # This really should be a rest POST and return a json success/error message
 
     def form_valid(self, form):
