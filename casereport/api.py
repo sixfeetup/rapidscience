@@ -51,7 +51,8 @@ class CaseReportListResource:
                             attachment2_description=attachment2_description,
                             attachment3_description=attachment3_description)
         result.save()
-        result.aberrations.add(*aberrations)
+        if aberrations:
+            result.aberrations.add(*aberrations)
         for physician in physicians:
             result.referring_physician.add(physician)
         return result
