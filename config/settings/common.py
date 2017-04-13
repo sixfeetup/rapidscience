@@ -422,7 +422,7 @@ LOGGING = {
 
 ACCOUNT_ACTIVATION_DAYS = 14
 
-GROUP_INVITATION_TEMPLATE = '''{user} has approved your request to join the “{group}” group.
+GROUP_INVITATION_TEMPLATE = '''{user} has approved your request to join the “{group}” group:
 
 {link}
 

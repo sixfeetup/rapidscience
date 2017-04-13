@@ -119,7 +119,7 @@ class Project(SEOMixin, SharesContentMixin):
             (
                 subject,
                 message,
-                inviter.email,
+                inviter.get_full_name() + " <info@rapidscience.org>",
                 [rcp],
             )
             for rcp in emails
