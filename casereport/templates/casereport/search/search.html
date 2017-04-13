@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load inplace_edit mytags %}
+{% load inplace_edit mytags core_tags %}
 
 {% block page_title %}
     {% if query %}{{ query }}{% else %}CRDB{% endif %}
@@ -54,12 +54,12 @@
                 <div id="search" class="tab-pane fade in active">
                         <div class="row">
 
-                            <div class="result_block col-md-9">
+                            <div class="result_block col-md-8">
                                 {% include 'casereport/search/results.html' %}
                             </div>
 
 
-                          <div class="col-md-3 filter-section">
+                          <div class="col-md-4 filter-section">
                              <h2>Filter Cases</h2>
                             <div class="row">
                                 <div class="col-sm-6">
@@ -92,13 +92,31 @@
                                          <div class="checkbox">
                                              <label class="checkbox-inline" for="inlineCheckbox1">
                                                 <input class="filter-checkbox" type="checkbox" id="inlineCheckbox1" value="1}" name="gender" data-url="selected_facets=gender_exact:male" {% check_value_is_active "gender" "male" request.get_full_path %} />
-                                                Male ({% if gender.1.0 == "male" %}{{ gender.1.1 }}{% else %}{% if gender.0.0 == "male" %}{{ gender.0.1 }}{% else %}0{% endif %}{% endif %})
+                                                Male&nbsp;({% if gender.1.0 == "male" %}{{ gender.1.1 }}{% elif gender.0.0 == "male" %}{{ gender.0.1 }}{% elif gender.2.0 == "male" %}{{ gender.2.1 }}{% elif gender.3.0 == "male" %}{{ gender.3.1 }}{% elif gender.4.0 == "male" %}{{ gender.4.1 }}{% elif gender.5.0 == "male" %}{{ gender.5.1 }}{% else %}0{% endif %})
                                              </label>
                                          </div>
                                          <div class="checkbox">
                                              <label class="checkbox-inline" for="inlineCheckbox2">
                                                 <input class="filter-checkbox" type="checkbox" id="inlineCheckbox2" value="0" name="gender" data-url="selected_facets=gender_exact:female"{% check_value_is_active "gender" "female" request.get_full_path %}/>
-                                                Female ({% if gender.1.0 == "female" %}{{ gender.1.1 }}{% else %}{% if gender.0.0 == "female" %}{{ gender.0.1 }}{% else %}0{% endif %}{% endif %})
+                                                Female&nbsp;({% if gender.1.0 == "female" %}{{ gender.1.1 }}{% elif gender.0.0 == "female" %}{{ gender.0.1 }}{% elif gender.2.0 == "female" %}{{ gender.2.1 }}{% elif gender.3.0 == "female" %}{{ gender.3.1 }}{% elif gender.4.0 == "female" %}{{ gender.4.1 }}{% elif gender.5.0 == "female" %}{{ gender.5.1 }}{% else %}0{% endif %})
+                                             </label>
+                                         </div>
+                                         <div class="checkbox">
+                                             <label class="checkbox-inline" for="inlineCheckbox3">
+                                                <input class="filter-checkbox" type="checkbox" id="inlineCheckbox3" value="2" name="gender" data-url="selected_facets=gender_exact:transgender_male"{% check_value_is_active "gender" "transgender_male" request.get_full_path %}/>
+                                                Transgender Male&nbsp;({% if gender.1.0 == "transgender_male" %}{{ gender.1.1 }}{% elif gender.0.0 == "transgender_male" %}{{ gender.0.1 }}{% elif gender.2.0 == "transgender_male" %}{{ gender.2.1 }}{% elif gender.3.0 == "transgender_male" %}{{ gender.3.1 }}{% elif gender.4.0 == "transgender_male" %}{{ gender.4.1 }}{% elif gender.5.0 == "transgender_male" %}{{ gender.5.1 }}{% else %}0{% endif %})
+                                             </label>
+                                         </div>
+                                         <div class="checkbox">
+                                             <label class="checkbox-inline" for="inlineCheckbox4">
+                                                <input class="filter-checkbox" type="checkbox" id="inlineCheckbox4" value="3" name="gender" data-url="selected_facets=gender_exact:transgender_female"{% check_value_is_active "gender" "transgender_female" request.get_full_path %}/>
+                                                Transgender Female&nbsp;({% if gender.1.0 == "transgender_female" %}{{ gender.1.1 }}{% elif gender.0.0 == "transgender_female" %}{{ gender.0.1 }}{% elif gender.2.0 == "transgender_female" %}{{ gender.2.1 }}{% elif gender.3.0 == "transgender_female" %}{{ gender.3.1 }}{% elif gender.4.0 == "transgender_female" %}{{ gender.4.1 }}{% elif gender.5.0 == "transgender_female" %}{{ gender.5.1 }}{% else %}0{% endif %})
+                                             </label>
+                                         </div>
+                                         <div class="checkbox">
+                                             <label class="checkbox-inline" for="inlineCheckbox5">
+                                                <input class="filter-checkbox" type="checkbox" id="inlineCheckbox5" value="4" name="gender" data-url="selected_facets=gender_exact:other"{% check_value_is_active "gender" "other" request.get_full_path %}/>
+                                                Other&nbsp;({% if gender.1.0 == "other" %}{{ gender.1.1 }}{% elif gender.0.0 == "other" %}{{ gender.0.1 }}{% elif gender.2.0 == "other" %}{{ gender.2.1 }}{% elif gender.3.0 == "other" %}{{ gender.3.1 }}{% elif gender.4.0 == "other" %}{{ gender.4.1 }}{% elif gender.5.0 == "other" %}{{ gender.5.1 }}{% else %}0{% endif %})
                                              </label>
                                          </div>
                                         {% endwith %}
