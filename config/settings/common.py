@@ -347,6 +347,7 @@ HAYSTACK_CONNECTIONS = {
 # Use a custom Haystack signal processor since the casereports doesn't play
 # nice with the realtime one.
 HAYSTACK_SIGNAL_PROCESSOR = 'rlp.search.signals.RLPSignalProcessor'
+HAYSTACK_SEARCH_RESULTS_PER_PAGE = 12
 
 INDEXABLE_EXTENSIONS = (
     'doc',
