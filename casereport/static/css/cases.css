@@ -179,7 +179,6 @@ body{
     background-color: #fff;
 }
 .filter-section {
-    font-family: sans-serif;
     padding: 15px;
     margin-top: 3px;
 }
@@ -187,21 +186,47 @@ body{
     color: #333;
     font-weight: 700;
     font-size: 18px;
+    text-transform: uppercase;
 }
-
-.filter-section h5{
-    color: grey;
-    text-transform: capitalize;
-    font-size: 15px;
+.filter-section .category-section label,
+.filter-section .gender-section label {
+    color: #3792BF;
 }
-
-.age {
-    color: grey;
-    text-transform:capitalize;
-    font-size: 15px;
-    font-weight: 100;
+.filter-section h5,
+.filter-section .age {
+    color: #888;
+    text-transform: uppercase;
+    font-size: 14px;
+    font-weight: normal;
 }
-
+.filter-section .age {
+    margin-top: 3px;
+    margin-bottom: 0;
+}
+.filter-section .country-section {
+    margin-top: 20px;
+}
+.filter-section .ui-slider {
+    width: 83%;
+    margin-left: 6px;
+}
+.filter-section .ui-slider-handle {
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    padding: 3px;
+    height: auto;
+    width: auto;
+    top: -.6em;
+    background-color: #fff;
+}
+.filter-section .ui-slider-horizontal {
+    height: 8px;
+    border-color: #ddd;
+}
+.filter-section .ui-slider-range {
+    background: #ddd;
+}
 .last-updated-div{
     padding-right: 30px;
     margin-top: 20px;
@@ -300,13 +325,6 @@ body{
     /*margin-left:25px;*/
 /*}*/
 
-.gender-section{
-    border-top: 2px solid #337ab7;
-}
-.country-section {
-        border-top: 2px solid #000;
-
-}
 
 .disease-section{
         border-top: 2px solid #000;
@@ -405,10 +423,6 @@ background: linear-gradient(to bottom, rgba(226,226,226,1) 0%, rgba(209,209,209,
 
 
 
-.ui-slider-range{
-    background:#B0D751!important;
-
-}
 .filterheading{
     color:#777777;
 }

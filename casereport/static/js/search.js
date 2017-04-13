@@ -78,13 +78,31 @@ $(document).ready(function() {
         search();
     });
     if ($("#amount").length>0) {
+        var minhandle = $( "#custom-min-handle" );
+        var maxhandle = $( "#custom-max-handle" );
         $( "#slider-range" ).slider({
             range: true,
-            min: 20,
+            min: 0,
             max: 100,
             values: $("#amount").val().split('-'),
+            create: function() {
+                minhandle.text( $( this ).slider( "values", 0 ) );
+                var maxval;
+                if ($( this ).slider( "values", 1 ) == 100) {
+                    maxhandle.text( '100+' );
+                } else {
+                    maxhandle.text( $( this ).slider( "values", 1 ) );
+                }
+            },
             slide: function( event, ui ) {
                 $( "#amount" ).val( "" + ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+                minhandle.text( ui.values[ 0 ] );
+                var maxval;
+                if (ui.values[ 1 ] == 100) {
+                    maxhandle.text( '100+' );
+                } else {
+                    maxhandle.text( ui.values[ 1 ] );
+                }
             },
             stop:function( event, ui ) {
                 search();
