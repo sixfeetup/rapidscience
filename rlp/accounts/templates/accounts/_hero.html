@@ -1,7 +1,11 @@
 {% load staticfiles thumbnail %}
 <div class="hero">
   <div class="image-container">
-    {% include 'projects/_institution_hero_image.html' %}
+    {% if user.banner %}
+      <img src="{{ user.banner.url }}" />
+    {% else %}
+        {% include 'projects/_institution_hero_image.html' %}
+    {% endif %}
   </div>
   <div class="container">
     <div class="row">
