@@ -88,38 +88,16 @@
                                 <div class="col-sm-6">
                                    <div class="gender-section">
                                         <h5>Gender</h5>
-                                        {% with facets.fields.gender as gender %}
-                                         <div class="checkbox">
-                                             <label class="checkbox-inline" for="inlineCheckbox1">
-                                                <input class="filter-checkbox" type="checkbox" id="inlineCheckbox1" value="1}" name="gender" data-url="selected_facets=gender_exact:male" {% check_value_is_active "gender" "male" request.get_full_path %} />
-                                                Male&nbsp;({% if gender.1.0 == "male" %}{{ gender.1.1 }}{% elif gender.0.0 == "male" %}{{ gender.0.1 }}{% elif gender.2.0 == "male" %}{{ gender.2.1 }}{% elif gender.3.0 == "male" %}{{ gender.3.1 }}{% elif gender.4.0 == "male" %}{{ gender.4.1 }}{% elif gender.5.0 == "male" %}{{ gender.5.1 }}{% else %}0{% endif %})
-                                             </label>
-                                         </div>
-                                         <div class="checkbox">
-                                             <label class="checkbox-inline" for="inlineCheckbox2">
-                                                <input class="filter-checkbox" type="checkbox" id="inlineCheckbox2" value="0" name="gender" data-url="selected_facets=gender_exact:female"{% check_value_is_active "gender" "female" request.get_full_path %}/>
-                                                Female&nbsp;({% if gender.1.0 == "female" %}{{ gender.1.1 }}{% elif gender.0.0 == "female" %}{{ gender.0.1 }}{% elif gender.2.0 == "female" %}{{ gender.2.1 }}{% elif gender.3.0 == "female" %}{{ gender.3.1 }}{% elif gender.4.0 == "female" %}{{ gender.4.1 }}{% elif gender.5.0 == "female" %}{{ gender.5.1 }}{% else %}0{% endif %})
-                                             </label>
-                                         </div>
-                                         <div class="checkbox">
-                                             <label class="checkbox-inline" for="inlineCheckbox3">
-                                                <input class="filter-checkbox" type="checkbox" id="inlineCheckbox3" value="2" name="gender" data-url="selected_facets=gender_exact:transgender_male"{% check_value_is_active "gender" "transgender_male" request.get_full_path %}/>
-                                                Transgender Male&nbsp;({% if gender.1.0 == "transgender_male" %}{{ gender.1.1 }}{% elif gender.0.0 == "transgender_male" %}{{ gender.0.1 }}{% elif gender.2.0 == "transgender_male" %}{{ gender.2.1 }}{% elif gender.3.0 == "transgender_male" %}{{ gender.3.1 }}{% elif gender.4.0 == "transgender_male" %}{{ gender.4.1 }}{% elif gender.5.0 == "transgender_male" %}{{ gender.5.1 }}{% else %}0{% endif %})
-                                             </label>
-                                         </div>
-                                         <div class="checkbox">
-                                             <label class="checkbox-inline" for="inlineCheckbox4">
-                                                <input class="filter-checkbox" type="checkbox" id="inlineCheckbox4" value="3" name="gender" data-url="selected_facets=gender_exact:transgender_female"{% check_value_is_active "gender" "transgender_female" request.get_full_path %}/>
-                                                Transgender Female&nbsp;({% if gender.1.0 == "transgender_female" %}{{ gender.1.1 }}{% elif gender.0.0 == "transgender_female" %}{{ gender.0.1 }}{% elif gender.2.0 == "transgender_female" %}{{ gender.2.1 }}{% elif gender.3.0 == "transgender_female" %}{{ gender.3.1 }}{% elif gender.4.0 == "transgender_female" %}{{ gender.4.1 }}{% elif gender.5.0 == "transgender_female" %}{{ gender.5.1 }}{% else %}0{% endif %})
-                                             </label>
-                                         </div>
-                                         <div class="checkbox">
-                                             <label class="checkbox-inline" for="inlineCheckbox5">
-                                                <input class="filter-checkbox" type="checkbox" id="inlineCheckbox5" value="4" name="gender" data-url="selected_facets=gender_exact:other"{% check_value_is_active "gender" "other" request.get_full_path %}/>
-                                                Other&nbsp;({% if gender.1.0 == "other" %}{{ gender.1.1 }}{% elif gender.0.0 == "other" %}{{ gender.0.1 }}{% elif gender.2.0 == "other" %}{{ gender.2.1 }}{% elif gender.3.0 == "other" %}{{ gender.3.1 }}{% elif gender.4.0 == "other" %}{{ gender.4.1 }}{% elif gender.5.0 == "other" %}{{ gender.5.1 }}{% else %}0{% endif %})
-                                             </label>
-                                         </div>
-                                        {% endwith %}
+                                        {% for status in facets.fields.gender %}
+                                            <div class="checkbox">
+                                                <label class="checkbox-inline">
+                                                    <input type="checkbox" class="filter-checkbox" value="{{ status.0|urlencode }}"
+                                                       name="gender" data-url="selected_facets=gender_exact:{{ status.0|urlencode }}"
+                                                       {% check_value_is_active "gender" status.0|urlencode request.get_full_path %} />
+                                                    {{ status.0 }} ({{ status.1 }})
+                                                </label>
+                                            </div>
+                                        {% endfor %}
                                     </div>
                                 </div>
                             </div>

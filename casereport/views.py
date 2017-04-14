@@ -29,7 +29,7 @@ from casereport.constants import GENDER
 from casereport.constants import SARCOMA_TYPE
 from casereport.decorator import validate_token
 from casereport.forms import CaseForm
-from casereport.forms import FacetedSearchForm
+from casereport.forms import MultiFacetedSearchForm
 from casereport.havoc_interface import havoc_results
 from casereport.models import CaseReport
 from casereport.models import CaseFile
@@ -257,7 +257,7 @@ class MyFacetedSearchView(FacetedSearchView):
             .facet('country', sort='count')\
             .facet('treatment_type', sort='count')\
             .highlight(fragsize=200)
-        kwargs.update({'form_class': FacetedSearchForm, 'searchqueryset': sqs})
+        kwargs.update({'form_class': MultiFacetedSearchForm, 'searchqueryset': sqs})
         super(MyFacetedSearchView, self).__init__(*args, **kwargs)
 
     def __call__(self, request):

@@ -13,12 +13,10 @@ function search() {
     url = url.split('&')[0];
     if (url.split('?').length == 1)
         url = url + '?'
-
-    var selected_gender =  $('input:checked');
-    if (selected_gender.length != 2)
-        selected_gender.each(function(index, el) {
-            url = url + '&' + $(el).attr('data-url');
-        });
+    var selected_gender =  $('.gender-section input:checked');
+    selected_gender.each(function(index, el) {
+        url = url + '&' + $(el).attr('data-url');
+    });
     $('select.select2').each(function(index, el) {
         // if ($(el).attr('multiple'))
         //     $($(el).val()).each(function(index, value) {

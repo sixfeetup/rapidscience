@@ -1,6 +1,7 @@
 __author__ = 'yaseen'
 
-from haystack.forms import SearchForm
+from collections import defaultdict
+from haystack.forms import FacetedSearchForm
 
 from django import forms
 
@@ -34,10 +35,7 @@ class CaseForm(forms.Form):
     )
 
 
-class FacetedSearchForm(SearchForm):
-    def __init__(self, *args, **kwargs):
-        self.selected_facets = kwargs.pop("selected_facets", [])
-        super(FacetedSearchForm, self).__init__(*args, **kwargs)
+class MultiFacetedSearchForm(FacetedSearchForm):
 
     def search(self):
         # sqs = super(FacetedSearchForm, self).search()
@@ -48,7 +46,12 @@ class FacetedSearchForm(SearchForm):
         if not query:
             query = 'sarcoma'
 
-        sqs = self.searchqueryset.auto_query(query)
+        if hasattr(self, 'cleaned_data'):
+            sqs = self.searchqueryset.filter(
+                content__startswith=self.cleaned_data.get('q'))
+        else:
+            sqs = self.searchqueryset
+        multi_facet = defaultdict(list)
 
         if self.load_all:
             sqs = sqs.load_all()
@@ -59,11 +62,21 @@ class FacetedSearchForm(SearchForm):
 
             field, value = facet.split(":", 1)
             if value:
+                multi_facet[field].append(value)
                 if field == 'age_exact':
                     min_val, max_val = value.strip('[').strip(']').split('TO')
                     sqs = sqs.filter(age__gte=int(min_val), age__lte=int(max_val))
-                else:
+                elif field != 'gender_exact':
                     sqs = sqs.narrow('%s:"%s"' % (field, value))
+
+        for field, values in multi_facet.items():
+            if field != 'gender_exact':
+                continue
+            values = ['"' + sqs.query.clean(v) + '"' for v in values]
+            sqs = sqs.narrow(u'{!tag=%s}%s:(%s)' % (
+                field.upper(),
+                field,
+                " OR ".join(values)))
         return sqs
 
     def get_suggestion(self):
