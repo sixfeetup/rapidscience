@@ -975,6 +975,12 @@ a.comment-count.empty {
     .main-footer {
         margin-bottom: 100px;
     }
+    .profile-thumbnail {
+        text-align: right;
+        .photo {
+            border-radius: 43px;
+        }
+    }
 }
 
 /* profile */
