@@ -18,7 +18,7 @@
                     </div>
                 </div>
                 {% for field in form %}
-                    <div class="row">
+                    <div class="row profile-field">
                         <div class="col-md-2 col-md-offset-1 profile-thumbnail">
                             {% if field.name == 'photo' %}
                                 {% if user.photo %}
@@ -33,7 +33,7 @@
                             {% endif %}
                         </div>
                         <div class="col-md-6">
-                            {% bootstrap_field field %}
+                            {% bootstrap_field field label_class='section-label' %}
                         </div>
                     </div>
                 {% endfor %}
