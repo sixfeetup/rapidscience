@@ -112,6 +112,7 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
         help_text='If you do not have an ORCID ID, you can register for one '
                   '<a href="https://orcid.org/register" target="_blank">here</a>')
     photo = models.ImageField(upload_to="profile_photos", blank=True)
+    banner = models.ImageField(upload_to="banner_photos", blank=True)
     institution = models.ForeignKey(Institution, blank=True, null=True)
 
     objects = UserManager()
