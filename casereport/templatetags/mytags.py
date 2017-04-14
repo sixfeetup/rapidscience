@@ -15,11 +15,14 @@ RETURN_VALUES = {'gender': 'checked', 'molecular_abberations': 'selected', 'trea
 @register.simple_tag
 def check_value_is_active(field, value, url):
     url_value = urllib.parse.parse_qs(url)
-    current_value = '%s_exact:%s' %(field, value)
+    current_value = '{0}:{1}'.format(field, value)
     selected_facets = url_value.get('selected_facets', None)
     if selected_facets:
         if current_value in url_value['selected_facets']:
             return RETURN_VALUES[field]
+    if field == 'gender' and 'gender' not in url:
+        # display gender fields as checked if gender not in query
+        return RETURN_VALUES[field]
     return ''
 
 

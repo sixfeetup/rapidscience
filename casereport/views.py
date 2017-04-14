@@ -251,15 +251,10 @@ class FormTypeView(TemplateView):
 
 class MyFacetedSearchView(FacetedSearchView):
     def __init__(self, *args, **kwargs):
-        sqs = SearchQuerySet().models(CaseReport).facet('gender', sort='index')\
-            .facet('age', sort='index')\
-            .facet('abberations', sort='count')\
-            .facet('country', sort='count')\
-            .facet('treatment_type', sort='count')\
-            .highlight(fragsize=200)
+        sqs = SearchQuerySet().models(CaseReport).highlight(fragsize=200)
         kwargs.update({'form_class': MultiFacetedSearchForm, 'searchqueryset': sqs})
         super(MyFacetedSearchView, self).__init__(*args, **kwargs)
-
+    
     def __call__(self, request):
         if request.is_ajax():
             self.template = 'casereport/search/results.html'
@@ -274,11 +269,14 @@ class MyFacetedSearchView(FacetedSearchView):
         Returns an empty list if there's no query to search with.
         """
         data = self.request.GET.copy()
+        sqs = self.form.searchqueryset
+        sqs = sqs.facet(u'{!ex=GENDER}gender_exact', sort="index")
+        self.form.searchqueryset = sqs
         results = self.form.search()
         if not results:
             return results
         sortby = data.get('sortby')
-        if sortby=="created_on":
+        if sortby == "created_on":
             sortorder = data.get('sortorder', 'desc')
             if sortorder == 'desc':
                 results = results.order_by('-'+sortby)

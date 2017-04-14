@@ -92,7 +92,7 @@
                                             <div class="checkbox">
                                                 <label class="checkbox-inline">
                                                     <input type="checkbox" class="filter-checkbox" value="{{ status.0|urlencode }}"
-                                                       name="gender" data-url="selected_facets=gender_exact:{{ status.0|urlencode }}"
+                                                       name="gender" data-url="selected_facets=gender:{{ status.0|urlencode }}"
                                                        {% check_value_is_active "gender" status.0|urlencode request.get_full_path %} />
                                                     {{ status.0 }} ({{ status.1 }})
                                                 </label>

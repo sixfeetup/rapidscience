@@ -66,11 +66,11 @@ class MultiFacetedSearchForm(FacetedSearchForm):
                 if field == 'age_exact':
                     min_val, max_val = value.strip('[').strip(']').split('TO')
                     sqs = sqs.filter(age__gte=int(min_val), age__lte=int(max_val))
-                elif field != 'gender_exact':
+                elif field != 'gender':
                     sqs = sqs.narrow('%s:"%s"' % (field, value))
 
         for field, values in multi_facet.items():
-            if field != 'gender_exact':
+            if field != 'gender':
                 continue
             values = ['"' + sqs.query.clean(v) + '"' for v in values]
             sqs = sqs.narrow(u'{!tag=%s}%s:(%s)' % (
