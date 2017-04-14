@@ -71,6 +71,10 @@
   @extend .mark;
   padding: 0;
 }
+em.highlighted {
+  font-style: normal;
+}
+
 .btn-tag {
   @include button-variant($btn-default-color, $gray-lighter, $btn-default-border);
   margin-bottom: 4px;

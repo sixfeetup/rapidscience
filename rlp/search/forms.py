@@ -114,9 +114,9 @@ class ModelSearchForm(BaseModelSearchForm):
         sqs = self.searchqueryset
         if query:
             kwargs = {
-                'hl.fl': ['title','text'],
-                'hl.simple.pre': '<span class="highlighted">',
-                'hl.simple.post': '</span>'
+                'fl': ['title','text'],
+                'simple.pre': '<em class="highlighted">',
+                'simple.post': '</em>'
             }
             # We search both title and text so we get the benefit of boosting title fields
             sqs = sqs.filter(

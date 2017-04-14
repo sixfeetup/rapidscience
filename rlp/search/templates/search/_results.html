@@ -1,7 +1,6 @@
 {% load el_pagination_tags %}
 {% lazy_paginate object_list %}
 {% for result in object_list %}
-
   {% if result.content_type == "cms.title" %}
     {% include "search/_result_item.html" with title=result.title link=result.object.page.get_absolute_url description=result.text highlighted=result.highlighted %}
   {% elif 'newsfeed.' in result.content_type or 'accounts.' in result.content_type %}
@@ -13,7 +12,7 @@
     </p>
     {% include 'bibliography/_reference.html' with obj=result.object.reference %}
   {% elif 'casereport.' in result.content_type %}
-    {% include 'search/_result_item.html' with label=result.status title=result.title link=result.link description=result.text %}
+    {% include 'search/_result_item.html' with label=result.status title=result.title link=result.link description=result.text highlighted=result.highlighted %}
   {% else %}
     {% include "search/_result_item.html" with title=result.title link=result.link description=result.text highlighted=result.highlighted %}
   {% endif %}
