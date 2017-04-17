@@ -383,7 +383,11 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
             template_name = 'comments/list.html'
     elif tab == 'casereports':
         reports = request.user.get_shared_content(CaseReport)
-        context['case_reports'] = [r for r in reports if r.status == 'approved']
+        context['case_reports'] = sorted(
+            (r for r in reports if r.status == 'approved'),
+            key=lambda c: c.date_added,
+            reverse=True,
+        )
     elif tab == 'documents':
         context['documents'] = request.user.get_shared_content(Document)
     elif tab == 'bibliography':

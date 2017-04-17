@@ -90,7 +90,11 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
         context['page_template'] = 'comments/list.html'
     elif tab == 'casereports':
         reports = project.get_shared_content(CaseReport)
-        context['case_reports'] = [r for r in reports if r.status == 'approved']
+        context['case_reports'] = sorted(
+            (r for r in reports if r.status == 'approved'),
+            key=lambda c: c.date_added,
+            reverse=True,
+        )
     elif tab == 'bibliography':
         context['references'] = project.get_shared_content(ProjectReference)
     # member invite form
