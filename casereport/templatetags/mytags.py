@@ -9,8 +9,13 @@ from django import template
 
 register = template.Library()
 
-RETURN_VALUES = {'gender': 'checked', 'molecular_abberations': 'selected', 'treatments': 'selected', 'cr_tests': 'selected',
-                 'treatment_type': 'selected', 'country': 'selected'}
+RETURN_VALUES = {'gender': 'checked',
+                 'molecular_abberations': 'selected',
+                 'treatments': 'selected',
+                 'cr_tests': 'selected',
+                 'treatment_type': 'selected',
+                 'country': 'selected',
+                 'primary_physician': 'checked'}
 
 @register.simple_tag
 def check_value_is_active(field, value, url):

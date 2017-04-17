@@ -16,6 +16,7 @@ from .models import DiagnosisEvent
 class CaseReportIndex(BaseIndex, indexes.Indexable):
     text = indexes.CharField(document=True)
     title = indexes.CharField(model_attr='title')
+    primary_physician = indexes.CharField(faceted=True)
     gender = indexes.CharField(model_attr='gender', faceted=True)
     age = indexes.IntegerField(model_attr='age', faceted=True)
     abberations = indexes.CharField(faceted=True)
@@ -47,6 +48,9 @@ class CaseReportIndex(BaseIndex, indexes.Indexable):
              'reported_date': reported_date,
              'treatment_names': treatment_names})
         return searchstring
+
+    def prepare_primary_physician(self, obj):
+        return obj.primary_physician.get_rlpuser()
 
     def prepare_country(self, obj):
         physician = obj.primary_physician

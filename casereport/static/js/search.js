@@ -17,6 +17,10 @@ function search() {
     selected_gender.each(function(index, el) {
         url = url + '&' + $(el).attr('data-url');
     });
+    var my_cases = $('#category2:checked');
+    if (my_cases) {
+        url = url + '&' + $(my_cases).attr('data-url');
+    }
     $('select.select2').each(function(index, el) {
         // if ($(el).attr('multiple'))
         //     $($(el).val()).each(function(index, value) {

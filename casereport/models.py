@@ -15,6 +15,7 @@ from django.template.loader import render_to_string
 from django.conf import settings
 from django.utils.encoding import python_2_unicode_compatible
 
+from rlp.accounts.models import User
 from rlp.core.models import SharedObjectMixin
 
 
@@ -59,6 +60,13 @@ class Physician(CRDBBase):
         if self.affiliation:
             return self.affiliation.country.code
         return None
+
+    def get_rlpuser(self):
+        try:
+            user = User.objects.get(email=self.email)
+            return user.pk
+        except User.DoesNotExist:
+            return None
 
 
 @python_2_unicode_compatible
