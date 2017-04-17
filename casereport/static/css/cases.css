@@ -1282,3 +1282,7 @@ input:focus + div.info {
     text-transform: uppercase;
     width: 50px;
 }
+.sticky {
+    position: fixed;
+    top: 290px;
+}
