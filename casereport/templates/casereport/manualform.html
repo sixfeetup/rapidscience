@@ -57,7 +57,7 @@
 
     <div class="molecular-abberations">
         <h4><label for="aberrations">Genetic Aberrations</label></h4>
-            <select name="aberrations" class="form-control" id="aberrations" multiple="multiple" size="5">
+            <select name="aberrations" class="form-control select2" id="aberrations" multiple="multiple" size="5">
                 {% for item in aberrations %}
                     <option value="{{ item.id }}">{{ item.molecule }}: {{ item.name }}</option>
                 {% endfor %}
@@ -218,6 +218,8 @@
                $(".others").hide();
            }
     } );
+
+ $('.select2').select2();
 
 </script>
 
