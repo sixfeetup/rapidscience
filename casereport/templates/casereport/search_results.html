@@ -34,11 +34,13 @@
          <div class="col-md-3 col-xs-3 menu">
              <ul class="jumpMenu">
                  <li><a href="#section-primary">Primary Author/Contact</a></li>
-                 {% if casereport.referring_physician.all %}
+                 {% if casereport.get_coauthors %}
                      <li><a href="#section-coauthors">Co-Authors</a></li>
                  {% endif %}
+                 {% if casereport.age or casereport.gender or casereport.subtype %}
                  <li><a href="#section-diagnosis">Diagnosis/Presentation</a></li>
-                 {% if casereport.aberrations %}
+                 {% endif %}
+                 {% if casereport.aberrations.all|length > 0 or casereport.aberrations_other %}
                      <li><a href="#section-aberrations">Genetic Aberrations</a></li>
                  {% endif %}
                  {% if casereport.biomarkers %}
@@ -69,9 +71,10 @@
 
       <div class="author-list" id="section-primary">
           <h4>Primary Author/Contact</h4>
-          <p><strong>{{ casereport.primary_physician }} | 
-             {{ casereport.primary_physician.affiliation }}, 
-             {{ casereport.primary_physician.affiliation.city }} | 
+          <p><strong>{{ casereport.primary_physician }}
+             {% if casereport.primary_physician.affiliation or casereport.primary_physician.affiliation.city or casereport.primary_physician.affiliation.country %} | {% endif %}
+             {% if casereport.primary_physician.affiliation %} {{ casereport.primary_physician.affiliation }}, {% endif %}
+             {% if casereport.primary_physician.affiliation.city %}{{ casereport.primary_physician.affiliation.city }} | {% endif %}
              {{ casereport.primary_physician.affiliation.country }}</strong></p>
       </div>
 
@@ -86,7 +89,8 @@
           </ol>
       </div>
       {% endif %}
-      
+
+     {% if casereport.age or casereport.gender or casereport.subtype %}
       <div id="section-diagnosis">
           <h4>Diagnosis/Presentation</h4>
           <p class="section-details">
@@ -96,6 +100,7 @@
           </p>
           <p>{{ casereport.presentation }}</p>
       </div>
+     {% endif %}
 
       {% if casereport.aberrations.all|length > 0 or casereport.aberrations_other %}
          <div class="molecule-abberation" id="section-aberrations">
