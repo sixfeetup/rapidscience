@@ -176,7 +176,7 @@ class CaseReportFormView(FormView):
                         treatment_type=treatment_type,
                         treatment_intent=treatment_intent,
                         objective_response=treatment_response,
-                        status=int(treatment_status),
+                        status=treatment_status,
                         notes=treatment_outcome)
             CaseReportInstanceResource()._addauthor(case, author_list)
 

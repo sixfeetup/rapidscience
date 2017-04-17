@@ -209,7 +209,8 @@ class TreatmentInstanceResource:
         result.casereport_f = casereport
         result.name = name
         result.treatment_type = treatment_type
-        result.status = status
+        if status:
+            result.status = status
         result.duration = duration
         result.objective_response = objective_response
         result.notes = notes
