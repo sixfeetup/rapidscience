@@ -15,6 +15,8 @@ from rlp.projects.models import Project
 
 EXCLUDE_MODELS = (
     'Title',
+    'Post',
+    'NewsItem'
 )
 
 
