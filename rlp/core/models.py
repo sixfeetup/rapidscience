@@ -3,7 +3,7 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models.lookups import DateTransform
-
+from actstream import action
 
 @models.DateTimeField.register_lookup
 class WeekTransform(DateTransform):
@@ -107,7 +107,7 @@ class SharedObjectMixin(models.Model):
     def is_shared_with_user(self, user):
         return (user in self.get_viewers_as_users()) or user.is_superuser
 
-    def share_with(self, viewers):
+    def share_with(self, viewers, shared_by):
         target = self
         if (hasattr(self, 'polymorphic_model_marker')
            and len(self._meta.parents)):
@@ -116,6 +116,12 @@ class SharedObjectMixin(models.Model):
             target = parent_type.objects.non_polymorphic().get(id=self.id)
         for viewer in viewers:
             SharedContent.objects.create(viewer=viewer, target=target)
+            # ghf - need to create Actions to go along with this.
+            action.send(shared_by,
+                        verb='shared',
+                        action_object=target,
+                        target=viewer)
+
 
     def get_content_type(self, resolve_polymorphic=True):
         target = self
