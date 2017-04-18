@@ -45,8 +45,7 @@ In some cases such as Youtube videos, we don't have local images so we can't mak
                             <a href="
                                 {% if viewer.email %}{% url 'profile' viewer.id %}
                                 {% else %}{% url 'project' pk=viewer.id slug=viewer.slug %}{% endif %}
-                                ">{{ viewer }}</a>{% if forloop.last is not True %}, {% endif %}
-                                ">{{ viewer }}</a>{% if forloop.last is not True %}, {% endif %}
+                                ">{{ viewer }}</a>{% if not forloop.last %}, {% endif %}
                         {% endfor %}
                     {% endif %}
                 </p>
