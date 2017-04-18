@@ -56,6 +56,7 @@ class MultiFacetedSearchForm(FacetedSearchForm):
         if self.load_all:
             sqs = sqs.load_all()
 
+        or_search = ['gender', 'country']
         for facet in self.selected_facets:
             if ":" not in facet:
                 continue
@@ -66,11 +67,11 @@ class MultiFacetedSearchForm(FacetedSearchForm):
                 if field == 'age_exact':
                     min_val, max_val = value.strip('[').strip(']').split('TO')
                     sqs = sqs.filter(age__gte=int(min_val), age__lte=int(max_val))
-                elif field != 'gender':
+                elif field not in or_search:
                     sqs = sqs.narrow('%s:"%s"' % (field, value))
 
         for field, values in multi_facet.items():
-            if field != 'gender':
+            if field not in or_search:
                 continue
             values = ['"' + sqs.query.clean(v) + '"' for v in values]
             sqs = sqs.narrow(u'{!tag=%s}%s:(%s)' % (
