@@ -34,14 +34,22 @@ In some cases such as Youtube videos, we don't have local images so we can't mak
         </h4>
         {% endif %}
         {% with action=result.object.action_object_actions.first %}
-            {% if action %}
-                <p class="small">{{ action.action_object.display_type }}
+                <p class="small">{% if action %}{{ action.action_object.display_type }}
                     {% if action.action_object_content_type.model != 'threadedcomment' %}{{ action.verb }}{% endif %}
                     by <a href="{{ action.actor.get_absolute_url }}">{{ action.actor.get_full_name }}</a>
                     | {{ action.timestamp|naturaltime }}
-                    <br />Shared with
+                    <br />{% endif %}
+                    {% if result.object.get_viewers %}
+                        Shared with
+                        {% for viewer in result.object.get_viewers %}
+                            <a href="
+                                {% if viewer.email %}{% url 'profile' viewer.id %}
+                                {% else %}{% url 'project' pk=viewer.id slug=viewer.slug %}{% endif %}
+                                ">{{ viewer }}</a>{% if forloop.last is not True %}, {% endif %}
+                                ">{{ viewer }}</a>{% if forloop.last is not True %}, {% endif %}
+                        {% endfor %}
+                    {% endif %}
                 </p>
-            {% endif %}
         {% endwith %}
 
         {% if description %}
