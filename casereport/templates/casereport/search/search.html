@@ -132,15 +132,13 @@
                                     <div class="treatment_type-section">
                                         <h5>Treatment Type</h5>
                                         <select class="form-control select2"  name="treatment_type">
-                                         <option value="" ></option>
-
-                                        <option value="selected_facets=treatment_type_exact:Chemotherapy" {% check_value_is_active "treatment_type" "Chemotherapy" request.get_full_path %}> Chemotherapy</option>
-                                         <option value="selected_facets=treatment_type_exact:Immunotherapy" {% check_value_is_active "treatment_type" "Immunotherapy" request.get_full_path %}> Immunotherapy</option>
-                                        <option value="selected_facets=treatment_type_exact:Radiotherapy" {% check_value_is_active "treatment_type" "Radiotherapy" request.get_full_path %}>Radiotherapy</option>
-                                        <option value="selected_facets=treatment_type_exact:Surgery" {% check_value_is_active "treatment_type" "Surgery" request.get_full_path %}> Surgery</option>
-                                        <option value="selected_facets=treatment_type_exact:Targeted Therapy" {% check_value_is_active "treatment_type" "Targeted Therapy" request.get_full_path %}>Targeted Therapy</option>
-
-
+                                            <option value=""></option>
+                                            {% for cnt in facets.fields.treatment_type %}
+                                                <option value="selected_facets=treatment_type:{{ cnt.0|urlencode }}"
+                                                        {% check_value_is_active "treatment_type" cnt.0|title request.get_full_path %}>
+                                                    {{ cnt.0|title }} ({{ cnt.1 }})
+                                                </option>
+                                            {% endfor %}
                                         </select>
                                     </div>
 

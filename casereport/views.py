@@ -282,6 +282,7 @@ class MyFacetedSearchView(FacetedSearchView):
         sqs = self.form.searchqueryset
         sqs = sqs.facet(u'{!ex=GENDER}gender_exact', sort="index")
         sqs = sqs.facet(u'{!ex=COUNTRY}country_exact', sort="index")
+        sqs = sqs.facet(u'treatment_type')
         self.form.searchqueryset = sqs
         results = self.form.search()
         if not results:
