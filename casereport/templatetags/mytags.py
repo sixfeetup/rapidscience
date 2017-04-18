@@ -21,9 +21,9 @@ RETURN_VALUES = {'gender': 'checked',
 def check_value_is_active(field, value, url):
     url_value = urllib.parse.parse_qs(url)
     current_value = '{0}:{1}'.format(field, value)
-    selected_facets = url_value.get('selected_facets', None)
-    if selected_facets:
-        if current_value in url_value['selected_facets']:
+    if url_value:
+        facets = [x.lower() for x in url_value.get('selected_facets', None)]
+        if current_value.lower() in facets:
             return RETURN_VALUES[field]
     if field == 'gender' and 'gender' not in url:
         # display gender fields as checked if gender not in query

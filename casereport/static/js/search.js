@@ -29,7 +29,10 @@ function search() {
         //     });
         // else
         // url = url + '&' + $(el).attr('name') + '=' + $(el).val();
-        url = url + '&' + $(el).val();
+        vals = $(el).val();
+        for (val in vals) {
+            url = url + '&' + vals[val];
+        }
     });
     $('select.sorting').each(function(index, el) {
         url = url + '&' + $(el).attr('name') + '=' + $(el).val();

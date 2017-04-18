@@ -116,12 +116,13 @@
                                     </br>
                                     <div class="country-section">
                                         <h5>Country</h5>
-                                        <select class="form-control select2" name="country">
-                                            <option value="" ></option>
+                                        <select class="form-control select2" name="country" multiple="multiple">
+                                            <option value=""></option>
                                             {% for cnt in facets.fields.country %}
-                                                {% if cnt.1 > 0 %}
-                                                    <option value="selected_facets=country_exact:{{ cnt.0|urlencode }}" {% check_value_is_active "country" cnt.0 request.get_full_path %}>{{ cnt.0|title }} ({{ cnt.1 }})</option>
-                                                {% endif %}
+                                                <option value="selected_facets=country:{{ cnt.0|urlencode }}"
+                                                        {% check_value_is_active "country" cnt.0|title request.get_full_path %}>
+                                                    {{ cnt.0|title }} ({{ cnt.1 }})
+                                                </option>
                                             {% endfor %}
                                         </select>
                                     </div>

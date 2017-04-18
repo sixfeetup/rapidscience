@@ -271,6 +271,7 @@ class MyFacetedSearchView(FacetedSearchView):
         data = self.request.GET.copy()
         sqs = self.form.searchqueryset
         sqs = sqs.facet(u'{!ex=GENDER}gender_exact', sort="index")
+        sqs = sqs.facet(u'{!ex=COUNTRY}country_exact', sort="index")
         self.form.searchqueryset = sqs
         results = self.form.search()
         if not results:
