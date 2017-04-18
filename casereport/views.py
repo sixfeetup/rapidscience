@@ -116,12 +116,26 @@ class CaseReportFormView(FormView):
         for i in range(0, len(name)):
             physician = PhysicianInstanceResource()._post(name[i], email[i])
             physicians.append(physician)
+        attachment1 = request.FILES.get('attachment1')
+        attachment2 = request.FILES.get('attachment2')
+        attachment3 = request.FILES.get('attachment3')
+        attachment1_title = data.get('attachment1_title')
+        attachment2_title = data.get('attachment2_title')
+        attachment3_title = data.get('attachment3_title')
+        attachment1_description = data.get('attachment1_description')
+        attachment2_description = data.get('attachment2_description')
+        attachment3_description = data.get('attachment3_description')
         if entry_type == 'F':
             document = request.FILES['uploadfile']
             file_name = request.FILES['uploadfile'].name
             case = CaseReportListResource()._post(
                 title=title, physicians=physicians,
-                document=document, file_name=file_name)
+                document=document, file_name=file_name,
+                attachment1=attachment1, attachment2=attachment2, attachment3=attachment3,
+                attachment1_title=attachment1_title, attachment2_title=attachment2_title,
+                attachment3_title=attachment3_title,
+                attachment1_description=attachment1_description, attachment2_description=attachment2_description,
+                attachment3_description=attachment3_description)
             CaseReportInstanceResource()._addauthor(case, author_list)
         elif entry_type == 'M':
             age = data.get('age')
@@ -140,15 +154,6 @@ class CaseReportFormView(FormView):
             treatment_status_list = data.getlist('treatment_status', None)
             treatment_outcome_list = data.getlist('treatment_outcome', None)
             additional_comment = data.get('additional_comment')
-            attachment1 = request.FILES.get('attachment1')
-            attachment2 = request.FILES.get('attachment2')
-            attachment3 = request.FILES.get('attachment3')
-            attachment1_title = data.get('attachment1_title')
-            attachment2_title = data.get('attachment2_title')
-            attachment3_title = data.get('attachment3_title')
-            attachment1_description = data.get('attachment1_description')
-            attachment2_description = data.get('attachment2_description')
-            attachment3_description = data.get('attachment3_description')
             case = CaseReportListResource()._post(
                 title=title, age=age,
                 gender=gender, pathology=pathology,
@@ -187,7 +192,12 @@ class CaseReportFormView(FormView):
             details = data.get('details')
             case = CaseReportListResource()._post(
                 title=title, physicians=physicians, age=age, gender=gender,
-                subtype=subtype, details=details)
+                subtype=subtype, details=details,
+                attachment1=attachment1, attachment2=attachment2, attachment3=attachment3,
+                attachment1_title=attachment1_title, attachment2_title=attachment2_title,
+                attachment3_title=attachment3_title,
+                attachment1_description=attachment1_description, attachment2_description=attachment2_description,
+                attachment3_description=attachment3_description)
             CaseReportInstanceResource()._addauthor(case, author_list)
 
         SendToView.post(self, self.request, 'casereport', 'casereport',

@@ -427,8 +427,7 @@ $('.agree-checkbox').click(function(){
 
 //for attachments
 
-$( document ).ajaxComplete(function( event, xhr, settings ) {
-  if ( settings.url === "/casereport/formtype/?ftype=M" ) {
+$(document).ready(function() {
 
     var max_fields      = 3; //maximum input boxes allowed
     var att_wrapper         = $(".attachments-div"); //Fields wrapper
@@ -468,6 +467,5 @@ $( document ).ajaxComplete(function( event, xhr, settings ) {
         }
     });
 
-  }
 });
 
