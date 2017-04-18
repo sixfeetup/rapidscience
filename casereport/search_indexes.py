@@ -57,7 +57,7 @@ class CaseReportIndex(BaseIndex, indexes.Indexable):
         return [physician.get_country()]
 
     def prepare_treatments(self, obj):
-        events = obj.event_set.filter(event_type='treatment')
+        events = obj.get_treatments()
         treatments = {i.name.strip().capitalize() for i in events}
         treatments = list(treatments)
         return treatments
@@ -93,10 +93,8 @@ class CaseReportIndex(BaseIndex, indexes.Indexable):
         return synonyms
 
     def prepare_treatment_type(self, obj):
-        treatments = TreatmentEvent.objects.filter(casereport_f=obj)
-        types = {i.treatment_type.strip().capitalize() for i in treatments}
-        types = list(types)
-        return types
+        events = obj.get_treatments()
+        return [i.treatment_type for i in events]
 
     def get_outcomes(self, obj):
         events = TreatmentEvent.objects.filter(casereport_f=obj)

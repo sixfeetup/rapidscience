@@ -30,8 +30,12 @@ function search() {
         // else
         // url = url + '&' + $(el).attr('name') + '=' + $(el).val();
         vals = $(el).val();
-        for (val in vals) {
-            url = url + '&' + vals[val];
+        if (Array.isArray(vals)) {
+            for (val in vals) {
+                url = url + '&' + vals[val];
+            }
+        } else {
+            url = url + '&' + vals;
         }
     });
     $('select.sorting').each(function(index, el) {
