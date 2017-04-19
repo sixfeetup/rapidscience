@@ -137,11 +137,11 @@
                       {{ treatment.name }}
                   </div>
                   <p class="section-details">
-                      {% if treatment.duration %}{{ treatment.duration }} | {% endif %}
-                      {% if treatment.treatment_type %}{{ treatment.treatment_type }} | {% endif %}
-                      {% if treatment.treatment_intent %}{{ treatment.treatment_intent }} | {% endif %}
-                      {% if treatment.objective_response %}{{ treatment.objective_response }} | {% endif %}
-                      {% if treatment.status %}PS: {{ treatment.status }} {% endif %}
+                      {% if treatment.duration %}{{ treatment.duration }}{% endif %}
+                      {% if treatment.treatment_type %} | {{ treatment.treatment_type }}{% endif %}
+                      {% if treatment.treatment_intent %} | {{ treatment.treatment_intent }}{% endif %}
+                      {% if treatment.objective_response %} | {{ treatment.objective_response }}{% endif %}
+                      {% if treatment.status %} | PS: {{ treatment.status }} {% endif %}
                   </p>
                   <p>{{ treatment.notes }}</p>
               </div>
