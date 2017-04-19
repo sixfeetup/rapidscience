@@ -37,17 +37,17 @@ def member_choices(user, content=None):
         yield (member.id, member.get_full_name())
 
 
-def group_choices(user, content=None):
+def group_choices(user, content=None, came_from=0):
     '''
     return (ID, name) pairs for any group where
       * the user is in the group
-      * the group is open
+      * the group is open (or is where content originated)
       * the group is not already viewing this content
     '''
     if not user and not content:
         return
     for group in user.active_projects():
-        if group.approval_required:
+        if group.approval_required and group.id != int(came_from):
             continue
         if content and group in content.get_viewers():
             continue
