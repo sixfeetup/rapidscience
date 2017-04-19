@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.http import HttpResponseForbidden
-
+import sys
 
 def enforce_sharedobject_permissions(cls, obj_class, id_name, methods=None):
     """ Class decorator intended for subclasses of ClassBasedViews that serve rlp.core.models.SharedObjectMixin subclasses.
@@ -24,7 +24,7 @@ def enforce_sharedobject_permissions(cls, obj_class, id_name, methods=None):
         if fname == 'options':
             continue
         if settings.DEBUG:
-            print("inspecting classbasedview ", cls, "for:", fname)
+            print("inspecting classbasedview ", cls, "for:", fname, file=sys.stderr)
         if hasattr(cls, fname):
             view_func = getattr(cls, fname)
 
@@ -32,21 +32,21 @@ def enforce_sharedobject_permissions(cls, obj_class, id_name, methods=None):
             def make_wrapper(fn, vf, oc, id_name):
                 def wrapper(self, request, *args, **kwargs):
                     if settings.DEBUG:
-                        print("wrapper:", fn, args, kwargs)
+                        print("wrapper:", fn, args, kwargs, file=sys.stderr)
                     if oc.objects.get(id=kwargs[id_name]).is_shared_with_user(request.user):
                         if settings.DEBUG:
-                            print("permisssion granted", vf)
+                            print("permisssion granted", vf, file=sys.stderr)
                         return vf(self, request, *args, **kwargs)
                     # ideally, we'd redirect to the appropriate project join using reverse('projects:projects_join', args=[proj.id] )
                     # but we dont have a good way to select the appropriate project
                     if settings.DEBUG:
-                        print('sorry, denied')
+                        print('sorry, denied', file=sys.stderr)
                     return HttpResponseForbidden()
 
                 return wrapper
 
             if settings.DEBUG:
-                print("wrapping ", fname, "on", cls)
+                print("wrapping ", fname, "on", cls, file=sys.stderr)
             setattr(cls, fname, make_wrapper(fname, view_func, obj_class, id_name))
     return cls
 
