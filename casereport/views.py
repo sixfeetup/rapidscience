@@ -3,6 +3,7 @@ from ajax_select import registry
 from captcha.helpers import captcha_image_url
 from captcha.models import CaptchaStore
 from django.conf import settings
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
 from django.template.loader import render_to_string
@@ -92,7 +93,7 @@ class CaseReportDetailView(TemplateView):
         )
 
 
-class CaseReportFormView(FormView):
+class CaseReportFormView(LoginRequiredMixin, FormView):
     template_name = 'casereport/new_add_casereport.html'
     form_class = CaseForm
 
