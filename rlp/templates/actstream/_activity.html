@@ -27,6 +27,8 @@
           {% include 'bibliography/_reference.html' with obj=obj.reference %}
         {% elif model == 'projectreference' %}
           {% include 'bibliography/_reference.html' with obj=obj.reference %}
+        {% elif model == "casereport" %}
+          {% include 'casereport/casereport_activity.html' %}
         {% endif %}
         <br>
         {% for tag in action.action_object.tags.all %}
