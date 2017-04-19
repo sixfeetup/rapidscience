@@ -24,6 +24,7 @@
 <div class="container">    
     <div class="plugin-form row">
         <div class="col-md-8 col-md-push-2">
+            {% bootstrap_messages %}
             <form class="rpds-form" method="post" action="{% url 'login' %}">
               {% csrf_token %}
               {% for field in form %}
