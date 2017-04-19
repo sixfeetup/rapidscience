@@ -25,7 +25,8 @@ class SharesContentMixin(Model):
             refs = self._shared.select_related('target_type').filter(
                 target_type=content_type
             )
-        return [r.target for r in refs]
+        shared_targets = [ r.target for r in refs ]
+        return shared_targets
 
     def get_activity_stream(self, type_class=None):
         shared = self.get_shared_content(type_class)
@@ -39,4 +40,5 @@ class SharesContentMixin(Model):
             q = Q(action_object_object_id=obj.id) & \
                 Q(action_object_content_type=obj_type)
             query.add(q, Q.OR)
-        return Action.objects.filter(query)
+        filtered_actions = Action.objects.filter(query)
+        return filtered_actions

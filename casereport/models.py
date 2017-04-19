@@ -147,6 +147,10 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     def __str__(self):
         return self.title if self.title else '---'
 
+    @property
+    def display_type(self):
+        return "Case Report"
+
     def save(self, *args, **kwargs):
         if self.status == CASE_STATUS['E'] or self.status == CASE_STATUS['P']:
             # sending a notify email to admin
