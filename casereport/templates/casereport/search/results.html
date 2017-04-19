@@ -51,12 +51,10 @@
                 {% endif %}
                 {% if result.object.get_treatments %}
                 <div class="col-md-12">
-                    <h4>Treatments/Outcomes</h4>
-                    {% for treatment in result.object.get_treatments %}
-                        <div class="row treatments">
-                            {{ treatment.name }} &raquo; {{ treatment.objective_response }}
-                        </div>
-                    {% endfor %}
+                    <h4>Treatments</h4>
+                      <div class="row treatments">
+                        {{ result.object.get_treatments | join:" &raquo; " }}
+                      </div>
                 </div>
                 {% endif %}
             </div>
