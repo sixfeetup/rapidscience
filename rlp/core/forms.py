@@ -44,10 +44,14 @@ def group_choices(user, content=None, came_from=0):
       * the group is open (or is where content originated)
       * the group is not already viewing this content
     '''
+    try:
+        came_from = int(came_from)
+    except TypeError:
+        pass
     if not user and not content:
         return
     for group in user.active_projects():
-        if group.approval_required and group.id != int(came_from):
+        if group.approval_required and group.id != came_from:
             continue
         if content and group in content.get_viewers():
             continue
