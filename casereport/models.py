@@ -15,6 +15,8 @@ from django.template.loader import render_to_string
 from django.conf import settings
 from django.utils.encoding import python_2_unicode_compatible
 
+from djangocms_text_ckeditor.fields import HTMLField
+
 from rlp.accounts.models import User
 from rlp.core.models import SharedObjectMixin
 
@@ -122,7 +124,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     aberrations = models.ManyToManyField(MolecularAbberation, blank=True)
     aberrations_other = models.CharField(max_length=200, null=True, blank=True)
     biomarkers = models.TextField(null=True, blank=True)
-    pathology = models.TextField(null=True, blank=True)
+    pathology = HTMLField(null=True, blank=True)
     additional_comment = models.TextField(null=True, blank=True)
     status = models.CharField(max_length=50, choices=STATUS,
                               default='processing')

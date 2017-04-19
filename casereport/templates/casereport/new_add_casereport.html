@@ -1,8 +1,17 @@
 {% extends "casereport/search/search.html" %}
+{% load static %}
+
+{% block css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'djangocms_text_ckeditor/css/cms.ckeditor.css' %}">
+{% endblock  %}
 
 {% block js-footer %}
     {{ block.super }}
     <script src="{{STATIC_URL}}js/add_case_report.js"></script>
+    <script src="{% static "djangocms_text_ckeditor/ckeditor/ckeditor.js" %}"></script>
+    <script src="{% static "cms/js/modules/cms.base.js" %}"></script>
+    <script src="{% static 'djangocms_text_ckeditor/js/cms.ckeditor.js' %}"></script>
 {% endblock js-footer %}
 
 {% block content %}
