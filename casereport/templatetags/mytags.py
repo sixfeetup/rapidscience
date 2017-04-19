@@ -47,6 +47,9 @@ def check_treatment_active(field, value, url):
         return "selected"
     return ''
 
+@register.simple_tag
+def pretty_title(name):
+    return name.replace("_", " ").capitalize()
 
 @register.simple_tag
 def get_pagination_url(url, page_number):
