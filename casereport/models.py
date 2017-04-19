@@ -109,16 +109,27 @@ class AuthorizedRep(CRDBBase):
 
 @python_2_unicode_compatible
 class CaseReport(CRDBBase, SharedObjectMixin):
-    title = models.CharField(max_length=200, null=True, blank=True)
+    title = models.CharField(max_length=200,
+                             null=True,
+                             blank=True,
+                             verbose_name='Case Title')
     gender = models.CharField(max_length=20,
                               choices=GENDER,
                               null=True,
                               blank=True)
     age = models.IntegerField(null=True, blank=True)
     primary_physician = models.ForeignKey(Physician,
-                                          related_name='primary_case')
-    referring_physician = models.ManyToManyField(Physician, blank=True)
-    authorized_reps = models.ManyToManyField(AuthorizedRep, blank=True)
+                                          related_name='primary_case',
+                                          verbose_name='Case Report Author')
+    referring_physician = \
+        models.ManyToManyField(Physician,
+                               blank=True,
+                               verbose_name='Case Report Co-Authors')
+    authorized_reps = \
+        models.ManyToManyField(AuthorizedRep,
+                               blank=True,
+                               verbose_name='Alternative Correspondence ' +
+                                            'Email Address')
     subtype = models.CharField(max_length=200, null=True, blank=True)
     presentation = models.TextField(null=True, blank=True)
     aberrations = models.ManyToManyField(MolecularAbberation, blank=True)
