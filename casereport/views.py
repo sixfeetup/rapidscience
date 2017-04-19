@@ -124,6 +124,9 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         for i in range(0, len(name)):
             physician = PhysicianInstanceResource()._post(name[i], email[i])
             physicians.append(physician)
+        age = data.get('age')
+        gender = data.get('gender')
+        subtype = data.get('subtype')
         attachment1 = request.FILES.get('attachment1')
         attachment2 = request.FILES.get('attachment2')
         attachment3 = request.FILES.get('attachment3')
@@ -137,7 +140,8 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
             document = request.FILES['uploadfile']
             file_name = request.FILES['uploadfile'].name
             case = CaseReportListResource()._post(
-                title=title, physicians=physicians,
+                title=title, physicians=physicians, age=age,
+                gender=gender, subtype=subtype,
                 document=document, file_name=file_name,
                 attachment1=attachment1, attachment2=attachment2, attachment3=attachment3,
                 attachment1_title=attachment1_title, attachment2_title=attachment2_title,
@@ -146,9 +150,6 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
                 attachment3_description=attachment3_description)
             CaseReportInstanceResource()._addauthor(case, author_list)
         elif entry_type == 'M':
-            age = data.get('age')
-            gender = data.get('gender')
-            subtype = data.get('subtype')
             presentation = data.get('presentation')
             aberrations = data.getlist('aberrations', None)
             aberrations_other = data.get('aberrations_other')
@@ -194,9 +195,6 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
             CaseReportInstanceResource()._addauthor(case, author_list)
 
         elif entry_type == 'T':
-            age = data.get('age')
-            gender = data.get('gender')
-            subtype = data.get('subtype')
             details = data.get('details')
             case = CaseReportListResource()._post(
                 title=title, physicians=physicians, age=age, gender=gender,
