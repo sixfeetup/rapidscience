@@ -1,3 +1,4 @@
+from django.conf import settings
 from django import forms
 from django.core.validators import EmailValidator
 
@@ -12,10 +13,11 @@ class SimpleImageWidget(forms.FileInput):
         super(SimpleImageWidget, self).__init__(attrs)
 
     def render(self, name, value, attrs=None):
-        print("simpleImageWidget: name:", name)
-        print("simpleImageWidget: value:", value)
-        print("simpleImageWidget: attrs:", attrs)
-        print("simpleImageWidget: self:", dir(self))
+        #if settings.DEBUG:
+        #    print("simpleImageWidget: name:", name)
+        #    print("simpleImageWidget: value:", value)
+        #    print("simpleImageWidget: attrs:", attrs)
+        #    print("simpleImageWidget: self:", dir(self))
         output = []
         if value:
             output.append(('<img src="%s" style="height:160px;" /> ' % (value,)))
