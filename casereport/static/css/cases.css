@@ -1113,9 +1113,6 @@ input:focus + div.info {
 	border-left: 1px solid #eeeeee;
 	padding-left: 30px;
 }
-.case-detail-view {
-	padding-top: 25px;
-}
 .case-detail-view h4 {
 	text-transform: uppercase;
 	color: #444444;
@@ -1284,5 +1281,6 @@ input:focus + div.info {
 }
 .sticky {
     position: fixed;
-    top: 290px;
+    top: 300px;
+    width: 255px;
 }
