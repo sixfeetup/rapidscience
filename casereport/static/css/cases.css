@@ -1282,5 +1282,4 @@ input:focus + div.info {
 .sticky {
     position: fixed;
     top: 300px;
-    width: 255px;
 }
