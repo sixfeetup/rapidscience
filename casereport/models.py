@@ -13,11 +13,13 @@ from django.db import models
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.conf import settings
+from django.contrib.contenttypes.fields import GenericRelation
 from django.utils.encoding import python_2_unicode_compatible
 
 from djangocms_text_ckeditor.fields import HTMLField
 
 from rlp.accounts.models import User
+from rlp.discussions.models import ThreadedComment
 from rlp.core.models import SharedObjectMixin
 
 
@@ -154,6 +156,10 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     attachment3 = models.FileField(null=True, blank=True)
     attachment3_title = models.CharField(max_length=200, null=True, blank=True)
     attachment3_description = models.TextField(null=True, blank=True)
+    discussions = GenericRelation(
+        ThreadedComment,
+        object_id_field='object_pk',
+    )
 
     def __str__(self):
         return self.title if self.title else '---'

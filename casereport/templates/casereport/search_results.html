@@ -1,6 +1,7 @@
 {% extends "casereport/search/search.html" %}
 {% load mytags %}
 {% load static %}
+{% load comments %}
 
 
 
@@ -170,6 +171,12 @@
           {% endif %}
           {% endfor %}
       {% endif %}
+      <!-- comments -->
+      {% if user_interaction %}
+        {% render_comment_form for casereport %}
+        <br>
+      {% endif %}
+      {% render_comment_list for casereport %}
 
          </div>
          <div class="visualClear"><!-- --></div>
