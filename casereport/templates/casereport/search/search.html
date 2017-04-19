@@ -67,7 +67,9 @@
                                          <h5>Categories</h5>
                                          <div class="checkbox">
                                              <label for="category1">
-                                                <input class="filter-checkbox" type="checkbox" id="category1" value="0" name="category"  />
+                                                 <input class="filter-checkbox" type="checkbox" id="category1" value="0" name="category"
+                                                        data-url="selected_facets=authornot:{{ request.user.pk }}"
+                                                        {% check_value_is_active "authornot" request.user.pk request.get_full_path %}/>
                                                 Cases shared with me
                                              </label>
                                          </div>

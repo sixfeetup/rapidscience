@@ -15,7 +15,8 @@ RETURN_VALUES = {'gender': 'checked',
                  'cr_tests': 'selected',
                  'treatment_type': 'selected',
                  'country': 'selected',
-                 'primary_physician': 'checked'}
+                 'primary_physician': 'checked',
+                 'authornot': 'checked'}
 
 @register.simple_tag
 def check_value_is_active(field, value, url):
@@ -25,9 +26,15 @@ def check_value_is_active(field, value, url):
         facets = [x.lower() for x in url_value.get('selected_facets')]
         if current_value.lower() in facets:
             return RETURN_VALUES[field]
+    # display fields as checked when not in the query
     if field == 'gender' and 'gender' not in url:
-        # display gender fields as checked if gender not in query
         return RETURN_VALUES[field]
+    if field == 'authornot' and 'authornot' not in url:
+        if 'primary_physician' not in url:
+            return RETURN_VALUES[field]
+    if field == 'primary_physician' and 'primary_physician' not in url:
+        if 'authornot' not in url:
+            return RETURN_VALUES[field]
     return ''
 
 
