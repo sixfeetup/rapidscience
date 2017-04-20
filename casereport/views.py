@@ -312,6 +312,10 @@ class MyFacetedSearchView(FacetedSearchView):
         results = self.form.search()
         if not results:
             return results
+        shared_pks = [x.pk for x in self.request.user.get_shared_content(CaseReport)]
+        for case in results:
+            if case.pk not in shared_pks:
+                results = results.exclude(id=case.id)
         sortby = data.get('sortby')
         if sortby == "created_on":
             sortorder = data.get('sortorder', 'desc')
