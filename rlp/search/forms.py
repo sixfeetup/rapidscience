@@ -24,14 +24,16 @@ def get_action_object_content_types():
     from rlp.bibliography.models import ProjectReference
     from rlp.discussions.models import ThreadedComment
     from rlp.documents.models import File, Image, Video, Link
+    from casereport.models import CaseReport
     choices = [
         ('', 'All Types'),
         (get_model_ct(ThreadedComment), 'Comments'),
+        (get_model_ct(CaseReport), 'Case Reports'),
         (get_model_ct(File), 'Documents'),
         (get_model_ct(Image), 'Images'),
         (get_model_ct(Video), 'Videos'),
         (get_model_ct(Link), 'Links'),
-        (get_model_ct(ProjectReference), 'References')
+        (get_model_ct(ProjectReference), 'References'),
     ]
     return choices
 
