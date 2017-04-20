@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.core.mail import EmailMultiAlternatives
 from django.core import signing
 from django.core.urlresolvers import reverse
+from django.db.models import Q
 from django.forms import inlineformset_factory
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render, resolve_url
@@ -332,12 +333,12 @@ class ActivationView(TemplateView):
 @never_cache
 @page_template('actstream/_activity.html')
 def dashboard(request, tab='activity', template_name='accounts/dashboard.html', extra_context=None):
-    projects = request.user.active_projects()
+    active_projects = request.user.active_projects()
     context = {
         'user': request.user,
         'edit': True,
         'tab': tab,
-        'projects': projects,
+        'projects': active_projects,
     }
     request.session['last_viewed_path'] = request.get_full_path()
     activity_stream = Action.objects.filter(
@@ -346,22 +347,36 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
     if tab == 'activity':
         project_ct = ContentType.objects.get_for_model(Project)
         if not request.user.can_access_all_projects:
-            activity_stream = activity_stream.filter(
+            # if the user is not staff, then restrict the activity stream to
+            # actions taken by them or within their projects
+            project_and_user_action_query = Q(
+                actor_content_type=user_ct,
+                actor_object_id=request.user.id
+            ) | Q(
                 target_content_type=project_ct,
-                target_object_id__in=list(projects.values_list('id', flat=True))
+                target_object_id__in=list(active_projects.values_list('id', flat=True))
             )
+            activity_stream = activity_stream.filter(
+                project_and_user_action_query)
+
         if 'project' in request.GET or 'content_type' in request.GET or 'user_activity_only' in request.GET:
             filter_form = ProjectContentForm(request.GET, user=request.user)
-            if filter_form.is_valid() and filter_form.cleaned_data.get('content_type'):
+            if filter_form.is_valid() and filter_form.cleaned_data.get(
+                'content_type'):
                 activity_stream = activity_stream.filter(
-                    action_object_content_type=filter_form.cleaned_data['content_type'])
-            if filter_form.is_valid() and filter_form.cleaned_data.get('project'):
+                    action_object_content_type=filter_form.cleaned_data[
+                        'content_type'])
+
+            if filter_form.is_valid() and filter_form.cleaned_data.get(
+                'project'):
                 project = filter_form.cleaned_data['project']
                 activity_stream = activity_stream.filter(
                     target_content_type=project_ct,
                     target_object_id=project.id
                 )
-            if filter_form.is_valid() and filter_form.cleaned_data.get('user_activity_only'):
+
+            if filter_form.is_valid() and filter_form.cleaned_data.get(
+                'user_activity_only'):
                 user_ct = ContentType.objects.get_for_model(User)
                 activity_stream = activity_stream.filter(
                     actor_content_type=user_ct,
@@ -369,6 +384,7 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
                 )
         else:
             filter_form = ProjectContentForm(user=request.user)
+
         context.update({
             'activity_stream': activity_stream,
             'filter_form': filter_form,
