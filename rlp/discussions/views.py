@@ -134,9 +134,7 @@ class CreateDiscussion(LoginRequiredMixin, FormView):
         members = ((member.id, member.get_full_name()) for member in User.objects.all())
         form.fields['members'].choices = members
         form.fields['members'].initial = [user.id]
-        form.fields['groups'].choices = group_choices(
-            user, came_from=came_from
-        )
+        form.fields['groups'].choices = group_choices(user)
         form.fields['groups'].initial = [came_from]
         return form
 

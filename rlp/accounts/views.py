@@ -349,6 +349,7 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
         if not request.user.can_access_all_projects:
             # if the user is not staff, then restrict the activity stream to
             # actions taken by them or within their projects
+            user_ct = ContentType.objects.get_for_model(User)
             project_and_user_action_query = Q(
                 actor_content_type=user_ct,
                 actor_object_id=request.user.id
