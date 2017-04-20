@@ -50,6 +50,9 @@ var selectedBookmarksFolderName; // will contain ID of selected bookmarks folder
         return false;
     });
 
+    // hide hiddenField wrappers
+    $(".hiddenField").parent(".fieldWrapper").hide();
+
 }); })(jQuery);
 
 // Collapse forms on cancel

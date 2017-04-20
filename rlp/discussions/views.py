@@ -128,14 +128,27 @@ class CreateDiscussion(LoginRequiredMixin, FormView):
     template_name = 'discussions/discussion_create.html'
 
     def get_form(self, form_class):
-        came_from = self.request.GET.get('id')
         form = super(CreateDiscussion, self).get_form(form_class)
+        came_from = self.request.GET.get('id')
+        try:
+            group = Project.objects.get(id=self.request.GET.get('id'))
+        except:
+            group = []
         user = self.request.user
         members = ((member.id, member.get_full_name()) for member in User.objects.all())
-        form.fields['members'].choices = members
-        form.fields['members'].initial = [user.id]
-        form.fields['groups'].choices = group_choices(user)
-        form.fields['groups'].initial = [came_from]
+        if group and group.approval_required:
+            form.fields['members'].hide_field = True
+            form.fields['members'].choices = [(user.id, user.get_full_name())]
+            form.fields['members'].initial = [user.id]
+            form.fields['groups'].choices = [(group.id, group.title)]
+            form.fields['groups'].initial = [group.id]
+            form.fields['members'].widget.attrs['class'] = 'select2 hiddenField'
+            form.fields['groups'].widget.attrs['class'] = 'select2 hiddenField'
+        else:
+            form.fields['members'].choices = members
+            form.fields['members'].initial = [user.id]
+            form.fields['groups'].choices = group_choices(user)
+            form.fields['groups'].initial = [came_from]
         return form
 
     def post(self, request, *args, **kwargs):

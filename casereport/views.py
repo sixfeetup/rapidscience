@@ -42,6 +42,7 @@ from rlp.accounts.models import User
 from rlp.core.forms import group_choices
 from rlp.core.views import SendToView
 from rlp.core.utils import enforce_sharedobject_permissions
+from rlp.projects.models import Project
 from functools import partial
 
 __author__ = 'yaseen'
@@ -107,14 +108,25 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
     form_class = CaseForm
 
     def get_form(self, form_class):
-        came_from = self.request.GET.get('id')
+        group = Project.objects.get(id=self.request.GET.get('id'))
         form = super(CaseReportFormView, self).get_form(form_class)
         user = self.request.user
         all_members = ((member.id, member.get_full_name()) for member in User.objects.all())
-        form.fields['members'].choices = all_members
-        form.fields['members'].initial = [user.id]
-        form.fields['groups'].choices = group_choices(user)
-        form.fields['groups'].initial = [came_from]
+        if group.approval_required:
+            form.fields['members'].hide_field = True
+            form.fields['members'].choices = [(user.id, user.get_full_name())]
+            form.fields['members'].initial = [user.id]
+            form.fields['groups'].choices = [(group.id, group.title)]
+            form.fields['groups'].initial = [group.id]
+            form.fields['members'].widget.attrs['class'] = 'select2 hiddenField'
+            form.fields['groups'].widget.attrs['class'] = 'select2 hiddenField'
+            form.fields['external'].widget.attrs['class'] = 'hiddenField'
+            form.fields['invitation_message'].widget.attrs['class'] = 'hiddenField'
+        else:
+            form.fields['members'].choices = all_members
+            form.fields['members'].initial = [user.id]
+            form.fields['groups'].choices = group_choices(user)
+            form.fields['groups'].initial = [group.id]
         return form
 
     def post(self, request, *args, **kwargs):
