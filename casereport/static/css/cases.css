@@ -552,6 +552,29 @@ background: linear-gradient(to bottom, rgba(226,226,226,1) 0%, rgba(209,209,209,
 .container-detail {
     background-color: #FFFFFF;
 }
+
+.submission-success .headingBanner {
+    height: 150px;
+    padding: 0;
+    margin-bottom: 50px;
+}
+
+.submission-success h1 {
+    line-height: 150px;
+    margin: 0;
+    text-transform: none;
+}
+
+.submission-success .success-message p {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 40px;
+}
+
+.submission-success .success-message  .btn {
+    font-weight: 600;
+}
+
 .detail-section {
     padding-top: 20px;
     width:75%;
@@ -559,10 +582,6 @@ background: linear-gradient(to bottom, rgba(226,226,226,1) 0%, rgba(209,209,209,
     padding-bottom:20px;
 }
 
-
-.container-detail{
-    margin-top: 30px;
-}
 .detail-section h4 {
     color: #558C89;
     font-weight: 700;

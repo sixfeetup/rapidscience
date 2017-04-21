@@ -229,7 +229,7 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
                         case.id)
         self.template_name = 'casereport/add_casereport_success.html'
         self.case_success_mail(physicians, author_list)
-        return self.render_to_response({})
+        return self.render_to_response({'case_number': case.id})
 
     def case_success_mail(self, physicians, author_list):
         Headers = {'Reply-To': settings.CRDB_SERVER_EMAIL}

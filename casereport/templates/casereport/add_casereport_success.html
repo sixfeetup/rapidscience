@@ -1,60 +1,20 @@
-<!DOCTYPE html>
+{% extends "casereport/search/search.html" %}
 
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>CRDB</title>
-    <!-- Tell the browser to be responsive to screen width -->
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-      <link rel="stylesheet" href="{{STATIC_URL}}css/style.css">
-      <link rel="stylesheet" href="{{STATIC_URL}}font-awesome/css/font-awesome.css">
-
-      <link rel="stylesheet" href="{{STATIC_URL}}css/jquery-ui.css" />
-      <script src="{{STATIC_URL}}js/jquery-1.11.3.min.js"></script>
-      <script src="{{STATIC_URL}}js/bootstrap.min.js"></script>
-      <script type="text/javascript" src="{{STATIC_URL}}js/bootbox.min.js"></script>
-    <script src="{{STATIC_URL}}js/jquery-ui.min.js"></script>
-    </head>
-    <body >
-        <div class="main-wrapper">
-            <div class="container">
-                <div class="back-button pull-left">
-                    <a href="{% url 'haystac' %}">Return To Search Case Reports</a>
-                    <div class="clear"></div>
-                </div>
-                <div class="col-md-offset-1 col-lg-10">
-                    <div  class="message alert alert-warning">
-                        <h4>Your case report has been submitted successfully.We will email you shortly with a link to the structured report for your review.</h4>
-                    </div>
-
-                </div>
-            </div>
+{% block title %}
+   Case successfully submitted
+{% endblock %}
+{% block container %}
+<div class="container-detail submission-success">
+    <div class="row headingBanner">
+        <div class="col-md-8 col-md-offset-2">
+            <h1>Case successfully submitted.</h1>
         </div>
-    </body>
-
-</html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    </div>
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2 success-message">
+            <p>Your Case Report has been submitted and will be reviewed by our admin staff. Please note case no. {{ case_number }} for future reference.</p>
+            <p><a href="{% url 'haystac' %}" class="btn btn-primary btn-lg">See all cases</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
