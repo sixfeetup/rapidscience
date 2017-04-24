@@ -11,6 +11,7 @@ from casereport.constants import INDEXES
 from django_countries.fields import CountryField
 from django.db import models
 from django.core.mail import EmailMessage
+from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
@@ -116,7 +117,10 @@ class CaseReportReview(models.Model):
     )
 
     def __str__(self):
-        return 'Review for {}'.formt(self.casereport)
+        return 'Review for {}'.format(self.casereport)
+
+    def get_absolute_url(self):
+        return reverse('review', args=(self.casereport.id,))
 
 
 @python_2_unicode_compatible
@@ -170,7 +174,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         ThreadedComment,
         object_id_field='object_pk',
     )
-    review = models.ForeignKey(
+    review = models.OneToOneField(
         CaseReportReview,
         related_name='casereport',
         null=True,
@@ -330,7 +334,6 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         return event.date_point if event else event
 
     def get_absolute_url(self):
-        from django.core.urlresolvers import reverse
         from django.utils.text import slugify
         slug = slugify(self.title)
         return reverse(
