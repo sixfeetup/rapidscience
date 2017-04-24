@@ -139,7 +139,7 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         title = data.get('casetitle')
         email = data.getlist('physician_email')
         name = data.getlist('physician_name')
-        author = data.getlist('author', None)
+        author = data.get('author', None)
         author_list = AuthorizedListResource()._post(email=author)
         physicians = []
         primary_physician = PhysicianInstanceResource()._post(request.user.get_full_name(), request.user.email)
@@ -232,19 +232,20 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         SendToView.post(self, self.request, 'casereport', 'casereport',
                         case.id)
         self.template_name = 'casereport/add_casereport_success.html'
-        self.case_success_mail(physicians, author_list)
+        self.case_success_mail(physicians, author)
         return self.render_to_response({'case_number': case.id})
 
-    def case_success_mail(self, physicians, author_list):
+    def case_success_mail(self, physicians, author):
         Headers = {'Reply-To': settings.CRDB_SERVER_EMAIL}
         recipient = physicians[0]
-        authorized_recipient = []
-        for i in author_list:
-            authorized_recipient.append(str(i))
+        copied = []
+        copied.append(author)
+        coauthors = physicians[1:]
+        copied = copied + [i.email for i in coauthors] + ['support@rapidscience.org ']
         message = render_to_string('casereport/case_submit_email.html', {'name': recipient.get_name(),
                                                               'DOMAIN': settings.CRDB_DOMAIN})
         msg = EmailMessage(settings.CASE_SUBMIT, message, settings.CRDB_SERVER_EMAIL, [recipient.email],
-                           headers=Headers, cc=authorized_recipient, bcc=settings.CRDB_BCC_LIST)
+                           headers=Headers, cc=copied, bcc=settings.CRDB_BCC_LIST)
         msg.content_subtype = "html"
         msg.send()
 
