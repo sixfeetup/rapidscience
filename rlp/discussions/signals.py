@@ -34,6 +34,9 @@ def create_comment_activity(**kwargs):
         content = top_comment
     else:
         content = top_comment.content_object
+    if not hasattr(content, 'share_with'):
+        # the rest only applies to shared content
+        return
     content.notify_viewers(
         '{}: A new comment was posted'.format(
             settings.SITE_PREFIX.upper(),
