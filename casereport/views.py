@@ -68,16 +68,8 @@ class CaseReportDetailView(TemplateView):
              'title':casereport.attachment3_title,
              'description':casereport.attachment3_description},]
         last_viewed_path = request.session.get('last_viewed_path')
-        user_can_comment = (
-            request.user.is_superuser or
-            request.user.id == casereport.primary_physician.get_rlpuser()
-        )
-        if user_can_comment:
-            # load existing comments
-            comment_list = casereport.discussions.all()
-        else:
-            # skip loading comments - they won't display
-            comment_list = ()
+        user_can_comment = casereport.is_shared_with_user(request.user)
+        comment_list = casereport.discussions.all()
         if casereport.casefile_f:
             return self.render_to_response(
                 dict(
