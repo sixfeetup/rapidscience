@@ -73,6 +73,11 @@ class SendToForm(forms.Form):
     )
     groups = group_choice_field
     members = member_choice_field
+    comment = forms.CharField(
+        label='Comment',
+        widget=forms.Textarea,
+        required=False,
+    )
 
 
 def get_sendto_form(user, content, type_key, data=None):

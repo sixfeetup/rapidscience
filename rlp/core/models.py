@@ -107,7 +107,7 @@ class SharedObjectMixin(models.Model):
     def is_shared_with_user(self, user):
         return (user in self.get_viewers_as_users()) or user.is_superuser
 
-    def share_with(self, viewers, shared_by):
+    def share_with(self, viewers, shared_by, comment=None):
         target = self
         if (hasattr(self, 'polymorphic_model_marker')
            and len(self._meta.parents)):
@@ -117,10 +117,13 @@ class SharedObjectMixin(models.Model):
         for viewer in viewers:
             SharedContent.objects.create(viewer=viewer, target=target)
             # ghf - need to create Actions to go along with this.
-            action.send(shared_by,
-                        verb='shared',
-                        action_object=target,
-                        target=viewer)
+            action.send(
+                shared_by,
+                verb='shared',
+                description=comment,
+                action_object=target,
+                target=viewer,
+            )
 
 
     def get_content_type(self, resolve_polymorphic=True):

@@ -58,6 +58,7 @@ class SendToView(LoginRequiredMixin, View):
                 shared_content.share_with(
                     members + groups,
                     shared_by=request.user,
+                    comment=form.cleaned_data['comment'],
                 )
             if 'referrer' in request.session:
                 url = request.session['referrer']
