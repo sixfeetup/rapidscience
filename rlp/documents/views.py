@@ -28,10 +28,14 @@ class AddMedia(FormView):
     
     def get_form(self, form_class):
         form = super(AddMedia, self).get_form(form_class)
-        group = Project.objects.get(id=self.request.GET.get('id'))
+        came_from = self.request.GET.get('id')
+        try:
+            group = Project.objects.get(id=self.request.GET.get('id'))
+        except Project.DoesNotExist:
+            group = []
         user = self.request.user
         all_members = ((member.id, member.get_full_name()) for member in User.objects.all())
-        if group.approval_required:
+        if group and group.approval_required:
             form.fields['members'].hide_field = True
             form.fields['members'].choices = [(user.id, user.get_full_name())]
             form.fields['members'].initial = [user.id]
@@ -43,7 +47,7 @@ class AddMedia(FormView):
             form.fields['members'].choices = all_members
             form.fields['members'].initial = [user.id]
             form.fields['groups'].choices = group_choices(user)
-            form.fields['groups'].initial = [group.id]
+            form.fields['groups'].initial = [came_from]
         return form
 
     def post(self, request, *args, **kwargs):

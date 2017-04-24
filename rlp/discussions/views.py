@@ -132,7 +132,7 @@ class CreateDiscussion(LoginRequiredMixin, FormView):
         came_from = self.request.GET.get('id')
         try:
             group = Project.objects.get(id=self.request.GET.get('id'))
-        except:
+        except Project.DoesNotExist:
             group = []
         user = self.request.user
         members = ((member.id, member.get_full_name()) for member in User.objects.all())

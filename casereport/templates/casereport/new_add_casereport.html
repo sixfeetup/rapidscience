@@ -125,9 +125,11 @@
 
                 <a class="add_att_button" href="#"><i class="fa fa-plus"></i> <span class="add_att_button_text">Add another attachment</a></a>
                 <!-- sharing -->
-                <h4>Sharing</h4>
                 {% for field in form %}
                     <div class="fieldWrapper">
+                        {% if field.auto_id == 'id_members' %}
+                            <h4>Sharing</h4>
+                        {% endif %}
                         {{ field.errors }}
                         {% if field.auto_id != 'id_approval' %}
                         <label for="{{ field.id_for_label }}">

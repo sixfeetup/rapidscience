@@ -111,7 +111,7 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         came_from = self.request.GET.get('id')
         try:
             group = Project.objects.get(id=self.request.GET.get('id'))
-        except:
+        except Project.DoesNotExist:
             group = []
         form = super(CaseReportFormView, self).get_form(form_class)
         user = self.request.user
