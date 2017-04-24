@@ -368,6 +368,25 @@ body.search .box.main-content {
     width: 100px;
 }
 
+// Registration
+#wrapper-id_register-new_institution {
+    position: relative;
+    padding-top: 36px;
+}
+#wrapper-id_register-new_institution h4 {
+    position: absolute;
+    top: -1px;
+    left: 25px;
+}
+#wrapper-id_register-new_institution h4 label {
+    font-weight: normal;
+    text-transform: none;
+}
+.registration.rpds-form div[id^='wrapper-id_register-institution_'] {
+    display: none;
+    padding-left: 25px;
+}
+
 // Bookmarks tab of account page
 
 #bookmarks {

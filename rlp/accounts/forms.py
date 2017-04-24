@@ -106,11 +106,21 @@ class RegistrationForm(UserCreationForm):
     institution = forms.ModelChoiceField(
         label="Primary Institution",
         queryset=Institution.objects.all(),
-        empty_label='Other', required=False)
+        required=False)
+    new_institution = forms.BooleanField(
+        label="My institution is not listed",
+        required=False)
+    institution_name = forms.CharField(max_length=80, required=False)
+    institution_city = forms.CharField(max_length=80, required=False)
+    institution_state = forms.CharField(max_length=80, required=False)
+    institution_country = forms.CharField(max_length=80, required=False)
+    institution_website = forms.CharField(max_length=80, required=False)
     title = forms.CharField(label="Position", max_length=80, required=False)
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
-    field_order = ['first_name', 'last_name', 'institution', 'title',
+    field_order = ['first_name', 'last_name', 'institution', 'new_institution',
+                   'institution_name', 'institution_city', 'institution_state',
+                   'institution_country', 'institution_website', 'title',
                    'email', 'email_confirmation', 'password1', 'password2']
     honeypot = forms.CharField(
         label="If you are human, leave this field blank",

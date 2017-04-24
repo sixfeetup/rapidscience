@@ -28,15 +28,15 @@
             {{ message }}
             </div>
         {% endfor %}
-          <form class="rpds-form" method="post" action="">
+          <form class="rpds-form registration" method="post" action="">
             {% include "forms/_non_field_errors.html" %}
             {% csrf_token %}
             {{ wizard.management_form }}
             {% for field in form %}
                 {% if field.id_for_label == 'id_register-honeypot' %}
-                    <div class="fieldWrapper" style="display:none">
+                    <div class="fieldWrapper" id="wrapper-{{ field.auto_id }}" style="display:none">
                 {% else %}
-                    <div class="fieldWrapper">
+                    <div class="fieldWrapper" id="wrapper-{{ field.auto_id }}">
                 {% endif %}
                     {{ field.errors }}
                     <h4><label for="{{ field.id_for_label }}">
@@ -57,3 +57,17 @@
     </div>
 </div></div>
 {% endblock content %}
+
+{% block js-footer %}
+<script type="text/javascript">
+  (function($) { $(function() {
+      $("#id_register-new_institution").click(function(){
+          if ($(this).is(':checked')) {
+              $("[id^='wrapper-id_register-institution_']").slideDown()
+          } else {
+              $("[id^='wrapper-id_register-institution_']").slideUp()
+          }
+      })
+  }); })(jQuery);
+</script>
+{% endblock %}

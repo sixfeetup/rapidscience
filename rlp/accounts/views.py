@@ -26,6 +26,7 @@ from el_pagination.decorators import page_template
 from formtools.wizard.views import SessionWizardView
 
 from casereport.models import CaseReport
+from rlp.accounts.models import Institution
 from rlp.bibliography.models import fetch_publications_for_user
 from rlp.bibliography.models import ProjectReference
 from rlp.core.email import send_transactional_mail
@@ -190,8 +191,19 @@ class Register(SessionWizardView):
 
     def process_approval(self, form):
         with transaction.atomic():
+            data = self.request.POST.copy()
+            if 'register-new_institution' in data:
+                new_inst = Institution()
+                new_inst.name = data['register-institution_name']
+                new_inst.city = data['register-institution_city']
+                new_inst.state = data['register-institution_state']
+                new_inst.country = data['register-institution_country']
+                new_inst.website = data['register-institution_website']
+                new_inst.save()
             user = form.save(commit=False)
             user.is_active = False
+            if 'register-new_institution' in data:
+                user.institution = new_inst
             user.save()
             messages.success(self.request, PENDING_REGISTRATION_MESSAGE)
             # Email the contacts for this project
