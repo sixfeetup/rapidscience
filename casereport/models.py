@@ -109,6 +109,16 @@ class AuthorizedRep(CRDBBase):
         return self.email
 
 
+class CaseReportReview(models.Model):
+    discussions = GenericRelation(
+        ThreadedComment,
+        object_id_field='object_pk',
+    )
+
+    def __str__(self):
+        return 'Review for {}'.formt(self.casereport)
+
+
 @python_2_unicode_compatible
 class CaseReport(CRDBBase, SharedObjectMixin):
     title = models.CharField(max_length=200,
@@ -160,6 +170,12 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         ThreadedComment,
         object_id_field='object_pk',
     )
+    review = models.ForeignKey(
+        CaseReportReview,
+        related_name='casereport',
+        null=True,
+        on_delete=models.CASCADE,
+    )
 
     def __str__(self):
         return self.title if self.title else '---'
@@ -175,6 +191,8 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         if self.status == CASE_STATUS['R'] or self.status == CASE_STATUS['A']:
             # sending review email to authorized rep/physician
             self.send_review_mail()
+        if not self.review:
+            self.review = CaseReportReview.objects.create()
         super(CaseReport, self).save(*args, **kwargs)
 
     def notify_admin(self):
@@ -507,4 +525,3 @@ class CaseReportHistory(models.Model):
 
     def __str__(self):
         return str(self.case) or ''
-
