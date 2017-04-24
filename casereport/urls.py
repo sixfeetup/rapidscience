@@ -8,6 +8,7 @@ from .views import CaseReportFormView
 from .views import downloadfile
 from .views import FormTypeView
 from .views import MyFacetedSearchView
+from .views import ReviewDetailView
 
 
 __author__ = 'yaseen'
@@ -30,4 +31,5 @@ urlpatterns = [
         r'^edit/(?P<case_id>[0-9]*)/(?P<token>.*)/$',
         CaseReportEditView.as_view(),
     ),
+    url(r'^(?P<pk>[0-9]*)/review$', ReviewDetailView.as_view(), name='review'),
 ]

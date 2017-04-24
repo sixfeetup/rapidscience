@@ -15,6 +15,7 @@ from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.utils.encoding import force_text
 from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import DetailView
 from django.views.generic import FormView
 from django.views.generic import TemplateView
 
@@ -33,6 +34,7 @@ from casereport.forms import CaseForm
 from casereport.forms import MultiFacetedSearchForm
 from casereport.havoc_interface import havoc_results
 from casereport.models import CaseReport
+from casereport.models import CaseReportReview
 from casereport.models import CaseFile
 from casereport.models import Treatment
 from casereport.models import MolecularAbberation
@@ -456,6 +458,16 @@ class CaseReportEditView(TemplateView):
         return HttpResponse(json.dumps({'message': message}), content_type='application/json')
 
 
+class ReviewDetailView(DetailView):
+    model = CaseReport
+    template_name = 'casereport/review_detail.html'
 
-
-
+    def get_context_data(self, **kwargs):
+        context = super(ReviewDetailView, self).get_context_data(**kwargs)
+        case = context.get('casereport')
+        if case is None:
+            return
+        if case.review:
+            context['review'] = case.review
+            context['comment_list'] = case.review.discussions
+        return context

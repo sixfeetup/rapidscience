@@ -1,0 +1,22 @@
+{% extends 'base.html' %}{% load bootstrap3 %}
+{% load comments %}
+
+{% block content %}
+<div class="container">    
+  <div class="row">
+    <div class="col-md-8 col-md-push-2">
+      {% bootstrap_messages %}
+      {% if review %}
+      <h2>{{ review }}</h2>
+      <p>&nbsp;</p>
+      <!-- comments -->
+      {% render_comment_form for review %}
+      <br>
+      {% render_comment_list for review %}
+      {% else %}
+      <p>No review available</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock content %}
