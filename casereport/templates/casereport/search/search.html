@@ -133,7 +133,7 @@
 
                                     <div class="treatment_type-section">
                                         <h5>Treatment Type</h5>
-                                        <select class="form-control select2"  name="treatment_type">
+                                        <select class="form-control select2"  name="treatment_type" multiple="multiple">
                                             <option value=""></option>
                                             {% for cnt in facets.fields.treatment_type %}
                                                 <option value="selected_facets=treatment_type:{{ cnt.0|urlencode }}"
