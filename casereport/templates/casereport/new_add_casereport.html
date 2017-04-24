@@ -6,14 +6,6 @@
     <link rel="stylesheet" href="{% static 'djangocms_text_ckeditor/css/cms.ckeditor.css' %}">
 {% endblock  %}
 
-{% block js-footer %}
-    {{ block.super }}
-    <script src="{{STATIC_URL}}js/add_case_report.js"></script>
-    <script src="{% static "djangocms_text_ckeditor/ckeditor/ckeditor.js" %}"></script>
-    <script src="{% static "cms/js/modules/cms.base.js" %}"></script>
-    <script src="{% static 'djangocms_text_ckeditor/js/cms.ckeditor.js' %}"></script>
-{% endblock js-footer %}
-
 {% block content %}
   <div id="crdb-overlay-loader" class="active">
     <div id="crdb-thinking">
@@ -145,13 +137,55 @@
 
                 <div class="submit-button">
                     <input id="submit-button" class="btn btn-primary" type="submit" value="Submit" />
-                    <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-default">Cancel</a>
+                    <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-default" id="button-cancel">Cancel</a>
                 </div>
 
    </form>
+   
+   <div class="modal fade" id="modal-cancel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-body">
+            <p>Are you sure you want to cancel this submission? The information will be permanently deleted.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger btn-confirm">Delete</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Return to form</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
           </div>
       </div>
 </div>
 </div>
 {% endblock content %}
+
+{% block js-footer %}
+    {{ block.super }}
+    <script src="{{STATIC_URL}}js/add_case_report.js"></script>
+    <script src="{% static "djangocms_text_ckeditor/ckeditor/ckeditor.js" %}"></script>
+    <script src="{% static "cms/js/modules/cms.base.js" %}"></script>
+    <script src="{% static 'djangocms_text_ckeditor/js/cms.ckeditor.js' %}"></script>
+
+    <script type="text/javascript">
+    (function($) { $(function() {
+        $('#button-cancel').click(function (event) {
+            event.preventDefault();
+            $('#modal-cancel').modal();
+        });
+        $('#modal-cancel').on('show.bs.modal', function (event) {
+            var modal = $(this);
+            modal.find('.modal-footer .btn-confirm').click(function () {
+                return_url = document.referrer
+                if (return_url) {
+                    window.location.href = return_url;
+                } else {
+                    window.location.href = "/";
+                }
+            });
+        });
+    }); })(jQuery);
+    </script>
+{% endblock %}
