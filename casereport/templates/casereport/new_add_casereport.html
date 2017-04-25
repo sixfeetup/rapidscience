@@ -136,7 +136,9 @@
                 {% endfor %}
 
                 <div class="submit-button">
-                    <input id="submit-button" class="btn btn-primary" type="submit" value="Submit" />
+                    <input id="save-button" class="btn btn-primary" type="submit" value="Save" />
+                    <!-- submit button is disabled until workflow is put in place -->
+                    <input id="submit-button" class="btn btn-primary" type="submit" value="Submit" disabled="disabled" />
                     <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-default" id="button-cancel">Cancel</a>
                 </div>
 

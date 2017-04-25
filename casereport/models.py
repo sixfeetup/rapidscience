@@ -154,7 +154,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     pathology = HTMLField(null=True, blank=True)
     additional_comment = models.TextField(null=True, blank=True)
     status = models.CharField(max_length=50, choices=STATUS,
-                              default='processing')
+                              default='draft')
     casefile_f = models.ForeignKey(
         CaseFile, null=True, blank=True,
         verbose_name='Case File',

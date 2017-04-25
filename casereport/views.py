@@ -4,7 +4,7 @@ from captcha.helpers import captcha_image_url
 from captcha.models import CaptchaStore
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect
 from django.template.context import RequestContext
 from django.template.loader import render_to_string
 from casereport.constants import COUNTRIES
@@ -232,11 +232,14 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
                 attachment3_description=attachment3_description)
             CaseReportInstanceResource()._addauthor(case, author_list)
 
-        SendToView.post(self, self.request, 'casereport', 'casereport',
-                        case.id)
-        self.template_name = 'casereport/add_casereport_success.html'
-        self.case_success_mail(physicians, author)
-        return self.render_to_response({'case_number': case.id})
+        if case.status == 'draft':
+            return redirect(case.get_absolute_url())
+        else:
+            SendToView.post(self, self.request, 'casereport', 'casereport',
+                            case.id)
+            self.template_name = 'casereport/add_casereport_success.html'
+            self.case_success_mail(physicians, author)
+            return self.render_to_response({'case_number': case.id})
 
     def case_success_mail(self, physicians, author):
         Headers = {'Reply-To': settings.CRDB_SERVER_EMAIL}

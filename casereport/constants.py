@@ -11,6 +11,7 @@ GENDER = (
 
 
 STATUS = (
+    ('draft', 'Draft'),
     ('processing', 'Processing'),
     ('ready', 'Ready to Review'),
     ('approved', 'Approved'),
