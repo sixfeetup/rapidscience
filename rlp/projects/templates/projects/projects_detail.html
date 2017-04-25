@@ -154,23 +154,7 @@
             {% bootstrap_messages %}
 
             {% for obj in case_reports %}
-            <div class="row comment-item">
-                <div class="col-md-11">
-                  <h4><a href="{% url 'casereport_detail' case_id=obj.id title_slug=obj.title|slugify %}">
-                    {{ obj.title }}
-                  </a></h4>
-                  <p class="small">
-                      Posted by {{ obj.primary_physician }}
-                    | {{ obj.date_added|date:"j M Y" }}<br />
-                    Shared with {{ obj.get_viewers|join:", " }}
-                  </p>
-                  <p class="more">{{ obj.description|urlize|linebreaksbr }}</p>
-                </div>
-                <div class="col-md-1">
-                  {% include 'discussions/discussion_count_widget.html' %}
-                  <a class="share-link" href="/send/casereport/casereport/{{ obj.id }}"><i class="fa fa-share"></i></a>
-                </div>
-            </div>
+                {% include "casereport/listing_preview.html" %}
             {% endfor %}
           {% endif %}
         </div>
