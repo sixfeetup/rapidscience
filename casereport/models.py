@@ -117,7 +117,7 @@ class CaseReportReview(models.Model):
     )
 
     def __str__(self):
-        return 'Review for {}'.format(self.casereport)
+        return 'Review: {}'.format(self.casereport)
 
     def get_absolute_url(self):
         return reverse('review', args=(self.casereport.id,))

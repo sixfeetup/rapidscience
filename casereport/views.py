@@ -50,6 +50,12 @@ from functools import partial
 __author__ = 'yaseen'
 
 
+def is_review_allowed(user, casereport):
+    return (
+        user.is_superuser or
+        user.id == casereport.primary_physician.get_rlpuser()
+    )
+
 
 @partial(enforce_sharedobject_permissions, obj_class=CaseReport, id_name='case_id')
 class CaseReportDetailView(TemplateView):
@@ -458,7 +464,7 @@ class CaseReportEditView(TemplateView):
         return HttpResponse(json.dumps({'message': message}), content_type='application/json')
 
 
-class ReviewDetailView(DetailView):
+class ReviewDetailView(LoginRequiredMixin, DetailView):
     model = CaseReport
     template_name = 'casereport/review_detail.html'
 
@@ -469,5 +475,9 @@ class ReviewDetailView(DetailView):
             return
         if case.review:
             context['review'] = case.review
+            context['review_allowed'] = is_review_allowed(
+                self.request.user,
+                case,
+            )
             context['comment_list'] = case.review.discussions
         return context
