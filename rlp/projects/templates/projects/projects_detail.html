@@ -127,41 +127,7 @@
             {% bootstrap_messages %}
 
             {% for obj in documents %}
-            <div class="row">
-              <div class="col-md-11">
-                <h4><a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a></h4>
-                {% if 'Image' in obj.display_type %}
-                    {% load thumbnail %}
-                    {% thumbnail obj.upload 700x160 crop upscale HIGH_RESOLUTION as thumbnail %}
-                    <a href="{{ obj.upload.url }}" target="_blank">
-                      <img class="thumbnail-image" alt="{{ obj.title }}" src="{{ thumbnail.url }}" width="100%">
-                    </a>
-                {% endif %}
-                {% if obj.display_type == "Video" %}
-                    {% load embed_video_tags %}
-                    {% video obj.share_link as shared_video %}
-                    {% video shared_video 'small' %}
-                    {% endvideo %}
-                {% endif %}
-                <p class="small">
-                    Posted by
-                  <a href="{{ obj.owner.get_absolute_url }}">
-                    {{ obj.owner.get_full_name }}
-                  </a>
-                  | {{ obj.date_added|date:"j M Y" }}
-                  | {% with edit_url=obj.get_edit_url %}
-                        {% if edit_url %}<a href="{{ edit_url }}">Edit</a>{% endif %}
-                    {% endwith %}<br />
-                  Shared with {{ obj.get_viewers|join:", " }}
-                </p>
-                <p class="more">{{ obj.description|urlize|linebreaksbr }}</p>
-              </div>
-              <div class="col-md-1">
-                {% include 'discussions/discussion_count_widget.html' %}
-                <a class="share-link" href="/send/documents/document/{{ obj.id }}"><i class="fa fa-share"></i></a>
-              </div>
-            </div>
-            <hr>
+                {% include "documents/listing_preview.html" %}
             {% endfor %}
 
           {% endif %}
