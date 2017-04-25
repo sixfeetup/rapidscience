@@ -43,16 +43,16 @@
         {% endfor %}
       </div>
       <div class="col-md-1 activity-actions">
-        {% if model == 'threadedcomment' %}
-          {% if obj.user == request.user %}{% include 'forms/_edit_dropdown.html' with edit_url=obj.get_edit_url delete_url=obj.get_delete_url %}{% endif %}
-        {% else %}
-          {% if obj.owner == request.user %}{% include 'forms/_edit_dropdown.html' with edit_url=obj.get_edit_url delete_url=obj.get_delete_url %}{% endif %}
-        {% endif %}
-        {% if model == 'projectreference' and request.user.is_authenticated %}
-          {% include 'bibliography/_share_reference.html' %}
-        {%  endif %}
-
         {% include 'discussions/discussion_count_widget.html' %}
+        {% if model == 'file' or model == 'image' or model == 'link' or model == 'video' or model == 'document' %}
+            <a class="share-link" href="/send/documents/document/{{ obj.id }}"><i class="fa fa-share"></i></a>
+        {% elif model == "casereport" %}
+            <a class="share-link" href="/send/casereport/casereport/{{ obj.id }}"><i class="fa fa-share"></i></a>
+        {% elif model == 'threadedcomment' %}
+            <a class="share-link" href="/send/discussions/threadedcomment/{{ obj.id }}"><i class="fa fa-share"></i></a>
+        {% elif model == 'projectreference' %}
+            <a class="share-link" href="/send/bibliography/projectreference/{{ obj.id }}"><i class="fa fa-share"></i></a>
+        {% endif %}
 
 
       </div>
