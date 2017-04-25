@@ -3,6 +3,7 @@ from ajax_select import registry
 from captcha.helpers import captcha_image_url
 from captcha.models import CaptchaStore
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render_to_response, redirect
 from django.template.context import RequestContext
@@ -233,6 +234,7 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
             CaseReportInstanceResource()._addauthor(case, author_list)
 
         if case.status == 'draft':
+            messages.success(self.request, "Saved!")
             return redirect(case.get_absolute_url())
         else:
             SendToView.post(self, self.request, 'casereport', 'casereport',
