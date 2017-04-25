@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
+from collections import OrderedDict
 
 from embed_video.fields import EmbedVideoField
 from polymorphic.models import PolymorphicModel
@@ -85,7 +86,8 @@ class Document(PolymorphicModel, SharedObjectMixin):
         '''override to get the viewers for the main object'''
         doc_obj = Document.objects.non_polymorphic().get(id=self.id)
         refs = doc_obj._related.select_related('viewer_type').all()
-        return [r.viewer for r in refs]
+        od = OrderedDict.fromkeys([r.viewer for r in refs])
+        return od.keys()
 
 
 class File(Document):

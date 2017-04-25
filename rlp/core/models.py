@@ -4,6 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models.lookups import DateTransform
 from actstream import action
+from collections import OrderedDict
 
 @models.DateTimeField.register_lookup
 class WeekTransform(DateTransform):
@@ -90,7 +91,8 @@ class SharedObjectMixin(models.Model):
 
     def get_viewers(self):
         refs = self._related.select_related('viewer_type').all()
-        return [r.viewer for r in refs]
+        od = OrderedDict.fromkeys([r.viewer for r in refs])
+        return od.keys()
 
     def get_viewers_as_users(self):
         '''resolve group viewers into lists of individuals'''

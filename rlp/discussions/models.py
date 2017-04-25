@@ -5,8 +5,8 @@ from django.db import models
 from django.db.models import F, Max, Min
 from django.db.transaction import atomic
 from django.contrib.contenttypes.models import ContentType
-
 from django_comments.models import Comment
+from collections import OrderedDict
 
 from rlp.accounts.models import User
 from rlp.core.models import SharedObjectMixin
@@ -163,4 +163,5 @@ class ThreadedComment(Comment, SharedObjectMixin):
         '''override to get the viewers for the discussion'''
         top_comment = self.discussion_root
         refs = top_comment._related.select_related('viewer_type').all()
-        return [r.viewer for r in refs]
+        od = OrderedDict.fromkeys([r.viewer for r in refs])
+        return od.keys()
