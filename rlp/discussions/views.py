@@ -161,10 +161,14 @@ class CreateDiscussion(LoginRequiredMixin, FormView):
 
     def form_valid(self, form):
         data = form.cleaned_data
+        user = self.request.user
         ct = ContentType.objects.get_for_model(Site)
         site = Site.objects.get_current()
         new_discussion = ThreadedComment(
             title=data['discussion_title'],
+            user=user,
+            user_name=user.get_full_name(),
+            user_email=user.email,
             comment=data['discussion_body'],
             content_type=ct,
             site_id=site.id,
