@@ -78,6 +78,7 @@ class CaseReportDetailView(TemplateView):
         last_viewed_path = request.session.get('last_viewed_path')
         user_can_comment = casereport.is_shared_with_user(request.user)
         comment_list = casereport.discussions.all()
+        review_allowed = is_review_allowed(self.request.user, casereport)
         if casereport.casefile_f:
             return self.render_to_response(
                 dict(
@@ -86,6 +87,7 @@ class CaseReportDetailView(TemplateView):
                     casefile=casereport.casefile_f,
                     comment_list=comment_list,
                     user_interaction=user_can_comment,
+                    review_allowed=review_allowed,
                     last_viewed_path=last_viewed_path,
                 )
             )
@@ -98,6 +100,7 @@ class CaseReportDetailView(TemplateView):
                 attachments=attachments,
                 comment_list=comment_list,
                 user_interaction=user_can_comment,
+                review_allowed=review_allowed,
                 last_viewed_path=last_viewed_path,
             )
         )
