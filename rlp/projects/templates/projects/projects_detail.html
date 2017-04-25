@@ -170,7 +170,6 @@
             <hr>
             {% endif %}
             {% for ref in references %}
-              {% if ref.owner == request.user %}{% include 'forms/_edit_dropdown.html' with edit_url=ref.get_edit_url delete_url=ref.get_delete_url %}{% endif %}
               {% include 'bibliography/_reference.html' with obj=ref.reference %}
             {% endfor %}
           {% endif %}

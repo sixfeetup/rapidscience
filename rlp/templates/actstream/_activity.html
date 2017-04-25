@@ -24,9 +24,9 @@
           <blockquote>
             <p>{{ obj.comment }}</p>
           </blockquote>
-          {% include 'bibliography/_reference.html' with obj=obj.reference %}
+          {% include 'bibliography/_ref_activity.html' with ref=obj.reference %}
         {% elif model == 'projectreference' %}
-          {% include 'bibliography/_reference.html' with obj=obj.reference %}
+          {% include 'bibliography/_ref_activity.html' with ref=obj.reference %}
         {% elif model == "casereport" %}
           {% include 'casereport/casereport_activity.html' %}
         {% endif %}
@@ -43,7 +43,9 @@
         {% endfor %}
       </div>
       <div class="col-md-1 activity-actions">
-        {% include 'discussions/discussion_count_widget.html' %}
+        {% if model != 'referenceshare' and model != 'projectreference' %}
+            {% include 'discussions/discussion_count_widget.html' %}
+        {% endif %}
         {% if model == 'file' or model == 'image' or model == 'link' or model == 'video' or model == 'document' %}
             <a class="share-link" href="/send/documents/document/{{ obj.id }}"><i class="fa fa-share"></i></a>
         {% elif model == "casereport" %}
