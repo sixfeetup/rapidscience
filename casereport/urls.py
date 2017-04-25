@@ -15,10 +15,6 @@ __author__ = 'yaseen'
 
 urlpatterns = [
     url(r'^$', MyFacetedSearchView(), name='haystac'),
-    url(
-        r'^results/$',
-        TemplateView.as_view(template_name="casereport/search_results.html"),
-    ),
     url(r'^add/$', CaseReportFormView.as_view(), name='add_casereport'),
     url(r'^autocomplete/$', AutoCompleteView.as_view(), name='autocomplete'),
     url(r'^formtype/$', FormTypeView.as_view(), name='ftype'),
