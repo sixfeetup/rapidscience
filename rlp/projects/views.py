@@ -77,8 +77,11 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
         context['activity_stream'] = activity_stream
         context['filter_form'] = filter_form
     elif tab == 'documents':
-        documents = project.get_shared_content(Document)
-        context['documents'] = documents
+        context['documents'] = sorted(
+            project.get_shared_content(Document),
+            key=lambda c: c.date_added,
+            reverse=True,
+        )
     elif tab == 'discussions':
         context['comment_list'] = sorted(
             project.get_shared_content(ThreadedComment),

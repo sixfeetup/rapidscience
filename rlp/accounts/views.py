@@ -417,7 +417,11 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
             reverse=True,
         )
     elif tab == 'documents':
-        context['documents'] = request.user.get_shared_content(Document)
+        context['documents'] = sorted(
+            request.user.get_shared_content(Document),
+            key=lambda c: c.date_added,
+            reverse=True,
+        )
     elif tab == 'bibliography':
         context['references'] = request.user.get_shared_content(
             ProjectReference
