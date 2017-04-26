@@ -78,12 +78,14 @@ class SendToForm(forms.Form):
         widget=forms.Textarea,
         required=False,
     )
+    field_order = ['to_dashboard', 'members', 'groups', 'comment']
 
 
 def get_sendto_form(user, content, type_key, data=None):
     '''populate a SendToForm with appropriate choices'''
 
     form = SendToForm(data)
+    form.label_suffix = ''
     form.fields['groups'].choices = group_choices(user, content)
     form.fields['members'].choices = member_choices(user, content)
     if user in content.get_viewers():
