@@ -93,7 +93,7 @@ class ThreadedComment(Comment, SharedObjectMixin):
 
     def get_absolute_url(self):
         return reverse('comments-detail', kwargs={
-            'comment_pk': self.pk
+            'comment_pk': self.discussion_root.pk
         })
 
     def _calculate_thread_data(self):
