@@ -233,12 +233,14 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
                 attachment3_description=attachment3_description)
             CaseReportInstanceResource()._addauthor(case, author_list)
 
+        SendToView.post(
+            self, self.request, 'casereport',
+            'casereport', case.id,
+        )
         if case.status == 'draft':
             messages.success(self.request, "Saved!")
             return redirect(case.get_absolute_url())
         else:
-            SendToView.post(self, self.request, 'casereport', 'casereport',
-                            case.id)
             self.template_name = 'casereport/add_casereport_success.html'
             self.case_success_mail(physicians, author)
             return self.render_to_response({'case_number': case.id})
