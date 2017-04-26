@@ -5,6 +5,7 @@ from captcha.models import CaptchaStore
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.mail import EmailMessage
 from django.shortcuts import render_to_response, redirect
 from django.template.context import RequestContext
 from django.template.loader import render_to_string
@@ -34,12 +35,14 @@ from casereport.decorator import validate_token
 from casereport.forms import CaseForm
 from casereport.forms import MultiFacetedSearchForm
 from casereport.havoc_interface import havoc_results
-from casereport.models import CaseReport
-from casereport.models import CaseReportReview
-from casereport.models import CaseFile
-from casereport.models import Treatment
-from casereport.models import MolecularAbberation
-from django.core.mail import EmailMessage
+from .models import (
+    CaseReport,
+    CaseReportReview,
+    CaseFile,
+    Treatment,
+    MolecularAbberation,
+    Physician
+    )
 
 from rlp.accounts.models import User
 from rlp.core.forms import group_choices
@@ -327,7 +330,16 @@ class MyFacetedSearchView(FacetedSearchView):
         results = self.form.search()
         if not results:
             return results
+
+        # get Case Reports that user created or shared to
         shared_pks = [x.pk for x in self.request.user.get_shared_content(CaseReport)]
+        try:
+            phy = Physician.objects.get(email=self.request.user.email)
+            authored = CaseReport.objects.filter(primary_physician=phy)
+            authored_pks = [x.pk for x in authored]
+            shared_pks = set(shared_pks + authored_pks)
+        except Physician.DoesNotExist:
+            pass
         for case in results:
             if case.pk not in shared_pks:
                 results = results.exclude(id=case.id)
