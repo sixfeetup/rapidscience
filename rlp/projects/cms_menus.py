@@ -36,7 +36,7 @@ class ProjectMenu(CMSAttachMenu):
                 # Set Community Commons as second
                 if project.title == 'Community Commons':
                     nodes.insert(1, node)
-                else:
+                elif request.user in project.active_members():
                     nodes.append(node)
                 menu_id += 1
             for topic in Topic.objects.all():
