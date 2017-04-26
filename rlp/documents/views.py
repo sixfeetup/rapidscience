@@ -293,14 +293,15 @@ def document_detail(request, doc_pk, template_name='documents/document_detail.ht
 
 @never_cache
 @login_required
-def document_edit(request, doc_pk, doc_type):
-    if doc_type in ['file', 'image']:
-        return add_document(request, doc_pk)
-    elif doc_type == 'link':
-        return add_link(request, doc_pk)
-    elif doc_type == 'video':
-        return add_video(request, doc_pk)
-    raise Http404
+def document_edit(request, doc_pk):
+    document = get_object_or_404(Document, pk=doc_pk)
+    display_type = document.display_type.lower()
+    if 'link' in display_type:
+        return add_link(request, doc_pk=doc_pk)
+    elif 'video' in display_type:
+        return add_video(request, doc_pk=doc_pk)
+    else:
+        return add_document(request, doc_pk=doc_pk)
 
 
 @never_cache
