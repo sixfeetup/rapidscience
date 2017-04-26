@@ -12,7 +12,10 @@
 
 {% if action and action.action_object %}
     <!-- from action.action_object -->
-    {%  setvar action.action_object.get_absolute_url as discussion_link %}
+    {% setvar action.action_object.get_content_object_url as discussion_link %}
+    {% if not discussion_link %}
+      {%  setvar action.action_object.get_absolute_url as discussion_link %}
+    {% endif %}
     {%  get_threaded_comment_count for action.action_object as comment_count %}
 
 {% elif obj %}
