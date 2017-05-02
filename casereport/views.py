@@ -334,8 +334,10 @@ class MyFacetedSearchView(FacetedSearchView):
         # get Case Reports that user created or shared to
         shared_pks = [x.pk for x in self.request.user.get_shared_content(CaseReport)]
         try:
-            phy = Physician.objects.get(email=self.request.user.email)
-            authored = CaseReport.objects.filter(primary_physician=phy)
+            phys = Physician.objects.filter(email=self.request.user.email)
+            authored = []
+            for phy in phys:
+                authored += CaseReport.objects.filter(primary_physician=phy)
             authored_pks = [x.pk for x in authored]
             shared_pks = set(shared_pks + authored_pks)
         except Physician.DoesNotExist:
