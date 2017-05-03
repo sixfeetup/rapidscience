@@ -74,7 +74,7 @@ class SendToForm(forms.Form):
     groups = group_choice_field
     members = member_choice_field
     comment = forms.CharField(
-        label='Comment',
+        label='Message',
         widget=forms.Textarea,
         required=False,
     )
