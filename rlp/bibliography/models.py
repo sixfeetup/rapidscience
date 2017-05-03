@@ -40,6 +40,7 @@ class Reference(models.Model):
     upload = models.FileField('Upload file', upload_to='references', blank=True, max_length=255)
     date_added = models.DateTimeField(auto_now_add=True, db_index=True)
     date_updated = models.DateTimeField(auto_now=True)
+    description = models.CharField(blank=True, max_length=1000)
 
     class Meta:
         verbose_name = 'Raw Reference'

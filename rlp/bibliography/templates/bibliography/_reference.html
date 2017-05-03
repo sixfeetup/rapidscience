@@ -19,6 +19,7 @@
         {% endwith %}<br />
       Shared with {{ ref.get_viewers|join:", " }}
     </p>
+    {% if obj.description %}<blockquote>{{ obj.description }}</blockquote>{% endif %}
   </div>
   <div class="col-md-1">
     <a class="share-link" href="/send/bibliography/projectreference/{{ ref.id }}"><i class="fa fa-share"></i></a>
