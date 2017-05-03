@@ -289,6 +289,25 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     def get_treatments(self):
         return Treatment.objects.filter(casereport_f=self)
 
+    def get_attachments(self):
+        if not self.attachment1:
+            return []
+        attachments = [
+            {'file': self.attachment1,
+             'title': self.attachment1_title,
+             'description': self.attachment1_description}]
+        if self.attachment2:
+            attachments.append({
+                'file': self.attachment2,
+                'title': self.attachment2_title,
+                'description': self.attachment2_description})
+        if self.attachment3:
+            attachments.append({
+                'file': self.attachment3,
+                'title': self.attachment3_title,
+                'description': self.attachment3_description},)
+        return attachments
+
     def get_treatment_events_in_order(self):
         return self.ordered_event('treatment')
 
@@ -416,7 +435,6 @@ class Event(CRDBBase):
             name = '%s / %s' %(name, event.combined_with)
             event = event.combined_with
         return name
-
 
     def get_combined_with(self):
         return self.treatmentevent.combined_with

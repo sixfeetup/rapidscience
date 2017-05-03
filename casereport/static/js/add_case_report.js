@@ -68,37 +68,6 @@ $(document).ready(function() {
 });
 
 
-$(document).ready(function(){
-        //$("#physician_name").attr("required",true)
-        //$("#physician_email").attr("required",true)
-        //$("#institution").attr("required",true)
-        //$("#city").attr("required",true)
-        //$("#physician_country").attr("required",true)
-        //$(".radiobut").attr("required",true)
-        //$("#id_captcha_1").attr("required",true)
-});
-
-
-
-    $('.js-captcha-refresh').click(function(){
-        name_cpatcha = $('#id_captcha_0').val();
-        path = location.pathname
-        data= {}
-        $('#invalid_cap').addClass('hide');
-        if( path === '/'){
-            data = {"caponly":true}
-        }
-
-            $.getJSON('/casereport/add/', data, function(json) {
-                $("#captcha img").attr("src",json.new_cptch_image);
-                $("#id_captcha_0").val(json.new_cptch_key)
-                $('#invalid_cap').addClass('hide');
-                $("#id_captcha_1").val("");
-
-            });
-            return false;
-});
-
 function captcha(){
     captcha_0 = $('#id_captcha_0').val();
     captcha_1 = $('#id_captcha_1').val();
@@ -147,27 +116,20 @@ function captcha(){
                         });
 
 }
-//$('#submit').focusout(function(){
-//    $("#caseform").submit();
-//
-//});
 
     $(".radiobut").click(function(){
-        $("#pleasewait").show();
         type = $(this).val();
-        data={'ftype':type};
-         $.ajax({
-                        type:"get",
-                        url : "/casereport/formtype/",
-                        data : data,
-                        success : function(response) {
-                            $('#myform').html(response)
-                            $("#pleasewait").hide();
-                        },
-                        error: function() {
-                            console.log('Error occured');
-                        }
-                    });
+        $(".manual-form").hide();
+        $(".free-text").hide();
+        $(".file-form").hide();
+        
+        if (type == 'M') {
+            $(".manual-form").show();
+        } else if (type == 'T') {
+            $(".free-text").show();
+        } else if (type == 'F') {
+            $(".file-form").show();
+        } 
 
     });
 
@@ -219,8 +181,8 @@ $(document).ready(function() {
     var max_fields      = 20; //maximum input boxes allowed
     var phy_wrapper         = $(".physician-div"); //Fields wrapper
     var add_button      = $(".add_phy_button"); //Add button ID
-
-    var x = 0; //initlal text box count
+    
+    var x = $(".physician-div .row.physician").length; //initlal text box count
     $(add_button).click(function(e){ //on add input button click
         e.preventDefault();
         if(x < max_fields){ //max input box allowed
@@ -433,7 +395,7 @@ $(document).ready(function() {
     var att_wrapper         = $(".attachments-div"); //Fields wrapper
     var add_button      = $(".add_att_button"); //Add button ID
 
-    var x = 1; //initlal text box count
+    var x = $(".attachments-div .attachment.row").length; //initlal text box count
 
     $(add_button).click(function(e){ //on add input button click
         e.preventDefault();

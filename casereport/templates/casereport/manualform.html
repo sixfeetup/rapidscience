@@ -1,56 +1,12 @@
 {% load static %}
 
-<script src="{{STATIC_URL}}js/manual_form.js" ></script>
-<script src="{{STATIC_URL}}js/free-text.js" xmlns="http://www.w3.org/1999/html"></script>
-
 
 <div class="manual-form">
-    <h4 class="title-name">Diagnosis/Presentation</h4>
-        <div class="row">
-                    <div class="form-group col-xs-2">
-                        <label for="age" class="required">Age</label>
-                        <input type="text" name="age" id="age" class="form-control">
-                        <div class="age-message">
-                                <p>Field required.</p>
-                        </div>
-                    </div>
-
-                    <div class="form-group col-md-2 col-xs-2">
-                      <label for="gender" class="required">Gender</label>
-                      <select name="gender" class="form-control" id="gender">
-                          <option selected disabled value=""></option>
-                          <option value="male">Male</option>
-                          <option value="female">Female</option>
-                          <option value="transgender_male">Transgender Male</option>
-                          <option value="transgender_female">Transgender Female</option>
-                          <option value="other">Other</option>
-                      </select>
-                             <div class="gender-message">
-                             <p>Select gender.</p>
-                            </div>
-                    </div>
-                    
-                    <div class="form-group col-md-8 col-xs-8">
-                        <label class="required" for="subtype"> Subtype:</label>
-                           <select name="subtype" class=" form-control" id="subtype">
-                                 <option value="">select sub type</option>
-                                 {% for key, value in sarcoma %}
-                                     <option value="{{ key }}">{{ value }}</option>
-                                 {% endfor %}
-                           </select>
-                       <div class="subtype-message">
-                        <p>This field is required.</p>
-                       </div>
-                       <div class="form-group others">
-                         <input id="other-sarcoma" name="other-sarcoma" class="form-control">
-                       </div>
-                   </div>
-        </div>
-
 
      <div class="form-group">
          <label for="presentation">Presentation</label>
-         <textarea name="presentation" class="form-control editor" rows="2" cols="73" id="presentation"></textarea>
+         <textarea name="presentation" class="form-control editor"
+                   rows="2" cols="73" id="presentation">{{ casereport.presentation }}</textarea>
          <div class="helpText">
              Observed condition, previous treatments, co-morbidities, etc.<br />
              Separate with line breaks
@@ -66,13 +22,15 @@
             </select>
         <div class="form-group">
             <label for="aberrations">Other</label>
-            <input type="text" name="aberrations_other" id="aberrations_other" class="form-control">
+            <input type="text" name="aberrations_other" id="aberrations_other" class="form-control"
+                   value="{{ casereport.aberrations_other }}">
         </div>
     </div>
 
    <div>
        <h4><label for="biomarkers">Biomarkers</label></h4>
-       <textarea name="biomarkers" id="biomarkers" rows="4" cols="73" class="form-control editor"></textarea>
+       <textarea name="biomarkers" id="biomarkers" rows="4" cols="73"
+                 class="form-control editor">{{ casereport.biomarkers }}</textarea>
        <div class="helpText">
            Separate with commas
        </div>
@@ -80,7 +38,8 @@
    
    <div class="form-group">
        <h4><label for="pathology">Pathology/Tests</label></h4>
-       <textarea name="pathology" class="form-control editor" rows="4" cols="73" id="pathology"></textarea>
+       <textarea name="pathology" class="form-control editor" rows="4" cols="73"
+                 id="pathology">{{ casereport.pathology }}</textarea>
        <div class="helpText">
            Test results (e.g., biopsy, scans, immunohistochemistry): tumor size, location, physical description, stage<br />
            Separate with line breaks
@@ -89,84 +48,181 @@
 
      <div class="treatment-section-form"><!--treatment-section start -->
         <h4>Treatment/Outcome</h4>
+        {% for treatment in casereport.get_treatments %}
         <div class="row treatment">
           <div class="col-md-6 col-xs-12">
 
               <div class="form-group">
-              <label for="treatment_name_0" class="required">Treatment Name</label>
-              <input id="treatment_name_0" name="treatment_name" class="form-control treatment_name">
+              <label for="treatment_name_{{forloop.counter}}" class="required">Treatment Name</label>
+              <input id="treatment_name_{{forloop.counter}}" name="treatment_name" class="form-control treatment_name"
+                     type="text" value="{{ treatment.name }}">
                <div class="treatment-name-message">
                  <p>This field is required.</p>
                </div>
               </div>
 
               <div class="form-group">
-              <label for="treatment_duration_0" class="required">Dates/Duration</label>
-              <input id="treatment_duration_0" name="treatment_duration" class="form-control treatment_name">
+              <label for="treatment_duration_{{forloop.counter}}" class="required">Dates/Duration</label>
+              <input id="treatment_duration_{{forloop.counter}}" name="treatment_duration" class="form-control treatment_name"
+                     type="text" value="{{ treatment.duration }}">
                <div class="treatment-duration-message">
                  <p>This field is required.</p>
                </div>
               </div>
 
               <div class="form-group">
-              <label for="treatment_type_0" class="required">Treatment Type</label>
-              <select id="treatment_type_0" name="treatment_type" class="form-control treatment_type">
+              <label for="treatment_type_{{forloop.counter}}" class="required">Treatment Type</label>
+              <select id="treatment_type_{{forloop.counter}}" name="treatment_type" class="form-control treatment_type">
                   <option value="" selected></option>
-                  <option value="Chemoradiotherapy">Chemoradiotherapy</option>
-                  <option value="Chemotherapy">Chemotherapy</option>
-                  <option value="Immunotherapy">Immunotherapy</option>
-                  <option value="Radiotherapy">Radiotherapy</option>
-                  <option value="Surgery">Surgery</option>
-                  <option value="Systemic Therapy">Systemic Therapy</option>
-                  <option value="Targeted Therapy">Targeted Therapy</option>
+                  <option value="Chemoradiotherapy" {% if 'Chemoradiotherapy' == treatment.treatment_type %}selected{% endif %}>
+                      Chemoradiotherapy</option>
+                  <option value="Chemotherapy" {% if 'Chemotherapy' == treatment.treatment_type %}selected{% endif %}>
+                      Chemotherapy</option>
+                  <option value="Immunotherapy" {% if 'Immunotherapy' == treatment.treatment_type %}selected{% endif %}>
+                      Immunotherapy</option>
+                  <option value="Radiotherapy" {% if 'Radiotherapy' == treatment.treatment_type %}selected{% endif %}>
+                      Radiotherapy</option>
+                  <option value="Surgery" {% if 'Surgery' == treatment.treatment_type %}selected{% endif %}>
+                      Surgery</option>
+                  <option value="Systemic Therapy" {% if 'Systemic Therapy' == treatment.treatment_type %}selected{% endif %}>
+                      Systemic Therapy</option>
+                  <option value="Targeted Therapy" {% if 'Targeted Therapy' == treatment.treatment_type %}selected{% endif %}>
+                      Targeted Therapy</option>
               </select>
                <div class="treatment-type-message">
                  <p>Select a treatment type.</p>
                </div>
               </div>
 
-              <label for="treatment_intent_0">Treatment Intent</label>
-              <select id="treatment_intent_0" name="treatment_intent" class="form-control">
+              <label for="treatment_intent_{{forloop.counter}}">Treatment Intent</label>
+              <select id="treatment_intent_{{forloop.counter}}" name="treatment_intent" class="form-control">
                   <option value="" selected></option>
-                  <option value="Neoadjuvant">Neoadjuvant</option>
-                  <option value="Adjuvant">Adjuvant</option>
-                  <option value="Metastatic/Advanced">Metastatic/Advanced</option>
-                  <option value="Palliative">Palliative</option>
+                  <option value="Neoadjuvant" {% if 'Neoadjuvant' == treatment.treatment_intent %}selected{% endif %}>Neoadjuvant</option>
+                  <option value="Adjuvant" {% if 'Adjuvant' == treatment.treatment_intent %}selected{% endif %}>Adjuvant</option>
+                  <option value="Metastatic/Advanced" {% if 'Metastatic/Advanced' == treatment.treatment_intent %}selected{% endif %}>Metastatic/Advanced</option>
+                  <option value="Palliative" {% if 'Palliative' == treatment.treatment_intent %}selected{% endif %}>Palliative</option>
               </select>
               
-              <label for="treatment_response_0">Objective Response</label>
-              <select id="treatment_response_0" name="treatment_response" class="form-control">
+              <label for="treatment_response_{{forloop.counter}}">Objective Response</label>
+              <select id="treatment_response_{{forloop.counter}}" name="treatment_response" class="form-control">
                   <option value="" selected></option>
-                  <option value="Complete Response">Complete Response</option>
-                  <option value="Partial Response">Partial Response</option>
-                  <option value="No Response">No Response</option>
-                  <option value="Diseage Progression">Diseage Progression</option>
+                  <option value="Complete Response" {% if 'Complete Response' == treatment.objective_response %}selected{% endif %}>Complete Response</option>
+                  <option value="Partial Response" {% if 'Partial Response' == treatment.objective_response %}selected{% endif %}>Partial Response</option>
+                  <option value="No Response" {% if 'No Response' == treatment.objective_response %}selected{% endif %}>No Response</option>
+                  <option value="Diseage Progression" {% if 'Diseage Progression' == treatment.objective_response %}selected{% endif %}>Diseage Progression</option>
               </select>
               
-              <label for="treatment_status_0">Performance Status</label>
-              <select id="treatment_status_0" name="treatment_status" class="form-control">
+              <label for="treatment_status_{{forloop.counter}}">Performance Status</label>
+              <select id="treatment_status_{{forloop.counter}}" name="treatment_status" class="form-control">
                   <option value="" selected></option>
-                  <option value="0">0</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
+                  <option value="0" {% if 0 == treatment.status %}selected{% endif %}>0</option>
+                  <option value="1" {% if 1 == treatment.status %}selected{% endif %}>1</option>
+                  <option value="2" {% if 2 == treatment.status %}selected{% endif %}>2</option>
+                  <option value="3" {% if 3 == treatment.status %}selected{% endif %}>3</option>
+                  <option value="4" {% if 4 == treatment.status %}selected{% endif %}>4</option>
+                  <option value="5" {% if 5 == treatment.status %}selected{% endif %}>5</option>
               </select>
           </div>
           <div class="col-md-6 col-xs-12">
-              <label for="treatment_outcome_0">Treatment Details, Outcomes, Notes</label>
-              <textarea name="treatment_outcome" class="form-control editor" rows="19" id="treatment_outcome_0"></textarea>
+              <label for="treatment_outcome_{{forloop.counter}}">Treatment Details, Outcomes, Notes</label>
+              <textarea name="treatment_outcome" class="form-control editor" rows="19"
+                   id="treatment_outcome_{{forloop.counter}}">{{ treatment.notes }}</textarea>
               <div class="helpText">E.g., dose/cycle, response, tumor size post-trmt, time to progression, adverse events</div>
          </div>
         </div>
+        {% endfor %}
+        
+        {% if not casereport.get_treatments %}
+        <div class="row treatment">
+          <div class="col-md-6 col-xs-12">
+
+              <div class="form-group">
+              <label for="treatment_name_1" class="required">Treatment Name</label>
+              <input id="treatment_name_1" name="treatment_name" class="form-control treatment_name"
+                     type="text" value="{{ treatment.name }}">
+               <div class="treatment-name-message">
+                 <p>This field is required.</p>
+               </div>
+              </div>
+
+              <div class="form-group">
+              <label for="treatment_duration_1" class="required">Dates/Duration</label>
+              <input id="treatment_duration_1" name="treatment_duration" class="form-control treatment_name"
+                     type="text" value="{{ treatment.duration }}">
+               <div class="treatment-duration-message">
+                 <p>This field is required.</p>
+               </div>
+              </div>
+
+              <div class="form-group">
+              <label for="treatment_type_1" class="required">Treatment Type</label>
+              <select id="treatment_type_1" name="treatment_type" class="form-control treatment_type">
+                  <option value="" selected></option>
+                  <option value="Chemoradiotherapy" {% if 'Chemoradiotherapy' == treatment.treatment_type %}selected{% endif %}>
+                      Chemoradiotherapy</option>
+                  <option value="Chemotherapy" {% if 'Chemotherapy' == treatment.treatment_type %}selected{% endif %}>
+                      Chemotherapy</option>
+                  <option value="Immunotherapy" {% if 'Immunotherapy' == treatment.treatment_type %}selected{% endif %}>
+                      Immunotherapy</option>
+                  <option value="Radiotherapy" {% if 'Radiotherapy' == treatment.treatment_type %}selected{% endif %}>
+                      Radiotherapy</option>
+                  <option value="Surgery" {% if 'Surgery' == treatment.treatment_type %}selected{% endif %}>
+                      Surgery</option>
+                  <option value="Systemic Therapy" {% if 'Systemic Therapy' == treatment.treatment_type %}selected{% endif %}>
+                      Systemic Therapy</option>
+                  <option value="Targeted Therapy" {% if 'Targeted Therapy' == treatment.treatment_type %}selected{% endif %}>
+                      Targeted Therapy</option>
+              </select>
+               <div class="treatment-type-message">
+                 <p>Select a treatment type.</p>
+               </div>
+              </div>
+
+              <label for="treatment_intent_1">Treatment Intent</label>
+              <select id="treatment_intent_1" name="treatment_intent" class="form-control">
+                  <option value="" selected></option>
+                  <option value="Neoadjuvant" {% if 'Neoadjuvant' == treatment.treatment_intent %}selected{% endif %}>Neoadjuvant</option>
+                  <option value="Adjuvant" {% if 'Adjuvant' == treatment.treatment_intent %}selected{% endif %}>Adjuvant</option>
+                  <option value="Metastatic/Advanced" {% if 'Metastatic/Advanced' == treatment.treatment_intent %}selected{% endif %}>Metastatic/Advanced</option>
+                  <option value="Palliative" {% if 'Palliative' == treatment.treatment_intent %}selected{% endif %}>Palliative</option>
+              </select>
+              
+              <label for="treatment_response_1">Objective Response</label>
+              <select id="treatment_response_1" name="treatment_response" class="form-control">
+                  <option value="" selected></option>
+                  <option value="Complete Response" {% if 'Complete Response' == treatment.objective_response %}selected{% endif %}>Complete Response</option>
+                  <option value="Partial Response" {% if 'Partial Response' == treatment.objective_response %}selected{% endif %}>Partial Response</option>
+                  <option value="No Response" {% if 'No Response' == treatment.objective_response %}selected{% endif %}>No Response</option>
+                  <option value="Diseage Progression" {% if 'Diseage Progression' == treatment.objective_response %}selected{% endif %}>Diseage Progression</option>
+              </select>
+              
+              <label for="treatment_status_1">Performance Status</label>
+              <select id="treatment_status_1" name="treatment_status" class="form-control">
+                  <option value="" selected></option>
+                  <option value="0" {% if 0 == treatment.status %}selected{% endif %}>0</option>
+                  <option value="1" {% if 1 == treatment.status %}selected{% endif %}>1</option>
+                  <option value="2" {% if 2 == treatment.status %}selected{% endif %}>2</option>
+                  <option value="3" {% if 3 == treatment.status %}selected{% endif %}>3</option>
+                  <option value="4" {% if 4 == treatment.status %}selected{% endif %}>4</option>
+                  <option value="5" {% if 5 == treatment.status %}selected{% endif %}>5</option>
+              </select>
+          </div>
+          <div class="col-md-6 col-xs-12">
+              <label for="treatment_outcome_1">Treatment Details, Outcomes, Notes</label>
+              <textarea name="treatment_outcome" class="form-control editor" rows="19"
+                   id="treatment_outcome_1">{{ treatment.notes }}</textarea>
+              <div class="helpText">E.g., dose/cycle, response, tumor size post-trmt, time to progression, adverse events</div>
+         </div>
+        </div>
+        {% endif %}
         
      </div><!--treatment-section end -->
     <a class="add_treatment" href="#"><i class="fa fa-plus"></i> Add another treatment</a>
 
     <div class="form-group">
       <h4><label for="additional_comment">Additional comments</label></h4>
-      <textarea name="additional_comment" class="form-control editor" rows="5" cols="73" id="additional_comment"></textarea>
+      <textarea name="additional_comment" class="form-control editor" rows="5" cols="73"
+                id="additional_comment">{{ casereport.additional_comment }}</textarea>
     </div>
 
 </div>
@@ -178,50 +234,4 @@
     </div>
   </div>
 </div>
-
-<script>
-    $('body').on('focusin','#subtype',function() {
-        $(this).autocomplete({
-            source: {{ sarcoma|safe }},
-            minLength: 2,
-
-        })
-    });
-
- $( "#subtype" ).on( "autocompleteselect", function( event, ui ) {
-    value = ui.item.value.split(",");
-        if (value == "Other") {
-               $(".others").show();
-                $("#other-sarcoma").prop('required',true);
-            } else {
-               $(".others").hide();
-           }
-    } );
-
- $('.select2').select2();
-
- CKEDITOR.replace('pathology', {
-     language: 'en',
-     skin: 'moono',
-     toolbar: [
-        ['Undo', 'Redo'],
-        ['ShowBlocks'],
-        ['Format', 'Styles'],
-        ['PasteText', 'PasteFromWord'],
-        ['Maximize', ''],
-        '/',
-        ['Bold', 'Italic', 'Underline', '-', 'Subscript', 'Superscript', '-', 'RemoveFormat'],
-        ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
-        ['HorizontalRule'],
-        ['Link', 'Unlink'],
-        ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Table'],
-        ['Source']
-     ],
-     allowedContent: true,
-     toolbarCanCollapse: false,
-     extraPlugins: '',
-     width: '100%'
- });
-
-</script>
 

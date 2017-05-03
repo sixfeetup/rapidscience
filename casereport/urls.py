@@ -24,8 +24,9 @@ urlpatterns = [
     ),
     url(r'^download/(?P<file_id>.*)/$', downloadfile, name='download'),
     url(
-        r'^edit/(?P<case_id>[0-9]*)/(?P<token>.*)/$',
+        r'^edit/(?P<case_id>[0-9]*)/$',
         CaseReportEditView.as_view(),
+        name='edit'
     ),
     url(r'^(?P<pk>[0-9]*)/review$', ReviewDetailView.as_view(), name='review'),
 ]

@@ -20,12 +20,12 @@
       <div class="inside-wrapper">
       <div class="form submit-form">
 
-    		<form id="caseform" name="caseform" class="rpds-form" action="{% url 'add_casereport' %}" method="post"
+    		<form id="caseform" name="caseform" class="rpds-form" action="" method="post"
                   enctype="multipart/form-data">
                 {% csrf_token %}
                 
                 <h4><label for="casetitle">Case Title</label></h4>
-                <input name="casetitle" value="" type="text" class="form-control" id="casetitle">
+                <input name="casetitle" value="{{ casereport.title }}" type="text" class="form-control" id="casetitle">
 
                 <h4 class="title-name">Primary Author/Contact</h4>
                 <p class="user-meta"><strong>{{ request.user.get_full_name }}
@@ -42,50 +42,102 @@
                 </div>
                 <div>
                     <label for="author">Alternative Correspondence Email Address</label>
-                    <input name="author" value="{{ email }}"  type="EMAIL" class="form-control" id="author">
+                    <input name="author" value=""  type="EMAIL" class="form-control" id="author">
               </div>
               
               <h4>Co-Authors</h4>
               <div class="helpText">Only coauthors who are members of Sarcoma Central will be able edit or comment on this case report. You may invite colleagues to register from the Community Commons group page.</div>
               <div class="physician-div">
+                  {% for coauthor in casereport.referring_physician.all %}
+                  <div class="row physician">
+                      <div class="form-group col-md-6">
+                          <label for="physician_name{{forloop.counter}}">Name</label>
+                          <input name="physician_name" type="text" class="form-control"
+                                 id="physician_name{{forloop.counter}}" placeholder="First and Last Name"
+                                 value="{{ coauthor }}">
+                          <div class="helpText">ex: John Smith, MD, PhD</div>
+                      </div>
+                      <div class="form-group col-md-5">
+                          <label for="physician_email{{forloop.counter}}">Email Address</label>
+                          <input name="physician_email" type="EMAIL" class="form-control"
+                                 id="physician_email{{forloop.counter}}" placeholder="Email"
+                                 value="{{ coauthor.email }}">
+                          <div class="helpText">You must use an institutional email address</div>
+                      </div>
+                      <div class="col-md-1"><a href="#" class="remove_phy"><i class="fa fa-times"></i></a></div>
+                  </div>
+                  {% endfor %}
               </div>
 
               <a class="add_phy_button" href="#"><i class="fa fa-plus"></i> <span class="add_phy_button_text">Add co-author</a></a>
 
         <div class="form-group radio-box">
-        <input {% if formtype == "M" %}checked="checked"{% endif %}  id="id_radio1" type="radio"  class="radiobut" name="entry-type" value="M" />
+        <input checked="checked"  id="id_radio1" type="radio"  class="radiobut" name="entry-type" value="M" />
         <label for="id_radio1">Use Template</label>
-        <input {% if formtype == "T" %}checked="checked"{% endif %} id="id_radio2" type="radio" class="radiobut"  name="entry-type" value="T" />
+        <input id="id_radio2" type="radio" class="radiobut"  name="entry-type" value="T" />
         <label for="id_radio2">Free Text</label>
-        <input {% if formtype == "F" %}checked="checked"{% endif %} id="id_radio3" type="radio" class="radiobut"  name="entry-type" value="F" />
+        <input id="id_radio3" type="radio" class="radiobut"  name="entry-type" value="F" />
         <label for="id_radio3">Upload File</label>
             <div class="choose-message">
                 <p>Choose one of the options.</p>
             </div>
         </div>
-
-                <div id="pleasewait" class="progress-indicator">
-                 <img src="{{ static_url }}/static/images/giphy.gif">
-{#                        <p>Loading...</p>#}
-                </div>
-                <div id="myform">
-                    <!-- 
-                         section filled via JS
-                         manualform.html, free-text.html, or fileform.html
-                    -->
-                </div>
-                
-                <!-- <div id="captcha">
-                    {{ captchaform }}
-                    <span id="invalid_cap" class="hide">Captcha Invalid</span>
-                    <button class='js-captcha-refresh btn btn-primary '>refresh</button>
-                    <div class="captcha-message">
-                     <p>Captcha is required.</p>
+        
+        <h4 class="title-name">Diagnosis/Presentation</h4>
+        <div class="row">
+                    <div class="form-group col-xs-2">
+                        <label for="age" class="required">Age</label>
+                        <input type="text" name="age" id="age" class="form-control" value="{{ casereport.age }}">
+                        <div class="age-message">
+                                <p>Field required.</p>
+                        </div>
                     </div>
-                </div>
-                <br> -->
+
+                    <div class="form-group col-md-2 col-xs-2">
+                      <label for="gender" class="required">Gender</label>
+                      <select name="gender" class="form-control" id="gender">
+                          <option disabled value="" {% if not casereport.gender %}selected{% endif %}></option>
+                          <option value="male" {% if 'male' == casereport.gender %}selected{% endif %}>
+                              Male</option>
+                          <option value="female" {% if 'female' == casereport.gender %}selected{% endif %}>
+                              Female</option>
+                          <option value="transgender_male" {% if 'transgender_male' == casereport.gender %}selected{% endif %}>
+                              Transgender Male</option>
+                          <option value="transgender_female" {% if 'transgender_female' == casereport.gender %}selected{% endif %}>
+                              Transgender Female</option>
+                          <option value="other" {% if 'other' == casereport.gender %}selected{% endif %}>
+                              Other</option>
+                      </select>
+                             <div class="gender-message">
+                             <p>Select gender.</p>
+                            </div>
+                    </div>
+                    
+                    <div class="form-group col-md-8 col-xs-8">
+                        <label class="required" for="subtype"> Subtype:</label>
+                           <select name="subtype" class=" form-control" id="subtype">
+                                 <option value="">select sub type</option>
+                                 {% for key, value in sarcoma %}
+                                     <option value="{{ key }}" {% if key == casereport.subtype %}selected{% endif %}>
+                                         {{ value }}</option>
+                                 {% endfor %}
+                           </select>
+                       <div class="subtype-message">
+                        <p>This field is required.</p>
+                       </div>
+                       <div class="form-group others">
+                         <input id="other-sarcoma" name="other-sarcoma" class="form-control">
+                       </div>
+                   </div>
+        </div>
+        
+        {% include "casereport/manualform.html" %}
+        {% include "casereport/free-text.html" %}
+        {% include "casereport/fileform.html" %}
+
                 <div>
-                    <input class="agree-checkbox" type="checkbox" id="agreement">
+                    <input class="agree-checkbox" type="checkbox" id="agreement"
+                        {% if casereport.agreement %}checked{% endif %}>
                     <label for="agreement">By checking this box, you confirm that you have obtained signed, written consent from the patient or,
                     if the patient is deceased, the patient’s authorized relative to post this report.</label>
                     <div class="agree-message">
@@ -96,22 +148,32 @@
                 <!-- attachments -->
                 <h4>Attachments</h4>
                 <div class="attachments-div">
-
-                    <div class="attachment row"><div class="col-md-11">
-                        <div class="figure">Fig 1</div>
+                    {% for attachment in casereport.get_attachments %}
+                    <div class="attachment row">
+                    <div class="col-md-11">
+                        <div class="figure">Fig {{forloop.counter}}</div>
+                        <a href="{{ attachment.file.url }}" target="_blank" class="download">View Current file</a>
                         <div class="form-control">
-                            <input type="file" name="attachment1" id="attachment1" onchange="checkfile(this);">
+                            <input type="file" name="attachment1" id="attachment{{forloop.counter}}" onchange="checkfile(this);">
                         </div>
                         <div class="helpText">JPG, PDF, PNG, TIFF file types; max file size 2MB; minimum width 770px
                                               <br/>Be sure to explicitly cite this figure's name in relevant text above</div>
 
-                        <label for="attachment1_title">Title</label>
-                        <input id="attachment1_title" name="attachment1_title" class="form-control attachment1_title">
+                        <label for="attachment{{forloop.counter}}_title">Title</label>
+                        <input id="attachment{{forloop.counter}}_title" name="attachment1_title"
+                               class="form-control attachment{{forloop.counter}}_title"
+                               value="{{ attachment.title }}">
 
-                        <label for="attachment1_description">Description</label>
-                        <textarea id="attachment1_description" name="attachment1_description"
-                                  rows="4" cols="73" class="form-control attachment1_description editor"></textarea>
-                    </div><div class="col-md-1"></div></div>
+                        <label for="attachment{{forloop.counter}}_description">Description</label>
+                        <textarea id="attachment{{forloop.counter}}_description" name="attachment{{forloop.counter}}_description"
+                                  rows="4" cols="73" class="form-control attachment{{forloop.counter}}_description editor"
+                                  >{{ attachment.description }}</textarea>
+                    </div>
+                    <div class="col-md-1">
+                        <a href="#" class="remove_att"><i class="fa fa-times"></i></a>
+                    </div>
+                    </div>
+                    {% endfor %}
 
                 </div>
 
@@ -170,6 +232,7 @@
     <script src="{% static "djangocms_text_ckeditor/ckeditor/ckeditor.js" %}"></script>
     <script src="{% static "cms/js/modules/cms.base.js" %}"></script>
     <script src="{% static 'djangocms_text_ckeditor/js/cms.ckeditor.js' %}"></script>
+    <script src="{{STATIC_URL}}js/free-text.js"></script>
 
     <script type="text/javascript">
     (function($) { $(function() {
@@ -188,6 +251,48 @@
                 }
             });
         });
+        
+        $('body').on('focusin','#subtype',function() {
+            $(this).autocomplete({
+                source: {{ sarcoma|safe }},
+                minLength: 2
+            })
+        });
+
+         $( "#subtype" ).on( "autocompleteselect", function( event, ui ) {
+            value = ui.item.value.split(",");
+                if (value == "Other") {
+                       $(".others").show();
+                        $("#other-sarcoma").prop('required',true);
+                    } else {
+                       $(".others").hide();
+                   }
+            });
+
+         $('.select2').select2();
     }); })(jQuery);
+     
+     CKEDITOR.replace('pathology', {
+         language: 'en',
+         skin: 'moono',
+         toolbar: [
+            ['Undo', 'Redo'],
+            ['ShowBlocks'],
+            ['Format', 'Styles'],
+            ['PasteText', 'PasteFromWord'],
+            ['Maximize', ''],
+            '/',
+            ['Bold', 'Italic', 'Underline', '-', 'Subscript', 'Superscript', '-', 'RemoveFormat'],
+            ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['HorizontalRule'],
+            ['Link', 'Unlink'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Table'],
+            ['Source']
+         ],
+         allowedContent: true,
+         toolbarCanCollapse: false,
+         extraPlugins: '',
+         width: '100%'
+     });
     </script>
 {% endblock %}

@@ -20,6 +20,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView
 from django.views.generic import FormView
 from django.views.generic import TemplateView
+from django.views.generic import UpdateView
 
 from casereport.api import AbberationListResource
 from casereport.api import AuthorizedListResource
@@ -69,16 +70,6 @@ class CaseReportDetailView(TemplateView):
         casereport = CaseReport.objects.get(id=case_id)
         treatments = Treatment.objects.filter(casereport_f_id=case_id)
         testevents = casereport.event_set.select_related('testevent')
-        attachments = [
-            {'file': casereport.attachment1,
-             'title':casereport.attachment1_title,
-             'description':casereport.attachment1_description},
-            {'file': casereport.attachment2,
-             'title':casereport.attachment2_title,
-             'description':casereport.attachment2_description},
-            {'file': casereport.attachment3,
-             'title':casereport.attachment3_title,
-             'description':casereport.attachment3_description},]
         last_viewed_path = request.session.get('last_viewed_path')
         user_can_comment = casereport.is_shared_with_user(request.user)
         comment_list = casereport.discussions.all()
@@ -101,7 +92,6 @@ class CaseReportDetailView(TemplateView):
                 casereport=casereport,
                 test=testevents,
                 treatments=treatments,
-                attachments=attachments,
                 comment_list=comment_list,
                 user_interaction=user_can_comment,
                 review_allowed=review_allowed,
@@ -113,6 +103,15 @@ class CaseReportDetailView(TemplateView):
 class CaseReportFormView(LoginRequiredMixin, FormView):
     template_name = 'casereport/new_add_casereport.html'
     form_class = CaseForm
+
+    def get(self, request, *args, **kwargs):
+        sarcoma = sorted(SARCOMA_TYPE)
+        aberrations = MolecularAbberation.objects.all()
+        form = self.form_class()
+        return self.render_to_response(self.get_context_data(
+            form=form,
+            sarcoma=sarcoma,
+            aberrations=aberrations), )
 
     def get_form(self, form_class):
         came_from = self.request.GET.get('id')
@@ -442,50 +441,38 @@ def downloadfile(request, file_id):
     return response
 
 
-class CaseReportEditView(TemplateView):
-    template_name = 'casereport/case_edit.html'
+class CaseReportEditView(LoginRequiredMixin, FormView):
+    form_class = CaseForm
+    template_name = 'casereport/new_add_casereport.html'
 
-    @method_decorator(validate_token)
-    @method_decorator(csrf_exempt)
-    def dispatch(self, *args, **kwargs):
-        return super(CaseReportEditView, self).dispatch(*args, **kwargs)
-
-    def get(self, *args, **kwargs):
-        case_id = kwargs.get('case_id')
+    def get(self, request, case_id):
         casereport = get_object_or_404(CaseReport, id=case_id)
-        treatments = Treatment.objects.filter(casereport_id=case_id)
-        testevents = casereport.event_set.select_related('testevent')
-        kwargs = {'casereport': casereport, 'gender': GENDER, 'sarcoma_types': SARCOMA_TYPE,
-                  'casefile': casereport.casefile_f, 'treatments': treatments, 'test': testevents}
-        return self.render_to_response(kwargs)
+        sarcoma = sorted(SARCOMA_TYPE)
+        aberrations = MolecularAbberation.objects.all()
+        form = self.form_class()
+        return self.render_to_response(self.get_context_data(
+            form=form,
+            casereport=casereport,
+            sarcoma=sarcoma,
+            aberrations=aberrations), )
 
-    def post(self, *args, **kwargs):
-        case_id = kwargs.get('case_id')
+    def post(self, request, case_id, *args, **kwargs):
+        data = request.POST.copy()
+        messages.info(request, "Edits saved!")
         case = get_object_or_404(CaseReport, id=case_id)
-        data = self.request.POST
-        action = data.get('action', None)
-        if action == 'Approve':
-            CaseReportInstanceResource().approve(case_id=case_id)
-            context = {'message': settings.APPROVED_MESSAGE, 'back_link_label': None, 'back_link': None }
-
+        case.title = data['casetitle']
+        case.save()
+        SendToView.post(
+            self, self.request, 'casereport',
+            'casereport', case.id,
+        )
+        if case.status == 'draft':
+            messages.success(self.request, "Saved!")
+            return redirect(case.get_absolute_url())
         else:
-            title = data.get('title', None)
-            age = data.get('age', None)
-            gender = data.get('gender', None)
-            sarcoma_type = data.get('sarcoma_type', None)
-            physician = data.get('physician', None)
-            tests = data.get('tests', None)
-            treatments = data.get('treatments', None)
-            diagnosis = data.get('diagnosis', None)
-            molecular_abberations = data.get('abberations', None)
-            CaseReportInstanceResource().update(case_id=case_id, title=title,
-                age=age, gender=gender, sarcoma_type=sarcoma_type)
-            CaseReportHistoryInstanceResource().post(case=case, physician=physician,
-                            tests=tests, treatments=treatments, diagnosis=diagnosis,
-                            molecular_abberations=molecular_abberations)
-            context = {'message': settings.EDITED_MESSAGE, 'back_link_label': None, 'back_link': None }
-        message = render_to_string('casereport/message.html', context)
-        return HttpResponse(json.dumps({'message': message}), content_type='application/json')
+            self.template_name = 'casereport/add_casereport_success.html'
+            # self.case_success_mail(physicians, author)
+            return self.render_to_response({'case_number': case.id})
 
 
 class ReviewDetailView(LoginRequiredMixin, DetailView):

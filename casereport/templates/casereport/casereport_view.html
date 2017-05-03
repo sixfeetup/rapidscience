@@ -23,6 +23,7 @@
     </div>
     {% if review_allowed %}
     <p class="pull-right">
+        <a class="btn btn-primary" href="{% url 'edit' casereport.id %}">Edit</a>
       <a class="btn btn-primary" href="{% url 'review' casereport.id %}">Review</a>
     </p>
     {% endif %}
@@ -172,7 +173,7 @@
       {% if casereport.attachment1 or casereport.attachment2 or casereport.attachment3 %}
       <div id="section-attachments">
           <h4>Attachments</h4>
-          {% for attachment in attachments %}
+          {% for attachment in casereport.get_attachments %}
           {% if attachment.file %}
               <img src="{{ attachment.file.url }}" alt="{{ attachment.title }}"/>
               <p>

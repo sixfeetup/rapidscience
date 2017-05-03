@@ -1,51 +1,4 @@
-<script src="{{STATIC_URL}}js/free-text.js" ></script>
-{#<script src="{{STATIC_URL}}js/manual_form.js" xmlns="http://www.w3.org/1999/html"></script>#}
-
-
-
 <div class="free-text">
-    <h4 class="title-name">Diagnosis</h4>
-        <div class="row">
-            <div class="form-group col-xs-2">
-                <label for="age" class="required">Age</label>
-                <input type="text" name="age" id="age" class="form-control">
-                <div class="age-message">
-                        <p>Field required.</p>
-                </div>
-            </div>
-
-            <div class="form-group col-md-2 col-xs-2">
-              <label for="gender" class="required">Gender</label>
-              <select name="gender" class="form-control" id="gender">
-                  <option selected disabled value=""></option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                  <option value="transgender_male">Transgender Male</option>
-                  <option value="transgender_female">Transgender Female</option>
-                  <option value="other">Other</option>
-              </select>
-                     <div class="gender-message">
-                     <p>Select gender.</p>
-                    </div>
-            </div>
-            
-            <div class="form-group col-md-8 col-xs-8">
-                <label class="required" for="subtype"> Subtype:</label>
-                   <select name="subtype" class="form-control" id="subtype">
-                         <option value="">select sub type</option>
-                         {% for key, value in sarcoma %}
-                             <option value="{{ key }}">{{ value }}</option>
-                         {% endfor %}
-                   </select>
-               <div class="subtype-message">
-                <p>This field is required.</p>
-               </div>
-               <div class="form-group others">
-                 <input id="other-sarcoma" name="other-sarcoma" class="form-control">
-               </div>
-           </div>
-        </div>
-
         <div class="form-group">
           <label for="details" class="required">Case Details:</label>
           <textarea name="details" id="details" class="form-control editor" rows="15" cols="73"></textarea>
@@ -55,22 +8,3 @@
             </div>
         </div>
 </div>
-<script>
-    $('body').on('focusin','#subtype-field',function() {
-        $(this).autocomplete({
-            source: {{ sarcoma|safe }},
-            minLength: 2,
-        })
-
-    })
-
-    $( "#subtype-field" ).on( "autocompleteselect", function( event, ui ) {
-    value = ui.item.value.split(",");
-        if (value == "Other") {
-               $(".others").show();
-                $("#other-sarcoma").prop('required',true);
-            } else {
-               $(".others").hide();
-           }
-    } );
-</script>

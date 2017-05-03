@@ -1,57 +1,9 @@
-$(document).ready(function() {
-    var max_fields      = 20; //maximum input boxes allowed
-    var new_wrapper         = $(".molecular-abberations"); //Fields wrapper
-    var add_button      = $(".add_button"); //Add button ID
-
-    var field_count = 1; //initial text box count
-    $(add_button).click(function(e){ //on add input button click
-        e.preventDefault();
-        if(field_count < max_fields){ //max input box allowed
-            field_count++; //text box increment
-            $(new_wrapper).append('<div><label for="comment">Genetic Abberations:</label>' +
-                            '<div class="row ">'+
-                            '<div class="form-group col-xs-6">'+
-                            '<input name="test" class="form-control test" ></div>'+
-                            '<div class="form-group col-xs-6">'+
-                          '<input type="text" name="test_result" class="form-control"></div>'+
-                    '<a href="#" class="remove_field"><i class="fa  fa-times"></i></a></div>'); //add input box
-        }
-    });
-
-    $(new_wrapper).on("click",".remove_field", function(e){ //user click on remove text
-        e.preventDefault(); $(this).parent().parent('div').remove();
-        field_count--;
-    })
-
-
-});
-
-
-//$(document).ready(function() {
-//    var max_fields      = 20; //maximum input boxes allowed
-//    var wrapper         = $(".authors-div"); //Fields wrapper
-//    var add_button      = $(".add_field_button"); //Add button ID
-//
-//    var x = 1; //initlal text box count
-//    $(add_button).click(function(e){ //on add input button click
-//        e.preventDefault();
-//        if(x < max_fields){ //max input box allowed
-//            x++; //text box increment
-//            $(wrapper).append('<div class="form-group"><label for="title">Authorized Email:</label>' +
-//                    '<input  class="form-control col-md-11" id="author_email" type="email" placeholder=""name="author"/>' +
-//                    '<a href="#" class="remove_field"><i class="fa  fa-times"></a></div>'); //add input box
-//        }
-//    })
-//    $(wrapper).on("click",".remove_field", function(e){ //user click on remove text
-//        e.preventDefault(); $(this).parent('div').remove(); x--;
-//    })
-//});
-
-$(document).ready(function() {
+(function($) { $(function() {
     var max_fields = 20; //maximum input boxes allowed
     var treatment_wrapper = $(".treatment-section-form"); //Fields wrapper
-    var treatment_content = $(".treatment-section-form .row").html();
-    var field_count = 1; //initial text box count
+    treatment_copy = $(".treatment-section-form .row").eq(0).clone();
+    treatment_content = $(treatment_copy).html();
+    var field_count = $(".row.treatment").length + 1; //initial text box count
     var level = 1;
     var label_value = 2;
     
@@ -59,8 +11,13 @@ $(document).ready(function() {
         e.preventDefault();
         if(field_count < max_fields){ //max input box allowed
             var new_treatment = '<a href="#" class="remove_treatment"><i class="fa fa-times"></i></a>' + treatment_content;
-            new_treatment = new_treatment.replace(/_0/g, "_" + field_count)
-            $(treatment_wrapper).append('<div class="form-group row">' + new_treatment + '</div>');
+            new_treatment = new_treatment.replace(/_1/g, "_" + field_count)
+            $(new_treatment).find("input").val("");
+            $(treatment_wrapper).append('<div class="row treatment">' + new_treatment + '</div>');
+            $(".row.treatment").eq(field_count-1).find("input, textarea").val("");
+            $(".row.treatment").eq(field_count-1).find("select").each(function(){
+                this.selectedIndex = 0
+            });
             field_count++; //text box increment
         }
         $('.remove_treatment').on("click", function(e){
@@ -114,31 +71,7 @@ $(document).ready(function() {
         }
         label_value=field_count--;
     })
-});
-
-
- //$('.treatment_type').select2();
-
-    //
-    // $(function () {
-    //    $(".treatment_type").change(function () {
-    //        var form_group = $(this).parent('.form-group');
-    //        var treatment_section = form_group.parent('.treatment-section-form');
-    //        if ($(this).val() == "Chemotherapy") {
-    //            treatment_section.find(".chemo-section").show();
-    //            treatment_section.find(".non-chemo-section").hide();
-    //        } else {
-    //            treatment_section.find(".non-chemo-section").show();
-    //            treatment_section.find(".chemo-section").hide();
-    //        }
-    //        var val = $(this).val();
-    //        if(val)
-    //            $(treatment_section.find(".treatment_name")[0]).prop('required', true);
-    //        else
-    //            $(treatment_section.find(".treatment_name")[0]).prop('required', false);
-    //    });
-    //});
-
+}); })(jQuery);
 
 
 
