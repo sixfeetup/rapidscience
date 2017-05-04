@@ -2,5 +2,5 @@
 
 {% block main_content %}
   {% if obj.owner == request.user %}{% include 'forms/_edit_dropdown.html' with edit_url=obj.get_edit_url delete_url=obj.get_delete_url %}{% endif %}
-  {% include 'bibliography/_reference.html' with obj=obj.reference %}
+  {% include 'bibliography/_reference.html' %}
 {% endblock main_content %}

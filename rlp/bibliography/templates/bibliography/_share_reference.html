@@ -16,7 +16,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Share "{{ action.action_object.reference.title }}"</h4>
+        <h4 class="modal-title">Share "{{ action.action_object.title }}"</h4>
       </div>
       <form class="share" action="{% url 'reference_share' reference_pk=action.action_object.pk %}" method="post">{% csrf_token %}
         <div class="modal-body">

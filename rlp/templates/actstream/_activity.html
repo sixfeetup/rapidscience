@@ -24,9 +24,9 @@
           <blockquote>
             <p>{{ obj.comment }}</p>
           </blockquote>
-          {% include 'bibliography/_ref_activity.html' with ref=obj.reference %}
+          {% include 'bibliography/_ref_activity.html' with ref=obj %}
         {% elif model == 'projectreference' %}
-          {% include 'bibliography/_ref_activity.html' with ref=obj.reference %}
+          {% include 'bibliography/_ref_activity.html' with ref=obj %}
         {% elif model == "casereport" %}
           {% include 'casereport/casereport_activity.html' %}
         {% endif %}

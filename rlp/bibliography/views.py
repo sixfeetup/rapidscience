@@ -15,7 +15,7 @@ from taggit.models import Tag
 from rlp.discussions.models import ThreadedComment
 from . import choices
 from .forms import SearchForm, BookForm, BookSectionForm, JournalArticleForm, ProjectReferenceForm, ReferenceShareForm
-from .models import Reference, ProjectReference
+from .models import Reference
 from rlp.core.email import send_transactional_mail
 
 
@@ -46,10 +46,6 @@ def reference_search(request, template_name='bibliography/reference_search.html'
 def add_book(request, reference_pk=None, template_name='bibliography/add_book.html'):
     if reference_pk:
         instance = get_object_or_404(Reference, pk=reference_pk)
-        project_reference = ProjectReference.objects.get(
-            reference=instance,
-            owner=request.user
-        )
     else:
         instance = None
     if request.method == 'POST':
@@ -64,9 +60,7 @@ def add_book(request, reference_pk=None, template_name='bibliography/add_book.ht
                 if reference_pk:
                     messages.success(request, "Reference updated successfully!")
                 else:
-                    project_reference = ProjectReference.objects.create(
-                        reference=reference, owner=request.user)
-                    action.send(request.user, verb='added', action_object=project_reference)
+                    action.send(request.user, verb='added', action_object=reference)
                     messages.success(request, "Reference added successfully!")
                 # Set the tags
                 if tag_ids:
@@ -74,9 +68,9 @@ def add_book(request, reference_pk=None, template_name='bibliography/add_book.ht
                         tags = Tag.objects.filter(id__in=tag_ids)
                     except:
                         tags = []
-                    project_reference.tags.set(*tags)
+                    reference.tags.set(*tags)
                     # Trigger any post-save signals (e.g. Haystack's real-time indexing)
-                    project_reference.save()
+                    reference.save()
             # TODO redirect to ?
             return redirect('/')
     else:
@@ -84,7 +78,7 @@ def add_book(request, reference_pk=None, template_name='bibliography/add_book.ht
             data = instance.raw_data.copy()
             if instance.upload:
                 data['upload'] = instance.upload
-            data['tags'] = project_reference.tags.all()
+            data['tags'] = instance.tags.all()
             form = BookForm(initial=data)
         else:
             form = BookForm()
@@ -101,10 +95,6 @@ def add_book(request, reference_pk=None, template_name='bibliography/add_book.ht
 def add_book_chapter(request, reference_pk=None, template_name='bibliography/add_book_chapter.html'):
     if reference_pk:
         instance = get_object_or_404(Reference, pk=reference_pk)
-        project_reference = ProjectReference.objects.get(
-            reference=instance,
-            owner=request.user
-        )
     else:
         instance = None
     if request.method == 'POST':
@@ -119,9 +109,7 @@ def add_book_chapter(request, reference_pk=None, template_name='bibliography/add
                 if reference_pk:
                     messages.success(request, "Reference updated successfully!")
                 else:
-                    project_reference = ProjectReference.objects.create(
-                        reference=reference, owner=request.user)
-                    action.send(request.user, verb='added', action_object=project_reference)
+                    action.send(request.user, verb='added', action_object=reference)
                     messages.success(request, "Reference added successfully!")
                 # Set the tags
                 if tag_ids:
@@ -129,9 +117,9 @@ def add_book_chapter(request, reference_pk=None, template_name='bibliography/add
                         tags = Tag.objects.filter(id__in=tag_ids)
                     except:
                         tags = []
-                    project_reference.tags.set(*tags)
+                    reference.tags.set(*tags)
                     # Trigger any post-save signals (e.g. Haystack's real-time indexing)
-                    project_reference.save()
+                    reference.save()
             # TODO redirect to ?
             return redirect('/')
     else:
@@ -139,7 +127,7 @@ def add_book_chapter(request, reference_pk=None, template_name='bibliography/add
             data = instance.raw_data.copy()
             if instance.upload:
                 data['upload'] = instance.upload
-            data['tags'] = project_reference.tags.all()
+            data['tags'] = instance.tags.all()
             form = BookSectionForm(initial=data)
         else:
             form = BookSectionForm()
@@ -156,10 +144,6 @@ def add_book_chapter(request, reference_pk=None, template_name='bibliography/add
 def add_article(request, reference_pk=None, template_name='bibliography/add_article.html'):
     if reference_pk:
         instance = get_object_or_404(Reference, pk=reference_pk)
-        project_reference = ProjectReference.objects.get(
-            reference=instance,
-            owner=request.user
-        )
     else:
         instance = None
     if request.method == 'POST':
@@ -174,9 +158,7 @@ def add_article(request, reference_pk=None, template_name='bibliography/add_arti
                 if reference_pk:
                     messages.success(request, "Reference updated successfully!")
                 else:
-                    project_reference = ProjectReference.objects.create(
-                        reference=reference, owner=request.user)
-                    action.send(request.user, verb='added', action_object=project_reference)
+                    action.send(request.user, verb='added', action_object=reference)
                     messages.success(request, "Reference added successfully!")
                 # Set the tags
                 if tag_ids:
@@ -184,9 +166,9 @@ def add_article(request, reference_pk=None, template_name='bibliography/add_arti
                         tags = Tag.objects.filter(id__in=tag_ids)
                     except:
                         tags = []
-                    project_reference.tags.set(*tags)
+                    reference.tags.set(*tags)
                     # Trigger any post-save signals (e.g. Haystack's real-time indexing)
-                    project_reference.save()
+                    reference.save()
             # TODO redirect to ?
             return redirect('/')
     else:
@@ -194,7 +176,7 @@ def add_article(request, reference_pk=None, template_name='bibliography/add_arti
             data = instance.raw_data.copy()
             if instance.upload:
                 data['upload'] = instance.upload
-            data['tags'] = project_reference.tags.all()
+            data['tags'] = instance.tags.all()
             data['publication_date'] = datetime.strptime(data['publication_date'], '%d %b %Y')
             form = JournalArticleForm(initial=data)
         else:
@@ -212,15 +194,20 @@ def add_article(request, reference_pk=None, template_name='bibliography/add_arti
 def reference_add(request, reference_pk, edit=False):
     reference = get_object_or_404(Reference, pk=reference_pk)
     with transaction.atomic():
-        project_reference, created = ProjectReference.objects.get_or_create(
-            reference=reference, defaults={'owner': request.user}
-        )
-        if created:
-            action.send(request.user, verb='added', action_object=project_reference)
+        # TODO this will be replaced with a new add form soon
+        shared = True
+        if shared:
+            action.send(request.user, verb='added', action_object=reference)
             messages.success(request, 'Reference added successfully!')
         else:
-            messages.info(request, "The reference you selected was already added to this project by {}.".format(
-                project_reference.owner.get_full_name()))
+            messages.info(
+                request,
+                "The reference you selected was already added "\
+                "to this project by {}.".format(
+                    # TODO look up user that shared?
+                    'Timmy'
+                )
+            )
         if request.is_ajax():
             context = {
                 'messages': render_to_string('bootstrap3/messages.html', {}, request=request),
@@ -243,15 +230,13 @@ def reference_edit(request, reference_pk, template_name='bibliography/edit_refer
         elif reference.raw_data['reference_type'] == choices.BOOK_SECTION:
             return add_book_chapter(request, reference_pk)
     # The rest of this view is for adding tags to references coming from Pubmed or Crossref
-    project_reference = ProjectReference.objects.get(reference=reference)
-    # Need to edit the 'project reference', that's what should get the tags right?
     if request.method == 'POST':
         form = ProjectReferenceForm(request.POST, instance=project_reference)
         if form.is_valid():
             tags = form.cleaned_data.get('tags') or []
-            project_reference.tags.set(*tags)
+            reference.tags.set(*tags)
             # Trigger any post-save signals (e.g. Haystack's real-time indexing)
-            project_reference.save()
+            reference.save()
             messages.success(request, "Reference updated successfully!")
             # TODO redirect to ?
             return redirect('/')
@@ -262,7 +247,7 @@ def reference_edit(request, reference_pk, template_name='bibliography/edit_refer
         form = None
     context = {
         'form': form,
-        'instance': project_reference,
+        'instance': reference,
         'tab': 'bibliography',
     }
     return render(request, template_name, context)
@@ -270,13 +255,13 @@ def reference_edit(request, reference_pk, template_name='bibliography/edit_refer
 
 @login_required
 def reference_share(request, reference_pk):
-    project_reference = get_object_or_404(ProjectReference, pk=reference_pk)
+    reference = get_object_or_404(Reference, pk=reference_pk)
     if request.method == 'POST':
         form = ReferenceShareForm(request.POST)
         if form.is_valid():
             share = form.save(commit=False)
             share.user = request.user
-            share.reference = project_reference.reference
+            share.reference = reference
             share.save()
             form.save_m2m()
             # Collect the recipients using a set() so we don't send duplicate messages (as a share.recipient and as a
@@ -322,16 +307,15 @@ def reference_share(request, reference_pk):
 @never_cache
 @login_required
 def reference_delete(request, reference_pk, template_name='bibliography/reference_delete.html'):
-    project_reference = get_object_or_404(
-        ProjectReference, reference__id=reference_pk, owner=request.user)
+    reference = get_object_or_404(Reference, pk=reference_pk)
     if request.POST:
-        title = project_reference.reference.title
-        ctype = ContentType.objects.get_for_model(project_reference.__class__)
+        title = reference.title
+        ctype = ContentType.objects.get_for_model(Reference)
         comment_ctype = ContentType.objects.get_for_model(ThreadedComment)
         with transaction.atomic():
-            # Recursively find all comments and replies for this project_reference and delete them.
+            # Recursively find all comments and replies for this reference and delete them.
             # TODO: turn this into a model manager method
-            qs_to_delete = ThreadedComment.objects.filter(object_pk=project_reference.id, content_type=ctype)
+            qs_to_delete = ThreadedComment.objects.filter(object_pk=reference.id, content_type=ctype)
             comment_children_ids = list(qs_to_delete.values_list('id', flat=True))
             qs_to_delete.delete()
             while comment_children_ids:
@@ -339,12 +323,12 @@ def reference_delete(request, reference_pk, template_name='bibliography/referenc
                     content_type=comment_ctype, parent_id__in=comment_children_ids)
                 comment_children_ids = list(qs_to_delete.values_list('id', flat=True))
                 qs_to_delete.delete()
-            project_reference.delete()
+            reference.delete()
         messages.success(request, "Successfully deleted '{}'".format(title))
         # TODO redirect to ?
         return redirect('/')
     context = {
-        'obj': project_reference,
+        'obj': reference,
         'tab': 'bibliography',
     }
     return render(request, template_name, context)
@@ -353,10 +337,10 @@ def reference_delete(request, reference_pk, template_name='bibliography/referenc
 @never_cache
 @login_required
 def reference_detail(request, reference_pk, template_name='bibliography/reference_detail.html'):
-    project_reference = get_object_or_404(ProjectReference, reference__id=reference_pk)
+    reference = get_object_or_404(Reference, pk=reference_pk)
     context = {
-        'obj': project_reference,
+        'obj': reference,
         'tab': 'bibliography',
-        'comment_list': project_reference.discussions.all(),
+        'comment_list': reference.discussions.all(),
     }
     return render(request, template_name, context)

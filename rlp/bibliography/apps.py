@@ -8,6 +8,6 @@ class BibliographyConfig(AppConfig):
     def ready(self):
         from . import signals
         from actstream import registry
-        registry.register(self.get_model('ProjectReference'))
+        registry.register(self.get_model('Reference'))
         registry.register(self.get_model('ReferenceShare'))
 

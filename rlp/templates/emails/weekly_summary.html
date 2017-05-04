@@ -28,7 +28,7 @@ Here's your weekly summary of activity on the {{ site.name }} web site, all of w
   <strong>{{ references.count }} Reference{{ references.count|pluralize }}</strong>
   <ul>
   {% for action in references|slice:":2" %}
-    <li>{{ action.actor.get_full_name }} added <a href="https://{{ site.domain }}{{ action.action_object.get_absolute_url }}">{% include 'bibliography/_reference.html' with obj=action.action_object.reference search=True %}</a></li>
+    <li>{{ action.actor.get_full_name }} added <a href="https://{{ site.domain }}{{ action.action_object.get_absolute_url }}">{% include 'bibliography/_reference.html' with obj=action.action_object search=True %}</a></li>
   {% endfor %}
   <li><a href="https://{{ site.domain }}{% url 'dashboard' %}">View more on your dashboard.</a></li>
   </ul>

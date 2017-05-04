@@ -1,2 +1,2 @@
-{% include 'bibliography/_reference.html' with obj=object.reference search=True %}
-{{ object.reference.parsed_data.abstract }}
+{% include 'bibliography/_reference.html' with obj=object search=True %}
+{{ object.parsed_data.abstract }}

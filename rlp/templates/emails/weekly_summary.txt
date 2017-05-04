@@ -23,7 +23,7 @@ Here's your weekly summary of activity on the {{ site.name }} web site, all of w
 {{ references.count }} Reference{{ references.count|pluralize }}
 
   {% for action in references|slice:":2" %}
-    {{ action.actor.get_full_name }} added {{ action.action_object.reference.title }} (https://{{ site.domain }}{{ action.action_object.get_absolute_url }}) to {{ action.target }}
+    {{ action.actor.get_full_name }} added {{ action.action_object.title }} (https://{{ site.domain }}{{ action.action_object.get_absolute_url }}) to {{ action.target }}
   {% endfor %}
 
 Visit your dashboard to view all recent activity: https://{{ site.domain }}{% url 'dashboard' %}

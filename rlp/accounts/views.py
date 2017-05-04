@@ -28,7 +28,7 @@ from formtools.wizard.views import SessionWizardView
 from casereport.models import CaseReport
 from rlp.accounts.models import Institution
 from rlp.bibliography.models import fetch_publications_for_user
-from rlp.bibliography.models import ProjectReference
+from rlp.bibliography.models import Reference
 from rlp.core.email import send_transactional_mail
 from rlp.core.views import MESSAGES_DEFAULT_FORM_ERROR
 from rlp.discussions.models import ThreadedComment
@@ -424,7 +424,7 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
         )
     elif tab == 'bibliography':
         context['references'] = request.user.get_shared_content(
-            ProjectReference
+            Reference
         )
     if extra_context is not None:
         context.update(extra_context)

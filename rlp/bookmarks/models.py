@@ -35,10 +35,7 @@ class Bookmark(models.Model):
     def __str__(self):
         if self.name:
             return self.name
-        if self.content_type.model == 'projectreference':
-            name = str(self.content_object.reference)
-        else:
-            name = str(self.content_object)
+        name = str(self.content_object)
         if len(name) > 50:
             return '{}...'.format(name[:45])
         return name

@@ -21,7 +21,7 @@ EXCLUDE_MODELS = (
 
 
 def get_action_object_content_types():
-    from rlp.bibliography.models import ProjectReference
+    from rlp.bibliography.models import Reference
     from rlp.discussions.models import ThreadedComment
     from rlp.documents.models import File, Image, Video, Link
     from casereport.models import CaseReport
@@ -33,7 +33,7 @@ def get_action_object_content_types():
         (get_model_ct(Image), 'Images'),
         (get_model_ct(Video), 'Videos'),
         (get_model_ct(Link), 'Links'),
-        (get_model_ct(ProjectReference), 'References'),
+        (get_model_ct(Reference), 'References'),
     ]
     return choices
 

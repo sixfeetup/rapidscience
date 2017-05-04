@@ -9,20 +9,15 @@
         {% if obj.parsed_data.doi %}DOI: {{ obj.parsed_data.doi }}{% endif %} {% if obj.parsed_data.pubmed_id %}PMID: {{ obj.parsed_data.pubmed_id }}{% endif %}
       {% if not search %}</p>{% endif %}
     <p class="small">
-        Posted by
-      <a href="{{ ref.owner.get_absolute_url }}">
-        {{ ref.owner.get_full_name }}
-      </a>
-      | {{ ref.date_added|date:"j M Y" }}
-      | {% with edit_url=ref.get_edit_url %}
-            {% if edit_url %}<a href="{{ edit_url }}">Edit</a>{% endif %}
-        {% endwith %}<br />
-      Shared with {{ ref.get_viewers|join:", " }}
+      {% with edit_url=obj.get_edit_url %}
+        {% if edit_url %}<a href="{{ edit_url }}">Edit</a>{% endif %}
+      {% endwith %}<br />
+      Shared with {{ obj.get_viewers|join:", " }}
     </p>
     {% if obj.description %}<blockquote>{{ obj.description }}</blockquote>{% endif %}
   </div>
   <div class="col-md-1">
-    <a class="share-link" href="/send/bibliography/projectreference/{{ ref.id }}"><i class="fa fa-share"></i></a>
+    <a class="share-link" href="/send/bibliography/projectreference/{{ obj.id }}"><i class="fa fa-share"></i></a>
   </div>
 </div>
 <hr>

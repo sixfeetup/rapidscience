@@ -29,7 +29,7 @@ PMID_RE = re.compile(r'^\d+$')
 CROSSREF_BASE_URL = "https://api.crossref.org/works"
 
 
-class Reference(models.Model):
+class Reference(SharedObjectMixin):
     title = models.CharField(max_length=500)
     pubmed_id = models.CharField(max_length=100, blank=True, db_index=True)
     doi = models.CharField(max_length=100, blank=True, db_index=True)
@@ -41,6 +41,11 @@ class Reference(models.Model):
     date_added = models.DateTimeField(auto_now_add=True, db_index=True)
     date_updated = models.DateTimeField(auto_now=True)
     description = models.CharField(blank=True, max_length=1000)
+    discussions = GenericRelation(
+        ThreadedComment,
+        object_id_field='object_pk',
+    )
+    tags = TaggableManager()
 
     class Meta:
         verbose_name = 'Raw Reference'
@@ -58,12 +63,33 @@ class Reference(models.Model):
         elif 'upload_url' in self.parsed_data and self.parsed_data['upload_url']:
             return self.parsed_data['upload_url']
         # Should be safe to assume this is a user-generated reference and that this lives under exactly one project.
-        # Fetch the ProjectReference for this Reference and use its get_absolute_url()
         # Add the domain since this url may be used in email templates when shared.
         return 'https://{}{}'.format(
             Site.objects.get_current().domain,
-            self.projectreference_set.first().get_absolute_url()
+            self.get_absolute_url(),
         )
+
+    def get_absolute_url(self):
+        return reverse('bibliography:reference_detail', kwargs={
+            'reference_pk': self.pk,
+        })
+
+    def get_edit_url(self):
+        # Don't provide an edit url for Pubmed/Crossref if there aren't any tags to add (there's nothing else to edit)
+        if self.source != choices.MEMBER and not Tag.objects.count():
+            return
+        return reverse('bibliography:reference_edit', kwargs={
+            'reference_pk': self.pk,
+        })
+
+    def get_delete_url(self):
+        return reverse('bibliography:reference_delete', kwargs={
+            'reference_pk': self.pk,
+        })
+
+    @property
+    def display_type(self):
+        return 'Reference'
 
 
 class ReferenceShare(models.Model):

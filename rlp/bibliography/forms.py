@@ -4,7 +4,12 @@ from django.utils.timezone import now
 from taggit.models import Tag
 
 from . import choices
-from .models import get_or_create_reference, parse_user_submission, ProjectReference, Reference, ReferenceShare
+from .models import (
+    get_or_create_reference,
+    parse_user_submission,
+    Reference,
+    ReferenceShare,
+)
 from rlp.projects.models import Project
 
 
@@ -194,5 +199,5 @@ class ProjectReferenceForm(forms.ModelForm):
         fields = [
             'tags'
         ]
-        model = ProjectReference
+        model = Reference
 

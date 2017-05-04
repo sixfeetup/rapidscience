@@ -19,7 +19,7 @@ from el_pagination.decorators import page_template
 
 from casereport.models import CaseReport
 from rlp.accounts.models import User
-from rlp.bibliography.models import ProjectReference
+from rlp.bibliography.models import Reference
 from rlp.discussions.models import ThreadedComment
 from rlp.documents.models import Document
 from rlp.search.forms import ActionObjectForm
@@ -99,7 +99,7 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
             reverse=True,
         )
     elif tab == 'bibliography':
-        context['references'] = project.get_shared_content(ProjectReference)
+        context['references'] = project.get_shared_content(Reference)
     # member invite form
     site = Site.objects.get_current()
     project_url = 'https://' + site.domain + project.get_absolute_url()
