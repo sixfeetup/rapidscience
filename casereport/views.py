@@ -100,6 +100,46 @@ class CaseReportDetailView(TemplateView):
         )
 
 
+def update_treatments_from_request(case, data):
+    """Loop through treatments on the add/edit form,
+       create or update treatments as needed
+    """
+    treatment_pk_list = data.getlist('treatment_pk', None)
+    treatment_name_list = data.getlist('treatment_name', None)
+    treatment_duration_list = data.getlist('treatment_duration', None)
+    treatment_type_list = data.getlist('treatment_type', None)
+    treatment_intent_list = data.getlist('treatment_intent', None)
+    treatment_response_list = data.getlist('treatment_response', None)
+    treatment_status_list = data.getlist('treatment_status', None)
+    treatment_outcome_list = data.getlist('treatment_outcome', None)
+    for i in range(0, len(treatment_name_list)):
+        if not treatment_name_list[i]:
+            continue
+        if treatment_pk_list[i]:
+            # update existing Treatment
+            treatment = get_object_or_404(Treatment, pk=treatment_pk_list[i])
+            treatment.casereport_f = case
+            treatment.name = treatment_name_list[i]
+            treatment.duration = treatment_duration_list[i]
+            treatment.treatment_type = treatment_type_list[i]
+            treatment.treatment_intent = treatment_intent_list[i]
+            treatment.objective_response = treatment_response_list[i]
+            treatment.status = treatment_status_list[i] or None
+            treatment.notes = treatment_outcome_list[i]
+            treatment.save()
+        else:
+            # create new Treatment
+            TreatmentInstanceResource()._post(
+                case,
+                treatment_name_list[i],
+                duration=treatment_duration_list[i],
+                treatment_type=treatment_type_list[i],
+                treatment_intent=treatment_intent_list[i],
+                objective_response=treatment_response_list[i],
+                status=treatment_status_list[i] or None,
+                notes=treatment_outcome_list[i])
+
+
 class CaseReportFormView(LoginRequiredMixin, FormView):
     template_name = 'casereport/new_add_casereport.html'
     form_class = CaseForm
@@ -184,13 +224,6 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
             aberrations_other = data.get('aberrations_other')
             biomarkers = data.get('biomarkers')
             pathology = data.get('pathology')
-            treatment_name_list = data.getlist('treatment_name', None)
-            treatment_duration_list = data.getlist('treatment_duration', None)
-            treatment_type_list = data.getlist('treatment_type', None)
-            treatment_intent_list = data.getlist('treatment_intent', None)
-            treatment_response_list = data.getlist('treatment_response', None)
-            treatment_status_list = data.getlist('treatment_status', None)
-            treatment_outcome_list = data.getlist('treatment_outcome', None)
             additional_comment = data.get('additional_comment')
             case = CaseReportListResource()._post(
                 title=title, age=age,
@@ -204,24 +237,8 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
                 attachment3_title=attachment3_title,
                 attachment1_description=attachment1_description, attachment2_description=attachment2_description,
                 attachment3_description=attachment3_description)
-            for i in range(0, len(treatment_name_list)):
-                if treatment_name_list[i]:
-                    treatment_name = treatment_name_list[i]
-                    duration = treatment_duration_list[i]
-                    treatment_type = treatment_type_list[i]
-                    treatment_intent = treatment_intent_list[i]
-                    treatment_response = treatment_response_list[i]
-                    treatment_status = treatment_status_list[i]
-                    treatment_outcome = treatment_outcome_list[i]
-                    TreatmentInstanceResource()._post(
-                        case, treatment_name,
-                        duration=duration,
-                        treatment_type=treatment_type,
-                        treatment_intent=treatment_intent,
-                        objective_response=treatment_response,
-                        status=treatment_status,
-                        notes=treatment_outcome)
             CaseReportInstanceResource()._addauthor(case, author_list)
+            update_treatments_from_request(case, data)
 
         elif entry_type == 'T':
             details = data.get('details')
@@ -458,16 +475,50 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
 
     def post(self, request, case_id, *args, **kwargs):
         data = request.POST.copy()
-        messages.info(request, "Edits saved!")
         case = get_object_or_404(CaseReport, id=case_id)
         case.title = data['casetitle']
+        # co-authors
+        email = data.getlist('physician_email')
+        name = data.getlist('physician_name')
+        coauthors = []
+        for i in range(0, len(name)):
+            author = PhysicianInstanceResource()._post(name[i], email[i])
+            coauthors.append(author)
+        case.referring_physician.clear()
+        for author in coauthors:
+            case.referring_physician.add(author)
+        case.age = data['age']
+        case.gender = data['gender']
+        case.subtype = data['subtype']
+        case.presentation = data['presentation']
+        case.aberrations.clear()
+        if data.getlist('aberrations', None):
+            case.aberrations.add(*data.getlist('aberrations', None))
+        case.aberrations_other = data['aberrations_other']
+        case.biomarkers = data['biomarkers']
+        case.pathology = data['pathology']
+        update_treatments_from_request(case, data)
+        case.additional_comment = data['additional_comment']
+        # attachments
+        if 'attachment1_title' in data:
+            case.attachment1 = request.FILES.get('attachment1') or case.attachment1
+            case.attachment1_title = data['attachment1_title']
+            case.attachment1_description = data['attachment1_description']
+        if 'attachment2_title' in data:
+            case.attachment2 = request.FILES.get('attachment2') or case.attachment2
+            case.attachment2_title = data['attachment2_title']
+            case.attachment2_description = data['attachment2_description']
+        if 'attachment3_title' in data:
+            case.attachment3 = request.FILES.get('attachment3') or case.attachment3
+            case.attachment3_title = data['attachment3_title']
+            case.attachment3_description = data['attachment3_description']
         case.save()
         SendToView.post(
             self, self.request, 'casereport',
             'casereport', case.id,
         )
         if case.status == 'draft':
-            messages.success(self.request, "Saved!")
+            messages.success(request, "Edits saved!")
             return redirect(case.get_absolute_url())
         else:
             self.template_name = 'casereport/add_casereport_success.html'

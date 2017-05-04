@@ -17,7 +17,10 @@
         <h4><label for="aberrations">Genetic Aberrations</label></h4>
             <select name="aberrations" class="form-control select2" id="aberrations" multiple="multiple" size="5">
                 {% for item in aberrations %}
-                    <option value="{{ item.id }}">{{ item.molecule }}: {{ item.name }}</option>
+                    <option value="{{ item.id }}"
+                            {% if item in casereport.aberrations.all %}selected{% endif %}>
+                        {{ item.molecule }}: {{ item.name }}
+                    </option>
                 {% endfor %}
             </select>
         <div class="form-group">
@@ -53,6 +56,7 @@
           <div class="col-md-6 col-xs-12">
 
               <div class="form-group">
+              <input type="hidden" id="treatment_pk" name="treatment_pk" value="{{ treatment.pk }}" />
               <label for="treatment_name_{{forloop.counter}}" class="required">Treatment Name</label>
               <input id="treatment_name_{{forloop.counter}}" name="treatment_name" class="form-control treatment_name"
                      type="text" value="{{ treatment.name }}">
@@ -137,6 +141,7 @@
           <div class="col-md-6 col-xs-12">
 
               <div class="form-group">
+              <input type="hidden" id="treatment_pk" name="treatment_pk" value="" />
               <label for="treatment_name_1" class="required">Treatment Name</label>
               <input id="treatment_name_1" name="treatment_name" class="form-control treatment_name"
                      type="text" value="{{ treatment.name }}">
