@@ -104,44 +104,6 @@ class ReferenceShare(models.Model):
         return 'Reference'
 
 
-class ProjectReference(SharedObjectMixin):
-    reference = models.ForeignKey(Reference, on_delete=models.CASCADE)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    date_added = models.DateTimeField(auto_now_add=True, db_index=True)
-    date_updated = models.DateTimeField(auto_now=True)
-    discussions = GenericRelation(
-        ThreadedComment,
-        object_id_field='object_pk',
-    )
-
-    tags = TaggableManager()
-
-    class Meta:
-        verbose_name = 'Reference'
-
-    def get_absolute_url(self):
-        return reverse('bibliography:reference_detail', kwargs={
-            'reference_pk': self.reference.pk,
-        })
-
-    def get_edit_url(self):
-        # Don't provide an edit url for Pubmed/Crossref if there aren't any tags to add (there's nothing else to edit)
-        if self.reference.source != choices.MEMBER and not Tag.objects.count():
-            return
-        return reverse('bibliography:reference_edit', kwargs={
-            'reference_pk': self.reference.pk,
-        })
-
-    def get_delete_url(self):
-        return reverse('bibliography:reference_delete', kwargs={
-            'reference_pk': self.reference.pk,
-        })
-
-    @property
-    def display_type(self):
-        return 'Reference'
-
-
 class Publication(models.Model):
     reference = models.ForeignKey(Reference)
     author = models.ForeignKey(User)
