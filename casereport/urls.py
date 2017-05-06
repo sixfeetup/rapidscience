@@ -10,6 +10,7 @@ from .views import FormTypeView
 from .views import MyFacetedSearchView
 from .views import ReviewDetailView
 
+from django.views.decorators.cache import never_cache
 
 __author__ = 'yaseen'
 
@@ -25,7 +26,7 @@ urlpatterns = [
     url(r'^download/(?P<file_id>.*)/$', downloadfile, name='download'),
     url(
         r'^edit/(?P<case_id>[0-9]*)/$',
-        CaseReportEditView.as_view(),
+        never_cache(CaseReportEditView.as_view()),
         name='edit'
     ),
     url(r'^(?P<pk>[0-9]*)/review$', ReviewDetailView.as_view(), name='review'),
