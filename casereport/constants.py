@@ -29,6 +29,26 @@ CASE_STATUS = {'P': 'processing',
                'E': 'edited'
     }
 
+class WorkflowState(object):
+    # visualize with:
+    # ./manage.py graph_transitions casereport.CaseReport  > t.dot; dot -O -Tpng t.dot; open t.dot.png
+
+    DRAFT = 'draft'
+    ADMIN_REVIEW = 'administrative processing'  # analogous to 'processing', in the admin queue
+    AUTHOR_REVIEW = 'author review'    # admin sent back to author, in the author queue
+
+    LIVE = 'live'
+
+    CHOICES = (
+        (DRAFT, DRAFT.title()),
+        (ADMIN_REVIEW, ADMIN_REVIEW.title()),
+        (AUTHOR_REVIEW, AUTHOR_REVIEW.title()),
+        (LIVE,LIVE.title())
+    )
+    INITIAL_STATE = DRAFT
+
+
+
 
 TYPE = (
             ('test', 'Test'),
