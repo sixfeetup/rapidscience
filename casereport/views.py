@@ -517,6 +517,8 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
         action = data.get('action', None)
         if action:
             case.take_action_for_user(action)
+        #TODO: any edit by an admin needs to clear the author approved.
+        # how to determine and do that?
 
         case.save()
         SendToView.post(
