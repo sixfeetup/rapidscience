@@ -323,7 +323,7 @@ class MyFacetedSearchView(FacetedSearchView):
         sqs = SearchQuerySet().models(CaseReport).highlight(fragsize=200)
         kwargs.update({'form_class': MultiFacetedSearchForm, 'searchqueryset': sqs})
         super(MyFacetedSearchView, self).__init__(*args, **kwargs)
-    
+
     def __call__(self, request):
         if request.is_ajax():
             self.template = 'casereport/search/results.html'
@@ -512,6 +512,12 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
             case.attachment3 = request.FILES.get('attachment3') or case.attachment3
             case.attachment3_title = data['attachment3_title']
             case.attachment3_description = data['attachment3_description']
+
+        # if the user is moving this along in the workflow
+        action = data.get('action', None)
+        if action:
+            case.take_action_for_user(action)
+
         case.save()
         SendToView.post(
             self, self.request, 'casereport',
@@ -523,7 +529,7 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
         else:
             self.template_name = 'casereport/add_casereport_success.html'
             # self.case_success_mail(physicians, author)
-            return self.render_to_response({'case_number': case.id})
+            return self.render_to_response({'case_report':case})
 
 
 class ReviewDetailView(LoginRequiredMixin, DetailView):

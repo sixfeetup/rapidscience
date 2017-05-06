@@ -23,7 +23,7 @@
     		<form id="caseform" name="caseform" class="rpds-form" action="" method="post"
                   enctype="multipart/form-data">
                 {% csrf_token %}
-                
+
                 <h4><label for="casetitle">Case Title</label></h4>
                 <input name="casetitle" value="{{ casereport.title }}" type="text" class="form-control" id="casetitle">
 
@@ -44,7 +44,7 @@
                     <label for="author">Alternative Correspondence Email Address</label>
                     <input name="author" value=""  type="EMAIL" class="form-control" id="author">
               </div>
-              
+
               <h4>Co-Authors</h4>
               <div class="helpText">Only coauthors who are members of Sarcoma Central will be able edit or comment on this case report. You may invite colleagues to register from the Community Commons group page.</div>
               <div class="physician-div">
@@ -82,7 +82,7 @@
                 <p>Choose one of the options.</p>
             </div>
         </div>
-        
+
         <h4 class="title-name">Diagnosis/Presentation</h4>
         <div class="row">
                     <div class="form-group col-xs-2">
@@ -112,7 +112,7 @@
                              <p>Select gender.</p>
                             </div>
                     </div>
-                    
+
                     <div class="form-group col-md-8 col-xs-8">
                         <label class="required" for="subtype"> Subtype:</label>
                            <select name="subtype" class=" form-control" id="subtype">
@@ -130,7 +130,7 @@
                        </div>
                    </div>
         </div>
-        
+
         {% include "casereport/manualform.html" %}
         {% include "casereport/free-text.html" %}
         {% include "casereport/fileform.html" %}
@@ -144,7 +144,7 @@
                      <p>Please select the checkbox.</p>
                     </div>
                 </div>
-                
+
                 <!-- attachments -->
                 <h4>Attachments</h4>
                 <div class="attachments-div">
@@ -198,14 +198,22 @@
                 {% endfor %}
 
                 <div class="submit-button">
-                    <input id="save-button" class="btn btn-primary" type="submit" value="Save" />
-                    <!-- submit button is disabled until workflow is put in place -->
-                    <input id="submit-button" class="btn btn-primary" type="submit" value="Submit" disabled="disabled" />
-                    <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-default" id="button-cancel">Cancel</a>
+                    {% if casereport.get_next_actions_for_user %}
+                        <input id="save-button" class="btn btn-primary" type="submit" value="Save" />
+                        <!-- submit button is disabled until workflow is put in place -->
+                        <input id="submit-button" class="btn btn-primary" type="submit" value="Submit" disabled="disabled" />
+                        <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-default" id="button-cancel">Cancel</a>
+
+                        {{ casereport.workflow_state }} --> {% for action in casereport.get_next_actions_for_user %}
+                            <input id="{{ action }}-action-button" class="btn btn-primary" type="submit" name="action" value="{{ action }}" />
+                        {% endfor %}
+                    {% else %}
+                        This case is in {{ casereport.workflow_state }} state and cannot be edited.
+                    {% endif %}
                 </div>
 
    </form>
-   
+
    <div class="modal fade" id="modal-cancel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -251,7 +259,7 @@
                 }
             });
         });
-        
+
         $('body').on('focusin','#subtype',function() {
             $(this).autocomplete({
                 source: {{ sarcoma|safe }},
@@ -271,7 +279,7 @@
 
          $('.select2').select2();
     }); })(jQuery);
-     
+
      CKEDITOR.replace('pathology', {
          language: 'en',
          skin: 'moono',

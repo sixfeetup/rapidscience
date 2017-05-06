@@ -12,7 +12,7 @@
     </div>
     <div class="row">
         <div class="col-md-8 col-md-offset-2 success-message">
-            <p>Your Case Report has been submitted and will be reviewed by our admin staff. Please note case no. {{ case_number }} for future reference.</p>
+            <p>Your Case Report has been moved to {{ casereport.workflow_state }}. Please note case no. {{ casereport.id }} for future reference.</p>
             <p><a href="{% url 'haystac' %}" class="btn btn-primary btn-lg">See all cases</a></p>
         </div>
     </div>
