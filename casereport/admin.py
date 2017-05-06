@@ -60,7 +60,7 @@ class CaseFileAdmin(admin.ModelAdmin):
 
 class CaseReportAdmin(admin.ModelAdmin):
     list_display = ('title', 'gender', 'age',
-                    'status', 'created_on', 'view_casefile')
+                    'status', 'created_on', 'view_casefile', 'workflow_state', 'get_next_actions_for_user')
     order_by = ('created_on',)
     list_filter = ('status',)
     inlines = [
