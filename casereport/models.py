@@ -1,5 +1,5 @@
 from access_tokens import tokens
-from casereport.constants import GENDER
+from casereport.constants import GENDER, WorkflowState
 from casereport.constants import SARCOMA_TYPE
 from casereport.constants import STATUS
 from casereport.constants import CASE_STATUS
@@ -8,6 +8,8 @@ from casereport.constants import PERFORMANCE_STATUS
 from casereport.constants import OBJECTIVE_RESPONSES
 from casereport.constants import TREATMENT_INTENT
 from casereport.constants import INDEXES
+from casereport.middleware import CurrentUserMiddleware
+
 from django_countries.fields import CountryField
 from django.db import models
 from django.core.mail import EmailMessage
@@ -18,6 +20,7 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.utils.encoding import python_2_unicode_compatible
 
 from djangocms_text_ckeditor.fields import HTMLField
+from django_fsm import FSMField, transition, signals as fsm_signals
 
 from rlp.accounts.models import User
 from rlp.discussions.models import ThreadedComment
@@ -153,8 +156,17 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     biomarkers = models.TextField(null=True, blank=True)
     pathology = HTMLField(null=True, blank=True)
     additional_comment = models.TextField(null=True, blank=True)
+
+    # Workflow control fields
+    author_approved = models.BooleanField(default=False, blank=True)
+    admin_approved = models.BooleanField(default=False, blank=True)
+    workflow_state = FSMField(max_length=50,
+                                      choices=WorkflowState.CHOICES,
+                                      default=WorkflowState.INITIAL_STATE,
+                                      help_text="Workflow state")
     status = models.CharField(max_length=50, choices=STATUS,
-                              default='draft')
+                              default='draft', help_text='''Old State''')
+
     casefile_f = models.ForeignKey(
         CaseFile, null=True, blank=True,
         verbose_name='Case File',
@@ -183,6 +195,106 @@ class CaseReport(CRDBBase, SharedObjectMixin):
 
     def __str__(self):
         return self.title if self.title else '---'
+
+    def can_edit(self, user=None):
+        if not user:
+            user = CurrentUserMiddleware.get_user()
+        if self.workflow_state in (
+        WorkflowState.DRAFT,) and user.email == self.primary_physician.email:
+            return True
+        if self.workflow_state in (
+        WorkflowState.ADMIN_REVIEW,) and user.is_staff:
+            return True
+        return False
+
+    def can_submit(self, user=None):
+        # ensure author
+        if not user:
+            user = CurrentUserMiddleware.get_user()
+        return user.email == self.primary_physician.email  # and self.author_approved
+
+    @transition(field=workflow_state,
+                source=[WorkflowState.DRAFT, WorkflowState.AUTHOR_REVIEW],
+                permission=can_submit,
+                target=WorkflowState.ADMIN_REVIEW)
+    def submit(self):
+        self.author_approved = True
+        self.admin_approved = False
+
+    def can_reject(self, user=None):
+        if not user:
+            user = CurrentUserMiddleware.get_user()
+        if user.is_staff \
+            and self.workflow_state in (WorkflowState.ADMIN_REVIEW,):
+            return True
+        return False
+
+    @transition(field=workflow_state,
+                source=[WorkflowState.ADMIN_REVIEW, ],
+                permission=can_reject,
+                target=WorkflowState.AUTHOR_REVIEW,
+                )
+    def reject(self):
+        """ send the CR back to the author 
+        """
+        self.admin_approved = False
+
+    def can_publish(self, user=None):
+        # ensure admin
+        if not user:
+            user = CurrentUserMiddleware.get_user()
+        return user.is_staff and self.author_approved
+
+    @transition(field=workflow_state,
+                source=[WorkflowState.ADMIN_REVIEW, ],
+                permission=can_publish,
+                target=WorkflowState.LIVE)
+    def publish(self):
+        self.admin_approved = True
+
+    def can_redact_as_author(self, user=None):
+        # ensure author or admin
+        if not user:
+            user = CurrentUserMiddleware.get_user()
+        return user.email == self.primary_physician.email
+
+    def can_redact_as_admin(self, user=None):
+        # ensure author or admin
+        if not user:
+            user = CurrentUserMiddleware.get_user()
+        return user.is_staff
+
+    @transition(field=workflow_state,
+                source=[WorkflowState.LIVE],
+                permission=can_redact_as_author,
+                target=WorkflowState.AUTHOR_REVIEW)
+    def redact_by_author(self):
+        self.author_approved = False
+
+    @transition(field=workflow_state,
+                source=[WorkflowState.LIVE],
+                permission=can_redact_as_admin,
+                target=WorkflowState.ADMIN_REVIEW)
+    def redact_by_admin(self):
+        """ unpublish """
+        self.admin_approved = False
+
+    def get_next_actions_for_user(self, user=None):
+        if not user:
+            user = CurrentUserMiddleware.get_user()
+        workflow_transitions = self.get_available_user_workflow_state_transitions(
+            user)
+        return [fsmo.name for fsmo in workflow_transitions]
+
+    def take_action_for_user(self, action_name, user=None):
+        if not user:
+            user = CurrentUserMiddleware.get_user()
+
+        if not action_name in self.get_next_actions_for_user(user=user):
+            raise KeyError(action_name)
+
+        print("taking action %s" % action_name)
+        return getattr(self, action_name)()
 
     @property
     def display_type(self):
@@ -359,6 +471,24 @@ class CaseReport(CRDBBase, SharedObjectMixin):
             'casereport_detail',
             kwargs={'case_id': self.pk, 'title_slug': slug},
         )
+
+
+## TODO: can we move this someplace more obvious?
+def casereport_workflow_transitions(sender, **kwargs):
+    # this is the hook that should handle all side effects of state change
+    # transitions like sending emails, clearing queues, etc.
+    cr = kwargs['instance']
+    transition_name = kwargs['name']
+    source_state = kwargs['source']
+    end_state = kwargs['target']
+    if end_state != source_state:
+        print("handling %s transition for %s" % (transition_name, cr))
+        print("...TODO...\n\n")
+
+
+fsm_signals.post_transition.connect(casereport_workflow_transitions,
+                                    sender=CaseReport)
+
 
 
 @python_2_unicode_compatible
