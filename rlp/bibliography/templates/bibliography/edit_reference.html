@@ -1,9 +1,13 @@
 {% extends 'home.html' %}{% load bootstrap3 %}
 
 {% block main_content %}
-<h2>Edit reference</h2>
-
-  {% include 'bibliography/_reference.html' with obj=instance %}
+<h2>{{ reference }}</h2>
+{% if reference.parsed_data.doi %}
+<p>DOI: {{ reference.parsed_data.doi }}</p>
+{% endif %}
+{% if reference.parsed_data.pubmed_id %}
+<p>PMID: {{ reference.parsed_data.pubmed_id }}</p>
+{% endif %}
 
 {% if form %}
 <form method="post" action="">

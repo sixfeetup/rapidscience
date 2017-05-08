@@ -34,9 +34,7 @@
     <hr>
     {% for reference in results %}
       {% include 'bibliography/_reference.html' with obj=reference %}
-      <form id="{{ reference.id }}" class="form-reference-add" action="{% url 'bibliography:reference_add' reference.id %}" method="post">{% csrf_token %}
-        <input class="profile-update btn btn-primary" type="submit" value="Add"/>
-      </form>
+      <a href="{% url 'bibliography:reference_add' reference.id %}" class="btn btn-primary">Add<a>
       {% if not forloop.last %}<hr>{% endif %}
     {% endfor %}
   {% else %}

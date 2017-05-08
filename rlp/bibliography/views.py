@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.db import transaction
@@ -8,13 +9,24 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.views.decorators.cache import never_cache
+from django.views.generic.edit import FormView
 
 from actstream import action
 from taggit.models import Tag
 
+from rlp.core.forms import member_choices, group_choices
+from rlp.core.views import SendToView
 from rlp.discussions.models import ThreadedComment
 from . import choices
-from .forms import SearchForm, BookForm, BookSectionForm, JournalArticleForm, ProjectReferenceForm, ReferenceShareForm
+from .forms import (
+    AttachReferenceForm,
+    BookForm,
+    BookSectionForm,
+    JournalArticleForm,
+    ReferenceShareForm,
+    ProjectReferenceForm,
+    SearchForm,
+)
 from .models import Reference
 from rlp.core.email import send_transactional_mail
 
@@ -189,32 +201,49 @@ def add_article(request, reference_pk=None, template_name='bibliography/add_arti
     return render(request, template_name, context)
 
 
-@never_cache
-@login_required
-def reference_add(request, reference_pk, edit=False):
-    reference = get_object_or_404(Reference, pk=reference_pk)
-    with transaction.atomic():
-        # TODO this will be replaced with a new add form soon
-        shared = True
-        if shared:
-            action.send(request.user, verb='added', action_object=reference)
-            messages.success(request, 'Reference added successfully!')
-        else:
-            messages.info(
-                request,
-                "The reference you selected was already added "\
-                "to this project by {}.".format(
-                    # TODO look up user that shared?
-                    'Timmy'
-                )
-            )
-        if request.is_ajax():
-            context = {
-                'messages': render_to_string('bootstrap3/messages.html', {}, request=request),
+class ReferenceAttachView(LoginRequiredMixin, FormView):
+    template_name = 'bibliography/edit_reference.html'
+    form_class = AttachReferenceForm
+
+    def get_context_data(self, **kwargs):
+        context = super(ReferenceAttachView, self).get_context_data(**kwargs)
+        ref = Reference.objects.get(pk=self.kwargs['pk'])
+        context['reference'] = ref
+        if self.request.method == 'GET':
+            # populate initial data
+            data = {
+                'description': ref.description,
+                'tags': [tag.id for tag in ref.tags.all()],
+                'members': (),
+                'groups': (),
             }
-            return JsonResponse(context)
-    # TODO redirect to ?
-    return redirect('/')
+            form = AttachReferenceForm(data)
+            form.fields['members'].choices = member_choices(
+                self.request.user,
+                ref,
+            )
+            form.fields['groups'].choices = group_choices(
+                self.request.user,
+                ref,
+            )
+            context['form'] = form
+        return context
+
+    def form_valid(self, form):
+        data = form.cleaned_data
+        ref = Reference.objects.get(pk=self.kwargs['pk'])
+        ref.description = data.get('description')
+        ref.tags.set(*data['tags'])
+        ref.save()
+        SendToView.post(
+            form,
+            self.request,
+            'bibliography',
+            'reference',
+            ref.id,
+        )
+        last_viewed_path = self.request.session.get('last_viewed_path', '/')
+        return redirect(last_viewed_path)
 
 
 @never_cache

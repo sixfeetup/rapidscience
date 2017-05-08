@@ -10,6 +10,8 @@ from .models import (
     Reference,
     ReferenceShare,
 )
+from rlp.core.forms import GroupListField
+from rlp.core.forms import MemberListField
 from rlp.projects.models import Project
 
 
@@ -201,3 +203,26 @@ class ProjectReferenceForm(forms.ModelForm):
         ]
         model = Reference
 
+
+class AttachReferenceForm(forms.Form):
+    description = forms.CharField(
+        label='Description/Comment',
+        required=False,
+    )
+    tags = forms.ModelMultipleChoiceField(
+        queryset=Tag.objects.all(),
+        required=False,
+    )
+    tags.widget.attrs['class'] = 'select2'
+    members = MemberListField(
+        label='Invite Members',
+        help_text='Separate names with commas',
+        choices=(),  # gets filled in by the view
+        required=False,
+    )
+    groups = GroupListField(
+        label='Invite My Groups',
+        help_text='Separate names with commas',
+        choices=(),  # gets filled in by the view
+        required=False,
+    )
