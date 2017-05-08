@@ -72,10 +72,10 @@ In some cases such as Youtube videos, we don't have local images so we can't mak
             {% else %}
               {% if obj.owner == request.user %}{% include 'forms/_edit_dropdown.html' with edit_url=obj.get_edit_url delete_url=obj.get_delete_url %}{% endif %}
             {% endif %}
-{#            {% if model == 'bibliography.projectreference' and request.user.is_authenticated %}#}
+{#            {% if model == 'bibliography.reference' and request.user.is_authenticated %}#}
 {#              {% include 'bibliography/_share_reference.html' %}#}
 {#            {%  endif %}#}
-            {% if model != 'accounts.user' and model != 'bibliography.projectreference' %}
+            {% if model != 'accounts.user' and model != 'bibliography.reference' %}
                 {% include 'discussions/discussion_count_widget.html' %}
             {% endif %}
         {% endwith %}

@@ -469,6 +469,6 @@ CRDB_BCC_LIST = env.list('CRDB_BCC_LIST')
 TYPE_DISPLAY_NAMES = {
     ('discussions', 'threadedcomment'): 'Discussions',
     ('documents', 'document'): 'Docs/Media',
-    ('bibliography', 'projectreference'): 'Bibliography',
+    ('bibliography', 'reference'): 'Bibliography',
     ('casereport', 'casereport'): 'Case Reports',
 }

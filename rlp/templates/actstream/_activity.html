@@ -25,7 +25,7 @@
             <p>{{ obj.comment }}</p>
           </blockquote>
           {% include 'bibliography/_ref_activity.html' with ref=obj %}
-        {% elif model == 'projectreference' %}
+        {% elif model == 'reference' %}
           {% include 'bibliography/_ref_activity.html' with ref=obj %}
         {% elif model == "casereport" %}
           {% include 'casereport/casereport_activity.html' %}
@@ -43,7 +43,7 @@
         {% endfor %}
       </div>
       <div class="col-md-1 activity-actions">
-        {% if model != 'referenceshare' and model != 'projectreference' %}
+        {% if model != 'referenceshare' and model != 'reference' %}
             {% include 'discussions/discussion_count_widget.html' %}
         {% endif %}
         {% if model == 'file' or model == 'image' or model == 'link' or model == 'video' or model == 'document' %}
@@ -52,8 +52,8 @@
             <a class="share-link" href="/send/casereport/casereport/{{ obj.id }}"><i class="fa fa-share"></i></a>
         {% elif model == 'threadedcomment' %}
             <a class="share-link" href="/send/discussions/threadedcomment/{{ obj.id }}"><i class="fa fa-share"></i></a>
-        {% elif model == 'projectreference' %}
-            <a class="share-link" href="/send/bibliography/projectreference/{{ obj.id }}"><i class="fa fa-share"></i></a>
+        {% elif model == 'reference' %}
+            <a class="share-link" href="/send/bibliography/reference/{{ obj.id }}"><i class="fa fa-share"></i></a>
         {% endif %}
 
 
