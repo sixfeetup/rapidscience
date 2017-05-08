@@ -17,6 +17,7 @@
     {% if obj.description %}<blockquote>{{ obj.description }}</blockquote>{% endif %}
   </div>
   <div class="col-md-1">
+    <a class="comment-count" href="{% url 'bibliography:reference_detail' obj.id %}"><i class="fa fa-comment" aria-hidden="true"></i></a>
     <a class="share-link" href="/send/bibliography/reference/{{ obj.id }}"><i class="fa fa-share"></i></a>
   </div>
 </div>
