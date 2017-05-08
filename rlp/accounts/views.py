@@ -353,6 +353,7 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
         'projects': active_projects,
     }
     request.session['last_viewed_path'] = request.get_full_path()
+    request.session['last_viewed_object'] = ('user', request.user.id)
     activity_stream = Action.objects.filter(
         public=True
     )
