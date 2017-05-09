@@ -14,24 +14,16 @@ from haystack.query import SearchQuerySet
 from haystack.views import FacetedSearchView
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from django.utils.decorators import method_decorator
 from django.utils.encoding import force_text
-from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView
 from django.views.generic import FormView
 from django.views.generic import TemplateView
-from django.views.generic import UpdateView
 
-from casereport.api import AbberationListResource
 from casereport.api import AuthorizedListResource
-from casereport.api import InstitutionInstanceResource
 from casereport.api import PhysicianInstanceResource
 from casereport.api import CaseReportInstanceResource
-from casereport.api import CaseReportHistoryInstanceResource
 from casereport.api import TreatmentInstanceResource
-from casereport.constants import GENDER
 from casereport.constants import SARCOMA_TYPE
-from casereport.decorator import validate_token
 from casereport.forms import CaseForm
 from casereport.forms import MultiFacetedSearchForm
 from casereport.havoc_interface import havoc_results
