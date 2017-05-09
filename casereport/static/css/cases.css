@@ -311,8 +311,12 @@ body{
     text-decoration: underline;
     font-weight: 600;
 }
-.file-form,.manual-form{
+.file-form, .manual-form{
     margin-top: 25px;
+}
+.file-form .form-control {
+	padding: 0;
+	border: none;
 }
 
 #invalid_cap{

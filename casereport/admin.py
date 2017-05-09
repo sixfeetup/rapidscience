@@ -60,23 +60,12 @@ class CaseFileAdmin(admin.ModelAdmin):
 
 class CaseReportAdmin(admin.ModelAdmin):
     list_display = ('title', 'gender', 'age',
-                    'status', 'created_on', 'view_casefile', 'workflow_state', 'get_next_actions_for_user')
+                    'status', 'created_on', 'workflow_state', 'get_next_actions_for_user')
     order_by = ('created_on',)
     list_filter = ('status',)
     inlines = [
         TreatmentInline,
     ]
-
-    def view_casefile(self, obj):
-        if obj.casefile_f:
-            link = '<a href="%s">View</a>' % \
-                reverse('admin:casereport_casefile_change',
-                        args=(obj.casefile_f.id,))
-        else:
-            link = ''
-        return link
-    view_casefile.allow_tags = True
-    view_casefile.short_description = 'Casefile'
 
 
 admin.site.register(CaseFile, CaseFileAdmin)

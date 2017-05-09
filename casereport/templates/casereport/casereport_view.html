@@ -63,6 +63,12 @@
                  {% if casereport.additional_comment %}
                      <li><a href="#section-comments">Additional Comments</a></li>
                  {% endif %}
+                 {% if casereport.free_text %}
+                    <li><a href="#section-freetext">Free Text</a></li>
+                 {% endif %}
+                 {% if casereport.casefile_f %}
+                    <li><a href="#section-uploadedfile">Uploaded File</a></li>
+                 {% endif %}
              </ul>
              <hr />
              <a class="share-link pull-right" href="/send/casereport/casereport/{{ casereport.id }}"><i class="fa fa-share"></i></a>
@@ -174,6 +180,15 @@
       <div id="section-freetext">
           <h4>Free Text</h4>
           <p>{{ casereport.free_text }}</p>
+      </div>
+      {% endif %}
+      
+      {% if casereport.casefile_f %}
+      <div id="section-uploadedfile">
+          <h4>Uploaded File</h4>
+          <p>{{ casereport.casefile_f.name }} ({{ casereport.casefile_f.size|filesizeformat }})<br />
+              <a href="{{ casereport.casefile_f.url }}" target="_blank" class="btn btn-primary download">Download file</a>
+          </p>
       </div>
       {% endif %}
 

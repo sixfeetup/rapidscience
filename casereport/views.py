@@ -65,19 +65,6 @@ class CaseReportDetailView(TemplateView):
         user_can_comment = casereport.is_shared_with_user(request.user)
         comment_list = casereport.discussions.all()
         review_allowed = is_review_allowed(self.request.user, casereport)
-        if casereport.casefile_f:
-            return self.render_to_response(
-                dict(
-                    casereport=casereport,
-                    test=testevents,
-                    casefile=casereport.casefile_f,
-                    comment_list=comment_list,
-                    user_interaction=user_can_comment,
-                    review_allowed=review_allowed,
-                    last_viewed_path=last_viewed_path,
-                )
-            )
-
         return self.render_to_response(
             dict(
                 casereport=casereport,
@@ -203,11 +190,6 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         pathology = data.get('pathology')
         additional_comment = data.get('additional_comment')
         details = data.get('details')
-
-        if document:
-            file_name = request.FILES.get('uploadfile').name
-            document = CaseFile(document=document, name=file_name)
-            document.save()
 
         case = CaseReport(title=title, age=age, gender=gender,
                           casefile_f=document, subtype=subtype,

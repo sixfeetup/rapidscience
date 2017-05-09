@@ -167,10 +167,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     status = models.CharField(max_length=50, choices=STATUS,
                               default='draft', help_text='''Old State''')
 
-    casefile_f = models.ForeignKey(
-        CaseFile, null=True, blank=True,
-        verbose_name='Case File',
-    )
+    casefile_f = models.FileField(null=True, blank=True)
     free_text = models.TextField(null=True, blank=True)
     date_added = models.DateTimeField(auto_now_add=True, db_index=True)
     date_updated = models.DateTimeField(auto_now=True)
