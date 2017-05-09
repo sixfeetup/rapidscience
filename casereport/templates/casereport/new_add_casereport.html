@@ -198,6 +198,7 @@
                 {% endfor %}
 
                 <div class="submit-button">
+                    <input id="save-button" class="btn btn-primary" type="submit" value="Save" />
                     {% if casereport.get_next_actions_for_user %}
                         <input id="save-button" class="btn btn-primary" type="submit" value="Save" />
                         <!-- submit button is disabled until workflow is put in place -->

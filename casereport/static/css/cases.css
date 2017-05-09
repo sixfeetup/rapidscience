@@ -623,7 +623,9 @@ margin-bottom: 30px;}
 .diagnosis-section {
         margin-left: -15px;
 }
-
+#section-freetext p {
+	white-space: pre-line
+}
 .treatment-list-inner,.procedures-list-inner,.diagnosis-section-inner{
     padding-bottom: 10px;
     margin-left: 0px !important;

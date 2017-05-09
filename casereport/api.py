@@ -2,60 +2,13 @@ __author__ = 'yaseen'
 
 from django.shortcuts import get_object_or_404
 from casereport.constants import CASE_STATUS
-from casereport.constants import STATUS
 from casereport.models import AuthorizedRep
-from casereport.models import CaseFile
 from casereport.models import CaseReport
 from casereport.models import Institution
 from casereport.models import MolecularAbberation
 from casereport.models import Physician
 from casereport.models import CaseReportHistory
 from casereport.models import Treatment
-
-
-class CaseReportListResource:
-
-    def _get(self):
-        pass
-
-    def _post(self, physicians, title=None, file_name=None,  age=None,
-              gender=None, pathology=None, subtype=None, presentation=None,
-              aberrations=None, aberrations_other=None,
-              biomarkers=None, additional_comment=None,
-              document=None, details=None, attachment1=None,
-              attachment2=None, attachment3=None, attachment1_title=None,
-              attachment2_title=None, attachment3_title=None,
-              attachment1_description=None, attachment2_description=None,
-              attachment3_description=None):
-        """
-
-        :type clinical_outcome: object
-        """
-
-        if document:
-            document = CaseFile(document=document, name=file_name)
-            document.save()
-
-        result = CaseReport(title=title, age=age, gender=gender,
-                            casefile_f=document, subtype=subtype,
-                            presentation=presentation,
-                            aberrations_other=aberrations_other,
-                            biomarkers=biomarkers, pathology=pathology,
-                            additional_comment=additional_comment,
-                            primary_physician=physicians[0], attachment1=attachment1,
-                            attachment2=attachment2, attachment3=attachment3,
-                            attachment1_title=attachment1_title,
-                            attachment2_title=attachment2_title,
-                            attachment3_title=attachment3_title,
-                            attachment1_description=attachment1_description,
-                            attachment2_description=attachment2_description,
-                            attachment3_description=attachment3_description)
-        result.save()
-        if aberrations:
-            result.aberrations.add(*aberrations)
-        for physician in physicians:
-            result.referring_physician.add(physician)
-        return result
 
 
 class CaseReportInstanceResource:

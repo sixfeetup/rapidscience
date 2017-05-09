@@ -169,6 +169,13 @@
           <p>{{ casereport.additional_comment }}</p>
       </div>
       {% endif %}
+      
+      {% if casereport.free_text %}
+      <div id="section-freetext">
+          <h4>Free Text</h4>
+          <p>{{ casereport.free_text }}</p>
+      </div>
+      {% endif %}
 
       {% if casereport.attachment1 or casereport.attachment2 or casereport.attachment3 %}
       <div id="section-attachments">

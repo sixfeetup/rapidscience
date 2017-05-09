@@ -27,7 +27,6 @@ from casereport.api import AuthorizedListResource
 from casereport.api import InstitutionInstanceResource
 from casereport.api import PhysicianInstanceResource
 from casereport.api import CaseReportInstanceResource
-from casereport.api import CaseReportListResource
 from casereport.api import CaseReportHistoryInstanceResource
 from casereport.api import TreatmentInstanceResource
 from casereport.constants import GENDER
@@ -181,7 +180,6 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
 
     def post(self, request, *args, **kwargs):
         data = request.POST.copy()
-        entry_type = data.get('entry-type')
         title = data.get('casetitle')
         email = data.getlist('physician_email')
         name = data.getlist('physician_name')
@@ -205,52 +203,42 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         attachment1_description = data.get('attachment1_description')
         attachment2_description = data.get('attachment2_description')
         attachment3_description = data.get('attachment3_description')
-        if entry_type == 'F':
-            document = request.FILES['uploadfile']
-            file_name = request.FILES['uploadfile'].name
-            case = CaseReportListResource()._post(
-                title=title, physicians=physicians, age=age,
-                gender=gender, subtype=subtype,
-                document=document, file_name=file_name,
-                attachment1=attachment1, attachment2=attachment2, attachment3=attachment3,
-                attachment1_title=attachment1_title, attachment2_title=attachment2_title,
-                attachment3_title=attachment3_title,
-                attachment1_description=attachment1_description, attachment2_description=attachment2_description,
-                attachment3_description=attachment3_description)
-            CaseReportInstanceResource()._addauthor(case, author_list)
-        elif entry_type == 'M':
-            presentation = data.get('presentation')
-            aberrations = data.getlist('aberrations', None)
-            aberrations_other = data.get('aberrations_other')
-            biomarkers = data.get('biomarkers')
-            pathology = data.get('pathology')
-            additional_comment = data.get('additional_comment')
-            case = CaseReportListResource()._post(
-                title=title, age=age,
-                gender=gender, pathology=pathology,
-                additional_comment=additional_comment,
-                physicians=physicians, subtype=subtype,
-                presentation=presentation, aberrations=aberrations, aberrations_other=aberrations_other,
-                biomarkers=biomarkers,
-                attachment1=attachment1, attachment2=attachment2, attachment3=attachment3,
-                attachment1_title=attachment1_title, attachment2_title=attachment2_title,
-                attachment3_title=attachment3_title,
-                attachment1_description=attachment1_description, attachment2_description=attachment2_description,
-                attachment3_description=attachment3_description)
-            CaseReportInstanceResource()._addauthor(case, author_list)
-            update_treatments_from_request(case, data)
+        document = request.FILES.get('uploadfile')
+        presentation = data.get('presentation')
+        aberrations = data.getlist('aberrations', None)
+        aberrations_other = data.get('aberrations_other')
+        biomarkers = data.get('biomarkers')
+        pathology = data.get('pathology')
+        additional_comment = data.get('additional_comment')
+        details = data.get('details')
 
-        elif entry_type == 'T':
-            details = data.get('details')
-            case = CaseReportListResource()._post(
-                title=title, physicians=physicians, age=age, gender=gender,
-                subtype=subtype, details=details,
-                attachment1=attachment1, attachment2=attachment2, attachment3=attachment3,
-                attachment1_title=attachment1_title, attachment2_title=attachment2_title,
-                attachment3_title=attachment3_title,
-                attachment1_description=attachment1_description, attachment2_description=attachment2_description,
-                attachment3_description=attachment3_description)
-            CaseReportInstanceResource()._addauthor(case, author_list)
+        if document:
+            file_name = request.FILES.get('uploadfile').name
+            document = CaseFile(document=document, name=file_name)
+            document.save()
+
+        case = CaseReport(title=title, age=age, gender=gender,
+                          casefile_f=document, subtype=subtype,
+                          presentation=presentation,
+                          aberrations_other=aberrations_other,
+                          biomarkers=biomarkers, pathology=pathology,
+                          additional_comment=additional_comment,
+                          primary_physician=physicians[0],
+                          free_text=details, attachment1=attachment1,
+                          attachment2=attachment2, attachment3=attachment3,
+                          attachment1_title=attachment1_title,
+                          attachment2_title=attachment2_title,
+                          attachment3_title=attachment3_title,
+                          attachment1_description=attachment1_description,
+                          attachment2_description=attachment2_description,
+                          attachment3_description=attachment3_description)
+        case.save()
+        CaseReportInstanceResource()._addauthor(case, author_list)
+        update_treatments_from_request(case, data)
+        if aberrations:
+            case.aberrations.add(*aberrations)
+        for physician in physicians:
+            case.referring_physician.add(physician)
 
         SendToView.post(
             self, self.request, 'casereport',
@@ -498,6 +486,7 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
         case.biomarkers = data['biomarkers']
         case.pathology = data['pathology']
         update_treatments_from_request(case, data)
+        case.free_text = data['details']
         case.additional_comment = data['additional_comment']
         # attachments
         if 'attachment1_title' in data:
