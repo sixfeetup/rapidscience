@@ -1,6 +1,41 @@
-{% extends 'home.html' %}{% load comments %}
+{% extends 'base.html' %}{% load comments %}
 
-{% block main_content %}
-  {% if obj.owner == request.user %}{% include 'forms/_edit_dropdown.html' with edit_url=obj.get_edit_url delete_url=obj.get_delete_url %}{% endif %}
-  {% include 'bibliography/_reference.html' %}
-{% endblock main_content %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-md-push-2">
+            <div class="row">
+              <div class="col-md-11">
+                  <h1 class="detail-view-heading">
+                      {% if obj.get_source_url %}
+                        <a href="{{ obj.get_source_url }}" target="_blank">
+                      {% endif %}
+                        {{ obj.parsed_data.title|striptags }}
+                      {% if obj.get_source_url %}</a>{% endif %}
+                  </h1>
+                  <p class="small">
+                    Reference added to {{ obj.get_viewers|join:", " }}
+                    | {{ obj.date_added|date:"j M Y" }}
+                    {% with edit_url=obj.get_edit_url %}
+                      {% if edit_url %}| <a href="{{ edit_url }}">Edit</a>{% endif %}
+                    {% endwith %}
+                  </p>
+                  <p>
+                    {% if obj.parsed_data.authors %}{{ obj.parsed_data.authors }}. {% endif %},
+                    {% if obj.parsed_data.container_title %}in <em>{{ obj.parsed_data.container_title }}</em>,{% endif %}
+                    {% if obj.parsed_data.page %}pp {{ obj.parsed_data.page }}.{% endif %}
+                    {% if obj.parsed_data.publication_date %}{{ obj.parsed_data.publication_date }};{% endif %}
+                    {{ obj.parsed_data.publisher }} {{ obj.parsed_data.journal_title }}
+                    {% if obj.parsed_data.doi %}DOI: {{ obj.parsed_data.doi }}{% endif %} {% if obj.parsed_data.pubmed_id %}PMID: {{ obj.parsed_data.pubmed_id }}{% endif %}
+                  </p>
+                {% if obj.description %}<blockquote>{{ obj.description }}</blockquote>{% endif %}
+              </div>
+              <div class="col-md-1">
+                <a class="share-link" href="/send/bibliography/reference/{{ obj.id }}"><i class="fa fa-share"></i></a>
+              </div>
+            </div>
+            <hr>
+        </div>
+    </div>
+</div>
+{% endblock content %}

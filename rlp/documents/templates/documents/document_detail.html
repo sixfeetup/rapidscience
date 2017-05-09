@@ -11,7 +11,7 @@
       <p><a href="{{ last_viewed_path }}">&larr; Back</a></p>
       {% endif %}
       <a class="share-link pull-right" href="/send/documents/document/{{ obj.id }}"><i class="fa fa-share"></i></a>
-      <h2>{{ obj.title }}</h2>
+      <h1 class="detail-view-heading">{{ obj.title }}</h1>
       <p class="small">
         {% include 'actstream/_action_detail.html' with action=document.action_object_actions.first %}
         {% if request.user == obj.owner %} | <a href="{% url 'documents:document_edit' obj.id %}">Edit</a>{% endif %} <br />
