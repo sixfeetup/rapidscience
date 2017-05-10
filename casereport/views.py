@@ -125,7 +125,7 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
     def get(self, request, *args, **kwargs):
         sarcoma = sorted(SARCOMA_TYPE)
         aberrations = MolecularAbberation.objects.all()
-        form = self.form_class()
+        form = self.get_form()
         return self.render_to_response(self.get_context_data(
             form=form,
             sarcoma=sarcoma,
