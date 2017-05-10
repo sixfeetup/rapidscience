@@ -314,7 +314,11 @@ class MyFacetedSearchView(FacetedSearchView):
             return results
 
         # get Case Reports that user created or shared to
-        shared_pks = [x.pk for x in self.request.user.get_shared_content(CaseReport)]
+        # shared_pks = [x.pk for x in self.request.user.get_shared_content(CaseReport)]
+        shared_pks = []
+        for item in self.request.user.get_shared_content(CaseReport):
+            if item.workflow_state == 'live':
+                shared_pks.append(item.pk)
         try:
             phys = Physician.objects.filter(email=self.request.user.email)
             authored = []
