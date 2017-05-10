@@ -446,12 +446,13 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
             filter_form = ProjectContentForm(user=request.user)
 
         # consolidate duplicate entries ( they really differ by target only )
-        activity_stream = consolidate(list(activity_stream),
-                                      lambda a: str((a.actor_object_id,
-                                                    a.verb,
-                                                    a.action_object_content_type,
-                                                    a.action_object_object_id)),
-                                      'others')
+        activity_stream = consolidate(
+            list(activity_stream),
+            lambda a: str((a.actor_object_id,
+                           a.verb,
+                           a.action_object_content_type,
+                           a.action_object_object_id)),
+            'others')
         context.update({
             'activity_stream': activity_stream,
             'filter_form': filter_form,
