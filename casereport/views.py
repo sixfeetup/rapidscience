@@ -19,7 +19,6 @@ from django.views.generic import DetailView
 from django.views.generic import FormView
 from django.views.generic import TemplateView
 
-from casereport.api import AuthorizedListResource
 from casereport.api import PhysicianInstanceResource
 from casereport.api import CaseReportInstanceResource
 from casereport.api import TreatmentInstanceResource
@@ -28,6 +27,7 @@ from casereport.forms import CaseForm
 from casereport.forms import MultiFacetedSearchForm
 from casereport.havoc_interface import havoc_results
 from .models import (
+    AuthorizedRep,
     CaseReport,
     CaseReportReview,
     CaseFile,
@@ -162,8 +162,10 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         title = data.get('casetitle')
         email = data.getlist('physician_email')
         name = data.getlist('physician_name')
-        author = data.get('author', None)
-        author_list = AuthorizedListResource()._post(email=author)
+        alt_email = data.get('author', None)
+        author = None
+        if alt_email:
+            author = AuthorizedRep.objects.get_or_create(email=alt_email)
         physicians = []
         primary_physician = PhysicianInstanceResource()._post(request.user.get_full_name(), request.user.email)
         physicians.append(primary_physician)
@@ -207,7 +209,8 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
                           attachment2_description=attachment2_description,
                           attachment3_description=attachment3_description)
         case.save()
-        CaseReportInstanceResource()._addauthor(case, author_list)
+        if author:
+            case.authorized_reps.add(author[0])
         update_treatments_from_request(case, data)
         if aberrations:
             case.aberrations.add(*aberrations)
@@ -439,6 +442,12 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
         data = request.POST.copy()
         case = get_object_or_404(CaseReport, id=case_id)
         case.title = data['casetitle']
+        alt_email = data.get('author', None)
+        case.authorized_reps.clear()
+        if alt_email:
+            author = AuthorizedRep.objects.get_or_create(email=alt_email)
+            if author:
+                case.authorized_reps.add(author[0])
         # co-authors
         email = data.getlist('physician_email')
         name = data.getlist('physician_name')

@@ -42,7 +42,7 @@
                 </div>
                 <div>
                     <label for="author">Alternative Correspondence Email Address</label>
-                    <input name="author" value=""  type="EMAIL" class="form-control" id="author">
+                    <input name="author" value="{% for rep in casereport.authorized_reps.all %}{{ rep }}{% endfor %}"  type="EMAIL" class="form-control" id="author">
               </div>
 
               <h4>Co-Authors</h4>

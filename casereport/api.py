@@ -112,21 +112,6 @@ class AbberationListResource:
         return m_abbs
 
 
-
-
-class AuthorizedListResource:
-
-    def _get(self):
-        pass
-
-    def _post(self,email):
-        p_doc = []
-        for i in email:
-            phy, created = AuthorizedRep.objects.get_or_create(email=i)
-            p_doc.append(phy)
-        return p_doc
-
-
 class CaseReportHistoryInstanceResource:
 
     def get(self):
