@@ -191,6 +191,7 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         biomarkers = data.get('biomarkers')
         pathology = data.get('pathology')
         additional_comment = data.get('additional_comment')
+        consent = data.get('consent')
         details = data.get('details')
 
         case = CaseReport(title=title, age=age, gender=gender,
@@ -200,7 +201,8 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
                           biomarkers=biomarkers, pathology=pathology,
                           additional_comment=additional_comment,
                           primary_physician=physicians[0],
-                          free_text=details, attachment1=attachment1,
+                          free_text=details, consent=consent,
+                          attachment1=attachment1,
                           attachment2=attachment2, attachment3=attachment3,
                           attachment1_title=attachment1_title,
                           attachment2_title=attachment2_title,
@@ -471,6 +473,7 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
         update_treatments_from_request(case, data)
         case.free_text = data['details']
         case.additional_comment = data['additional_comment']
+        case.consent = data['consent']
         # attachments
         if 'attachment1_title' in data:
             case.attachment1 = request.FILES.get('attachment1') or case.attachment1

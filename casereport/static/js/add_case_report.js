@@ -374,11 +374,12 @@ $('#submit-button').click(function(e){
 });
 
 $('input[type=submit]').click(function(e) {
-    if ($('#agreement').prop('checked')) {
+    if ($('#consent').prop('checked')) {
         return true
     }
     e.preventDefault();
     $(".agree-message").show();
+    window.location.href = window.location + '#consent-wrapper'
     return false
 });
 

@@ -135,10 +135,10 @@
         {% include "casereport/free-text.html" %}
         {% include "casereport/fileform.html" %}
 
-                <div>
-                    <input class="agree-checkbox" type="checkbox" id="agreement"
-                        {% if casereport.agreement %}checked{% endif %}>
-                    <label for="agreement">By checking this box, you confirm that you have obtained signed, written consent from the patient or,
+                <div id="consent-wrapper">
+                    <input class="agree-checkbox" type="checkbox" id="consent" name="consent"
+                        {% if casereport.consent %}checked{% endif %}>
+                    <label for="consent">By checking this box, you confirm that you have obtained signed, written consent from the patient or,
                     if the patient is deceased, the patient’s authorized relative to post this report.</label>
                     <div class="agree-message">
                      <p>Please select the checkbox.</p>

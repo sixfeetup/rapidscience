@@ -180,6 +180,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     attachment3 = models.FileField(null=True, blank=True)
     attachment3_title = models.CharField(max_length=200, null=True, blank=True)
     attachment3_description = models.TextField(null=True, blank=True)
+    consent = models.BooleanField(default=False, blank=True)
     discussions = GenericRelation(
         ThreadedComment,
         object_id_field='object_pk',

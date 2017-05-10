@@ -1016,6 +1016,10 @@ input:focus + div.info {
     color: red;
 }
 
+#consent-wrapper {
+	padding-top: 80px;
+	margin-top: -80px;
+}
 
 
  #crdb-overlay-loader {
@@ -1284,7 +1288,7 @@ input:focus + div.info {
 	right: -25px;
 	color: #337ab7;
 }
-#caseform label[for=agreement] {
+#caseform label[for=consent] {
 	font-size: 16px;
 	color: #444444;
 	text-transform: none;
