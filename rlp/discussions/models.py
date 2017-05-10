@@ -161,6 +161,10 @@ class ThreadedComment(Comment, SharedObjectMixin):
             return self
         return ThreadedComment.objects.get(id=self.thread_id)
 
+    @property
+    def is_discussion_root(self):
+        return self.id == self.thread_id
+
     def get_viewers(self):
         '''override to get the viewers for the discussion'''
         top_comment = self.discussion_root
