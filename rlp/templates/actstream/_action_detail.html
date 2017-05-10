@@ -1,3 +1,4 @@
 {{ action.action_object.display_type }} {% if action.action_object_content_type.model != 'threadedcomment' %}{{ action.verb }}{% endif %} by <a href="{{ action.actor.get_absolute_url }}">{{ action.actor.get_full_name }}</a>
+{% if action.others %}to {{ action.target }} {% for other in action.others %}{% if forloop.last %} and {%  else %}, {% endif %}{{ other.target }}{%  endfor %}{% endif %}
 {% if action.action_object_content_type.model == 'threadedcomment' %}on <a href="{{ action.action_object.content_object.get_absolute_url }}">{{ action.action_object.content_object|truncatewords_html:10 }}</a>{% endif %}
 | {{ action.timestamp|date:"j M Y" }}
