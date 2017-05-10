@@ -211,13 +211,9 @@ class ReferenceAttachView(LoginRequiredMixin, FormView):
         context['reference'] = ref
         if self.request.method == 'GET':
             # populate initial data
-            data = {
-                'description': ref.description,
-                'tags': [tag.id for tag in ref.tags.all()],
-                'members': (),
-                'groups': (),
-            }
-            form = AttachReferenceForm(data)
+            form = AttachReferenceForm()
+            form.fields['description'].initial = ref.description
+            form.fields['tags'].initial = [tag.id for tag in ref.tags.all()]
             form.fields['members'].choices = member_choices(
                 None,  # prevent omitting the current user
                 ref,
