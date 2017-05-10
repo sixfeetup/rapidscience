@@ -15,7 +15,7 @@
                             {{ result.object.title }}
                         </a>
                     </h3>
-                    Case ID: {{ result.object.id }} | {{ result.object.get_physician|capfirst }}</span>,  {{ result.object.get_physician.affiliation.country }} |  {{ result.object.created_on|date:"M d, Y" }}
+                    Case ID: {{ result.object.id }} | {{ result.object.get_physician|capfirst }}</span>,  {{ result.object.get_physician.affiliation.country }} |  {{ result.object.sort_date|date:"M d, Y" }}
                 </div>
                 <div class="col-md-2 crstatus">
                     {% if False %}

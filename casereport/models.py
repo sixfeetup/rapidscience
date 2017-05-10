@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from access_tokens import tokens
 from casereport.constants import GENDER, WorkflowState
 from casereport.constants import SARCOMA_TYPE
@@ -170,7 +172,8 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     casefile_f = models.FileField(null=True, blank=True)
     free_text = models.TextField(null=True, blank=True)
     date_added = models.DateTimeField(auto_now_add=True, db_index=True)
-    date_updated = models.DateTimeField(auto_now=True)
+    date_updated = models.DateTimeField(auto_now=True, db_index=True)
+    date_published = models.DateTimeField(db_index=True, null=True, blank=True)
     attachment1 = models.FileField(null=True, blank=True)
     attachment1_title = models.CharField(max_length=200, null=True, blank=True)
     attachment1_description = models.TextField(null=True, blank=True)
@@ -194,6 +197,12 @@ class CaseReport(CRDBBase, SharedObjectMixin):
 
     def __str__(self):
         return self.title if self.title else '---'
+
+    def sort_date(self):
+        if self.date_published:
+            return self.date_published
+        else:
+            return self.date_updated
 
     def can_edit(self, user=None):
         if not user:
@@ -250,6 +259,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
                 target=WorkflowState.LIVE)
     def publish(self):
         self.admin_approved = True
+        self.date_published = datetime.now()
 
     def can_redact_as_author(self, user=None):
         # ensure author or admin

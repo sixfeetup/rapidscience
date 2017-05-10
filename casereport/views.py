@@ -304,7 +304,6 @@ class MyFacetedSearchView(FacetedSearchView):
 
         Returns an empty list if there's no query to search with.
         """
-        data = self.request.GET.copy()
         sqs = self.form.searchqueryset
         sqs = sqs.facet(u'{!ex=GENDER}gender_exact', sort="index")
         sqs = sqs.facet(u'{!ex=COUNTRY}country_exact', sort="index")
@@ -328,16 +327,7 @@ class MyFacetedSearchView(FacetedSearchView):
         for case in results:
             if case.pk not in shared_pks:
                 results = results.exclude(id=case.id)
-        sortby = data.get('sortby')
-        if sortby == "created_on":
-            sortorder = data.get('sortorder', 'desc')
-            if sortorder == 'desc':
-                results = results.order_by('-'+sortby)
-                return results
-            results = results.order_by(sortby)
-        else:
-            return results
-        return results
+        return results.order_by('-pub_or_mod_date')
 
     def create_response(self):
         """

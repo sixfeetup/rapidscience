@@ -20,8 +20,7 @@ class CaseReportIndex(BaseIndex, indexes.Indexable):
     gender = indexes.CharField(model_attr='gender', faceted=True)
     age = indexes.IntegerField(model_attr='age', faceted=True)
     abberations = indexes.CharField(faceted=True)
-    created_on = indexes.DateTimeField(model_attr='created_on')
-    modified_on = indexes.DateTimeField(model_attr='modified_on')
+    pub_or_mod_date = indexes.DateTimeField(model_attr='sort_date')
     treatment_type = indexes.MultiValueField(faceted=True)
     country = indexes.MultiValueField(faceted=True)
     suggestions = indexes.FacetCharField()
@@ -35,7 +34,7 @@ class CaseReportIndex(BaseIndex, indexes.Indexable):
         return prepared_data
 
     def index_queryset(self, using=None):
-        cases = CaseReport.objects.filter(status='approved')
+        cases = CaseReport.objects.all()
         return cases
 
     def prepare_text(self, obj):
