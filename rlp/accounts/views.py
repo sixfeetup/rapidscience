@@ -360,7 +360,7 @@ def consolidate(inp, keyfunc, rollup_name):
     if inp_len < 2:
         return inp
 
-    for i in range(inp_len - 1, 1, -1):
+    for i in range(inp_len - 1, 0, -1):
         elem = inp[i]
         ekey = keyfunc(elem)
         prev_elem = inp[i - 1]
