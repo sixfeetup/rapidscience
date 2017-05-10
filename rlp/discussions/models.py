@@ -147,7 +147,10 @@ class ThreadedComment(Comment, SharedObjectMixin):
     def is_discussion(self):
         '''stand-alone discussion, or comments on other content?'''
         # stand-alone discussions are attached to the site
-        return self.content_object == Site.objects.get_current()
+        return (
+            self.id == self.thread_id and
+            self.content_object == Site.objects.get_current()
+        )
 
     def children(self):
         children = ThreadedComment.objects.filter(
@@ -160,10 +163,6 @@ class ThreadedComment(Comment, SharedObjectMixin):
         if self.thread_id == 0:
             return self
         return ThreadedComment.objects.get(id=self.thread_id)
-
-    @property
-    def is_discussion_root(self):
-        return self.id == self.thread_id
 
     def get_viewers(self):
         '''override to get the viewers for the discussion'''
