@@ -18,15 +18,17 @@
                     Case ID: {{ result.object.id }} | {{ result.object.get_physician|capfirst }}</span>,  {{ result.object.get_physician.affiliation.country }} |  {{ result.object.sort_date|date:"M d, Y" }}
                 </div>
                 <div class="col-md-2 crstatus">
+                    <i class="{{ result.object.get_workflow_icon }}" aria-hidden="true"></i><br />
                     {% if result.object.workflow_state == 'live' %}
-                        <i class="fa fa-file-text-o" aria-hidden="true"></i><br />
                         Posted
                     {% elif result.object.workflow_state == 'draft' %}
-                        <i class="fa fa-clock-o" aria-hidden="true"></i><br />
                         Saved
-                    {% else %}
-                        <i class="fa fa-check" aria-hidden="true"></i><br />
+                    {% elif result.object.workflow_state == 'author review' %}
+                        Saved
+                    {% elif result.object.workflow_state == 'processing' %}
                         Submitted
+                    {% else %}
+                        {{ result.object.workflow_state }}
                     {% endif %}
                 </div>
             </div>

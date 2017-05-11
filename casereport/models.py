@@ -204,6 +204,10 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         else:
             return self.date_updated
 
+    # Workflow related methods
+    def get_workflow_icon(self):
+        return WorkflowState.ICONS.get(self.workflow_state, "")
+
     def can_edit(self, user=None):
         if not user:
             user = CurrentUserMiddleware.get_user()

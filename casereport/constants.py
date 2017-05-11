@@ -47,8 +47,16 @@ class WorkflowState(object):
         (AUTHOR_REVIEW, AUTHOR_REVIEW.title()),
         (LIVE,LIVE.title())
     )
+
     INITIAL_STATE = DRAFT
 
+    ICONS = {
+        DRAFT:          'fa fa-clock-o',
+        AUTHOR_REVIEW:  'fa fa-clock-o',
+        ADMIN_REVIEW:   'fa fa-check',
+        LIVE:           'fa fa-file-text-o',
+        RETRACTED:      None
+    }
 
 
 
