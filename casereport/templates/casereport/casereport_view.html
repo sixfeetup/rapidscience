@@ -23,18 +23,6 @@
     </div>
     {% if review_allowed %}
     <p class="pull-right">
-        {% if casereport.get_next_actions_for_user %}
-            <!-- current casereport workflow_state: {{ casereport.workflow_state }} -->
-            {% for action in casereport.get_next_actions_for_user %}
-                {%  if "Edit" in action %}
-                    <a class="btn btn-primary" href="{% url action casereport.id %}?action={{ action }}">Edit</a>
-                {% else %}
-                    <a class="btn btn-primary" href="{% url action casereport.id %}?action={{ action }}">{{ action }}</a>
-                {% endif %}
-            {% endfor %}
-        {% else %}
-            <!-- This case is in {{ casereport.workflow_state }} state and cannot be edited. -->
-        {% endif %}
         <a class="btn btn-primary" href="{% url 'review' casereport.id %}">Review</a>
     </p>
     {% endif %}
@@ -230,6 +218,21 @@
     </div>
 
  </div><!--tab content-end-->
+ 
+ <div class="col-xs-12 action-buttons">
+     {% if casereport.get_next_actions_for_user %}
+         <!-- current casereport workflow_state: {{ casereport.workflow_state }} -->
+         {% for action in casereport.get_next_actions_for_user %}
+             {%  if "Edit" in action %}
+                 <a class="btn btn-primary" href="{% url action casereport.id %}?action={{ action }}">Edit</a>
+             {% else %}
+                 <a class="btn btn-primary" href="{% url action casereport.id %}?action={{ action }}">{{ action }}</a>
+             {% endif %}
+         {% endfor %}
+     {% else %}
+         <!-- This case is in {{ casereport.workflow_state }} state and cannot be edited. -->
+     {% endif %}
+ </div>
 
 
 </div><!--container-detail-end-->
