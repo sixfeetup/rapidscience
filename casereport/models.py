@@ -252,7 +252,8 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         self.author_approved = True
         self.admin_approved = False
 
-        return "TBD: Your case report has been sent with approval to the staff for review."
+        return "Thank you for approving your Case Report for posting in our \
+            database! We will contact you when it goes live."
 
     @transition(field=workflow_state,
                 source=[WorkflowState.DRAFT, ],
@@ -263,7 +264,9 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         self.author_approved = True
         self.admin_approved = False
 
-        return "TBD: Your case report has been sent with approval to the staff for review."
+        return "Your Case Report has been submitted and will be reviewed by \
+            our admin staff. \
+            Please note case no. #%s for future reference." % self.id
 
 
     def can_reject(self, user=None):
