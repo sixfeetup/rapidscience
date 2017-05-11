@@ -334,7 +334,11 @@ class MyFacetedSearchView(FacetedSearchView):
         if not results:
             return results
 
-        # get Case Reports that user created or shared to
+        # admins see all results
+        if self.request.user.is_superuser:
+            return results.order_by('-pub_or_mod_date')
+
+        # non-admins only see their own cases or cases shared with them
         shared_pks = []
         for item in self.request.user.get_shared_content(CaseReport):
             if item.workflow_state == 'live':
