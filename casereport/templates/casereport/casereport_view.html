@@ -23,7 +23,7 @@
     </div>
     {% if review_allowed %}
     <p class="pull-right">
-        <a class="btn btn-primary" href="{% url 'review' casereport.id %}">Review</a>
+        <a class="btn btn-primary" href="{% url 'review' casereport.id %}">Editorial Notes</a>
     </p>
     {% endif %}
     <h1>{{ casereport.title }}</h1>
