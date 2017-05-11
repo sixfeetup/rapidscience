@@ -23,8 +23,19 @@
     </div>
     {% if review_allowed %}
     <p class="pull-right">
-        <a class="btn btn-primary" href="{% url 'edit' casereport.id %}">Edit</a>
-      <a class="btn btn-primary" href="{% url 'review' casereport.id %}">Review</a>
+        {% if casereport.get_next_actions_for_user %}
+            <!-- current casereport workflow_state: {{ casereport.workflow_state }} -->
+            {% for action in casereport.get_next_actions_for_user %}
+                {%  if "Edit" in action %}
+                    <a class="btn btn-primary" href="{% url action casereport.id %}?action={{ action }}">Edit</a>
+                {% else %}
+                    <a class="btn btn-primary" href="{% url action casereport.id %}?action={{ action }}">{{ action }}</a>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            <!-- This case is in {{ casereport.workflow_state }} state and cannot be edited. -->
+        {% endif %}
+        <a class="btn btn-primary" href="{% url 'review' casereport.id %}">Review</a>
     </p>
     {% endif %}
     <h1>{{ casereport.title }}</h1>
@@ -36,7 +47,7 @@
 </div>
 
  <div class="case-detail-view">
-     
+
      <div id="structured" class="tab-pane fade in active"><!--first-tab-->
          <div class="col-md-3 col-xs-3 menu">
            <div class="sticky">
@@ -132,14 +143,14 @@
               </p>
           </div>
       {% endif %}
-      
+
       {% if casereport.biomarkers %}
          <div id="section-biomarkers">
               <h4>Biomarkers</h4>
               <p>{{ casereport.biomarkers }}</p>
           </div>
       {% endif %}
-      
+
       {% if casereport.pathology %}
       <div id="section-pathology">
           <h4>Pathology/Tests</h4>
@@ -168,21 +179,21 @@
           {% endfor %}
       </div>
       {% endif %}
-      
+
       {% if casereport.additional_comment %}
       <div id="section-comments">
           <h4>Additional Comments</h4>
           <p>{{ casereport.additional_comment }}</p>
       </div>
       {% endif %}
-      
+
       {% if casereport.free_text %}
       <div id="section-freetext">
           <h4>Free Text</h4>
           <p>{{ casereport.free_text }}</p>
       </div>
       {% endif %}
-      
+
       {% if casereport.casefile_f %}
       <div id="section-uploadedfile">
           <h4>Uploaded File</h4>

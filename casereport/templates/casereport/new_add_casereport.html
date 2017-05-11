@@ -199,18 +199,8 @@
 
                 <div class="submit-button">
                     <input id="save-button" class="btn btn-primary" type="submit" value="Save" />
-                    {% if casereport.get_next_actions_for_user %}
-                        <input id="save-button" class="btn btn-primary" type="submit" value="Save" />
-                        <!-- submit button is disabled until workflow is put in place -->
-                        <input id="submit-button" class="btn btn-primary" type="submit" value="Submit" disabled="disabled" />
-                        <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-default" id="button-cancel">Cancel</a>
+                    <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-default" id="button-cancel">Cancel</a>
 
-                        {{ casereport.workflow_state }} --> {% for action in casereport.get_next_actions_for_user %}
-                            <input id="{{ action }}-action-button" class="btn btn-primary" type="submit" name="action" value="{{ action }}" />
-                        {% endfor %}
-                    {% else %}
-                        This case is in {{ casereport.workflow_state }} state and cannot be edited.
-                    {% endif %}
                 </div>
 
    </form>

@@ -18,6 +18,11 @@ from django.utils.encoding import force_text
 from django.views.generic import DetailView
 from django.views.generic import FormView
 from django.views.generic import TemplateView
+from django.http import HttpResponseRedirect
+try:
+    from django.urls import reverse
+except ImportError as old_django:
+    from django.core.urlresolvers import reverse
 
 from casereport.api import PhysicianInstanceResource
 from casereport.api import CaseReportInstanceResource
@@ -77,6 +82,18 @@ class CaseReportDetailView(TemplateView):
             )
         )
 
+def workflow_transition( request, casereport_id):
+    casereport = CaseReport.objects.get(id=casereport_id)
+
+    action = request.GET.get('action')
+    casereport.take_action_for_user(action, request.user)
+    casereport.save()
+
+    # hack to allow edit actions to use an interstitial form
+    if "Edit" in action:
+        return HttpResponseRedirect(reverse('edit', kwargs={'case_id':casereport.id}))
+
+    return HttpResponseRedirect(reverse('casereport_detail', kwargs={'case_id':casereport.id, 'title_slug':casereport.title}))
 
 def update_treatments_from_request(case, data):
     """Loop through treatments on the add/edit form,
@@ -223,6 +240,10 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
             self, self.request, 'casereport',
             'casereport', case.id,
         )
+
+        # eventually we' want this:
+        # #messages.success(self.request, "Saved!")
+        # return redirect(reverse('casereport_detail', args=(case.id, case.title)))
         if case.status == 'draft':
             messages.success(self.request, "Saved!")
             return redirect(case.get_absolute_url())
@@ -482,24 +503,29 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
             case.attachment3_description = data['attachment3_description']
 
         # if the user is moving this along in the workflow
-        action = data.get('action', None)
-        if action:
-            case.take_action_for_user(action)
-        #TODO: any edit by an admin needs to clear the author approved.
-        # how to determine and do that?
+        #action = data.get('action', None)
+        #if action:
+        #    case.take_action_for_user(action)
+
+        # any edit by an admin needs to clear the author approved.
+        if request.user.is_staff and request.user.email != case.primary_physician.email:
+            case.author_approved = False
+
 
         case.save()
         SendToView.post(
             self, self.request, 'casereport',
             'casereport', case.id,
         )
-        if case.status == 'draft':
-            messages.success(request, "Edits saved!")
-            return redirect(case.get_absolute_url())
-        else:
-            self.template_name = 'casereport/add_casereport_success.html'
-            # self.case_success_mail(physicians, author)
-            return self.render_to_response({'case_report':case})
+        messages.success(request, "Edits saved!")
+        return redirect(reverse('casereport_detail', args=(case.id, case.title)))
+        #if case.status == 'draft':
+        #    messages.success(request, "Edits saved!")
+        #    return redirect(case.get_absolute_url())
+        #else:
+        #    self.template_name = 'casereport/add_casereport_success.html'
+        #    # self.case_success_mail(physicians, author)
+        #    return self.render_to_response({'case_report':case})
 
 
 class ReviewDetailView(LoginRequiredMixin, DetailView):

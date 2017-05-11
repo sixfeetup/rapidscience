@@ -9,6 +9,13 @@ from .views import downloadfile
 from .views import FormTypeView
 from .views import MyFacetedSearchView
 from .views import ReviewDetailView
+from .views import workflow_transition
+
+try:
+    from django.urls import reverse_lazy
+except ImportError as old_django:
+    from django.core.urlresolvers import reverse_lazy
+
 
 from django.views.decorators.cache import never_cache
 
@@ -30,4 +37,21 @@ urlpatterns = [
         name='edit'
     ),
     url(r'^(?P<pk>[0-9]*)/review$', ReviewDetailView.as_view(), name='review'),
+]
+
+# workflow transition view
+urlpatterns += [
+    url(r'^(?P<casereport_id>[0-9]*)/transition$', never_cache(workflow_transition), name="casereport_workflow_transition")
+]
+
+# re-register Workflow Action names
+urlpatterns += [
+    url(r'^(?P<casereport_id>[0-9]*)/transition$', never_cache(workflow_transition), name='Edit'),
+    url(r'^(?P<casereport_id>[0-9]*)/transition$', never_cache(workflow_transition), name='Author Review Edit'),
+    url(r'^(?P<casereport_id>[0-9]*)/transition$', never_cache(workflow_transition), name='Admin Edit'),
+    url(r'^(?P<casereport_id>[0-9]*)/transition$', never_cache(workflow_transition), name='Approve'),
+    url(r'^(?P<casereport_id>[0-9]*)/transition$', never_cache(workflow_transition), name='Submit'),
+    url(r'^(?P<casereport_id>[0-9]*)/transition$', never_cache(workflow_transition), name='Publish'),
+    url(r'^(?P<casereport_id>[0-9]*)/transition$', never_cache(workflow_transition), name='Retract'),
+    url(r'^(?P<casereport_id>[0-9]*)/transition$', never_cache(workflow_transition), name='Send Back'),
 ]
