@@ -5,7 +5,7 @@
       </a></h4>
       <p class="small">
           Posted by {{ obj.primary_physician }}
-        | {{ obj.date_added|date:"j M Y" }}<br />
+        | {{ obj.date_updated|date:"j M Y" }}<br />
         Shared with {{ obj.get_viewers|join:", " }}
       </p>
       <p class="more">{{ obj.description|urlize|linebreaksbr }}</p>
