@@ -252,6 +252,8 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         self.author_approved = True
         self.admin_approved = False
 
+        return "TBD: Your case report has been sent with approval to the staff for review."
+
     @transition(field=workflow_state,
                 source=[WorkflowState.DRAFT, ],
                 permission=can_submit,
@@ -260,6 +262,9 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         ''' send to admin without approval '''
         self.author_approved = True
         self.admin_approved = False
+
+        return "TBD: Your case report has been sent with approval to the staff for review."
+
 
     def can_reject(self, user=None):
         if not user:
@@ -279,6 +284,8 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         """
         self.admin_approved = False
 
+        return "TBD: The case report has been sent back to its author."
+
     def can_publish(self, user=None):
         # ensure admin
         if not user:
@@ -292,6 +299,8 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     def publish(self):
         self.admin_approved = True
         self.date_published = datetime.now()
+
+        return "TBD: This case report has been published!"
 
     def can_retract_as_author(self, user=None):
         # ensure author or admin
@@ -312,6 +321,8 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     def _retract_by_author(self):  # starts with _ to hide from users
         self.author_approved = False
 
+        return "TBD: This case report has been pulled back to the author for review."
+
     @transition(field=workflow_state,
                 source=[WorkflowState.RETRACTED],
                 permission=can_retract_as_admin,
@@ -319,6 +330,8 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     def _retract_by_admin(self):  # starts with _ to hide from users
         """ unpublish """
         self.admin_approved = False
+
+        return "TBD: This case report has been pulled back to the site staff for review."
 
     def can_retract(self, user=None):
         if not user:
@@ -334,12 +347,14 @@ class CaseReport(CRDBBase, SharedObjectMixin):
             retract_by_admin
         """
         self.workflow_state = WorkflowState.RETRACTED
+        res = "Retracted"
         if self.can_retract_as_author():
-            self._retract_by_author()
+            res = self._retract_by_author()
         elif self.can_retract_as_admin():
-            self._retract_by_admin()
+            res = self._retract_by_admin()
         else:
             raise PermissionError("permission denied")
+        return res
 
     # TODO: think about moving these out of the model and into WorkflowState
     def _get_displayname_for_fname(self, fname):

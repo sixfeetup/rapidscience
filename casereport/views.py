@@ -86,8 +86,11 @@ def workflow_transition( request, casereport_id):
     casereport = CaseReport.objects.get(id=casereport_id)
 
     action = request.GET.get('action')
-    casereport.take_action_for_user(action, request.user)
+    msg = casereport.take_action_for_user(action, request.user)
     casereport.save()
+
+    if msg:
+        messages.success(request, msg)
 
     # hack to allow edit actions to use an interstitial form
     if "Edit" in action:
