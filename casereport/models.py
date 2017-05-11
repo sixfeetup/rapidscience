@@ -244,7 +244,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         return user.email == self.primary_physician.email  # and self.author_approved
 
     @transition(field=workflow_state,
-                source=[WorkflowState.DRAFT, WorkflowState.AUTHOR_REVIEW],
+                source=[WorkflowState.AUTHOR_REVIEW,],
                 permission=can_submit,
                 target=WorkflowState.ADMIN_REVIEW)
     def approve(self):
@@ -253,12 +253,12 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         self.admin_approved = False
 
     @transition(field=workflow_state,
-                source=[WorkflowState.DRAFT, WorkflowState.AUTHOR_REVIEW],
+                source=[WorkflowState.DRAFT, ],
                 permission=can_submit,
                 target=WorkflowState.ADMIN_REVIEW)
     def submit(self):
         ''' send to admin without approval '''
-        self.author_approved = False
+        self.author_approved = True
         self.admin_approved = False
 
     def can_reject(self, user=None):
