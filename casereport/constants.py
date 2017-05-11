@@ -34,10 +34,12 @@ class WorkflowState(object):
     # ./manage.py graph_transitions casereport.CaseReport  > t.dot; dot -O -Tpng t.dot; open t.dot.png
 
     DRAFT = 'draft'
-    ADMIN_REVIEW = 'administrative processing'  # analogous to 'processing', in the admin queue
-    AUTHOR_REVIEW = 'author review'    # admin sent back to author, in the author queue
-
+    ADMIN_REVIEW = 'processing'
+    AUTHOR_REVIEW = 'author review'
     LIVE = 'live'
+    RETRACTED = 'retracted'  # this is a tranistional state that is held only
+                             # long enough for the system to push it back to
+                             # ADMIN_REVIEW or AUTHOR_REVIEW
 
     CHOICES = (
         (DRAFT, DRAFT.title()),
