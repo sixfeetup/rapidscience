@@ -415,9 +415,10 @@ def get_or_create_reference(query):
             Entrez.efetch(db='pubmed', retmode='xml', id=query)
         )
         references = []
-        for result in results:
-            reference, created = get_or_create_reference_from_pubmed(result)
-            references.append(reference)
+        for result_type, result in results.items():
+            for item in result:
+                reference, created = get_or_create_reference_from_pubmed(item)
+                references.append(reference)
         if references:
             return references
     else:
