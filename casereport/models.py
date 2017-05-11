@@ -208,12 +208,34 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         if not user:
             user = CurrentUserMiddleware.get_user()
         if self.workflow_state in (
-        WorkflowState.DRAFT,) and user.email == self.primary_physician.email:
+        WorkflowState.DRAFT,WorkflowState.RETRACTED, WorkflowState.AUTHOR_REVIEW) and user.email == self.primary_physician.email:
             return True
         if self.workflow_state in (
         WorkflowState.ADMIN_REVIEW,) and user.is_staff:
             return True
         return False
+
+    @transition(field=workflow_state,
+                source=[WorkflowState.DRAFT],
+                permission=can_edit,
+                target=WorkflowState.DRAFT
+                )
+    def edit(self):
+        pass
+    @transition(field=workflow_state,
+                source=[WorkflowState.AUTHOR_REVIEW, WorkflowState.RETRACTED],
+                permission=can_edit,
+                target=WorkflowState.AUTHOR_REVIEW
+                )
+    def author_review_edit(self):
+        pass
+    @transition(field=workflow_state,
+                source=[WorkflowState.ADMIN_REVIEW],
+                permission=can_edit,
+                target=WorkflowState.ADMIN_REVIEW
+                )
+    def admin_edit(self):
+        pass
 
     def can_submit(self, user=None):
         # ensure author
@@ -225,8 +247,18 @@ class CaseReport(CRDBBase, SharedObjectMixin):
                 source=[WorkflowState.DRAFT, WorkflowState.AUTHOR_REVIEW],
                 permission=can_submit,
                 target=WorkflowState.ADMIN_REVIEW)
-    def submit(self):
+    def approve(self):
+        ''' send to admins with approval '''
         self.author_approved = True
+        self.admin_approved = False
+
+    @transition(field=workflow_state,
+                source=[WorkflowState.DRAFT, WorkflowState.AUTHOR_REVIEW],
+                permission=can_submit,
+                target=WorkflowState.ADMIN_REVIEW)
+    def submit(self):
+        ''' send to admin without approval '''
+        self.author_approved = False
         self.admin_approved = False
 
     def can_reject(self, user=None):
@@ -242,7 +274,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
                 permission=can_reject,
                 target=WorkflowState.AUTHOR_REVIEW,
                 )
-    def reject(self):
+    def send_back(self):
         """ send the CR back to the author 
         """
         self.admin_approved = False
@@ -261,39 +293,69 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         self.admin_approved = True
         self.date_published = datetime.now()
 
-    def can_redact_as_author(self, user=None):
+    def can_retract_as_author(self, user=None):
         # ensure author or admin
         if not user:
             user = CurrentUserMiddleware.get_user()
         return user.email == self.primary_physician.email
 
-    def can_redact_as_admin(self, user=None):
+    def can_retract_as_admin(self, user=None):
         # ensure author or admin
         if not user:
             user = CurrentUserMiddleware.get_user()
         return user.is_staff
 
     @transition(field=workflow_state,
-                source=[WorkflowState.LIVE],
-                permission=can_redact_as_author,
+                source=[WorkflowState.RETRACTED],
+                permission=can_retract_as_author,
                 target=WorkflowState.AUTHOR_REVIEW)
-    def redact_by_author(self):
+    def _retract_by_author(self):  # starts with _ to hide from users
         self.author_approved = False
 
     @transition(field=workflow_state,
-                source=[WorkflowState.LIVE],
-                permission=can_redact_as_admin,
+                source=[WorkflowState.RETRACTED],
+                permission=can_retract_as_admin,
                 target=WorkflowState.ADMIN_REVIEW)
-    def redact_by_admin(self):
+    def _retract_by_admin(self):  # starts with _ to hide from users
         """ unpublish """
         self.admin_approved = False
+
+    def can_retract(self, user=None):
+        if not user:
+            user = CurrentUserMiddleware.get_user()
+        return self.can_retract_as_author(user) or self.can_retract_as_admin(user)
+
+    @transition(field=workflow_state,
+                source=[WorkflowState.LIVE],
+                permission=can_retract,
+                target=WorkflowState.RETRACTED)
+    def retract(self):
+        """ uses the current user to choose between retract_by_author and
+            retract_by_admin
+        """
+        self.workflow_state = WorkflowState.RETRACTED
+        if self.can_retract_as_author():
+            self._retract_by_author()
+        elif self.can_retract_as_admin():
+            self._retract_by_admin()
+        else:
+            raise PermissionError("permission denied")
+
+    # TODO: think about moving these out of the model and into WorkflowState
+    def _get_displayname_for_fname(self, fname):
+        return fname.title().replace('_',' ')
+
+    def _get_fname_for_displayname(self, displayname):
+        return displayname.lower().replace(' ', '_')
 
     def get_next_actions_for_user(self, user=None):
         if not user:
             user = CurrentUserMiddleware.get_user()
-        workflow_transitions = self.get_available_user_workflow_state_transitions(
-            user)
-        return [fsmo.name for fsmo in workflow_transitions]
+        workflow_transitions = \
+            self.get_available_user_workflow_state_transitions(user)
+        # suppress private transitions and make then displayable
+        return [self._get_displayname_for_fname(fsmo.name) for fsmo in
+                workflow_transitions if not fsmo.name[0] == '_']
 
     def take_action_for_user(self, action_name, user=None):
         if not user:
@@ -303,7 +365,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
             raise KeyError(action_name)
 
         print("taking action %s" % action_name)
-        return getattr(self, action_name)()
+        return getattr(self, self._get_fname_for_displayname(action_name))()
 
     @property
     def display_type(self):
