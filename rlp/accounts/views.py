@@ -468,16 +468,15 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
     elif tab == 'casereports':
         reports = [r for r in request.user.get_shared_content(CaseReport) if r.workflow_state == 'live']
         from casereport.models import Physician
-        from collections import OrderedDict
         try:
             phys = Physician.objects.filter(email=request.user.email)
             for phy in phys:
                 reports += CaseReport.objects.filter(primary_physician=phy)
         except Physician.DoesNotExist:
             pass
-        rep = OrderedDict.fromkeys([r for r in reports])
+        reps = {r for r in reports}
         context['case_reports'] = sorted(
-            rep.keys(),
+            reps,
             key=lambda c: c.sort_date(),
             reverse=True,
         )

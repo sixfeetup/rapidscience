@@ -5,8 +5,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models import Model
 from django.db.models import Q
 
-from collections import OrderedDict
-
 from .models import SharedContent
 
 
@@ -30,10 +28,7 @@ class SharesContentMixin(Model):
             )
 
         # this deduping is only neccessary because we had some bad data
-        od = OrderedDict.fromkeys( [r.target for r in refs] )
-        shared_targets = od.keys()
-
-        return shared_targets
+        return {r.target for r in refs}
 
     def get_activity_stream(self, type_class=None):
         shared = self.get_shared_content(type_class)
