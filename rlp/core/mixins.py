@@ -39,6 +39,8 @@ class SharesContentMixin(Model):
         query = Q()
         for obj in shared:
             obj_type = ContentType.objects.get_for_model(obj)
+            if obj_type.model == 'casereport' and obj.workflow_state != 'live':
+                continue
             q = Q(action_object_object_id=obj.id) & \
                 Q(action_object_content_type=obj_type)
             query.add(q, Q.OR)
