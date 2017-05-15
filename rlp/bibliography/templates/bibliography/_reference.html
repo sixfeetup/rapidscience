@@ -1,3 +1,4 @@
+{% load core_tags %}
 <div class="row">
   <div class="col-md-11">
       {% if not search %}<p>{% endif %}
@@ -12,7 +13,7 @@
       {% with edit_url=obj.get_edit_url %}
         {% if edit_url %}<a href="{{ edit_url }}">Edit</a>{% endif %}
       {% endwith %}<br />
-      Shared with {{ obj.get_viewers|join:", " }}
+      {% autoescape off %}{% display_shared_with obj request.user %}{% endautoescape %}
     </p>
     {% if obj.description %}<blockquote>{{ obj.description }}</blockquote>{% endif %}
   </div>

@@ -1,3 +1,4 @@
+{% load core_tags %}
 <div class="row comment-item">
     <div class="col-md-11">
       <h4><a href="{% url 'casereport_detail' case_id=obj.id title_slug=obj.title|slugify %}">
@@ -6,7 +7,7 @@
       <p class="small">
           Posted by {{ obj.primary_physician }}
         | {{ obj.date_updated|date:"j M Y" }}<br />
-        Shared with {{ obj.get_viewers|join:", " }}
+        {% autoescape off %}{% display_shared_with obj request.user %}{% endautoescape %}
       </p>
       <p class="more">{{ obj.description|urlize|linebreaksbr }}</p>
     </div>

@@ -68,3 +68,18 @@ def setvar(parser,token):
     #    raise template.TemplateSyntaxError( "%r tag's argument should be in quotes" % tag_name )
     #return SetVarNode(new_val[1:-1], var_name)
     return SetVarNode(new_val, var_name)
+
+
+@register.simple_tag
+def display_shared_with(item, user=None):
+    # Display 'Shared with...' text if shared with more than the current user
+    viewers = item.get_viewers()
+    vlist = ''
+    for v in viewers:
+        if user == v:
+            continue
+        vlist += '<b>{0}</b>, '.format(v)
+    if vlist:
+        return 'Shared with {0}'.format(vlist[:-2])
+    else:
+        return ''
