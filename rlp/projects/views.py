@@ -15,6 +15,7 @@ from django.utils.text import slugify
 from django.views.decorators.cache import never_cache
 from django.views.generic import View, FormView, UpdateView
 
+from actstream.models import Action
 from el_pagination.decorators import page_template
 
 from casereport.models import CaseReport
@@ -66,8 +67,10 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
         hasattr(request.user, 'can_access_project') and
         request.user.can_access_project(project)
     )
+    activity_stream = Action.objects.filter(
+        public=True
+    )
     if tab == 'activity':
-        activity_stream = project.get_activity_stream()
         if 'content_type' in request.GET:
             filter_form = ActionObjectForm(request.GET)
             if filter_form.is_valid() and filter_form.cleaned_data['content_type']:
