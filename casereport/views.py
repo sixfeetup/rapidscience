@@ -495,7 +495,7 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
         case.free_text = data['details']
         case.additional_comment = data['additional_comment']
         case.consent = data['consent']
-        # attachments
+        # attachments & files
         if 'attachment1_title' in data:
             case.attachment1 = request.FILES.get('attachment1') or case.attachment1
             case.attachment1_title = data['attachment1_title']
@@ -508,6 +508,8 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
             case.attachment3 = request.FILES.get('attachment3') or case.attachment3
             case.attachment3_title = data['attachment3_title']
             case.attachment3_description = data['attachment3_description']
+        if 'uploadfile' in request.FILES:
+            case.casefile_f = request.FILES.get('uploadfile') or case.casefile_f
 
         # if the user is moving this along in the workflow
         #action = data.get('action', None)
