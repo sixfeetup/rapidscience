@@ -119,7 +119,7 @@
               {{ casereport.gender|capfirst }} |
               {{ casereport.subtype }}
           </p>
-          <p>{{ casereport.presentation }}</p>
+          <p>{{ casereport.presentation|linebreaks }}</p>
       </div>
      {% endif %}
 
