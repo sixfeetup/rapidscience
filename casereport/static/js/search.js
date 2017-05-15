@@ -157,5 +157,29 @@ $(document).ready(function() {
         });
     });
 
-
-
+$(document).ready(function() {
+    var debounceScrollTimer;
+    if($('.sticky')) {
+        headingheight = $('.headingBanner').outerHeight() + $('.navbar').outerHeight();
+        origstickytop = headingheight + parseInt($('.content').css('padding-top'));
+        $('.sticky').css('top', origstickytop);
+        $(window).on('scroll', function(e) {
+            clearTimeout(debounceScrollTimer);
+            debounceScrollTimer = setTimeout(function() {
+                winheight = $(window).height();
+                docheight = $(document).height();
+                footerheight = $('.main-footer').outerHeight();
+                buttonsheight = $('.action-buttons').outerHeight();
+                stickyheight = $('.sticky').outerHeight();
+                buffer = footerheight + buttonsheight + stickyheight;
+                scrollto = $(window).scrollTop();
+                targety = scrollto - buffer;
+                if (scrollto + (buffer * 3) >= docheight - targety) {
+                    $('.sticky').animate({'top': winheight - buffer});
+                } else {
+                    $('.sticky').animate({'top': origstickytop});
+                }
+            }, 50);
+        });
+   }
+});
