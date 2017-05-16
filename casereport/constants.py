@@ -549,7 +549,7 @@ PERFORMANCE_STATUS = (
 OBJECTIVE_RESPONSES = (
     ('No Response', 'No Response'),
     ('Partial Response', 'Partial Response'),
-    ('Diseage Progression', 'Diseage Progression'),
+    ('Disease Progression', 'Disease Progression'),
     ('Complete Response', 'Complete Response')
 )
 
