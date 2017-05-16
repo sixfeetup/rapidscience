@@ -10,7 +10,7 @@
       </h4>
       {% endif %}
       <p class="small">
-          Posted by
+          {% if crcomments != 'True' %}Posted by{% endif %}
         <a href="{{ comment.user.get_absolute_url }}">
           {{ comment.user.get_full_name }}
         </a>

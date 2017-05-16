@@ -7,13 +7,19 @@ var selectedBookmarksFolderName; // will contain ID of selected bookmarks folder
         var length = $(this).val().length;
         var length = maxLength-length;
         var paragraph = '<p class="character-count">'+ length + '/' + maxLength + '</p>';
-        $(this).after(paragraph);
+        if (!$(this).hasClass('comment-field')) {
+            $(this).after(paragraph);
+        }
     });
     $('.remaining-characters').keyup(function() {
         var maxLength = $(this).attr('maxlength');
         var length = $(this).val().length;
         var length = maxLength-length;
-        $(this).next('.character-count').text(length + '/' + maxLength);
+        if ($(this).hasClass('comment-field')) {
+            $(this).parent().find('.character-count').text(length + '/' + maxLength + " characters");
+        } else {
+            $(this).next('.character-count').text(length + '/' + maxLength);
+        }
     });
 
     var showChar = 170;

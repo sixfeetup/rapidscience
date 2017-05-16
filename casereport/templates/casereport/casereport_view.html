@@ -211,7 +211,9 @@
         {% render_comment_form for casereport %}
       {% endif %}
       <br>
-      {% render_comment_list for casereport %}
+      {% with crcomments='True' %}
+         {% render_comment_list for casereport %}
+      {% endwith %}
 
          </div>
          <div class="visualClear"><!-- --></div>
