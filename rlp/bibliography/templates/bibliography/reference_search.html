@@ -67,7 +67,10 @@
     function buttonDisplay(){
         searchterm = '{{ query }}';
         searchval = $("#id_q").val();
-        if (searchterm == searchval) {
+        if (!searchterm) {
+            $(".clearSearch").hide();
+            $(".searchBtn").show();
+        } else if (searchterm == searchval) {
             $(".clearSearch").show();
             $(".searchBtn").hide();
         } else {
