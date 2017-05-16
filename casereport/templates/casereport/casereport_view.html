@@ -156,11 +156,21 @@
                       {{ treatment.name }}
                   </div>
                   <p class="section-details">
-                      {% if treatment.duration %}{{ treatment.duration }}{% endif %}
-                      {% if treatment.treatment_type %} | {{ treatment.treatment_type }}{% endif %}
-                      {% if treatment.treatment_intent %} | {{ treatment.treatment_intent }}{% endif %}
-                      {% if treatment.objective_response %} | {{ treatment.objective_response }}{% endif %}
-                      {% if treatment.status %} | PS: {{ treatment.status }} {% endif %}
+                      {% if treatment.duration %}
+                        <span class="treatment-stat">{{ treatment.duration }}</span>
+                      {% endif %}
+                      {% if treatment.treatment_type %}
+                        <span class="treatment-stat">{{ treatment.treatment_type }}</span>
+                      {% endif %}
+                      {% if treatment.treatment_intent %}
+                        <span class="treatment-stat">{{ treatment.treatment_intent }}</span>
+                      {% endif %}
+                      {% if treatment.objective_response %}
+                        <span class="treatment-stat">{{ treatment.objective_response }}</span>
+                      {% endif %}
+                      {% if treatment.status %}
+                        <span class="treatment-stat">PS: {{ treatment.status }}</span>
+                      {% endif %}
                   </p>
                   <p>{{ treatment.notes }}</p>
               </div>

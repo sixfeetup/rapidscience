@@ -1174,6 +1174,12 @@ input:focus + div.info {
 	font-style: italic;
 	margin-bottom: 0;
 }
+.case-detail-view .section-details .treatment-stat::after {
+	content: " | ";
+}
+.case-detail-view .section-details .treatment-stat:last-of-type::after {
+	content: "";
+}
 .case-detail-view .treatment-name {
 	font-weight: bold;
 	font-size: 16px;
