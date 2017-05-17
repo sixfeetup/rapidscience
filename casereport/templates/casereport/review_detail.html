@@ -1,25 +1,16 @@
-{% extends 'base.html' %}{% load bootstrap3 %}
+{% extends 'wrapperless_base.html' %}{% load bootstrap3 %}
 {% load comments %}
 
 {% block content %}
-<div class="container">    
-  <div class="row">
-    <div class="col-md-8 col-md-push-2">
-      <p>
-        <a href="{% url 'casereport_detail' casereport.id  casereport.title|slugify %}">
-          &larr; Back to Case Report
-        </a>
-      </p>
-      <h2>{{ review }}</h2>
+<div class="overlay-wrapper">
+      <h4>Notes for Editorial Team</h4>
       {% bootstrap_messages %}
       {% if review_allowed %}
-        {% render_comment_form for review %}
-        <br>
         {% render_comment_list for review %}
+        <br />
+        {% render_comment_form for review %}
       {% else %}
         <p>Only the author or an administrator can participate in the review discussion.</p>
       {% endif %}
-    </div>
-  </div>
 </div>
 {% endblock content %}

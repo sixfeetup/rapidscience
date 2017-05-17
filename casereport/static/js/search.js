@@ -110,6 +110,17 @@ $(document).ready(function() {
         return false
 
     });
+    
+    $(".notes-trigger a").click(function() {
+        console.log("oh hai")
+        var notes = $("#editorial-notes");
+        if ($(notes).is(":visible")) {
+            $(notes).slideUp();
+        } else {
+            $(notes).slideDown();
+        }
+        return false;
+    });
 
 });
 
