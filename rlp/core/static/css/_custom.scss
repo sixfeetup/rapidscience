@@ -394,17 +394,38 @@ body.search .box.main-content {
 }
 
 // references
-.add-reference button {
-    border-left: none;
-    background: #ffffff;
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+
+.add-reference {
+    .hero {
+        background-color: #888;
+        color: #fff;
+        height: 100px;
+        h2 {
+            line-height: 100px;
+        }
+    }
+    .add-reference-button {
+        font-size: 24px;
+    }
+    .reference-item {
+        margin-bottom: 1em;
+    }
 }
-.add-reference .clearSearch {
-    padding: 4px 8px 2.5px;
-    border-radius: 0 4px 4px 0;
-}
-.add-reference .clearSearch .fa {
-    font-size: 24px;
+
+.add-reference-form {
+    margin-bottom: 1em;
+    button {
+        border-left: none;
+        background: #ffffff;
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    }
+    .clearSearch {
+        padding: 4px 8px 2.5px;
+        border-radius: 0 4px 4px 0;
+        .fa {
+           font-size: 24px;
+        }
+    }
 }
 
 // Bookmarks tab of account page

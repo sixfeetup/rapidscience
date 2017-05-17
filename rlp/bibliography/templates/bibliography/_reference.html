@@ -1,5 +1,5 @@
 {% load core_tags %}
-<div class="row">
+<div class="row reference-item">
   <div class="col-md-11">
       {% if not search %}<p>{% endif %}
         {% if obj.parsed_data.authors %}{{ obj.parsed_data.authors }}. {% endif %}<strong>{% if obj.get_source_url %}<a href="{{ obj.get_source_url }}" {% if 'http' in obj.get_source_url and not email %}target="_blank"{% endif %}>{% endif %}{{ obj.parsed_data.title|striptags }}{% if obj.get_source_url %}</a>{% endif %}</strong>,
@@ -10,16 +10,22 @@
         {% if obj.parsed_data.doi %}DOI: {{ obj.parsed_data.doi }}{% endif %} {% if obj.parsed_data.pubmed_id %}PMID: {{ obj.parsed_data.pubmed_id }}{% endif %}
       {% if not search %}</p>{% endif %}
     <p class="small">
-      {% with edit_url=obj.get_edit_url %}
-        {% if edit_url %}<a href="{{ edit_url }}">Edit</a>{% endif %}
-      {% endwith %}<br />
-      {% autoescape off %}{% display_shared_with obj request.user %}{% endautoescape %}
+      {% if not add_reference %}
+          {% with edit_url=obj.get_edit_url %}
+            {% if edit_url %}<a href="{{ edit_url }}">Edit</a>{% endif %}
+          {% endwith %}<br />
+          {% autoescape off %}{% display_shared_with obj request.user %}{% endautoescape %}
+      {% endif %}
     </p>
     {% if obj.description %}<blockquote>{{ obj.description }}</blockquote>{% endif %}
   </div>
   <div class="col-md-1">
-    <a class="comment-count" href="{% url 'bibliography:reference_detail' obj.id %}"><i class="fa fa-comment" aria-hidden="true"></i></a>
-    <a class="share-link" href="/send/bibliography/reference/{{ obj.id }}"><i class="fa fa-share"></i></a>
+      {% if add_reference %}
+           <a href="{% url 'bibliography:reference_add' reference.id %}" title="Add" class="add-reference-button"><i class="fa fa-plus-circle" aria-hidden="true"></i><a>
+      {% else %}
+        <a class="comment-count" href="{% url 'bibliography:reference_detail' obj.id %}"><i class="fa fa-comment" aria-hidden="true"></i></a>
+        <a class="share-link" href="/send/bibliography/reference/{{ obj.id }}"><i class="fa fa-share"></i></a>
+      {% endif %}
   </div>
 </div>
-<hr>
+{% if not add_reference %}<hr>{% endif %}

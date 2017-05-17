@@ -1,14 +1,23 @@
 {% extends 'base.html' %}{% load bootstrap3 %}
 
+{% block body_class %}add-reference{% endblock %}
+
 {% block content %}
+    <div class="hero">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-push-3">
+                    <h2>New Reference</h2>
+                </div>
+            </div>
+        </div>
+    </div>
 <div class="container">
     <div class="row">
         <div class="col-md-6 col-xs-12 col-md-push-3">
-            
-<h2>Add Reference</h2>
 
-  <form method="get" action="" class="add-reference">
-    <label for="id_q">Search</label>
+  <form method="get" action="" class="add-reference-form">
+    <label for="id_q" class="section-label">Search *</label>
     <div class="input-group">
       <input class="form-control" id="id_q" name="q" title="Enter a PMID or DOI" type="text" placeholder="Author name, keyword, DOI, PMID..." value="{{ query }}">
       <span class="input-group-btn">
@@ -21,28 +30,12 @@
       </span>
     </div>
   </form>
-  <h3>Or upload</h3>
-  <!-- Single button -->
-  <div class="btn-group">
-    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      Upload <span class="caret"></span>
-    </button>
-    <ul class="dropdown-menu">
-      <li><a href="{% url 'bibliography:add_book' %}">Book</a></li>
-      <li><a href="{% url 'bibliography:add_book_chapter' %}">Book chapter</a></li>
-      <li><a href="{% url 'bibliography:add_article' %}">Journal article</a></li>
-    </ul>
-  </div>
   {% if results %}
-    <hr>
     {% for reference in results %}
-      {% include 'bibliography/_reference.html' with obj=reference %}
-      <a href="{% url 'bibliography:reference_add' reference.id %}" class="btn btn-primary">Add<a>
-      {% if not forloop.last %}<hr>{% endif %}
+      {% include 'bibliography/_reference.html' with obj=reference add_reference=True %}
     {% endfor %}
   {% else %}
     {% if query %}
-    <hr>
     <p>No results found.</p>
     {% endif %}
   {% endif %}
