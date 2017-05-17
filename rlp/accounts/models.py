@@ -196,18 +196,23 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
         # if the user is an admin
         if not self.is_staff:
             casereport_ct = ContentType.objects.get_for_model(CaseReport)
+            my_ct = ContentType.objects.get_for_model(self)
             # not loving this, but cant use expressions like
             # action_object__workflow_state = 'live'
-            # because we have no
+            # because django orm has no dynamic reverse relation
             casereport_ids = activity_stream_queryset.filter(
-                action_object_content_type=casereport_ct).values_list('id',
-                                                                      flat=True)
+                action_object_content_type=casereport_ct,
+                target_content_type_id=my_ct,
+                target_object_id=self.id).values_list('id', flat=True)
+
             non_live_ids = CaseReport.objects.filter(
                 id__in=casereport_ids).exclude(
                 workflow_state='live').values_list('id', flat=True)
+
             activity_stream_queryset = activity_stream_queryset.exclude(
                 action_object_content_type=casereport_ct,
-                action_object_object_id__in=non_live_ids)
+                action_object_object_id__in=list(
+                    non_live_ids))  # would love to know why list was need here, but not in the query above.
         return activity_stream_queryset
 
 
