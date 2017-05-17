@@ -348,7 +348,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
                 source=[WorkflowState.LIVE],
                 permission=can_retract,
                 target=WorkflowState.RETRACTED)
-    def retract(self):
+    def revise(self):
         """ uses the current user to choose between retract_by_author and
             retract_by_admin
         """
