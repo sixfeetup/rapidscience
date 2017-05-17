@@ -200,13 +200,13 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
             # not loving this, but cant use expressions like
             # action_object__workflow_state = 'live'
             # because django orm has no dynamic reverse relation
-            casereport_ids = activity_stream_queryset.filter(
+            casereports_shared_with_me_ids = activity_stream_queryset.filter(
                 action_object_content_type=casereport_ct,
                 target_content_type_id=my_ct,
                 target_object_id=self.id).values_list('id', flat=True)
 
             non_live_ids = CaseReport.objects.filter(
-                id__in=casereport_ids).exclude(
+                id__in=casereports_shared_with_me_ids).exclude(
                 workflow_state='live').values_list('id', flat=True)
 
             activity_stream_queryset = activity_stream_queryset.exclude(
