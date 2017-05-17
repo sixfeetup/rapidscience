@@ -68,13 +68,9 @@
   <div role="tabpanel" class="tab-pane{% if tab == 'discussions' %} active{% endif %}" id="discussions">
     {% if tab == 'discussions' %}
       {% bootstrap_messages %}
-        <div id="topic-form" class="collapse">
-          <p>Start a discussion or post your ideas</p>
-          {% with button_label='Post' %}
-          {% render_comment_form for user %}
-          {% endwith %}
-        </div>
-      {% include 'comments/list.html' %}
+      {% with view='tab-content' %}
+          {% include 'comments/list.html' %}
+      {% endwith %}
     {% endif %}
   </div>
   <div role="tabpanel" class="tab-pane{% if tab == 'casereports' %} active{% endif %}" id="casereports">

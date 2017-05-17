@@ -1,4 +1,5 @@
 {% load comments discussion_tags core_tags %}
+<div class="replies">
 <div id="{{ comment.id }}" class="comment-item">
   <div class="row">
     <div class="col-md-11">
@@ -9,17 +10,31 @@
         </a>
       </h4>
       {% endif %}
-      <p class="small">
-          {% if crcomments != 'True' %}Posted by{% endif %}
-        <a href="{{ comment.user.get_absolute_url }}">
-          {{ comment.user.get_full_name }}
-        </a>
-        | {{ comment.submit_date|date:"j M Y" }}
-        | {% with edit_url=comment.get_edit_url %}
-              {% if edit_url %}<a href="{{ edit_url }}">Edit</a>{% endif %}
-          {% endwith %}<br />
-        {% autoescape off %}{% display_shared_with comment request.user %}{% endautoescape %}
-      </p>
+      
+      {% if view == 'tab-content' %}
+          <p class="small">
+              {% if crcomments != 'True' %}Posted by{% endif %}
+            <a href="{{ comment.user.get_absolute_url }}">
+              {{ comment.user.get_full_name }}
+            </a>
+            | {{ comment.submit_date|date:"j M Y" }}
+            | {% with edit_url=comment.get_edit_url %}
+                  {% if edit_url %}<a href="{{ edit_url }}">Edit</a>{% endif %}
+              {% endwith %}<br />
+            {% autoescape off %}{% display_shared_with comment request.user %}{% endautoescape %}
+          </p>
+      {% else %}
+          <p class="small">
+              <strong>
+                  {{ comment.user.get_full_name }}
+              </strong>
+            | {{ comment.submit_date|date:"j M Y" }}
+            | {% with edit_url=comment.get_edit_url %}
+                  {% if edit_url %}<a href="{{ edit_url }}">Edit</a>{% endif %}
+              {% endwith %}
+          </p>
+          
+      {% endif %}
       <p class="more">{{ comment.comment|urlize|linebreaksbr }}</p>
     </div>
     <div class="col-md-1">
@@ -47,4 +62,5 @@
   {%  endif %}
 
 {%  comment  %}{% render_comment_list for comment %} {%  endcomment %}
+</div>
 </div>

@@ -822,24 +822,6 @@ a.comment-count.empty {
     .initial {
         font-size: 20px;
     }
-    #replies .small a {
-        color: #444444;
-        font-weight: bold;
-    }
-    .comment-item {
-        border-left: 1px solid #e0e0e0;
-        transition: all .25s linear;
-        padding-left: 20px;
-        margin-top: 20px;
-    }
-    .comment-item:hover {
-        border-left: 1px solid #585858;
-    }
-    .comment-item .plugin-form {
-        border-left: 1px solid #e0e0e0;
-        padding-left: 20px;
-        margin-top: 20px;
-    }
     .character-count {
         background-color: rgb(238, 238, 238);
         color: #888888;
@@ -865,6 +847,27 @@ a.comment-count.empty {
         border-right: #dddddd solid 1px;
         background-color: transparent;
     }
+}
+
+.replies {
+    .comment-item {
+        border-left: 1px solid #e0e0e0;
+        transition: all .25s linear;
+        padding-left: 20px;
+        margin-top: 30px;
+    }
+    .comment-item:hover {
+        border-left: 1px solid #585858;
+    }
+    .comment-item .plugin-form {
+        border-left: 1px solid #e0e0e0;
+        padding-left: 20px;
+        margin-top: 20px;
+    }
+}
+#discussions .replies .comment-item {
+    border-left: none;
+    padding-left: 0;
 }
 
 /* Document Upload */
@@ -899,10 +902,6 @@ a.comment-count.empty {
     font-size: 14px;
     color: #888888;
     font-weight: normal;
-}
-
-#replies .comment-item .comment-item {
-    padding-left: 50px;
 }
 
 /* Form */

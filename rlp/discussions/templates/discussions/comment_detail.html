@@ -37,13 +37,14 @@
 <div class="row"><div class="col-md-9 col-xs-12 col-md-push-2">
     {% if comment.allow_thread and user_interaction %}
       <div id="reply-form-{{ comment.id }}">
-        <h3>Add Comment</h3>
         {% get_reply_form comment %}
       </div>
     {% endif %}
 
     <div id="replies">
-        {% render_comment_list for comment %}
+        {% with view='discussionDetail' %}
+            {% render_comment_list for comment %}
+        {% endwith %}
     </div>
 
 </div></div>
