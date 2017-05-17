@@ -8,6 +8,7 @@ from django.template.loader import render_to_string
 from django.core import management
 from django.core.management.base import BaseCommand
 from casereport.models import CaseReport
+from casereport.constants import WorkflowState
 
 
 class Command(BaseCommand):
@@ -15,7 +16,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         prev_day = datetime.today() - timedelta(1)
-        casereports = CaseReport.objects.filter(modified_on__gte=prev_day, status="approved")
+        casereports = CaseReport.objects.filter(modified_on__gte=prev_day,
+                                                workflow_state=WorkflowState.LIVE)
         self.reindexsolr()
         for case in casereports:
             self.live_case_mail(case)
