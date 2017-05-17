@@ -54,6 +54,7 @@ class SendToView(LoginRequiredMixin, View):
             groups = list(form.cleaned_data['groups'])
             if form.cleaned_data['to_dashboard']:
                 members.append(request.user)
+                request.user.bookmark(shared_content)
             shared_content.share_with(
                 members + groups,
                 shared_by=request.user,
