@@ -10,25 +10,6 @@ GENDER = (
 )
 
 
-STATUS = (
-    ('draft', 'Draft'),
-    ('processing', 'Processing'),
-    ('ready', 'Ready to Review'),
-    ('approved', 'Approved'),
-    ('changes', 'Need Changes'),
-    ('reviewed', 'Reviewed'),
-    ('edited', 'Edited'),
-
-)
-
-CASE_STATUS = {'P': 'processing',
-               'R': 'ready',
-               'A': 'approved',
-               'C': 'changes',
-               'RE': 'reviewed',
-               'E': 'edited'
-    }
-
 class WorkflowState(object):
     # visualize with:
     # ./manage.py graph_transitions casereport.CaseReport  > t.dot; dot -O -Tpng t.dot; open t.dot.png
