@@ -25,7 +25,6 @@ except ImportError as old_django:
     from django.core.urlresolvers import reverse
 
 from casereport.api import PhysicianInstanceResource
-from casereport.api import CaseReportInstanceResource
 from casereport.api import TreatmentInstanceResource
 from casereport.constants import SARCOMA_TYPE
 from casereport.forms import CaseForm

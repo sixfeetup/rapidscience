@@ -11,7 +11,7 @@ from casereport.models import CaseReportHistory
 from casereport.models import Treatment
 
 
-class CaseReportInstanceResource:
+class DeprecatedCaseReportInstanceResource:
 
     def update(self, case_id, title=None, age=None, gender=None, sarcoma_type=None):
         """
