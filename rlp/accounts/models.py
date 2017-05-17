@@ -1,9 +1,9 @@
 import logging
 import re
-
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
@@ -157,11 +157,40 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
     def active_projects(self):
         return self.projects.exclude(projectmembership__state='pending')
 
-    def get_activity_stream(self, type_class=None):
+    def _get_my_activity_query(self):
         my_ct = ContentType.objects.get_for_model(self)
-        filtered_actions = Action.objects.filter(actor_content_type=my_ct,
-                                                 actor_object_id=self.id)
-        return filtered_actions
+        q = Q(
+            actor_content_type=my_ct,
+            actor_object_id=self.id
+        )
+        return q
+
+    def _get_activity_involving_me_query(self):
+        my_ct = ContentType.objects.get_for_model(self)
+        q = Q(
+            target_content_type=my_ct,
+            target_object_id=self.id
+        )
+        return q
+
+
+    def _get_activity_in_my_projects_query(self):
+        from rlp.projects.models import Project  # here to avoid circular import
+        active_projects = self.active_projects()
+        project_ct = ContentType.objects.get_for_model(Project)
+        q = Q(
+            target_content_type=project_ct,
+            target_object_id__in=list(
+                active_projects.values_list('id', flat=True))
+        )
+        return q
+
+    def get_activity_stream(self, type_class=None):
+        activity_stream_queryset = Action.objects.filter(
+            self._get_my_activity_query()\
+            | self._get_activity_involving_me_query()\
+            | self._get_activity_in_my_projects_query())
+        return activity_stream_queryset
 
 
 class UserLogin(models.Model):
