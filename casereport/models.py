@@ -3,7 +3,6 @@ from datetime import datetime
 from access_tokens import tokens
 from casereport.constants import GENDER, WorkflowState
 from casereport.constants import STATUS
-from casereport.constants import CASE_STATUS
 from casereport.constants import TYPE
 from casereport.constants import PERFORMANCE_STATUS
 from casereport.constants import OBJECTIVE_RESPONSES
@@ -266,7 +265,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         ''' send to admin without approval '''
         self.author_approved = True
         self.admin_approved = False
-
+        self.notify_admin()
         return "Your Case Report has been submitted and will be reviewed by \
             our admin staff. \
             Please note case no. #%s for future reference." % self.id
@@ -289,7 +288,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         """ send the CR back to the author 
         """
         self.admin_approved = False
-
+        self.notify_authors()
         return "TBD: The case report has been sent back to its author."
 
     def can_publish(self, user=None):
@@ -305,7 +304,8 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     def publish(self):
         self.admin_approved = True
         self.date_published = datetime.now()
-
+        self.notify_viewers("CaseReport has been published", {})
+        self.notify_authors()
         return "TBD: This case report has been published!"
 
     def can_retract_as_author(self, user=None):
@@ -326,7 +326,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
                 target=WorkflowState.AUTHOR_REVIEW)
     def _retract_by_author(self):  # starts with _ to hide from users
         self.author_approved = False
-
+        self.notify_admin()
         return "TBD: This case report has been pulled back to the author for review."
 
     @transition(field=workflow_state,
@@ -336,7 +336,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     def _retract_by_admin(self):  # starts with _ to hide from users
         """ unpublish """
         self.admin_approved = False
-
+        self.notify_admin()
         return "TBD: This case report has been pulled back to the site staff for review."
 
     def can_retract(self, user=None):
@@ -393,23 +393,38 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         return "Case Report"
 
     def save(self, *args, **kwargs):
-        if self.status == CASE_STATUS['E'] or self.status == CASE_STATUS['P']:
-            # sending a notify email to admin
-            self.notify_admin()
-        if self.status == CASE_STATUS['R'] or self.status == CASE_STATUS['A']:
-            # sending review email to authorized rep/physician
-            self.send_review_mail()
+        #if self.status == CASE_STATUS['E'] or self.status == CASE_STATUS['P']:
+        #    # sending a notify email to admin
+        #    self.notify_admin()
+        #if self.status == CASE_STATUS['R'] or self.status == CASE_STATUS['A']:
+        #    # sending review email to authorized rep/physician
+        #    self.send_review_mail()
         if not self.review:
             self.review = CaseReportReview.objects.create()
         super(CaseReport, self).save(*args, **kwargs)
 
+
+    def notify_authors(self, subject=None, message=None):
+        subject = "Author Notification"
+        message_body = "CaseReport {id} {url} has moved to {state}.".format(
+            id=self.id, url=self.get_absolute_url(),
+            state=self.get_workflow_state_display())
+
+        recipient = self.primary_physician.email
+        message = EmailMessage(subject,
+                               message_body,
+                               settings.SERVER_EMAIL,
+                               [recipient])
+        message.content_subtype = 'html'
+        message.send()
+
     def notify_admin(self):
         subject = settings.NEW_CASE
-        if self.status == CASE_STATUS['E']:
+        if self.workflow_state != WorkflowState.DRAFT:
             subject = settings.EDITED
         message_body = render_to_string('casereport/admin_notify.html',
                                         {'title': self.title,
-                                         'status': self.status,
+                                         'status': self.workflow_state,
                                          'name': self.primary_physician.name})
         recipient_members = settings.DATA_SCIENCE_TEAM
         for member in recipient_members:
@@ -428,7 +443,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         recipients = list(self.authorized_reps.all())
         primary_recipient = self.primary_physician
         subject = settings.CASE_READY_SUBJECT
-        if self.status == CASE_STATUS['R'] and not history_obj:
+        if self.workflow_state == WorkflowState.ADMIN_REVIEW and not history_obj:
             for recipient in recipients:
                 if recipient.email:
                     message = render_to_string(
@@ -450,7 +465,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
                                        )
                     msg.content_subtype = "html"
                     msg.send()
-        if self.status == CASE_STATUS['A']:
+        if self.workflow_state == WorkflowState.LIVE:
             subject = settings.CASE_APPROVED_SUBJECT
         authorized_emails = []
         for entry in recipients:
