@@ -2,7 +2,6 @@ from datetime import datetime
 
 from access_tokens import tokens
 from casereport.constants import GENDER, WorkflowState
-from casereport.constants import SARCOMA_TYPE
 from casereport.constants import STATUS
 from casereport.constants import CASE_STATUS
 from casereport.constants import TYPE
@@ -163,11 +162,11 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     author_approved = models.BooleanField(default=False, blank=True)
     admin_approved = models.BooleanField(default=False, blank=True)
     workflow_state = FSMField(max_length=50,
-                                      choices=WorkflowState.CHOICES,
-                                      default=WorkflowState.INITIAL_STATE,
-                                      help_text="Workflow state")
+                              choices=WorkflowState.CHOICES,
+                              default=WorkflowState.INITIAL_STATE,
+                              help_text="Workflow state")
     status = models.CharField(max_length=50, choices=STATUS,
-                              default='draft', help_text='''Old State''')
+                              default='draft', help_text='''Deprecating''')
 
     casefile_f = models.FileField(null=True, blank=True)
     free_text = models.TextField(null=True, blank=True)
