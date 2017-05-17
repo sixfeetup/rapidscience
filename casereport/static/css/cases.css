@@ -1136,6 +1136,7 @@ input:focus + div.info {
 	font-size: 32px;
 	color: rgb(68, 68, 68);
 	clear: both;
+	text-transform: none;
 }
 .headingBanner p {
 	font-size: 16px;
