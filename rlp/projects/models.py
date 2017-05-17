@@ -52,11 +52,33 @@ class Project(SEOMixin, SharesContentMixin):
         from django.core.urlresolvers import reverse
         return reverse('projects:projects_detail', kwargs={'pk': self.pk, 'slug': self.slug})
 
-    def get_activity_stream(self, type_class=None):
+    def get_activity_stream(self, user=None, type_class=None):
         my_ct = ContentType.objects.get_for_model(self)
-        filtered_actions = Action.objects.filter(target_content_type=my_ct,
+        activity_stream_queryset = Action.objects.filter(target_content_type=my_ct,
                                                  target_object_id=self.id)
-        return filtered_actions
+
+        # TODO: consolidate this
+        if user and not user.is_staff:
+            from casereport.models import CaseReport
+            casereport_ct = ContentType.objects.get_for_model(CaseReport)
+            my_ct = ContentType.objects.get_for_model(self)
+            # not loving this, but cant use expressions like
+            # action_object__workflow_state = 'live'
+            # because django orm has no dynamic reverse relation
+            casereport_ids = activity_stream_queryset.filter(
+                action_object_content_type=casereport_ct,
+                target_content_type_id=my_ct,
+                target_object_id=self.id).values_list('id', flat=True)
+
+            non_live_ids = CaseReport.objects.filter(
+                id__in=casereport_ids).exclude(
+                workflow_state='live').values_list('id', flat=True)
+
+            activity_stream_queryset = activity_stream_queryset.exclude(
+                action_object_content_type=casereport_ct,
+                action_object_object_id__in=list(
+                    non_live_ids))  # would love to know why list was need here, but not in the query above.
+        return activity_stream_queryset
 
     def get_documents_url(self):
         from django.core.urlresolvers import reverse
