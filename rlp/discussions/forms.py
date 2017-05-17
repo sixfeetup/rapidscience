@@ -7,8 +7,11 @@ from rlp.discussions.models import ThreadedComment
 
 
 class ThreadedCommentForm(BaseCommentForm):
-    comment = forms.CharField(label='Comment', widget=forms.Textarea(attrs={'class': 'remaining-characters'}),
-                              max_length=settings.COMMENT_MAX_LENGTH,)
+    comment = forms.CharField(
+        label='Comment',
+        widget=forms.Textarea(attrs={'class': 'remaining-characters',
+                                     'rows': 3}),
+        max_length=settings.COMMENT_MAX_LENGTH,)
     reply_to = forms.IntegerField(required=True, initial=0, widget=forms.HiddenInput())
 
     def __init__(self, *args, **kwargs):
@@ -39,7 +42,8 @@ class ThreadedCommentForm(BaseCommentForm):
 class ThreadedCommentEditForm(forms.ModelForm):
     comment = forms.CharField(
         label='Comment',
-        widget=forms.Textarea(attrs={'class': 'remaining-characters'}),
+        widget=forms.Textarea(attrs={'class': 'remaining-characters',
+                                     'rows': 3}),
         max_length=settings.COMMENT_MAX_LENGTH
     )
 
@@ -52,7 +56,8 @@ class ThreadedCommentWithTitleEditForm(forms.ModelForm):
     title = forms.CharField(label='Title', required=True)
     comment = forms.CharField(
         label='Comment',
-        widget=forms.Textarea(attrs={'class': 'remaining-characters'}),
+        widget=forms.Textarea(attrs={'class': 'remaining-characters',
+                                     'rows': 3}),
         max_length=settings.COMMENT_MAX_LENGTH
     )
 
@@ -78,7 +83,8 @@ group_field = GroupListField(
 class NewDiscussionForm(forms.Form):
     discussion_title = forms.CharField(label='Title', required=True)
     discussion_body = forms.CharField(
-        widget=forms.Textarea(attrs={'class': 'remaining-characters'}),
+        widget=forms.Textarea(attrs={'class': 'remaining-characters',
+                                     'rows': 3}),
         max_length=settings.COMMENT_MAX_LENGTH
     )
     members = internal_member_field
