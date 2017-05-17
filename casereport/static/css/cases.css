@@ -203,7 +203,17 @@ body{
 .filter-section .category-section label,
 .filter-section .gender-section label {
     color: #3792BF;
+    padding-left: 15px;
 }
+
+.filter-section .checkbox {
+    margin-bottom: 10px;
+}
+
+.filter-section .checkbox-inline input[type="checkbox"] {
+    margin-left: -15px;
+}
+
 .filter-section h5,
 .filter-section .age {
     color: #888;
