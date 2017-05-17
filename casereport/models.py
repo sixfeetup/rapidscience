@@ -2,7 +2,6 @@ from datetime import datetime
 
 from access_tokens import tokens
 from casereport.constants import GENDER, WorkflowState
-from casereport.constants import STATUS
 from casereport.constants import TYPE
 from casereport.constants import PERFORMANCE_STATUS
 from casereport.constants import OBJECTIVE_RESPONSES
@@ -164,8 +163,6 @@ class CaseReport(CRDBBase, SharedObjectMixin):
                               choices=WorkflowState.CHOICES,
                               default=WorkflowState.INITIAL_STATE,
                               help_text="Workflow state")
-    status = models.CharField(max_length=50, choices=STATUS,
-                              default='draft', help_text='''Deprecating''')
 
     casefile_f = models.FileField(null=True, blank=True)
     free_text = models.TextField(null=True, blank=True)
@@ -393,12 +390,6 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         return "Case Report"
 
     def save(self, *args, **kwargs):
-        #if self.status == CASE_STATUS['E'] or self.status == CASE_STATUS['P']:
-        #    # sending a notify email to admin
-        #    self.notify_admin()
-        #if self.status == CASE_STATUS['R'] or self.status == CASE_STATUS['A']:
-        #    # sending review email to authorized rep/physician
-        #    self.send_review_mail()
         if not self.review:
             self.review = CaseReportReview.objects.create()
         super(CaseReport, self).save(*args, **kwargs)
