@@ -23,6 +23,7 @@
               {% endwith %}<br />
             {% autoescape off %}{% display_shared_with comment request.user %}{% endautoescape %}
           </p>
+          <p class="more">{{ comment.comment|urlize|linebreaksbr }}</p>
       {% else %}
           <p class="small">
               <strong>
@@ -33,9 +34,9 @@
                   {% if edit_url %}<a href="{{ edit_url }}">Edit</a>{% endif %}
               {% endwith %}
           </p>
-          
+          <p>{{ comment.comment|urlize|linebreaksbr }}</p>
       {% endif %}
-      <p class="more">{{ comment.comment|urlize|linebreaksbr }}</p>
+      
     </div>
     <div class="col-md-1">
       {% if comment.is_discussion %}
