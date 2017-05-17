@@ -1118,6 +1118,11 @@ input:focus + div.info {
 }
 
 /* Case View */
+
+.case-hero {
+	background-color: rgb(238, 238, 238);
+}
+
 .jumpMenu {
 	list-style: none none;
 	padding-left: 0;
@@ -1129,8 +1134,7 @@ input:focus + div.info {
 	color: rgb(55, 146, 191);
 }
 .headingBanner {
-	background-color: rgb(238, 238, 238);
-	padding: 20px 20px 5px;
+	padding: 20px 15px 5px;
 }
 .headingBanner h1 {
 	font-size: 32px;
