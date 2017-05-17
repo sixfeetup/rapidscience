@@ -58,6 +58,21 @@ var selectedBookmarksFolderName; // will contain ID of selected bookmarks folder
 
     // hide hiddenField wrappers
     $(".hiddenField").parent(".fieldWrapper").hide();
+    
+    $(".share-link").click(function(e) {
+        e.preventDefault();
+        var sharing = $(this).siblings(".iframe-overlay");
+        if ($(sharing).length == 0) {
+            loc = $(this).attr("href");
+            $(this).before("<div class='iframe-overlay'><iframe src='" + loc + "'></iframe></div>")
+            sharing = $(this).siblings(".iframe-overlay");
+        }
+        if ($(sharing).is(":visible")) {
+            $(sharing).slideUp();
+        } else {
+            $(sharing).slideDown();
+        }
+    });
 
 }); })(jQuery);
 

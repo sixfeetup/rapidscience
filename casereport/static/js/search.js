@@ -112,7 +112,6 @@ $(document).ready(function() {
     });
     
     $(".notes-trigger a").click(function() {
-        console.log("oh hai")
         var notes = $("#editorial-notes");
         if ($(notes).is(":visible")) {
             $(notes).slideUp();

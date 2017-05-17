@@ -1,16 +1,12 @@
-{% extends "base.html" %}
+{% extends "wrapperless_base.html" %}
 
 {% block content %}
-<div class="container">
-    <div class="row">
-        <div class="col-md-4 col-md-push-4">
-            <h1>Send To</h1>
-            <form method="post">
-              {% csrf_token %}
-              {{ form.as_p }}
-              <input class="btn btn-primary" type="submit" value="Share">
-            </form>
-        </div>
-    </div>
+<div class="overlay-wrapper">
+    <h1>Send To</h1>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input class="btn btn-primary" type="submit" value="Share">
+    </form>
 </div>
 {% endblock content %}

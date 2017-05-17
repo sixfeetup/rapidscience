@@ -249,6 +249,23 @@ body.wrapperless .main {
 .overlay-wrapper h4 {
     text-transform: uppercase;
 }
+.iframe-overlay {
+    display: none;
+    position: absolute;
+    z-index: 1;
+    right: 0;
+    margin-top: 35px;
+    width: 500px;
+    height: 400px;
+    background-color: #ffffff;
+}
+.iframe-overlay iframe {
+	width: 500px;
+	height: 400px;
+	border: 1px solid #cccccc;
+	border-radius: 4px;
+}
+
 body.search .main > .container > .row > .col-md-8.col-md-offset-1 {
     margin-top: 0;
         border-right: 1px solid #eee;
