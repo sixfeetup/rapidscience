@@ -2,12 +2,14 @@ import logging
 import re
 
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from rlp.core.mixins import SharesContentMixin
 
+from actstream.models import Action
 
 logger = logging.getLogger(__name__)
 
@@ -154,6 +156,12 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
 
     def active_projects(self):
         return self.projects.exclude(projectmembership__state='pending')
+
+    def get_activity_stream(self, type_class=None):
+        my_ct = ContentType.objects.get_for_model(self)
+        filtered_actions = Action.objects.filter(actor_content_type=my_ct,
+                                                 actor_object_id=self.id)
+        return filtered_actions
 
 
 class UserLogin(models.Model):

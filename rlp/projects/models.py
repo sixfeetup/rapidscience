@@ -1,6 +1,7 @@
 from collections import defaultdict
 
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
 from django.core.mail import send_mass_mail
 from django.db import models
@@ -12,6 +13,8 @@ from rlp.accounts.models import Institution
 from rlp.core.email import send_transactional_mail
 from rlp.core.mixins import SharesContentMixin
 from rlp.core.models import SEOMixin
+
+from actstream.models import Action
 
 MEMBER_STATES = (
     ('moderator', 'Moderator'),
@@ -48,6 +51,12 @@ class Project(SEOMixin, SharesContentMixin):
     def get_absolute_url(self):
         from django.core.urlresolvers import reverse
         return reverse('projects:projects_detail', kwargs={'pk': self.pk, 'slug': self.slug})
+
+    def get_activity_stream(self, type_class=None):
+        my_ct = ContentType.objects.get_for_model(self)
+        filtered_actions = Action.objects.filter(target_content_type=my_ct,
+                                                 target_object_id=self.id)
+        return filtered_actions
 
     def get_documents_url(self):
         from django.core.urlresolvers import reverse
