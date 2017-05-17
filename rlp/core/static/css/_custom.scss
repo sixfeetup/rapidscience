@@ -23,11 +23,11 @@ p.small {
 }
 
 .bannerTitle {
-    background-color: rgb(136, 136, 136);
+    background-color: rgb(246, 239, 227);
     padding: 20px 0 30px;
 }
 .bannerTitle h1 {
-    color: #ffffff;
+    color: #000;
     text-transform: none;
     font-size: 32px;
 }
@@ -396,14 +396,6 @@ body.search .box.main-content {
 // references
 
 .add-reference {
-    .hero {
-        background-color: #888;
-        color: #fff;
-        height: 100px;
-        h2 {
-            line-height: 100px;
-        }
-    }
     .add-reference-button {
         font-size: 24px;
     }
