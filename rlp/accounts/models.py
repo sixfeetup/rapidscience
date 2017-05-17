@@ -173,9 +173,9 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
         )
         return q
 
-
     def _get_activity_in_my_projects_query(self):
         from rlp.projects.models import Project  # here to avoid circular import
+        from casereport.models import CaseReport
         active_projects = self.active_projects()
         project_ct = ContentType.objects.get_for_model(Project)
         q = Q(
@@ -186,10 +186,28 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
         return q
 
     def get_activity_stream(self, type_class=None):
+        from casereport.models import CaseReport
         activity_stream_queryset = Action.objects.filter(
-            self._get_my_activity_query()\
-            | self._get_activity_involving_me_query()\
+            self._get_my_activity_query() \
+            | self._get_activity_involving_me_query() \
             | self._get_activity_in_my_projects_query())
+
+        # exclude shares to me of casereports that arent live,
+        # if the user is an admin
+        if not self.is_staff:
+            casereport_ct = ContentType.objects.get_for_model(CaseReport)
+            # not loving this, but cant use expressions like
+            # action_object__workflow_state = 'live'
+            # because we have no
+            casereport_ids = activity_stream_queryset.filter(
+                action_object_content_type=casereport_ct).values_list('id',
+                                                                      flat=True)
+            non_live_ids = CaseReport.objects.filter(
+                id__in=casereport_ids).exclude(
+                workflow_state='live').values_list('id', flat=True)
+            activity_stream_queryset = activity_stream_queryset.exclude(
+                action_object_content_type=casereport_ct,
+                action_object_object_id__in=non_live_ids)
         return activity_stream_queryset
 
 
