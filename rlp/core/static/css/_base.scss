@@ -245,6 +245,9 @@ small {
       margin-top: .5em;
       font-size: 32px;
       font-weight: 600;
+      &.group-header {
+        line-height: 124px;
+      }
     }
     span {
       background: #111;
