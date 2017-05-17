@@ -1,13 +1,3 @@
-// function ajax_search(url) {
-//     $.ajax({
-//         type: 'GET',
-//         url: url,
-//         success: function (response) {
-//             $('.result_block').html(response);
-//             window.history.pushState(null, null, url);
-//         }
-//     });
-// }
 function search() {
     var url = window.location.href;
     url = url.split('&')[0];
@@ -22,13 +12,6 @@ function search() {
         url = url + '&' + $(this).attr('data-url');
     });
     $('select.select2').each(function(index, el) {
-        // if ($(el).attr('multiple'))
-        //     $($(el).val()).each(function(index, value) {
-        //         console.log(url, value);
-        //         url = url + '&' + value;
-        //     });
-        // else
-        // url = url + '&' + $(el).attr('name') + '=' + $(el).val();
         vals = $(el).val();
         if (Array.isArray(vals)) {
             for (val in vals) {
@@ -122,21 +105,6 @@ $(document).ready(function() {
     }
 
     $('body').on('click', '#moretreat', toggleChevron);
-    //$("body").on('click', '#case-form',function(){
-    //    if ($('#caseform').length == 0){
-    //     $.ajax({
-    //                    type:"get",
-    //                    url : "/casereport/add/",
-    //                    data : {},
-    //                    success : function(response) {
-    //                        $('#report').html(response);
-    //                        console.log("success");
-    //
-    //                }
-    //
-    //});
-    //}
-    //});
     $('body').on('click', '.sorting', function(e){
         e.preventDefault();
         return false
