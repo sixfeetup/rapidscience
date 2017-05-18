@@ -13,7 +13,7 @@ from django.views.generic import FormView
 
 from rlp.accounts.models import User
 from rlp.core.forms import member_choices, group_choices
-from rlp.core.views import SendToView
+from rlp.core.utils import bookmark_and_notify
 from rlp.projects.models import Project
 from .forms import (
     ThreadedCommentEditForm,
@@ -138,14 +138,12 @@ class CreateDiscussion(LoginRequiredMixin, FormView):
         if group and group.approval_required:
             form.fields['members'].hide_field = True
             form.fields['members'].choices = [(user.id, user.get_full_name())]
-            form.fields['members'].initial = [user.id]
             form.fields['groups'].choices = [(group.id, group.title)]
             form.fields['groups'].initial = [group.id]
             form.fields['members'].widget.attrs['class'] = 'select2 hiddenField'
             form.fields['groups'].widget.attrs['class'] = 'select2 hiddenField'
         else:
             form.fields['members'].choices = members
-            form.fields['members'].initial = [user.id]
             form.fields['groups'].choices = group_choices(user)
         return form
 
@@ -175,6 +173,8 @@ class CreateDiscussion(LoginRequiredMixin, FormView):
         new_discussion.save()
 
         discussion_url = new_discussion.get_absolute_url()
-        SendToView.post(self, self.request, 'discussions', 'threadedcomment',
-                        new_discussion.id)
+        bookmark_and_notify(
+            new_discussion, self, self.request,
+            'discussions', 'threadedcomment',
+        )
         return redirect(discussion_url)

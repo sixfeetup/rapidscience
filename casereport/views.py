@@ -43,7 +43,7 @@ from .models import (
 
 from rlp.accounts.models import User
 from rlp.core.forms import group_choices
-from rlp.core.views import SendToView
+from rlp.core.utils import bookmark_and_notify
 from rlp.core.utils import enforce_sharedobject_permissions
 from rlp.projects.models import Project
 from functools import partial
@@ -162,7 +162,6 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         if group and group.approval_required:
             form.fields['members'].hide_field = True
             form.fields['members'].choices = [(user.id, user.get_full_name())]
-            form.fields['members'].initial = [user.id]
             form.fields['groups'].choices = [(group.id, group.title)]
             form.fields['groups'].initial = [group.id]
             form.fields['members'].widget.attrs['class'] = 'select2 hiddenField'
@@ -171,7 +170,6 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
             form.fields['invitation_message'].widget.attrs['class'] = 'hiddenField'
         else:
             form.fields['members'].choices = all_members
-            form.fields['members'].initial = [user.id]
             form.fields['groups'].choices = group_choices(user)
         return form
 
@@ -237,11 +235,9 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         for physician in physicians:
             case.referring_physician.add(physician)
 
-        SendToView.post(
-            self, self.request, 'casereport',
-            'casereport', case.id,
+        bookmark_and_notify(
+            case, self, self.request, 'casereport', 'casereport',
         )
-
         # eventually we' want this:
         # #messages.success(self.request, "Saved!")
         # return redirect(reverse('casereport_detail', args=(case.id, case.title)))
@@ -520,9 +516,8 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
 
 
         case.save()
-        SendToView.post(
-            self, self.request, 'casereport',
-            'casereport', case.id,
+        bookmark_and_notify(
+            case, self, self.request, 'casereport', 'casereport',
         )
         messages.success(request, "Edits saved!")
         return redirect(reverse('casereport_detail', args=(case.id, case.title)))

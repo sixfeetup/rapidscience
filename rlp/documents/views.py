@@ -14,7 +14,7 @@ from taggit.models import Tag
 
 from rlp.accounts.models import User
 from rlp.core.forms import group_choices
-from rlp.core.views import SendToView
+from rlp.core.utils import bookmark_and_notify
 from rlp.discussions.models import ThreadedComment
 from rlp.projects.models import Project
 from .forms import AddMediaForm, FileForm, ImageForm, LinkForm, VideoForm
@@ -37,14 +37,12 @@ class AddMedia(FormView):
         if group and group.approval_required:
             form.fields['members'].hide_field = True
             form.fields['members'].choices = [(user.id, user.get_full_name())]
-            form.fields['members'].initial = [user.id]
             form.fields['groups'].choices = [(group.id, group.title)]
             form.fields['groups'].initial = [group.id]
             form.fields['members'].widget.attrs['class'] = 'select2 hiddenField'
             form.fields['groups'].widget.attrs['class'] = 'select2 hiddenField'
         else:
             form.fields['members'].choices = all_members
-            form.fields['members'].initial = [user.id]
             form.fields['groups'].choices = group_choices(user)
         return form
 
@@ -136,8 +134,10 @@ def add_document(request, add_form=None, doc_pk=None, template_name='documents/a
                     )
                 messages.success(request, message)
                 if add_form:
-                    SendToView.post(add_form, request, 'documents',
-                                    'document', document.id)
+                    bookmark_and_notify(
+                        document, add_form, request,
+                        'documents', 'document',
+                    )
             return redirect(document.get_absolute_url())
         else:
             messages.error(request, "Check the errors below.")
@@ -197,8 +197,10 @@ def add_link(request, add_form=None, doc_pk=None, template_name='documents/add_l
                     )
                 messages.success(request, message)
                 if add_form:
-                    SendToView.post(add_form, request, 'documents',
-                                    'document', link.id)
+                    bookmark_and_notify(
+                        link, add_form, request,
+                        'documents', 'document',
+                    )
             return redirect(link.get_absolute_url())
         else:
             messages.error(request, "Check the errors below.")
@@ -257,8 +259,10 @@ def add_video(request, add_form=None, doc_pk=None, template_name='documents/add_
                     )
                 messages.success(request, message)
                 if add_form:
-                    SendToView.post(add_form, request, 'documents',
-                                    'document', video.id)
+                    bookmark_and_notify(
+                        video, add_form, request,
+                        'documents', 'document',
+                    )
             return redirect(video.get_absolute_url())
         else:
             messages.error(request, "Check the errors below.")
