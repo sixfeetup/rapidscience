@@ -222,6 +222,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
                 )
     def edit(self):
         pass
+
     @transition(field=workflow_state,
                 source=[WorkflowState.AUTHOR_REVIEW, WorkflowState.RETRACTED],
                 permission=can_edit,
@@ -229,6 +230,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
                 )
     def author_review_edit(self):
         pass
+
     @transition(field=workflow_state,
                 source=[WorkflowState.ADMIN_REVIEW],
                 permission=can_edit,
@@ -287,6 +289,9 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         """
         self.admin_approved = False
         self.notify_authors()
+        user = CurrentUserMiddleware.get_user()
+        author = User.objects.get(email__exact=self.primary_physician.email)
+        action.send(user, verb='sent back', action_object=self, target=author)
         return "TBD: The case report has been sent back to its author."
 
     def can_publish(self, user=None):
@@ -304,6 +309,10 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         self.date_published = datetime.now()
         self.notify_viewers("CaseReport has been published", {})
         self.notify_authors()
+        user = CurrentUserMiddleware.get_user()
+        author = User.objects.get(email__exact=self.primary_physician.email)
+        action.send(user, verb='published', action_object=self, target=author)
+        # TODO: put pushed into each shared with group activity feed?
         return "TBD: This case report has been published!"
 
     def can_retract_as_author(self, user=None):
@@ -370,6 +379,9 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     def _get_past_tense_for_action(self, action):
         lookups = {
             'submit': 'submitted',
+            'send back': 'sent back',
+            'author review edit': 're-edited',
+            'revised': 'pulled for revision',
         }
         verb = action.lower()
         if verb in lookups:
