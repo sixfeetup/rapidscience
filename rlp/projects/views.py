@@ -95,7 +95,8 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
     elif tab == 'casereports':
         reports = project.get_shared_content(CaseReport)
         context['case_reports'] = sorted(
-            (r.target for r in reports if r.target.workflow_state == 'live'),
+            (r.target for r in reports if
+             r.target.workflow_state == WorkflowState.LIVE),
             key=lambda c: c.sort_date(),
             reverse=True,
         )
