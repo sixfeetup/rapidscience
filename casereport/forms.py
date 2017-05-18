@@ -33,6 +33,12 @@ class CaseForm(forms.Form):
         widget=forms.Textarea,
         required=False,
     )
+    to_dashboard = forms.BooleanField(
+        label='',
+        required=False,
+        widget=forms.HiddenInput,
+        initial=True,
+    )
 
 
 class MultiFacetedSearchForm(FacetedSearchForm):

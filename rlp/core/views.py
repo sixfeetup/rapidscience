@@ -54,12 +54,12 @@ class SendToView(LoginRequiredMixin, View):
             groups = list(form.cleaned_data['groups'])
             if form.cleaned_data['to_dashboard']:
                 members.append(request.user)
-            if members or groups:
-                shared_content.share_with(
-                    members + groups,
-                    shared_by=request.user,
-                    comment=form.cleaned_data['comment'],
-                )
+                request.user.bookmark(shared_content)
+            shared_content.share_with(
+                members + groups,
+                shared_by=request.user,
+                comment=form.cleaned_data['comment'],
+            )
             if 'referrer' in request.session:
                 url = request.session['referrer']
                 if url:

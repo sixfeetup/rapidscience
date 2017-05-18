@@ -18,6 +18,15 @@ class SharesContentMixin(Model):
         object_id_field='viewer_id',
     )
 
+    def bookmark(self, content):
+        target = content
+        if (hasattr(content, 'polymorphic_model_marker')
+           and len(content._meta.parents)):
+            # for polymorphic types, bookmark the parent reference
+            parent_type = list(content._meta.parents)[-1]
+            target = parent_type.objects.non_polymorphic().get(id=content.id)
+        SharedContent.objects.create(viewer=self, target=target)
+
     def get_shared_content(self, type_class=None):
         if type_class is None:
             refs = self._shared.all()

@@ -226,3 +226,9 @@ class AttachReferenceForm(forms.Form):
         choices=(),  # gets filled in by the view
         required=False,
     )
+    to_dashboard = forms.BooleanField(
+        label='',
+        required=False,
+        widget=forms.HiddenInput,
+        initial=True,
+    )

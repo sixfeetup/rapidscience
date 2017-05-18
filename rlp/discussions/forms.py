@@ -89,6 +89,12 @@ class NewDiscussionForm(forms.Form):
     )
     members = internal_member_field
     groups = group_field
+    to_dashboard = forms.BooleanField(
+        label='',
+        required=False,
+        widget=forms.HiddenInput,
+        initial=True,
+    )
 
     field_order = ['discussion_title', 'discussion_body', 'members',
                    'groups']

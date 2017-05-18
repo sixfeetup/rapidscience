@@ -15,7 +15,7 @@ from actstream import action
 from taggit.models import Tag
 
 from rlp.core.forms import member_choices, group_choices
-from rlp.core.views import SendToView
+from rlp.core.utils import bookmark_and_notify
 from rlp.discussions.models import ThreadedComment
 from . import choices
 from .forms import (
@@ -222,15 +222,6 @@ class ReferenceAttachView(LoginRequiredMixin, FormView):
                 self.request.user,
                 ref,
             )
-            initial_obj = self.request.session.get(
-                'last_viewed_object',
-                (None, None),
-            )
-            # initial_obj will look like: ('type', id)
-            if initial_obj[0] == 'project':
-                form.fields['groups'].initial = [initial_obj[1]]
-            elif initial_obj[0] == 'user':
-                form.fields['members'].initial = [initial_obj[1]]
             context['form'] = form
         return context
 
@@ -240,12 +231,8 @@ class ReferenceAttachView(LoginRequiredMixin, FormView):
         ref.description = data.get('description')
         ref.tags.set(*data['tags'])
         ref.save()
-        SendToView.post(
-            form,
-            self.request,
-            'bibliography',
-            'reference',
-            ref.id,
+        bookmark_and_notify(
+            ref, self, self.request, 'bibliography', 'reference',
         )
         last_viewed_path = self.request.session.get('last_viewed_path', '/')
         return redirect(last_viewed_path)
