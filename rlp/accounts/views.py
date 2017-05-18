@@ -25,6 +25,7 @@ from actstream.models import Action
 from el_pagination.decorators import page_template
 from formtools.wizard.views import SessionWizardView
 
+from casereport.constants import WorkflowState
 from casereport.models import CaseReport
 from rlp.accounts.models import Institution
 from rlp.bibliography.models import fetch_publications_for_user
