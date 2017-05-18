@@ -1,6 +1,9 @@
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseForbidden
 import sys
+
+from rlp.core.views import SendToView
 
 def enforce_sharedobject_permissions(cls, obj_class, id_name, methods=None):
     """ Class decorator intended for subclasses of ClassBasedViews that serve rlp.core.models.SharedObjectMixin subclasses.
@@ -50,3 +53,21 @@ def enforce_sharedobject_permissions(cls, obj_class, id_name, methods=None):
             setattr(cls, fname, make_wrapper(fname, view_func, obj_class, id_name))
     return cls
 
+
+def bookmark_and_notify(obj, view, request, app_label, model_name):
+    '''When using the "send to" form:
+        * bookmark content for the user creating the content
+        * bookmark for the group last viewed (if any)
+    '''
+    initial_proj = request.session.get('last_viewed_project')
+    if initial_proj:
+        Project = ContentType.objects.get_by_natural_key('projects', 'Project')
+        group = Project.objects.get(id=initial_proj)
+        group.bookmark(obj)
+    SendToView.post(
+        view,
+        request,
+        app_label,
+        model_name,
+        obj.id,
+    )
