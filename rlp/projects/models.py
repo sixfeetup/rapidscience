@@ -16,6 +16,9 @@ from rlp.core.models import SEOMixin
 
 from actstream.models import Action
 
+from logging import getLogger
+logger = getLogger('django')
+
 MEMBER_STATES = (
     ('moderator', 'Moderator'),
     ('member', 'Member'),
@@ -67,13 +70,14 @@ class Project(SEOMixin, SharesContentMixin):
             # because django orm has no dynamic reverse relation
             casereport_ids = activity_stream_queryset.filter(
                 action_object_content_type=casereport_ct,
+                verb__exact = 'shared',
                 target_content_type_id=my_ct,
-                target_object_id=self.id).values_list('id', flat=True)
-
+                target_object_id=self.id).values_list('action_object_object_id', flat=True)
+            logger.error( "shared crs %s", list(casereport_ids))
             non_live_ids = CaseReport.objects.filter(
-                id__in=casereport_ids).exclude(
+                id__in=list(casereport_ids)).exclude(
                 workflow_state='live').values_list('id', flat=True)
-
+            logger.error( "non live crs %s", list(non_live_ids))
             activity_stream_queryset = activity_stream_queryset.exclude(
                 action_object_content_type=casereport_ct,
                 action_object_object_id__in=list(
