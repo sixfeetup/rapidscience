@@ -238,6 +238,7 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
 
         bookmark_and_notify(
             case, self, self.request, 'casereport', 'casereport',
+        )
         past_tense_verb = 'created'
         for group_id in data.getlist('groups'):
             group = Project.objects.get(id=group_id)
@@ -246,10 +247,6 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         else:
             action.send(request.user, verb=past_tense_verb, action_object=case)
 
-        SendToView.post(
-            self, self.request, 'casereport',
-            'casereport', case.id,
-        )
         # eventually we' want this:
         # #messages.success(self.request, "Saved!")
         # return redirect(reverse('casereport_detail', args=(case.id, case.title)))
@@ -530,16 +527,12 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
         case.save()
         bookmark_and_notify(
             case, self, self.request, 'casereport', 'casereport',
-
+        )
 
         past_tense_verb = 'updated'
         for group in data.getlist('groups'):
             print( request.user, past_tense_verb, case, group )
 
-        SendToView.post(
-            self, self.request, 'casereport',
-            'casereport', case.id,
-        )
         messages.success(request, "Edits saved!")
         return redirect(reverse('casereport_detail', args=(case.id, case.title)))
         #if case.status == 'draft':
