@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from access_tokens import tokens
+from actstream import action
 from casereport.constants import GENDER, WorkflowState
 from casereport.constants import TYPE
 from casereport.constants import PERFORMANCE_STATUS
@@ -366,6 +367,18 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     def _get_fname_for_displayname(self, displayname):
         return displayname.lower().replace(' ', '_')
 
+    def _get_past_tense_for_action(self, action):
+        lookups = {
+            'submit': 'submitted',
+        }
+        verb = action.lower()
+        if verb in lookups:
+            return lookups[verb]
+        print("action %s not in lookups for past tense verbs" % (verb,))
+        if verb.endswith("e"):
+            return verb + "d"
+        return verb + "ed"
+
     def get_next_actions_for_user(self, user=None):
         if not user:
             user = CurrentUserMiddleware.get_user()
@@ -375,7 +388,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         return [self._get_displayname_for_fname(fsmo.name) for fsmo in
                 workflow_transitions if not fsmo.name[0] == '_']
 
-    def take_action_for_user(self, action_name, user=None):
+    def take_action_for_user(self, action_name, user=None, group=None):
         if not user:
             user = CurrentUserMiddleware.get_user()
 
@@ -383,6 +396,11 @@ class CaseReport(CRDBBase, SharedObjectMixin):
             raise KeyError(action_name)
 
         print("taking action %s" % action_name)
+        past_tense_verb = self._get_past_tense_for_action(action_name)
+        if group:
+            action.send(user, verb=past_tense_verb, action_object=self, target=group)
+        else:
+            action.send(user, verb=past_tense_verb, action_object=self)
         return getattr(self, self._get_fname_for_displayname(action_name))()
 
     @property
