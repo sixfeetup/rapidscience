@@ -456,7 +456,8 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
         if request.is_ajax():
             template_name = 'comments/list.html'
     elif tab == 'casereports':
-        reports = [r for r in request.user.get_shared_content(CaseReport) if r.workflow_state == 'live']
+        reports = [r.target for r in request.user.get_shared_content(CaseReport)
+                   if r.target.workflow_state == WorkflowState.LIVE]
         from casereport.models import Physician
         try:
             phys = Physician.objects.filter(email=request.user.email)
