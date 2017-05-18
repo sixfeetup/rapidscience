@@ -7,6 +7,7 @@ from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
+from casereport.constants import WorkflowState
 from rlp.core.mixins import SharesContentMixin
 
 from actstream.models import Action
@@ -192,9 +193,8 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
             | self._get_activity_involving_me_query() \
             | self._get_activity_in_my_projects_query())
 
-        # exclude shares to me of casereports that arent live,
-        # if the user is an admin
-        if not self.is_staff:
+        # exclude shares to me of casereports that arent mine and live,
+        if True: #not self.is_staff:
             casereport_ct = ContentType.objects.get_for_model(CaseReport)
             my_ct = ContentType.objects.get_for_model(self)
             # not loving this, but cant use expressions like
@@ -202,13 +202,18 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
             # because django orm has no dynamic reverse relation
             casereports_shared_with_me_ids = activity_stream_queryset.filter(
                 action_object_content_type=casereport_ct,
-                target_content_type_id=my_ct,
-                target_object_id=self.id).values_list('id', flat=True)
-
+                verb__exact='shared',
+                # target_content_type_id=my_ct,
+                # target_object_id=self.id,
+            ).exclude(actor_content_type=my_ct,
+                      actor_object_id=self.id,
+                      ).values_list('action_object_object_id', flat=True)
+            print("shared crs", list(casereports_shared_with_me_ids))
             non_live_ids = CaseReport.objects.filter(
-                id__in=casereports_shared_with_me_ids).exclude(
-                workflow_state='live').values_list('id', flat=True)
-
+                id__in=list(casereports_shared_with_me_ids)) \
+                .exclude(workflow_state=WorkflowState.LIVE) \
+                .values_list('id', flat=True)
+            print("nonlive crs", list(non_live_ids))
             activity_stream_queryset = activity_stream_queryset.exclude(
                 action_object_content_type=casereport_ct,
                 action_object_object_id__in=list(
