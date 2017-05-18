@@ -440,7 +440,7 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
         activity_stream = consolidate(
             list(activity_stream),
             lambda a: str((a.actor_object_id,
-                           #a.verb,
+                           a.verb,
                            a.action_object_content_type,
                            a.action_object_object_id)),
             'others')
