@@ -61,7 +61,10 @@ def bookmark_and_notify(obj, view, request, app_label, model_name):
     '''
     initial_proj = request.session.get('last_viewed_project')
     if initial_proj:
-        Project = ContentType.objects.get_by_natural_key('projects', 'Project')
+        project_type = ContentType.objects.get_by_natural_key(
+            'projects', 'project',
+        )
+        Project = project_type.model_class()
         group = Project.objects.get(id=initial_proj)
         group.bookmark(obj)
     SendToView.post(
