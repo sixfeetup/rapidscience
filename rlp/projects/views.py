@@ -17,6 +17,7 @@ from django.views.generic import View, FormView, UpdateView
 
 from el_pagination.decorators import page_template
 
+from casereport.constants import WorkflowState
 from casereport.models import CaseReport
 from rlp.accounts.models import User
 from rlp.bibliography.models import Reference
@@ -95,8 +96,8 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
     elif tab == 'casereports':
         reports = project.get_shared_content(CaseReport)
         context['case_reports'] = sorted(
-            (r.target for r in reports if
-             r.target.workflow_state == WorkflowState.LIVE),
+            (r for r in reports if
+             r.workflow_state == WorkflowState.LIVE),
             key=lambda c: c.sort_date(),
             reverse=True,
         )
