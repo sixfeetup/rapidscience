@@ -1,7 +1,7 @@
 {% load core_tags %}
 {{ action.action_object.display_type }}
 {% if action.action_object_content_type.model != 'threadedcomment' %}{{ action.verb }}{% endif %}
-by <a href="{{ action.actor.get_absolute_url }}">{{ action.actor.get_full_name }}</a>
+by {% if request.user == action.actor %} Me {% else %} <a href="{{ action.actor.get_absolute_url }}">{{ action.actor.get_full_name }}</a>{% endif %}
 {% if action.verb == 'shared' %} to {{ action.target|link }}
     {% if action.others %}{% for other in action.others %}{% if forloop.last %} and {%  else %}, {% endif %}{{ other.target|link }}{%  endfor %}{% endif %}
 {% endif %}
