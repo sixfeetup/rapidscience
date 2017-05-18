@@ -52,6 +52,6 @@ urlpatterns += [
     url(r'^(?P<casereport_id>[0-9]*)/transition$', never_cache(workflow_transition), name='Approve'),
     url(r'^(?P<casereport_id>[0-9]*)/transition$', never_cache(workflow_transition), name='Submit'),
     url(r'^(?P<casereport_id>[0-9]*)/transition$', never_cache(workflow_transition), name='Publish'),
-    url(r'^(?P<casereport_id>[0-9]*)/transition$', never_cache(workflow_transition), name='Retract'),
+    url(r'^(?P<casereport_id>[0-9]*)/transition$', never_cache(workflow_transition), name='Revise'),
     url(r'^(?P<casereport_id>[0-9]*)/transition$', never_cache(workflow_transition), name='Send Back'),
 ]
