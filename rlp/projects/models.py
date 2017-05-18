@@ -1,6 +1,7 @@
 from collections import defaultdict
 
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
 from django.core.mail import send_mass_mail
 from django.db import models
@@ -12,6 +13,11 @@ from rlp.accounts.models import Institution
 from rlp.core.email import send_transactional_mail
 from rlp.core.mixins import SharesContentMixin
 from rlp.core.models import SEOMixin
+
+from actstream.models import Action
+
+from logging import getLogger
+logger = getLogger('django')
 
 MEMBER_STATES = (
     ('moderator', 'Moderator'),
@@ -48,6 +54,35 @@ class Project(SEOMixin, SharesContentMixin):
     def get_absolute_url(self):
         from django.core.urlresolvers import reverse
         return reverse('projects:projects_detail', kwargs={'pk': self.pk, 'slug': self.slug})
+
+    def get_activity_stream(self, user=None, type_class=None):
+        my_ct = ContentType.objects.get_for_model(self)
+        activity_stream_queryset = Action.objects.filter(target_content_type=my_ct,
+                                                 target_object_id=self.id)
+
+        # TODO: consolidate this
+        if user and not user.is_staff:
+            from casereport.models import CaseReport
+            casereport_ct = ContentType.objects.get_for_model(CaseReport)
+            my_ct = ContentType.objects.get_for_model(self)
+            # not loving this, but cant use expressions like
+            # action_object__workflow_state = 'live'
+            # because django orm has no dynamic reverse relation
+            casereport_ids = activity_stream_queryset.filter(
+                action_object_content_type=casereport_ct,
+                verb__exact = 'shared',
+                target_content_type_id=my_ct,
+                target_object_id=self.id).values_list('action_object_object_id', flat=True)
+            logger.error( "shared crs %s", list(casereport_ids))
+            non_live_ids = CaseReport.objects.filter(
+                id__in=list(casereport_ids)).exclude(
+                workflow_state='live').values_list('id', flat=True)
+            logger.error( "non live crs %s", list(non_live_ids))
+            activity_stream_queryset = activity_stream_queryset.exclude(
+                action_object_content_type=casereport_ct,
+                action_object_object_id__in=list(
+                    non_live_ids))  # would love to know why list was need here, but not in the query above.
+        return activity_stream_queryset
 
     def get_documents_url(self):
         from django.core.urlresolvers import reverse

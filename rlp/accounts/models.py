@@ -1,13 +1,16 @@
 import logging
 import re
-
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
+from casereport.constants import WorkflowState
 from rlp.core.mixins import SharesContentMixin
 
+from actstream.models import Action
 
 logger = logging.getLogger(__name__)
 
@@ -154,6 +157,68 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
 
     def active_projects(self):
         return self.projects.exclude(projectmembership__state='pending')
+
+    def _get_my_activity_query(self):
+        my_ct = ContentType.objects.get_for_model(self)
+        q = Q(
+            actor_content_type=my_ct,
+            actor_object_id=self.id
+        )
+        return q
+
+    def _get_activity_involving_me_query(self):
+        my_ct = ContentType.objects.get_for_model(self)
+        q = Q(
+            target_content_type=my_ct,
+            target_object_id=self.id
+        )
+        return q
+
+    def _get_activity_in_my_projects_query(self):
+        from rlp.projects.models import Project  # here to avoid circular import
+        from casereport.models import CaseReport
+        active_projects = self.active_projects()
+        project_ct = ContentType.objects.get_for_model(Project)
+        q = Q(
+            target_content_type=project_ct,
+            target_object_id__in=list(
+                active_projects.values_list('id', flat=True))
+        )
+        return q
+
+    def get_activity_stream(self, type_class=None):
+        from casereport.models import CaseReport
+        activity_stream_queryset = Action.objects.filter(
+            self._get_my_activity_query() \
+            | self._get_activity_involving_me_query() \
+            | self._get_activity_in_my_projects_query())
+
+        # exclude shares to me of casereports that arent mine and live,
+        if True: #not self.is_staff:
+            casereport_ct = ContentType.objects.get_for_model(CaseReport)
+            my_ct = ContentType.objects.get_for_model(self)
+            # not loving this, but cant use expressions like
+            # action_object__workflow_state = 'live'
+            # because django orm has no dynamic reverse relation
+            casereports_shared_with_me_ids = activity_stream_queryset.filter(
+                action_object_content_type=casereport_ct,
+                verb__exact='shared',
+                # target_content_type_id=my_ct,
+                # target_object_id=self.id,
+            ).exclude(actor_content_type=my_ct,
+                      actor_object_id=self.id,
+                      ).values_list('action_object_object_id', flat=True)
+            print("shared crs", list(casereports_shared_with_me_ids))
+            non_live_ids = CaseReport.objects.filter(
+                id__in=list(casereports_shared_with_me_ids)) \
+                .exclude(workflow_state=WorkflowState.LIVE) \
+                .values_list('id', flat=True)
+            print("nonlive crs", list(non_live_ids))
+            activity_stream_queryset = activity_stream_queryset.exclude(
+                action_object_content_type=casereport_ct,
+                action_object_object_id__in=list(
+                    non_live_ids))  # would love to know why list was need here, but not in the query above.
+        return activity_stream_queryset
 
 
 class UserLogin(models.Model):

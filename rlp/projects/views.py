@@ -67,7 +67,7 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
         request.user.can_access_project(project)
     )
     if tab == 'activity':
-        activity_stream = project.get_activity_stream()
+        activity_stream = project.get_activity_stream(user=request.user)
         if 'content_type' in request.GET:
             filter_form = ActionObjectForm(request.GET)
             if filter_form.is_valid() and filter_form.cleaned_data['content_type']:
@@ -95,7 +95,8 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
     elif tab == 'casereports':
         reports = project.get_shared_content(CaseReport)
         context['case_reports'] = sorted(
-            (r for r in reports if r.workflow_state == 'live'),
+            (r.target for r in reports if
+             r.target.workflow_state == WorkflowState.LIVE),
             key=lambda c: c.sort_date(),
             reverse=True,
         )

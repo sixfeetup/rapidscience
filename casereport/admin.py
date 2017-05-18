@@ -60,9 +60,9 @@ class CaseFileAdmin(admin.ModelAdmin):
 
 class CaseReportAdmin(admin.ModelAdmin):
     list_display = ('title', 'gender', 'age',
-                    'status', 'created_on', 'workflow_state', 'get_next_actions_for_user')
+                    'workflow_state', 'created_on', 'get_next_actions_for_user')
     order_by = ('created_on',)
-    list_filter = ('status',)
+    list_filter = ('workflow_state',)
     inlines = [
         TreatmentInline,
     ]

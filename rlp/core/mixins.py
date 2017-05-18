@@ -35,11 +35,11 @@ class SharesContentMixin(Model):
             refs = self._shared.select_related('target_type').filter(
                 target_type=content_type
             )
-
+        return refs
         # this deduping is only neccessary because we had some bad data
-        return {r.target for r in refs}
+        #return {r.target for r in refs}
 
-    def get_activity_stream(self, type_class=None):
+    def deprecated_get_activity_stream(self, type_class=None):
         shared = self.get_shared_content(type_class)
         if not shared:
             # the empty query would end up returning all rows

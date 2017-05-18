@@ -1,10 +1,8 @@
 from datetime import datetime
 
 from access_tokens import tokens
+from actstream import action
 from casereport.constants import GENDER, WorkflowState
-from casereport.constants import SARCOMA_TYPE
-from casereport.constants import STATUS
-from casereport.constants import CASE_STATUS
 from casereport.constants import TYPE
 from casereport.constants import PERFORMANCE_STATUS
 from casereport.constants import OBJECTIVE_RESPONSES
@@ -163,11 +161,9 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     author_approved = models.BooleanField(default=False, blank=True)
     admin_approved = models.BooleanField(default=False, blank=True)
     workflow_state = FSMField(max_length=50,
-                                      choices=WorkflowState.CHOICES,
-                                      default=WorkflowState.INITIAL_STATE,
-                                      help_text="Workflow state")
-    status = models.CharField(max_length=50, choices=STATUS,
-                              default='draft', help_text='''Old State''')
+                              choices=WorkflowState.CHOICES,
+                              default=WorkflowState.INITIAL_STATE,
+                              help_text="Workflow state")
 
     casefile_f = models.FileField(null=True, blank=True)
     free_text = models.TextField(null=True, blank=True)
@@ -226,6 +222,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
                 )
     def edit(self):
         pass
+
     @transition(field=workflow_state,
                 source=[WorkflowState.AUTHOR_REVIEW, WorkflowState.RETRACTED],
                 permission=can_edit,
@@ -233,6 +230,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
                 )
     def author_review_edit(self):
         pass
+
     @transition(field=workflow_state,
                 source=[WorkflowState.ADMIN_REVIEW],
                 permission=can_edit,
@@ -267,7 +265,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         ''' send to admin without approval '''
         self.author_approved = True
         self.admin_approved = False
-
+        self.notify_admin()
         return "Your Case Report has been submitted and will be reviewed by \
             our admin staff. \
             Please note case no. #%s for future reference." % self.id
@@ -290,7 +288,10 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         """ send the CR back to the author 
         """
         self.admin_approved = False
-
+        self.notify_authors()
+        user = CurrentUserMiddleware.get_user()
+        author = User.objects.get(email__exact=self.primary_physician.email)
+        action.send(user, verb='sent back', action_object=self, target=author)
         return "TBD: The case report has been sent back to its author."
 
     def can_publish(self, user=None):
@@ -306,7 +307,12 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     def publish(self):
         self.admin_approved = True
         self.date_published = datetime.now()
-
+        self.notify_viewers("CaseReport has been published", {})
+        self.notify_authors()
+        user = CurrentUserMiddleware.get_user()
+        author = User.objects.get(email__exact=self.primary_physician.email)
+        action.send(user, verb='published', action_object=self, target=author)
+        # TODO: put pushed into each shared with group activity feed?
         return "TBD: This case report has been published!"
 
     def can_retract_as_author(self, user=None):
@@ -327,7 +333,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
                 target=WorkflowState.AUTHOR_REVIEW)
     def _retract_by_author(self):  # starts with _ to hide from users
         self.author_approved = False
-
+        self.notify_admin()
         return "TBD: This case report has been pulled back to the author for review."
 
     @transition(field=workflow_state,
@@ -337,7 +343,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     def _retract_by_admin(self):  # starts with _ to hide from users
         """ unpublish """
         self.admin_approved = False
-
+        self.notify_admin()
         return "TBD: This case report has been pulled back to the site staff for review."
 
     def can_retract(self, user=None):
@@ -349,7 +355,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
                 source=[WorkflowState.LIVE],
                 permission=can_retract,
                 target=WorkflowState.RETRACTED)
-    def retract(self):
+    def revise(self):
         """ uses the current user to choose between retract_by_author and
             retract_by_admin
         """
@@ -370,6 +376,21 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     def _get_fname_for_displayname(self, displayname):
         return displayname.lower().replace(' ', '_')
 
+    def _get_past_tense_for_action(self, action):
+        lookups = {
+            'submit': 'submitted',
+            'send back': 'sent back',
+            'author review edit': 're-edited',
+            'revised': 'pulled for revision',
+        }
+        verb = action.lower()
+        if verb in lookups:
+            return lookups[verb]
+        print("action %s not in lookups for past tense verbs" % (verb,))
+        if verb.endswith("e"):
+            return verb + "d"
+        return verb + "ed"
+
     def get_next_actions_for_user(self, user=None):
         if not user:
             user = CurrentUserMiddleware.get_user()
@@ -379,7 +400,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         return [self._get_displayname_for_fname(fsmo.name) for fsmo in
                 workflow_transitions if not fsmo.name[0] == '_']
 
-    def take_action_for_user(self, action_name, user=None):
+    def take_action_for_user(self, action_name, user=None, group=None):
         if not user:
             user = CurrentUserMiddleware.get_user()
 
@@ -387,6 +408,11 @@ class CaseReport(CRDBBase, SharedObjectMixin):
             raise KeyError(action_name)
 
         print("taking action %s" % action_name)
+        past_tense_verb = self._get_past_tense_for_action(action_name)
+        if group:
+            action.send(user, verb=past_tense_verb, action_object=self, target=group)
+        else:
+            action.send(user, verb=past_tense_verb, action_object=self)
         return getattr(self, self._get_fname_for_displayname(action_name))()
 
     @property
@@ -394,23 +420,32 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         return "Case Report"
 
     def save(self, *args, **kwargs):
-        if self.status == CASE_STATUS['E'] or self.status == CASE_STATUS['P']:
-            # sending a notify email to admin
-            self.notify_admin()
-        if self.status == CASE_STATUS['R'] or self.status == CASE_STATUS['A']:
-            # sending review email to authorized rep/physician
-            self.send_review_mail()
         if not self.review:
             self.review = CaseReportReview.objects.create()
         super(CaseReport, self).save(*args, **kwargs)
 
+
+    def notify_authors(self, subject=None, message=None):
+        subject = "Author Notification"
+        message_body = "CaseReport {id} {url} has moved to {state}.".format(
+            id=self.id, url=self.get_absolute_url(),
+            state=self.get_workflow_state_display())
+
+        recipient = self.primary_physician.email
+        message = EmailMessage(subject,
+                               message_body,
+                               settings.SERVER_EMAIL,
+                               [recipient])
+        message.content_subtype = 'html'
+        message.send()
+
     def notify_admin(self):
         subject = settings.NEW_CASE
-        if self.status == CASE_STATUS['E']:
+        if self.workflow_state != WorkflowState.DRAFT:
             subject = settings.EDITED
         message_body = render_to_string('casereport/admin_notify.html',
                                         {'title': self.title,
-                                         'status': self.status,
+                                         'status': self.workflow_state,
                                          'name': self.primary_physician.name})
         recipient_members = settings.DATA_SCIENCE_TEAM
         for member in recipient_members:
@@ -429,7 +464,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         recipients = list(self.authorized_reps.all())
         primary_recipient = self.primary_physician
         subject = settings.CASE_READY_SUBJECT
-        if self.status == CASE_STATUS['R'] and not history_obj:
+        if self.workflow_state == WorkflowState.ADMIN_REVIEW and not history_obj:
             for recipient in recipients:
                 if recipient.email:
                     message = render_to_string(
@@ -451,7 +486,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
                                        )
                     msg.content_subtype = "html"
                     msg.send()
-        if self.status == CASE_STATUS['A']:
+        if self.workflow_state == WorkflowState.LIVE:
             subject = settings.CASE_APPROVED_SUBJECT
         authorized_emails = []
         for entry in recipients:

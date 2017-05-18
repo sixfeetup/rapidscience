@@ -402,22 +402,12 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
         project_ct = ContentType.objects.get_for_model(Project)
         user_ct = ContentType.objects.get_for_model(User)
         if not request.user.can_access_all_projects:
-            # if the user is not staff, then restrict the activity stream to
-            # actions taken by them or within their projects
-            project_and_user_action_query = Q(
-                actor_content_type=user_ct,
-                actor_object_id=request.user.id
-            ) | Q(
-                target_content_type=project_ct,
-                target_object_id__in=list(active_projects.values_list('id', flat=True))
-            )
-            activity_stream = activity_stream.filter(
-                project_and_user_action_query)
-
+            activity_stream = request.user.get_activity_stream()
             # exclude shares with self
             activity_stream = activity_stream.exclude(
                 actor_content_type=user_ct,
                 actor_object_id=request.user.id,
+                verb__exact='shared',
                 target_content_type=user_ct,
                 target_object_id=request.user.id)
 
@@ -467,7 +457,8 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
         if request.is_ajax():
             template_name = 'comments/list.html'
     elif tab == 'casereports':
-        reports = [r for r in request.user.get_shared_content(CaseReport) if r.workflow_state == 'live']
+        reports = [r.target for r in request.user.get_shared_content(CaseReport)
+                   if r.target.workflow_state == WorkflowState.LIVE]
         from casereport.models import Physician
         try:
             phys = Physician.objects.filter(email=request.user.email)

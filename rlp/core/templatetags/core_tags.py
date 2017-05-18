@@ -83,3 +83,17 @@ def display_shared_with(item, user=None):
         return 'Shared with {0}'.format(vlist[:-2])
     else:
         return ''
+
+from django.utils.safestring import mark_safe
+@register.filter(needs_autoescape=True)
+def link(obj, extra='', autoescape=True):
+    """ Emit an html anchor for the passed object.
+        Use extra for class, id, or other attributes.
+        ex.
+            {{ user|link:'class="userlinks" id="myid"' }}
+        
+        nb: the careful nesting of quotes.
+    """
+    res = """<a href="{url}" {extra} >{obj}</a>""".format( url=obj.get_absolute_url(), extra=extra, obj=obj)
+    return mark_safe( res )
+

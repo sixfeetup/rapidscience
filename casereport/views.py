@@ -1,4 +1,6 @@
 import json
+
+from actstream import action
 from ajax_select import registry
 from captcha.helpers import captcha_image_url
 from captcha.models import CaptchaStore
@@ -25,9 +27,8 @@ except ImportError as old_django:
     from django.core.urlresolvers import reverse
 
 from casereport.api import PhysicianInstanceResource
-from casereport.api import CaseReportInstanceResource
 from casereport.api import TreatmentInstanceResource
-from casereport.constants import SARCOMA_TYPE
+from casereport.constants import SARCOMA_TYPE, WorkflowState
 from casereport.forms import CaseForm
 from casereport.forms import MultiFacetedSearchForm
 from casereport.havoc_interface import havoc_results
@@ -237,11 +238,22 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
 
         bookmark_and_notify(
             case, self, self.request, 'casereport', 'casereport',
+        past_tense_verb = 'created'
+        for group_id in data.getlist('groups'):
+            group = Project.objects.get(id=group_id)
+            print( request.user, past_tense_verb, case, group )
+            action.send(request.user, verb=past_tense_verb, action_object=case, target=group)
+        else:
+            action.send(request.user, verb=past_tense_verb, action_object=case)
+
+        SendToView.post(
+            self, self.request, 'casereport',
+            'casereport', case.id,
         )
         # eventually we' want this:
         # #messages.success(self.request, "Saved!")
         # return redirect(reverse('casereport_detail', args=(case.id, case.title)))
-        if case.status == 'draft':
+        if case.workflow_state == WorkflowState.DRAFT:
             messages.success(self.request, "Saved!")
             return redirect(case.get_absolute_url())
         else:
@@ -518,6 +530,15 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
         case.save()
         bookmark_and_notify(
             case, self, self.request, 'casereport', 'casereport',
+
+
+        past_tense_verb = 'updated'
+        for group in data.getlist('groups'):
+            print( request.user, past_tense_verb, case, group )
+
+        SendToView.post(
+            self, self.request, 'casereport',
+            'casereport', case.id,
         )
         messages.success(request, "Edits saved!")
         return redirect(reverse('casereport_detail', args=(case.id, case.title)))

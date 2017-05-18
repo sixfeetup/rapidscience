@@ -1,7 +1,6 @@
 __author__ = 'yaseen'
 
 from django.shortcuts import get_object_or_404
-from casereport.constants import CASE_STATUS
 from casereport.models import AuthorizedRep
 from casereport.models import CaseReport
 from casereport.models import Institution
@@ -9,61 +8,6 @@ from casereport.models import MolecularAbberation
 from casereport.models import Physician
 from casereport.models import CaseReportHistory
 from casereport.models import Treatment
-
-
-class CaseReportInstanceResource:
-
-    def update(self, case_id, title=None, age=None, gender=None, sarcoma_type=None):
-        """
-
-        :type clinical_outcome: object
-        """
-        case = get_object_or_404(CaseReport, id=case_id)
-        if title:
-            case.title = title
-        if age:
-            case.age = age
-        if title:
-            case.title = title
-        if gender:
-            case.gender = gender
-        if sarcoma_type:
-            case.sarcoma_type = sarcoma_type
-        case.status = CASE_STATUS['E']
-        case.save()
-        return case
-
-    def approve(self, case_id):
-        """
-        :type clinical_outcome: object
-        """
-
-        case = get_object_or_404(CaseReport, id=case_id)
-        case.status = CASE_STATUS['A']
-        case.save()
-        return case
-
-
-    def _addabberations(self,casereport, abbrations):
-        """
-        :param casereport: is an casereport object
-        :param abbrations: is a list of abbration objects
-        :return:
-        """
-        for abb in abbrations:
-            casereport.molecular_abberations.add(abb)
-        return casereport
-
-    def _addauthor(self,casereport, author_list):
-        """
-
-        :param casereport: is an casereport object
-        :param abbrations: is a list of abbration objects
-        :return:
-        """
-        for author in author_list:
-            casereport.authorized_reps.add(author)
-        return casereport
 
 
 
