@@ -222,15 +222,6 @@ class ReferenceAttachView(LoginRequiredMixin, FormView):
                 self.request.user,
                 ref,
             )
-            initial_obj = self.request.session.get(
-                'last_viewed_object',
-                (None, None),
-            )
-            # initial_obj will look like: ('type', id)
-            if initial_obj[0] == 'project':
-                form.fields['groups'].initial = [initial_obj[1]]
-            elif initial_obj[0] == 'user':
-                form.fields['members'].initial = [initial_obj[1]]
             context['form'] = form
         return context
 

@@ -392,7 +392,8 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
         'projects': active_projects,
     }
     request.session['last_viewed_path'] = request.get_full_path()
-    request.session['last_viewed_object'] = ('user', request.user.id)
+    # if user dashboard was viewed, prevent adding things to a group
+    request.session['last_viewed_project'] = None
     activity_stream = Action.objects.filter(
         public=True
     )

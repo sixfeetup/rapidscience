@@ -22,16 +22,16 @@
             <div class="col-md-3 col-md-push-1">
                 <ul class="fa-ul add-links">
                     {% if request.user in project.active_members %}
-                        <li><a href="{% url 'discussion-create' %}?id={{ project.id }}">
+                        <li><a href="{% url 'discussion-create' %}">
                             <i class="fa-li fa fa-plus-circle" aria-hidden="true"></i> Discussion
                         </a></li>
-                        <li><a href="{% url 'crdb:add_casereport' %}?id={{ project.id }}">
+                        <li><a href="{% url 'crdb:add_casereport' %}">
                             <i class="fa-li fa fa-plus-circle" aria-hidden="true"></i> Case Report
                         </a></li>
-                        <li><a href="{% url 'documents:add_media' %}?id={{ project.id }}">
+                        <li><a href="{% url 'documents:add_media' %}">
                             <i class="fa-li fa fa-plus-circle" aria-hidden="true"></i> Document / Media
                         </a></li>
-                        <li><a href="{% url 'bibliography:reference_search' %}?id={{ project.id }}">
+                        <li><a href="{% url 'bibliography:reference_search' %}">
                             <i class="fa-li fa fa-plus-circle" aria-hidden="true"></i> Reference
                         </a></li>
                     {%  else %}

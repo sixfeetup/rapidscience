@@ -152,7 +152,6 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
             aberrations=aberrations), )
 
     def get_form(self, form_class):
-        came_from = self.request.GET.get('id')
         try:
             group = Project.objects.get(id=self.request.GET.get('id'))
         except Project.DoesNotExist:
@@ -174,7 +173,6 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
             form.fields['members'].choices = all_members
             form.fields['members'].initial = [user.id]
             form.fields['groups'].choices = group_choices(user)
-            form.fields['groups'].initial = [came_from]
         return form
 
     def post(self, request, *args, **kwargs):
