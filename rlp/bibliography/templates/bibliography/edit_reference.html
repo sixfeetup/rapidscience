@@ -1,4 +1,4 @@
-{% extends 'home.html' %}{% load bootstrap3 %}
+{% extends 'home.html' %}{% load bootstrap3 core_tags %}
 
 {% block main_content %}
 <h2>{{ reference }}</h2>
@@ -22,3 +22,7 @@
 </form>
 {% endif %}
 {% endblock main_content %}
+
+{% block right_column %}
+  {% blog_widget %}
+{% endblock %}
