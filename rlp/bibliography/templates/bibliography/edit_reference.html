@@ -1,28 +1,41 @@
-{% extends 'home.html' %}{% load bootstrap3 core_tags %}
+{% extends 'base.html' %}{% load bootstrap3 %}
 
-{% block main_content %}
-<h2>{{ reference }}</h2>
-{% if reference.parsed_data.doi %}
-<p>DOI: {{ reference.parsed_data.doi }}</p>
-{% endif %}
-{% if reference.parsed_data.pubmed_id %}
-<p>PMID: {{ reference.parsed_data.pubmed_id }}</p>
-{% endif %}
+{% block content %}
+<div class="bannerTitle">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-md-push-3">
+                <h1>New Reference</h1>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-xs-12 col-md-push-3">
 
-{% if form %}
-<form method="post" action="">
-  {% csrf_token %}
-  {% bootstrap_form form %}
-  <button type="submit" class="btn btn-primary">
-    Submit
-  </button>
-  <a role="button" class="btn btn-default" href="{% url 'bibliography:reference_search' %}">
-    Cancel
-  </a>
-</form>
-{% endif %}
-{% endblock main_content %}
+        <h2>{{ reference }}</h2>
+        {% if reference.parsed_data.doi %}
+        <p>DOI: {{ reference.parsed_data.doi }}</p>
+        {% endif %}
+        {% if reference.parsed_data.pubmed_id %}
+        <p>PMID: {{ reference.parsed_data.pubmed_id }}</p>
+        {% endif %}
 
-{% block right_column %}
-  {% blog_widget %}
-{% endblock %}
+        {% if form %}
+        <form method="post" action="">
+          {% csrf_token %}
+          {% bootstrap_form form %}
+          <button type="submit" class="btn btn-primary">
+            Submit
+          </button>
+          <a role="button" class="btn btn-default" href="{% url 'bibliography:reference_search' %}">
+            Cancel
+          </a>
+        </form>
+        {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
