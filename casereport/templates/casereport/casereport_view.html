@@ -8,6 +8,9 @@
 {% block title %}
    {{ casereport.title }}
 {% endblock %}
+
+{% block body_class %}casereport-view{% endblock %}
+
 {% block content %}
 <div class="case-hero">
     <div class="container">
@@ -16,7 +19,7 @@
                 <div class="headingBanner">
                     <div>
                         {% if last_viewed_path %}
-                        <p><a href="{{ last_viewed_path }}">&larr; Back</a></p>
+                        <p class="back"><a href="{{ last_viewed_path }}">&larr; Back</a></p>
                         {% elif request.META.HTTP_REFERER %}
                         <a href="{{request.META.HTTP_REFERER}}">&laquo; Return To Search Results</a>
                             {% else %}
@@ -228,10 +231,12 @@
           {% endfor %}
       {% endif %}
       <!-- comments -->
-      {% if user_interaction %}
-        {% render_comment_form for casereport %}
-      {% endif %}
-      <br>
+      <div class="add-comment">
+          {% if user_interaction %}
+            {% render_comment_form for casereport %}
+          {% endif %}
+          <br>
+      </div>
       {% with crcomments='True' %}
          {% render_comment_list for casereport %}
       {% endwith %}

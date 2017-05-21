@@ -20,5 +20,24 @@
     .new-add-casereport textarea {
         page-break-inside: avoid;
     }
-    
+
+    .casereport-view .back,
+    .casereport-view .notes-trigger,
+    .casereport-view .menu,
+    .casereport-view .add-comment,
+    .casereport-view .action-buttons,
+    .casereport-view .main-footer,
+    .casereport-view #cms-top {
+      display: none !important;
+    }
+
+    .casereport-view .headingBanner {
+        padding-left: 0;
+    }
+
+    .casereport-view .case-detail-view .content {
+        border-left: none;
+        padding-left: 0;
+    }
+
 }
