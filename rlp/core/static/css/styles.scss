@@ -77,5 +77,4 @@ em.highlighted {
 
 .btn-tag {
   @include button-variant($btn-default-color, $gray-lighter, $btn-default-border);
-  margin-bottom: 4px;
 }

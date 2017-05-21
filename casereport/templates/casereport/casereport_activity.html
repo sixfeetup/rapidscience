@@ -1,7 +1,7 @@
 <!-- casereport/casereport_activity -->
 {% with casereport=obj %}
     <h4><a href="{{ casereport.get_absolute_url }}">Case: {{ casereport.title }}</a></h4>
-    <p>
+    <p class="more">
         Case ID: {{ casereport.id }} |
         Submitted: {{ casereport.created_on|date:"M d, Y" }} |
         Last revision: {{ casereport.modified_on|date:"M d, Y" }}

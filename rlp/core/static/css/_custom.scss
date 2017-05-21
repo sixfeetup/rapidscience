@@ -1133,3 +1133,26 @@ input#id_to_dashboard {
         display: inline-block;
     }
 }
+
+/* dashboard tab-pane */
+
+.tab-pane {
+    .more {
+        margin-bottom: 30px;
+    }
+    iframe {
+        margin-top: -10px;
+        margin-bottom: 30px;
+    }
+    .tags {
+        margin-top: -10px;
+        margin-bottom: 30px;
+    }
+    .thumbnail-image {
+        margin-top: -10px;
+        margin-bottom: 30px;
+    }
+    hr {
+        margin-top: 0;
+    }
+}

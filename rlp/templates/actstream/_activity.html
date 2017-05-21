@@ -35,12 +35,16 @@
           <p>{{ action.description }}</p>
         </blockquote>
         {% endif %}
-        <br>
-        {% for tag in action.action_object.tags.all %}
-          <a role="button" class="btn btn-tag btn-xs" href="{% url 'haystack_search' %}?tags={{ tag.id }}">
-            {{ tag }}
-          </a>
-        {% endfor %}
+
+        {% if action.action_object.tags %}
+          <p class="tags">
+            {% for tag in action.action_object.tags.all %}
+              <a role="button" class="btn btn-tag btn-xs" href="{% url 'haystack_search' %}?tags={{ tag.id }}">
+                {{ tag }}
+              </a>
+            {% endfor %}
+          </p>
+        {% endif %}
       </div>
       <div class="col-md-1 activity-actions">
         {% if model != 'referenceshare' and model != 'reference' %}
