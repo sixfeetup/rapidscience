@@ -1,0 +1,24 @@
+@media print {
+
+    .new-add-casereport .main-footer,
+    .new-add-casereport .add_phy_button,
+    .new-add-casereport .add_treatment,
+    .new-add-casereport .add_att_button,
+    .new-add-casereport .sharing-wrapper,
+    .new-add-casereport .submit-button,
+    .new-add-casereport .col-md-1,
+    .new-add-casereport .cke_top,
+    .new-add-casereport #cms-top {
+      display: none !important;
+    }
+    
+    .new-add-casereport h4 {
+        text-align: left;
+    }
+
+    .new-add-casereport .form-group,
+    .new-add-casereport textarea {
+        page-break-inside: avoid;
+    }
+    
+}
