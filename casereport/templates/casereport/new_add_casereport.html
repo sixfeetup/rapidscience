@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="{% static 'djangocms_text_ckeditor/css/cms.ckeditor.css' %}">
 {% endblock  %}
 
+{% block body_class %}new-add-casereport{% endblock %}
+
 {% block content %}
   <div id="crdb-overlay-loader" class="active">
     <div id="crdb-thinking">
@@ -179,6 +181,7 @@
 
                 <a class="add_att_button" href="#"><i class="fa fa-plus"></i> <span class="add_att_button_text">Add another attachment</a></a>
                 <!-- sharing -->
+                <div class="sharing-wrapper">
                 {% for field in form %}
                     <div class="fieldWrapper">
                         {% if field.auto_id == 'id_members' %}
@@ -196,6 +199,7 @@
                         {% endif %}
                     </div>
                 {% endfor %}
+                </div>
 
                 <div class="submit-button">
                     <input id="save-button" class="btn btn-primary" type="submit" value="Save" />
