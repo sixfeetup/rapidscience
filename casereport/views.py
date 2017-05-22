@@ -242,7 +242,6 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         past_tense_verb = 'created'
         for group_id in data.getlist('groups'):
             group = Project.objects.get(id=group_id)
-            print( request.user, past_tense_verb, case, group )
             action.send(request.user, verb=past_tense_verb, action_object=case, target=group)
         else:
             action.send(request.user, verb=past_tense_verb, action_object=case)
