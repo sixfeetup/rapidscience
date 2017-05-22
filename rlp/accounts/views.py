@@ -404,13 +404,6 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
         user_ct = ContentType.objects.get_for_model(User)
         if not request.user.can_access_all_projects:
             activity_stream = request.user.get_activity_stream()
-            # exclude shares with self
-            activity_stream = activity_stream.exclude(
-                actor_content_type=user_ct,
-                actor_object_id=request.user.id,
-                verb__exact='shared',
-                target_content_type=user_ct,
-                target_object_id=request.user.id)
 
         if 'project' in request.GET or 'content_type' in request.GET or 'user_activity_only' in request.GET:
             filter_form = ProjectContentForm(request.GET, user=request.user)
