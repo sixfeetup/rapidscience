@@ -252,6 +252,7 @@ SARCOMA_TYPE = (
             ("Osteofibrcus dysplasia", "Osteofibrcus dysplasia"),
             ("Chondromesenchymal hamartoma", "Chondromesenchymal hamartoma"),
             ("Rosai-Dorfman disease", "Rosai-Dorfman disease"),
+            ("Gastrointestinal Stromal Tumor (GIST)", "Gastrointestinal Stromal Tumor (GIST)"),
             ("Other","Other")
     )
 
