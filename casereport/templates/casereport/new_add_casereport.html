@@ -117,7 +117,7 @@
 
                     <div class="form-group col-md-8 col-xs-8">
                         <label class="required" for="subtype"> Subtype:</label>
-                           <select name="subtype" class=" form-control" id="subtype">
+                           <select name="subtype" class="form-control select2" id="subtype">
                                  <option value="">select sub type</option>
                                  {% for key, value in sarcoma %}
                                      <option value="{{ key }}" {% if key == casereport.subtype %}selected{% endif %}>
@@ -253,13 +253,6 @@
                     window.location.href = "/";
                 }
             });
-        });
-
-        $('body').on('focusin','#subtype',function() {
-            $(this).autocomplete({
-                source: {{ sarcoma|safe }},
-                minLength: 2
-            })
         });
 
          $( "#subtype" ).on( "autocompleteselect", function( event, ui ) {
