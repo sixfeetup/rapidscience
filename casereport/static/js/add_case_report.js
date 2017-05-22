@@ -319,15 +319,6 @@ function manual_validate() {
     });
     if (stop) { return false; }
 
-
-
-    if(treatment_name_0 == '') {
-    caseform.treatment_name_0.focus()
-    $(".required-message").show();
-    $(".treatment-name-0-message").show();
-    return false;
-    }$(".treatment-name-0-message").hide();
-
     $('#caseform').submit();
 }
 
@@ -368,7 +359,7 @@ function freetext_validate(){
 
 }
 
-$('#submit-button').click(function(e){
+$('.submit-button input[type=submit]').click(function(e){
     e.preventDefault()
     validate(e)
 });
