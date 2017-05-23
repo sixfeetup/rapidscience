@@ -344,20 +344,27 @@ class MyFacetedSearchView(FacetedSearchView):
         if self.request.user.is_staff:
             return results.order_by('-pub_or_mod_date')
 
-        # non-admins only see their own cases or cases shared with them
-        shared_pks = []
+        # non-admins only see their own cases
+        # or cases shared with them
+        # or cases shared with group to which the user belongs
+        shared_pks = set()
         for item in self.request.user.get_shared_content(CaseReport):
             if item.workflow_state == WorkflowState.LIVE:
-                shared_pks.append(item.pk)
+                shared_pks.update([item.pk,])
+        for group in self.request.user.active_projects():
+            for item in group.get_shared_content(CaseReport):
+                if item.workflow_state == WorkflowState.LIVE:
+                    shared_pks.update([item.pk,])
         try:
             phys = Physician.objects.filter(email=self.request.user.email)
-            authored = []
+            authored = set()
             for phy in phys:
                 authored += CaseReport.objects.filter(primary_physician=phy)
-            authored_pks = [x.pk for x in authored]
-            shared_pks = set(shared_pks + authored_pks)
+            authored_pks = {x.pk for x in authored}
+            shared_pks.update(authored_pks)
         except Physician.DoesNotExist:
             pass
+
         for case in results:
             if case.pk not in shared_pks:
                 results = results.exclude(id=case.id)
