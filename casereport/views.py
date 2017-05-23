@@ -35,6 +35,7 @@ from casereport.havoc_interface import havoc_results
 from .models import (
     AuthorizedRep,
     CaseReport,
+    SubtypeOption,
     CaseReportReview,
     CaseFile,
     Treatment,
@@ -144,12 +145,12 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
     form_class = CaseForm
 
     def get(self, request, *args, **kwargs):
-        sarcoma = sorted(SARCOMA_TYPE)
+        subtypes = SubtypeOption.objects.order_by('name')
         aberrations = MolecularAbberation.objects.all()
         form = self.get_form()
         return self.render_to_response(self.get_context_data(
             form=form,
-            sarcoma=sarcoma,
+            subtypes=subtypes,
             aberrations=aberrations), )
 
     def get_form(self, form_class):
@@ -191,7 +192,7 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
             physicians.append(physician)
         age = data.get('age')
         gender = data.get('gender')
-        subtype = data.get('subtype')
+        subtype = SubtypeOption.objects.get(name=data.get('subtype'))
         attachment1 = request.FILES.get('attachment1')
         attachment2 = request.FILES.get('attachment2')
         attachment3 = request.FILES.get('attachment3')
@@ -300,15 +301,15 @@ class FormTypeView(TemplateView):
 
     def get(self, request, **kwargs):
         ftype = request.GET.get('ftype', '')
-        sarcoma = sorted(SARCOMA_TYPE)
+        subtypes = SubtypeOption.objects.order_by('name')
         aberrations = MolecularAbberation.objects.all()
         if ftype == 'F':
             self.template_name = 'casereport/fileform.html'
         elif ftype == "T":
 
             self.template_name = 'casereport/free-text.html'
-            return self.render_to_response(dict(sarcoma=sarcoma))
-        return self.render_to_response(dict(sarcoma=sarcoma, aberrations=aberrations))
+            return self.render_to_response(dict(subtypes=subtypes))
+        return self.render_to_response(dict(subtypes=subtypes, aberrations=aberrations))
 
 
 class MyFacetedSearchView(FacetedSearchView):
@@ -454,13 +455,13 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
 
     def get(self, request, case_id):
         casereport = get_object_or_404(CaseReport, id=case_id)
-        sarcoma = sorted(SARCOMA_TYPE)
+        subtypes = SubtypeOption.objects.order_by('name')
         aberrations = MolecularAbberation.objects.all()
         form = self.form_class()
         return self.render_to_response(self.get_context_data(
             form=form,
             casereport=casereport,
-            sarcoma=sarcoma,
+            subtypes=subtypes,
             aberrations=aberrations), )
 
     def post(self, request, case_id, *args, **kwargs):
@@ -485,7 +486,7 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
             case.referring_physician.add(author)
         case.age = data['age']
         case.gender = data['gender']
-        case.subtype = data['subtype']
+        case.subtype = SubtypeOption.objects.get(name=data['subtype'])
         case.presentation = data['presentation']
         case.aberrations.clear()
         if data.getlist('aberrations', None):

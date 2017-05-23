@@ -101,6 +101,14 @@ class MolecularAbberation(CRDBBase):
 
 
 @python_2_unicode_compatible
+class SubtypeOption(CRDBBase):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+
+@python_2_unicode_compatible
 class AuthorizedRep(CRDBBase):
     first_name = models.CharField(max_length=200, null=True, blank=True)
     last_name = models.CharField(max_length=200, null=True, blank=True)
@@ -149,7 +157,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
                                blank=True,
                                verbose_name='Alternative Correspondence ' +
                                             'Email Address')
-    subtype = models.CharField(max_length=200, null=True, blank=True)
+    subtype = models.ForeignKey(SubtypeOption, models.SET_NULL, null=True, blank=True)
     presentation = models.TextField(null=True, blank=True)
     aberrations = models.ManyToManyField(MolecularAbberation, blank=True)
     aberrations_other = models.CharField(max_length=200, null=True, blank=True)

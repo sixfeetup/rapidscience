@@ -119,9 +119,9 @@
                         <label class="required" for="subtype"> Subtype:</label>
                            <select name="subtype" class="form-control select2" id="subtype">
                                  <option value="">select sub type</option>
-                                 {% for key, value in sarcoma %}
-                                     <option value="{{ key }}" {% if key == casereport.subtype %}selected{% endif %}>
-                                         {{ value }}</option>
+                                 {% for item in subtypes %}
+                                     <option value="{{ item }}" {% if item == casereport.subtype %}selected{% endif %}>
+                                         {{ item }}</option>
                                  {% endfor %}
                            </select>
                        <div class="subtype-message">
