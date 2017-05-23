@@ -444,14 +444,14 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
         })
     elif tab == 'discussions':
         context['comment_list'] = sorted(
-            request.user.get_shared_content(ThreadedComment),
+            request.user.get_bookmarked_content(ThreadedComment),
             key=lambda c: c.submit_date,
             reverse=True,
         )
         if request.is_ajax():
             template_name = 'comments/list.html'
     elif tab == 'casereports':
-        reports = [r for r in request.user.get_shared_content(CaseReport)
+        reports = [r for r in request.user.get_bookmarked_content(CaseReport)
                    if r.workflow_state == WorkflowState.LIVE]
         from casereport.models import Physician
         try:
@@ -468,12 +468,12 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
         )
     elif tab == 'documents':
         context['documents'] = sorted(
-            request.user.get_shared_content(Document),
+            request.user.get_bookmarked_content(Document),
             key=lambda c: c.date_added,
             reverse=True,
         )
     elif tab == 'bibliography':
-        context['references'] = request.user.get_shared_content(
+        context['references'] = request.user.get_bookmarked_content(
             Reference
         )
     if extra_context is not None:
