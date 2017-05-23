@@ -44,6 +44,7 @@ from .models import (
     )
 
 from rlp.accounts.models import User
+from rlp.core.forms import member_choices
 from rlp.core.forms import group_choices
 from rlp.core.utils import bookmark_and_notify
 from rlp.core.utils import enforce_sharedobject_permissions
@@ -465,6 +466,11 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
         subtypes = SubtypeOption.objects.order_by('name')
         aberrations = MolecularAbberation.objects.all()
         form = self.form_class()
+        form.fields['members'].choices = member_choices(
+            request.user,
+            casereport,
+        )
+        form.fields['groups'].choices = group_choices(request.user, casereport)
         return self.render_to_response(self.get_context_data(
             form=form,
             casereport=casereport,
