@@ -321,7 +321,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         author = User.objects.get(email__exact=self.primary_physician.email)
         action.send(user, verb='published', action_object=self, target=author)
         # TODO: put pushed into each shared with group activity feed?
-        return "TBD: This case report has been published!"
+        return "This case report has been published!"
 
     def can_retract_as_author(self, user=None):
         # ensure author or admin
@@ -342,7 +342,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     def _retract_by_author(self):  # starts with _ to hide from users
         self.author_approved = False
         self.notify_admin()
-        return "TBD: This case report has been pulled back to the author for review."
+        return '''moved to "Author Review"'''
 
     @transition(field=workflow_state,
                 source=[WorkflowState.RETRACTED],
@@ -352,7 +352,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         """ unpublish """
         self.admin_approved = False
         self.notify_admin()
-        return "TBD: This case report has been pulled back to the site staff for review."
+        return '''moved to "Admin Review"'''
 
     def can_retract(self, user=None):
         if not user:
@@ -369,12 +369,6 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         """
         self.workflow_state = WorkflowState.RETRACTED
         res = "Retracted"
-        if self.can_retract_as_author():
-            res = self._retract_by_author()
-        elif self.can_retract_as_admin():
-            res = self._retract_by_admin()
-        else:
-            raise PermissionError("permission denied")
         return res
 
     # TODO: think about moving these out of the model and into WorkflowState
@@ -385,11 +379,12 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         return displayname.lower().replace(' ', '_')
 
     def _get_past_tense_for_action(self, action):
+        # k:v are button value ( derived from transition method name ):verb
         lookups = {
             'submit': 'submitted',
             'send back': 'sent back',
             'author review edit': 're-edited',
-            'revised': 'pulled for revision',
+            'revise': 'pulled for revision',
         }
         verb = action.lower()
         if verb in lookups:
@@ -415,13 +410,31 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         if not action_name in self.get_next_actions_for_user(user=user):
             raise KeyError(action_name)
 
-        print("taking action %s" % action_name)
         past_tense_verb = self._get_past_tense_for_action(action_name)
+
+        res = getattr(self, self._get_fname_for_displayname(action_name))()
+
+        # RETRACTED is a transitory state. If we have landed in that state,
+        # then we must determine which fork in the workflow to take.
+        # We dont just get the next and recurse on it to avoid multiple
+        # messages and actions getting recorded.
+        if self.workflow_state == WorkflowState.RETRACTED:
+            if self.can_retract_as_author():
+                res = self._retract_by_author()
+                past_tense_verb = res
+            elif self.can_retract_as_admin():
+                res = self._retract_by_admin()
+                past_tense_verb = res
+            else:
+                raise PermissionError("permission denied")
+
+
         if group:
             action.send(user, verb=past_tense_verb, action_object=self, target=group)
         else:
             action.send(user, verb=past_tense_verb, action_object=self)
-        return getattr(self, self._get_fname_for_displayname(action_name))()
+
+        return res
 
     @property
     def display_type(self):
