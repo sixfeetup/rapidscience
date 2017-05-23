@@ -67,6 +67,7 @@ class CaseReportAdmin(admin.ModelAdmin):
     inlines = [
         TreatmentInline,
     ]
+    exclude=('review',)
 
 
 admin.site.register(CaseFile, CaseFileAdmin)
