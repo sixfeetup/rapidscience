@@ -55,7 +55,7 @@ __author__ = 'yaseen'
 
 def is_review_allowed(user, casereport):
     return (
-        user.is_superuser or
+        user.is_staff or
         user.id == casereport.primary_physician.get_rlpuser()
     )
 
@@ -341,13 +341,13 @@ class MyFacetedSearchView(FacetedSearchView):
             return results
 
         # admins see all results
-        if self.request.user.is_superuser:
+        if self.request.user.is_staff:
             return results.order_by('-pub_or_mod_date')
 
         # non-admins only see their own cases or cases shared with them
         shared_pks = []
         for item in self.request.user.get_shared_content(CaseReport):
-            if item.workflow_state == 'live':
+            if item.workflow_state == WorkflowState.LIVE:
                 shared_pks.append(item.pk)
         try:
             phys = Physician.objects.filter(email=self.request.user.email)
