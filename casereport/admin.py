@@ -11,7 +11,8 @@ from casereport.constants import TREATMENT_TYPES
 __author__ = 'yaseen'
 
 Register_models = [
-    AuthorizedRep, Institution, ResultValueEvent, CaseReportHistory]
+    AuthorizedRep, Institution, ResultValueEvent, CaseReportHistory,
+    SubtypeOption]
 
 admin.site.register(Register_models)
 
