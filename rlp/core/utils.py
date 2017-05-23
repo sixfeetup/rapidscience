@@ -36,7 +36,10 @@ def enforce_sharedobject_permissions(cls, obj_class, id_name, methods=None):
                 def wrapper(self, request, *args, **kwargs):
                     if settings.DEBUG:
                         print("wrapper:", fn, args, kwargs, file=sys.stderr)
-                    if oc.objects.get(id=kwargs[id_name]).is_shared_with_user(request.user):
+                    obj = oc.objects.get(id=kwargs[id_name])
+                    if obj.is_shared_with_user(request.user) \
+                        or obj.is_shared_with_users_groups(request.user):
+
                         if settings.DEBUG:
                             print("permisssion granted", vf, file=sys.stderr)
                         return vf(self, request, *args, **kwargs)
