@@ -80,13 +80,13 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
         context['filter_form'] = filter_form
     elif tab == 'documents':
         context['documents'] = sorted(
-            project.get_shared_content(Document),
+            project.get_bookmarked_content(Document),
             key=lambda c: c.date_added,
             reverse=True,
         )
     elif tab == 'discussions':
         context['comment_list'] = sorted(
-            project.get_shared_content(ThreadedComment),
+            project.get_bookmarked_content(ThreadedComment),
             key=lambda c: c.submit_date,
             reverse=True,
         )
@@ -94,7 +94,7 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
             template_name = 'comments/list.html'
         context['page_template'] = 'comments/list.html'
     elif tab == 'casereports':
-        reports = project.get_shared_content(CaseReport)
+        reports = project.get_bookmarked_content(CaseReport)
         context['case_reports'] = sorted(
             (r for r in reports if
              r.workflow_state == WorkflowState.LIVE),
@@ -102,7 +102,7 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
             reverse=True,
         )
     elif tab == 'bibliography':
-        context['references'] = project.get_shared_content(Reference)
+        context['references'] = project.get_bookmarked(Reference)
     # member invite form
     site = Site.objects.get_current()
     project_url = 'https://' + site.domain + project.get_absolute_url()

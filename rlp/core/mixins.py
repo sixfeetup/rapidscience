@@ -27,7 +27,10 @@ class SharesContentMixin(Model):
             target = parent_type.objects.non_polymorphic().get(id=content.id)
         SharedContent.objects.create(viewer=self, target=target)
 
-    def get_shared_content(self, type_class=None):
+    def get_bookmarked_content(self, type_class=None):
+        """ takes an optional type by which to filter
+            returns a set of objects
+        """
         if type_class is None:
             refs = self._shared.all()
         else:
@@ -38,6 +41,22 @@ class SharesContentMixin(Model):
         #return refs
         # this deduping is only neccessary because we had some bad data
         return {r.target for r in refs}
+
+    def get_shared_content(self, type_class=None):
+        """ get items 'shared' with self in the activitystream
+            takes an optional type by which to filter
+            returns a set of objects
+        """
+        my_content_type = ContentType.objects.get_for_model(self.__class__)
+        stream = Action.objects.filter(verb__exact='shared',
+                                       target_content_type=my_content_type,
+                                       target_object_id=self.id)
+        if type_class:
+            shared_object_content_type = ContentType.objects.get_for_model(type_class)
+            stream = stream.filter( action_object_content_type=shared_object_content_type)
+
+        # this is done as a set in order to maintain the legacy return type.
+        return [r.action_object for r in stream]
 
     def deprecated_get_activity_stream(self, type_class=None):
         shared = self.get_shared_content(type_class)
