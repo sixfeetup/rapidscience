@@ -1,4 +1,5 @@
-{% extends 'base.html' %}{% load comments %}
+{% extends 'base.html' %}
+{% load comments %}
 
 {% block content %}
 <div class="container">
@@ -35,6 +36,8 @@
               </div>
             </div>
             <hr>
+            {% render_comment_form for obj %}
+            {% render_comment_list for obj %}
         </div>
     </div>
 </div>
