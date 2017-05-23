@@ -26,8 +26,8 @@ def enforce_sharedobject_permissions(cls, obj_class, id_name, methods=None):
     for fname in methods or cls.http_method_names:
         if fname == 'options':
             continue
-        if settings.DEBUG:
-            print("inspecting classbasedview ", cls, "for:", fname, file=sys.stderr)
+        #if settings.DEBUG:
+        #    print("inspecting classbasedview ", cls, "for:", fname, file=sys.stderr)
         if hasattr(cls, fname):
             view_func = getattr(cls, fname)
 
@@ -49,7 +49,7 @@ def enforce_sharedobject_permissions(cls, obj_class, id_name, methods=None):
                 return wrapper
 
             if settings.DEBUG:
-                print("wrapping ", fname, "on", cls, file=sys.stderr)
+                print("wrapping ", fname, "on", cls, "for shared object permissions", file=sys.stderr)
             setattr(cls, fname, make_wrapper(fname, view_func, obj_class, id_name))
     return cls
 
