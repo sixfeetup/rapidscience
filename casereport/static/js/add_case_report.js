@@ -235,6 +235,13 @@ function validate(ev) {
         return false;
     } else {
         $(".choose-message").hide();
+        if (!$('#consent').prop('checked')) {
+            $(".agree-message").show();
+            $('#consent').focus();
+            return false;
+        } else {
+            $(".agree-message").hide();
+        }
         if ($("#id_radio3").is(':checked')) {
             return file_validate();
         } else if ($("#id_radio1").is(':checked')) {
@@ -362,16 +369,6 @@ function freetext_validate(){
 $('.submit-button input[type=submit]').click(function(e){
     e.preventDefault()
     validate(e)
-});
-
-$('input[type=submit]').click(function(e) {
-    if ($('#consent').prop('checked')) {
-        return true
-    }
-    e.preventDefault();
-    $(".agree-message").show();
-    window.location.href = window.location + '#consent-wrapper'
-    return false
 });
 
 $('.agree-checkbox').click(function(){
