@@ -358,13 +358,14 @@ class MyFacetedSearchView(FacetedSearchView):
                     shared_pks.update([item.pk,])
         try:
             phys = Physician.objects.filter(email=self.request.user.email)
-            authored = set()
+            authored_pks = set()
             for phy in phys:
-                authored += CaseReport.objects.filter(primary_physician=phy)
-            authored_pks = {x.pk for x in authored}
+                authored_pks.update({cr.pk for cr in CaseReport.objects.filter(
+                    primary_physician=phy)})
             shared_pks.update(authored_pks)
         except Physician.DoesNotExist:
             pass
+
 
         for case in results:
             if case.pk not in shared_pks:
