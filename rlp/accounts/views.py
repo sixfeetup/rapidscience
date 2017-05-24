@@ -467,8 +467,10 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
             reverse=True,
         )
     elif tab == 'documents':
+        docs = [doc for doc in request.user.get_bookmarked_content(Document)
+                if doc is not None]
         context['documents'] = sorted(
-            request.user.get_bookmarked_content(Document),
+            docs,
             key=lambda c: c.date_added,
             reverse=True,
         )
