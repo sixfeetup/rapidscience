@@ -1,5 +1,7 @@
 {% extends 'base.html' %}{% load bootstrap3 %}
 
+{% block body_class %}edit-reference{% endblock %}
+
 {% block content %}
 <div class="bannerTitle">
     <div class="container">
@@ -25,7 +27,30 @@
         {% if form %}
         <form method="post" action="">
           {% csrf_token %}
-          {% bootstrap_form form %}
+          {% for field in form %}
+            {% if field.label == 'Members' %}
+              <p class="section-label">Sharing</p>
+              <div class="sharing-wrapper">
+            {% endif %}
+            {% if field.label == 'Description / Comment' %}
+                <div class="form-group">
+                    <label class="control-label section-label" for="id_description">Description / Comment</label>
+                    <textarea class="form-control comment-field remaining-characters" cols="40" id="id_description" maxlength="2000" name="comment" rows="3" title=""></textarea>
+                    <div class="helpText">
+                        <div class="character-count">2000/2000 characters</div>
+                    </div>
+                </div>
+            {% else %}
+              {% if field.label == 'Members' or field.label == 'My Groups'%}
+                {% bootstrap_field field label_class="sub-label" %}
+              {% else %}
+                {% bootstrap_field field label_class="section-label" %}
+              {% endif %}
+            {% endif %}
+            {% if forloop.last %}
+              </div>
+            {% endif %}
+          {% endfor %}
           <button type="submit" class="btn btn-primary">
             Submit
           </button>

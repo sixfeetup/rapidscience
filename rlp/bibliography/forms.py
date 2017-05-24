@@ -206,22 +206,24 @@ class ProjectReferenceForm(forms.ModelForm):
 
 class AttachReferenceForm(forms.Form):
     description = forms.CharField(
-        label='Description/Comment',
+        widget=forms.Textarea(attrs={'rows': 6, 'cols': 40}),
+        label='Description / Comment',
         required=False,
     )
     tags = forms.ModelMultipleChoiceField(
         queryset=Tag.objects.all(),
+        help_text='Separate tags with commas',
         required=False,
     )
     tags.widget.attrs['class'] = 'select2'
     members = MemberListField(
-        label='Invite Members',
+        label='Members',
         help_text='Separate names with commas',
         choices=(),  # gets filled in by the view
         required=False,
     )
     groups = GroupListField(
-        label='Invite My Groups',
+        label='My Groups',
         help_text='Separate names with commas',
         choices=(),  # gets filled in by the view
         required=False,

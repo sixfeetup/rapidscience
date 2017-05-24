@@ -1156,3 +1156,21 @@ input#id_to_dashboard {
         margin-top: 0;
     }
 }
+
+/* labels */
+
+.sub-label {
+    color: #888;
+    text-transform: uppercase;
+    font-size: 14px;
+    font-weight: normal;
+}
+
+.edit-reference {
+    form {
+        margin-top: 30px;
+    }
+    .form-group {
+        margin-bottom: 30px;
+    }
+}
