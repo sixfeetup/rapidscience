@@ -40,6 +40,18 @@ SITE_ID = 1
 
 AUTH_USER_MODEL = 'accounts.User'
 
+AUTH_PASSWORD_VALIDATORS = [
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 12, }
+     },
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator', },
+    {'NAME': 'rlp.accounts.validators.NumberValidator', },
+    {'NAME': 'rlp.accounts.validators.UppercaseValidator', },
+    {'NAME': 'rlp.accounts.validators.LowercaseValidator', },
+    {'NAME': 'rlp.accounts.validators.SymbolValidator', },
+]
+
 DEBUG = False
 
 ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS')
