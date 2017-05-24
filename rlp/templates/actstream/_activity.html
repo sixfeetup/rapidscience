@@ -44,9 +44,9 @@
                     {% if obj.workflow_state == 'live' %}
                         Posted
                     {% elif obj.workflow_state == 'draft' %}
-                        Saved
+                        Draft
                     {% elif obj.workflow_state == 'author review' %}
-                        Saved
+                        Author Review
                     {% elif obj.workflow_state == 'processing' %}
                         Submitted
                     {% else %}

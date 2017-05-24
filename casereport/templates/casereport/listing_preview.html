@@ -13,7 +13,17 @@
       <p class="tags">
           <span class="btn btn-tag btn-xs">
               <i class="{{ obj.get_workflow_icon }}" aria-hidden="true"></i>
-              {{ obj.workflow_state|title }}
+              {% if obj.workflow_state == 'live' %}
+                  Posted
+              {% elif obj.workflow_state == 'draft' %}
+                  Draft
+              {% elif obj.workflow_state == 'author review' %}
+                  Author Review
+              {% elif obj.workflow_state == 'processing' %}
+                  Submitted
+              {% else %}
+                  {{ obj.workflow_state }}
+              {% endif %}
           </span>
       </p>
     </div>

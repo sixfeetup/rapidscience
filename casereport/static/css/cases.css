@@ -435,6 +435,12 @@ background: linear-gradient(to bottom, rgba(226,226,226,1) 0%, rgba(209,209,209,
 	text-transform: uppercase;
 	margin-top: 15px;
 }
+.crstatus.author-review {
+    margin-top: 0;
+    padding: 15px 13px;
+    line-height: 16px;
+}
+
 .crstatus i {
 	font-size: 30px;
 }
@@ -1024,7 +1030,7 @@ input:focus + div.info {
 .age-message,
 .gender-message,
 .subtype-message,
-.subtype-other-message,
+.subtype-message,
 .file-message,
 .agefield-message,
 .genderfield-message,

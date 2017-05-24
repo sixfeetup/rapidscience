@@ -32,10 +32,10 @@ class WorkflowState(object):
     INITIAL_STATE = DRAFT
 
     ICONS = {
-        DRAFT:          'fa fa-clock-o',
+        DRAFT:          'fa fa-pencil',
         AUTHOR_REVIEW:  'fa fa-clock-o',
-        ADMIN_REVIEW:   'fa fa-check',
-        LIVE:           'fa fa-file-text-o',
+        ADMIN_REVIEW:   'fa fa-download',
+        LIVE:           'fa fa-check',
         RETRACTED:      None
     }
 

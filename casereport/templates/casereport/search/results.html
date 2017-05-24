@@ -18,14 +18,14 @@
                     Case ID: {{ result.object.id }} | {{ result.object.get_physician|capfirst }}{% if result.object.primary_physician.affiliation.country %},  {{ result.object.primary_physician.affiliation.country.name }}{% endif %}
                      |  {{ result.object.sort_date|date:"M d, Y" }}
                 </div>
-                <div class="col-md-2 crstatus">
+                <div class="col-md-2 crstatus {{ result.object.workflow_state|slugify }}">
                     <i class="{{ result.object.get_workflow_icon }}" aria-hidden="true"></i><br />
                     {% if result.object.workflow_state == 'live' %}
                         Posted
                     {% elif result.object.workflow_state == 'draft' %}
-                        Saved
+                        Draft
                     {% elif result.object.workflow_state == 'author review' %}
-                        Saved
+                        Author Review
                     {% elif result.object.workflow_state == 'processing' %}
                         Submitted
                     {% else %}
