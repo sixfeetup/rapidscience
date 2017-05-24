@@ -36,8 +36,24 @@
         </blockquote>
         {% endif %}
 
-        {% if action.action_object.tags %}
+        {% if action.action_object.tags or model == "casereport" %}
           <p class="tags">
+            {% if model == "casereport" %}
+                <span class="btn btn-tag btn-xs">
+                    <i class="{{ obj.get_workflow_icon }}" aria-hidden="true"></i>
+                    {% if obj.workflow_state == 'live' %}
+                        Posted
+                    {% elif obj.workflow_state == 'draft' %}
+                        Saved
+                    {% elif obj.workflow_state == 'author review' %}
+                        Saved
+                    {% elif obj.workflow_state == 'processing' %}
+                        Submitted
+                    {% else %}
+                        {{ obj.workflow_state }}
+                    {% endif %}
+                </span>
+            {% endif %}
             {% for tag in action.action_object.tags.all %}
               <a role="button" class="btn btn-tag btn-xs" href="{% url 'haystack_search' %}?tags={{ tag.id }}">
                 {{ tag }}

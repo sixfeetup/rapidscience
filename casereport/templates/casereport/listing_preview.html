@@ -10,6 +10,12 @@
         {% autoescape off %}{% display_shared_with obj request.user %}{% endautoescape %}
       </p>
       <p class="more">{{ obj.description|urlize|linebreaksbr }}</p>
+      <p class="tags">
+          <span class="btn btn-tag btn-xs">
+              <i class="{{ obj.get_workflow_icon }}" aria-hidden="true"></i>
+              {{ obj.workflow_state|title }}
+          </span>
+      </p>
     </div>
     <div class="col-md-1">
       {% include 'discussions/discussion_count_widget.html' %}
