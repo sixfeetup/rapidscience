@@ -47,7 +47,7 @@
         {% endif %}
       </div>
       <div class="col-md-1 activity-actions">
-        {% if model != 'referenceshare' and model != 'reference' %}
+        {% if model != 'referenceshare' %}
             {% include 'discussions/discussion_count_widget.html' %}
         {% endif %}
         {% if model == 'file' or model == 'image' or model == 'link' or model == 'video' or model == 'document' %}
