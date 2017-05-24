@@ -228,12 +228,25 @@ function validate(ev) {
     ev.preventDefault()
     $(".required-message").hide();
     var radio = $('.radiobut').val();
+    var subtype = $('#subtype').val();
+    var subtypeOther = $('#other-sarcoma').val();
     var e = $('.radiobut:checked').length > 0;
     if (e != true) {
         $(".radiobut").focus();
         $(".choose-message").show();
         return false;
     } else {
+        if(subtype == '') {
+            caseform.subtype.focus()
+            $(".required-message").show();
+            $(".subtype-message").show();
+        return false;
+        }$(".subtype-message").hide();
+        if(subtype == 'Other' && subtypeOther == '') {
+            $("#other-sarcoma").focus();
+            $(".subtype-message").show()
+            return false;
+        }$(".subtype-message").hide()
         $(".choose-message").hide();
         if (!$('#consent').prop('checked')) {
             $(".agree-message").show();
@@ -268,7 +281,6 @@ function file_validate() {
 function manual_validate() {
     var age = $('#age').val();
     var gender = $('#gender').val();
-    var subtype = $('#subtype').val();
     var treatment_names = $('input[name=treatment_name]');
     var treatment_durations = $('input[name=treatment_duration]');
     var treatment_types = $('select[name=treatment_type]');
@@ -286,12 +298,6 @@ function manual_validate() {
     $(".gender-message").show();
     return false;
     }$(".gender-message").hide();
-    if(subtype == '') {
-    caseform.subtype.focus()
-    $(".required-message").show();
-    $(".subtype-message").show();
-    return false;
-    }$(".subtype-message").hide();
     treatment_names.each(function() {
         if ($(this).val() == '') {
             $(".required-message").show();
@@ -333,7 +339,6 @@ function manual_validate() {
 function freetext_validate(){
     var gender = $('#gender').val();
     var age = $('#age').val();
-    var subtype = $('#subtype').val();
     var detail = $('#details').val();
 
 
@@ -349,12 +354,6 @@ function freetext_validate(){
     $(".gender-message").show();
     return false;
     }$(".gender-message").hide();
-    if(subtype == '') {
-    $('#subtype').focus();
-    $(".required-message").show();
-    $(".subtype-message").show();
-    return false;
-    }$(".subtype-message").hide();
     if(detail == '') {
     caseform.details.focus();
     $(".required-message").show();

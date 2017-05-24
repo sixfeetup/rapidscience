@@ -123,12 +123,14 @@
                                      <option value="{{ item }}" {% if item == casereport.subtype %}selected{% endif %}>
                                          {{ item }}</option>
                                  {% endfor %}
+                                 <option value="Other" {% if casereport.subtype == "Other" %}selected{% endif %}>Other</option>
                            </select>
+                       <div class="form-group others">
+                         <label for="other-sarcoma">Other</label>
+                         <input id="other-sarcoma" name="other-sarcoma" class="form-control">
+                       </div>
                        <div class="subtype-message">
                         <p>This field is required.</p>
-                       </div>
-                       <div class="form-group others">
-                         <input id="other-sarcoma" name="other-sarcoma" class="form-control">
                        </div>
                    </div>
         </div>
@@ -255,15 +257,19 @@
             });
         });
 
-         $( "#subtype" ).on( "autocompleteselect", function( event, ui ) {
-            value = ui.item.value.split(",");
-                if (value == "Other") {
-                       $(".others").show();
-                        $("#other-sarcoma").prop('required',true);
-                    } else {
-                       $(".others").hide();
-                   }
-            });
+        function toggleSubtypeOther() {
+            value = $("#subtype").val();
+            if (value == "Other") {
+                $("#other-sarcoma").parent().show();
+                $("#other-sarcoma").prop('required',true);
+            } else {
+                $("#other-sarcoma").parent().hide();
+            }
+        }
+        toggleSubtypeOther();
+        $( "#subtype" ).on( "select2:select", function( e ) {
+            toggleSubtypeOther();
+        });
 
          $('.select2').select2();
     }); })(jQuery);

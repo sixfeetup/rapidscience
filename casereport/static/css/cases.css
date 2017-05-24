@@ -1024,6 +1024,7 @@ input:focus + div.info {
 .age-message,
 .gender-message,
 .subtype-message,
+.subtype-other-message,
 .file-message,
 .agefield-message,
 .genderfield-message,
