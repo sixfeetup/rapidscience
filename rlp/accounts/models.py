@@ -208,12 +208,12 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
             ).exclude(actor_content_type=my_ct,
                       actor_object_id=self.id,
                       ).values_list('action_object_object_id', flat=True)
-            print("shared crs", list(casereports_shared_with_me_ids))
+            logger.debug("shared crs", list(casereports_shared_with_me_ids))
             non_live_ids = CaseReport.objects.filter(
                 id__in=list(casereports_shared_with_me_ids)) \
                 .exclude(workflow_state=WorkflowState.LIVE) \
                 .values_list('id', flat=True)
-            print("nonlive crs", list(non_live_ids))
+            logger.debug("nonlive crs", list(non_live_ids))
             activity_stream_queryset = activity_stream_queryset.exclude(
                 action_object_content_type=casereport_ct,
                 action_object_object_id__in=list(
