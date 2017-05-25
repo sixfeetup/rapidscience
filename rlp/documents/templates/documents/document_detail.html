@@ -1,5 +1,7 @@
 {% extends 'base.html' %}{% load comments embed_video_tags %}
 
+{% block body_class %}document-detail{% endblock %}
+
 {% block content %}
 <div class="container">
     <div class="row">
@@ -8,7 +10,7 @@
   <div class="row">
     <div class="col-md-11">
       {% if last_viewed_path %}
-      <p><a href="{{ last_viewed_path }}">&larr; Back</a></p>
+      <p class="backlink"><a href="{{ last_viewed_path }}">&larr; Back</a></p>
       {% endif %}
       <a class="share-link pull-right" href="/send/documents/document/{{ obj.id }}"><i class="fa fa-share"></i></a>
       <h1 class="detail-view-heading">{{ obj.title }}</h1>
@@ -17,11 +19,11 @@
         {% if request.user == obj.owner %} | <a href="{% url 'documents:document_edit' obj.id %}">Edit</a>{% endif %} <br />
         Shared with <b>{{ obj.get_viewers|join:"</b>, <b>" }}</b>
       </p>
-      {% if obj.description %}<p>{{ obj.description|urlize }}</p>{% endif %}
+      {% if obj.description %}<p class="initial">{{ obj.description|urlize }}</p>{% endif %}
       {% if document.polymorphic_ctype.model == 'file' %}
-        <a class="btn btn-primary" href="{{ obj.upload.url }}" target="_blank">
+        <p class="initial"><a class="btn btn-primary" href="{{ obj.upload.url }}" target="_blank">
           Download
-        </a>
+      </a></p>
       {% elif document.polymorphic_ctype.model == 'image' %}
         <a href="{{ obj.upload.url }}" target="_blank">
           <img alt="{{ obj.title }}" src="{{ obj.upload.url }}" width="{% if obj.upload.width < 500 %}{{ obj.upload.width }}{% else %}500px{% endif %}">
@@ -37,21 +39,22 @@
         {% video shared_video 'medium' %}
         {% endvideo %}
       {% endif %}
+      {% with tags=obj.tags.all %}
+        {% if tags %}
+          <p class="tags">
+          {% for tag in obj.tags.all %}
+            <a role="button" class="btn btn-tag btn-xs" href="{% url 'haystack_search' %}?tags={{ tag.id }}">
+              {{ tag }}
+            </a>
+          {% endfor %}
+          </p>
+        {% endif %}
+      {% endwith %}
     </div>
     <div class="col-md-1">
       {% if obj.owner == request.user %}{% include 'forms/_edit_dropdown.html' with edit_url=obj.get_edit_url delete_url=obj.get_delete_url %}{% endif %}
     </div>
   </div>
-  {% with tags=obj.tags.all %}
-    {% if tags %}
-      <br>
-      {% for tag in obj.tags.all %}
-        <a role="button" class="btn btn-tag btn-xs" href="{% url 'haystack_search' %}?tags={{ tag.id }}">
-          {{ tag }}
-        </a>
-      {% endfor %}
-    {% endif %}
-  {% endwith %}
   <hr>
   {% render_comment_form for obj %}
   <br>

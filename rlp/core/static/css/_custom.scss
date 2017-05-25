@@ -817,8 +817,10 @@ a.comment-count.empty {
     color: #ebebeb;
 }
 
-.comment-detail {
+.comment-detail,
+.document-detail {
     h1 {
+        font-size: 32px;
         margin-top: 0;
         margin-bottom: 7px;
         text-transform: none;
@@ -830,6 +832,18 @@ a.comment-count.empty {
     }
     .initial {
         margin-bottom: 28px;
+        font-size: 20px;
+        line-height: 26px;
+    }
+    img,
+    iframe {
+        margin-bottom: 16px;
+    }
+    .btn {
+        margin-bottom: 2px;
+    }
+    .tags {
+        margin-bottom: 0;
     }
     .main > .container > .row > div {
         margin-top: 0;
@@ -837,6 +851,10 @@ a.comment-count.empty {
     .rpds-form h4, .rpds-form h4 label {
         margin-top: 0;
     }
+}
+
+.document-detail .initial {
+    margin-bottom: 14px;
 }
 
 .backlink {

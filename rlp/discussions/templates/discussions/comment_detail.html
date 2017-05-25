@@ -32,7 +32,7 @@
                 {{ comment.comment|urlize|linebreaksbr }}
             </p>
         </div>
-        <div class="col-md-1 col-xs-2 col-md-push-2">
+        <div class="col-md-1 col-xs-2 col-md-push-2 action">
           {% if comment.is_discussion %}
             <a class="share-link" href="/send/discussions/threadedcomment/{{ comment.id }}"><i class="fa fa-share"></i></a>
           {% endif %}
