@@ -9,14 +9,14 @@
         {{ obj.parsed_data.publisher }} {{ obj.parsed_data.journal_title }}
         {% if obj.parsed_data.doi %}DOI: {{ obj.parsed_data.doi }}{% endif %} {% if obj.parsed_data.pubmed_id %}PMID: {{ obj.parsed_data.pubmed_id }}{% endif %}
       {% if not search %}</p>{% endif %}
-    {% if not search %}<p class="small">{% endif %}
       {% if not add_reference %}
+        {% if not search %}<p class="small">{% endif %}
           {% with edit_url=obj.get_edit_url %}
             {% if edit_url %}<a href="{{ edit_url }}">Edit</a>{% endif %}
           {% endwith %}<br />
           {% autoescape off %}{% display_shared_with obj request.user %}{% endautoescape %}
+        {% if not search %}</p>{% endif %}
       {% endif %}
-    {% if not search %}</p>{% endif %}
     {% if obj.description %}<blockquote>{{ obj.description }}</blockquote>{% endif %}
   {% if not search %}
   </div>
