@@ -214,7 +214,7 @@ $(document).ready(function() {
     $(phy_wrapper).on("click",".remove_phy", function(e){ //user click on remove text
         e.preventDefault(); $(this).parents('.row.physician').remove();
         if ($('.row.physician').length == 0) {
-            $(".add_phy_button_text").text('Add co-author');
+            $(".add_phy_button_text").text('Add co-author(s)');
         }
         if ($('.row.physician').length <= max_fields) {
             $(".add_phy_button").show();
