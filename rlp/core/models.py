@@ -90,8 +90,13 @@ class SharedObjectMixin(models.Model):
     )
 
     def get_viewers(self):
-        refs = self._related.select_related('viewer_type').all()
-        return {r.viewer for r in refs}
+        my_type = ContentType.objects.get_for_model(self)
+        shares = Action.objects.filter(
+            action_object_object_id=self.id,
+            action_object_content_type=my_type,
+            verb__exact='shared',
+        )
+        return {s.target for s in shares}
 
     def get_viewers_as_users(self):
         '''resolve group viewers into lists of individuals'''
