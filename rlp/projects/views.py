@@ -102,7 +102,7 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
             reverse=True,
         )
     elif tab == 'bibliography':
-        context['references'] = project.get_bookmarked(Reference)
+        context['references'] = project.get_bookmarked_content(Reference)
     # member invite form
     site = Site.objects.get_current()
     project_url = 'https://' + site.domain + project.get_absolute_url()
