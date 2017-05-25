@@ -174,7 +174,7 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
         )
         return q
 
-    def _get_activity_excluding_shares_with_me(self):
+    def _get_activity_excluding_self_shares(self):
         my_ct = ContentType.objects.get_for_model(self)
         # exclude shares with self
         q = ~Q(
@@ -201,13 +201,11 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
         from casereport.models import CaseReport
         activity_stream_queryset = Action.objects.filter(
             (
-                (
-                    self._get_my_activity_query()
-                    | self._get_activity_involving_me_query()
-                )
-                & self._get_activity_excluding_shares_with_me()
+                self._get_my_activity_query()
+                | self._get_activity_involving_me_query()
+                | self._get_activity_in_my_projects_query()
             )
-            | self._get_activity_in_my_projects_query()
+            & self._get_activity_excluding_self_shares()
         )
 
         # exclude shares to me of casereports that arent mine and live,
