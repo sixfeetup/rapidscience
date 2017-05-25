@@ -18,6 +18,15 @@
         {% if not search %}</p>{% endif %}
       {% endif %}
     {% if obj.description %}<blockquote>{{ obj.description }}</blockquote>{% endif %}
+    {% if not search %}
+        <p class="tags">
+            {% for tag in obj.tags.all %}
+                <a role="button" class="btn btn-tag btn-xs" href="{% url 'haystack_search' %}?tags={{ tag.id }}">
+                  {{ tag }}
+                </a>
+            {% endfor %}
+        </p>
+    {% endif %}
   {% if not search %}
   </div>
   <div class="col-md-1">
