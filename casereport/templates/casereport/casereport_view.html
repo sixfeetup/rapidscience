@@ -134,7 +134,7 @@
               {{ casereport.gender|capfirst }} |
               {{ casereport.subtype }}
           </p>
-          <p>{{ casereport.presentation|linebreaks }}</p>
+          {{ casereport.presentation|linebreaks }}
       </div>
      {% endif %}
 
@@ -222,7 +222,7 @@
           {% for attachment in casereport.get_attachments %}
           {% if attachment.file %}
               <img src="{{ attachment.file.url }}" alt="{{ attachment.title }}"/>
-              <p>
+              <p class="caption">
                   <strong>{{ forloop.counter }}. {% if attachment.title %}{{ attachment.title }}{% endif %}</strong>
                   {% if attachment.description %}<br />{{ attachment.description }}{% endif %}
                   <br /><a href="{{ attachment.file.url }}" target="_blank" class="download">Download full image</a>
@@ -236,7 +236,6 @@
           {% if user_interaction %}
             {% render_comment_form for casereport %}
           {% endif %}
-          <br>
       </div>
       {% with expand_comments='True' %}
         {% include 'discussions/threadedcomment/list.html' %}
