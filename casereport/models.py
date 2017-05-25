@@ -158,6 +158,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
                                verbose_name='Alternative Correspondence ' +
                                             'Email Address')
     subtype = models.ForeignKey(SubtypeOption, models.SET_NULL, null=True, blank=True)
+    subtype_other = models.CharField(max_length=200, null=True, blank=True)
     presentation = models.TextField(null=True, blank=True)
     aberrations = models.ManyToManyField(MolecularAbberation, blank=True)
     aberrations_other = models.CharField(max_length=200, null=True, blank=True)

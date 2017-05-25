@@ -131,8 +131,8 @@
                                  <option value="Other" {% if casereport.subtype == "Other" %}selected{% endif %}>Other</option>
                            </select>
                        <div class="form-group others">
-                         <label for="other-sarcoma">Other</label>
-                         <input id="other-sarcoma" name="other-sarcoma" class="form-control">
+                         <label for="subtype-other">Other</label>
+                         <input id="subtype-other" name="subtype_other" class="form-control" value="{{ casereport.subtype_other }}" />
                        </div>
                        <div class="subtype-message">
                         <p>This field is required.</p>
@@ -265,10 +265,10 @@
         function toggleSubtypeOther() {
             value = $("#subtype").val();
             if (value == "Other") {
-                $("#other-sarcoma").parent().show();
-                $("#other-sarcoma").prop('required',true);
+                $("#subtype-other").parent().show();
+                $("#subtype-other").prop('required',true);
             } else {
-                $("#other-sarcoma").parent().hide();
+                $("#subtype-other").parent().hide();
             }
         }
         toggleSubtypeOther();

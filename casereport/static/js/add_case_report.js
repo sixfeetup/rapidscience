@@ -229,7 +229,7 @@ function validate(ev) {
     $(".required-message").hide();
     var radio = $('.radiobut').val();
     var subtype = $('#subtype').val();
-    var subtypeOther = $('#other-sarcoma').val();
+    var subtypeOther = $('#subtype-other').val();
     var e = $('.radiobut:checked').length > 0;
     if (e != true) {
         $(".radiobut").focus();
@@ -243,7 +243,7 @@ function validate(ev) {
         return false;
         }$(".subtype-message").hide();
         if(subtype == 'Other' && subtypeOther == '') {
-            $("#other-sarcoma").focus();
+            $("#subtype-other").focus();
             $(".subtype-message").show()
             return false;
         }$(".subtype-message").hide()

@@ -194,6 +194,7 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         age = data.get('age')
         gender = data.get('gender')
         subtype = SubtypeOption.objects.get(name=data.get('subtype'))
+        subtype_other = data.get('subtype_other')
         attachment1 = request.FILES.get('attachment1')
         attachment2 = request.FILES.get('attachment2')
         attachment3 = request.FILES.get('attachment3')
@@ -215,7 +216,7 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
 
         case = CaseReport(title=title, age=age, gender=gender,
                           casefile_f=document, subtype=subtype,
-                          presentation=presentation,
+                          subtype_other=subtype_other, presentation=presentation,
                           aberrations_other=aberrations_other,
                           biomarkers=biomarkers, pathology=pathology,
                           additional_comment=additional_comment,

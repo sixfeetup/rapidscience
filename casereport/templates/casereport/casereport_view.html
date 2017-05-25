@@ -132,7 +132,11 @@
           <p class="section-details">
               {{ casereport.age }} yr |
               {{ casereport.gender|capfirst }} |
-              {{ casereport.subtype }}
+              {% if casereport.subtype_other %}
+                  {{ casereport.subtype_other }}
+              {% else %}
+                {{ casereport.subtype }}
+              {% endif %}
           </p>
           {{ casereport.presentation|linebreaks }}
       </div>
