@@ -475,9 +475,13 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
             reverse=True,
         )
     elif tab == 'bibliography':
-        context['references'] = request.user.get_bookmarked_content(
-            Reference
+        refs = request.user.get_bookmarked_content(Reference)
+        context['references'] = sorted(
+            refs,
+            key=lambda c: c.date_added,
+            reverse=True,
         )
+
     if extra_context is not None:
         context.update(extra_context)
     return render(request, template_name, context)
