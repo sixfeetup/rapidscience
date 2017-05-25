@@ -15,19 +15,24 @@
         <span class="crdb-loader-text">Submitting Case Report ...</span>
     </div>
 </div>
-<div class="main-wrapper">
 
+<form id="caseform" name="caseform" class="rpds-form" action="" method="post"
+      enctype="multipart/form-data">
+    {% csrf_token %}
+
+<div class="main-wrapper">
+  <div class="case-hero">
+    <div class="container">
+        <div class="col-md-10 col-md-offset-1">
+            <h4><label for="casetitle" class="casetitle">Case Title</label></h4>
+            <input name="casetitle" value="{{ casereport.title }}" type="text" class="form-control" id="casetitle">
+        </div>
+    </div>
+  </div>
 
   <div class="container">
       <div class="inside-wrapper">
       <div class="form submit-form">
-
-    		<form id="caseform" name="caseform" class="rpds-form" action="" method="post"
-                  enctype="multipart/form-data">
-                {% csrf_token %}
-
-                <h4><label for="casetitle">Case Title</label></h4>
-                <input name="casetitle" value="{{ casereport.title }}" type="text" class="form-control" id="casetitle">
 
                 <h4 class="title-name">Primary Author/Contact</h4>
                 <p class="user-meta"><strong>{{ request.user.get_full_name }}
@@ -209,8 +214,6 @@
 
                 </div>
 
-   </form>
-
    <div class="modal fade" id="modal-cancel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -229,6 +232,8 @@
       </div>
 </div>
 </div>
+</form>
+
 {% endblock content %}
 
 {% block js-footer %}
