@@ -817,40 +817,30 @@ a.comment-count.empty {
     color: #ebebeb;
 }
 
-#discussion-detail {
+.comment-detail {
     h1 {
-        text-transform: none;
-        font-size: 32px;
         margin-top: 0;
+        margin-bottom: 7px;
+        text-transform: none;
+        line-height: normal;
+
+    }
+    .small {
+        margin-bottom: 8px;
     }
     .initial {
-        font-size: 20px;
+        margin-bottom: 28px;
     }
-    .character-count {
-        background-color: rgb(238, 238, 238);
-        color: #888888;
-        font-size: 13px;
-        font-style: italic;
-        padding: 5px 10px 5px 170px;
+    .main > .container > .row > div {
         margin-top: 0;
-        border-radius: 0 0 5px 5px;
-        display: block;
     }
-    button[type='submit'],
-    .cancel-button-collapse {
-        position: absolute;
-        margin-top:-50px;
+    .rpds-form h4, .rpds-form h4 label {
+        margin-top: 0;
     }
-    button[type='submit'] {
-        border-radius: 0 0 0 5px;
-    }
-    .cancel-button-collapse {
-        margin-left: 54px;
-        border-radius: 0;
-        border: none;
-        border-right: #dddddd solid 1px;
-        background-color: transparent;
-    }
+}
+
+.backlink {
+    margin-top: 30px;
 }
 
 .replies {

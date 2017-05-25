@@ -1,12 +1,14 @@
 {% extends 'base.html' %}{% load bootstrap3 comments discussion_tags %}
 
+{% block body_class %}comment-detail{% endblock %}
+
 {% block content %}
     <!-- comment_detail -->
 <div class="container">
     <div class="row" id="discussion-detail">
         <div class="col-md-8 col-xs-12 col-md-push-2">
             {% if last_viewed_path %}
-            <p><a href="{{ last_viewed_path }}">&larr; Back</a></p>
+            <p class="backlink"><a href="{{ last_viewed_path }}">&larr; Back</a></p>
             {% endif %}
         </div>
     </div>
