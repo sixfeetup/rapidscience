@@ -339,7 +339,6 @@ function manual_validate() {
 function freetext_validate(){
     var gender = $('#gender').val();
     var age = $('#age').val();
-    var detail = $('#details').val();
 
 
     if(age == '') {
@@ -354,12 +353,6 @@ function freetext_validate(){
     $(".gender-message").show();
     return false;
     }$(".gender-message").hide();
-    if(detail == '') {
-    caseform.details.focus();
-    $(".required-message").show();
-    $(".detail-message").show();
-    return false;
-    }$(".detail-message").hide();
 
     $('#caseform').submit();
 
