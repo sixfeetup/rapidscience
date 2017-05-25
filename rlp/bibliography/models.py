@@ -296,7 +296,7 @@ def parse_pubmed_data(raw_data):
         parsed_data['journal_volume'] = raw_data['MedlineCitation']['Article']['Journal']['JournalIssue'].get('Volume', '')
         parsed_data['issn'] = raw_data['MedlineCitation']['Article']['Journal']['ISSN']
     else:
-        logger.error('Unknown Pubmed result type: {}'.format(', '.join(raw_data.keys())))
+        print('Unknown Pubmed result type: {}'.format(', '.join(raw_data.keys())))
         return None
     return parsed_data
 
@@ -336,13 +336,11 @@ def get_or_create_reference_from_pubmed(result):
     parsed_data = parse_pubmed_data(result)
     if not parsed_data:
         return None, False
-    # First, check if this reference already exists from Pubmed
+    # First, check if this reference already exists under a CrossRef doi
     if parsed_data['doi']:
-        try:
-            ref = Reference.objects.get(doi=parsed_data['doi'])
-            return ref, False
-        except Reference.DoesNotExist:
-            pass
+        refs = Reference.objects.filter(doi=parsed_data['doi'])
+        if refs.count():
+            return refs.first(), False
     ref, created = Reference.objects.get_or_create(
         pubmed_id=parsed_data['pubmed_id'],
         defaults={
@@ -360,15 +358,39 @@ def get_or_create_reference_from_crossref(result):
     # We do a get_or_create by DOI here because this item may have been created by a Pubmed entry and we don't want
     # duplicates. We do not update the record because, ugh, who wants to get into that.
     parsed_data = parse_crossref_data(result)
-    ref, created = Reference.objects.get_or_create(
-        doi=parsed_data['doi'],
-        defaults={
-            'source': choices.CROSSREF,
-            'title': parsed_data['title'],
-            'raw_data': result,
-            'parsed_data': parsed_data,
-        }
-    )
+    # we have a race condition when multiple searches are running that can
+    # create duplicate records which get_or_create does not handle well.
+    # Also, if a search is done via crossref, the record will be created
+    # without a pubmed id.   If a subsequent pubmed search is done and that
+    # result has a doi, the doi keyed record gets returned without adding the pubmed id.
+    # If the pubmed result doesnt have a doi, then a pubmed record is created,
+    # possibly duplicating the doi record, without a doi, which prevents the doi from being
+    # used as a key field.
+    # TODO: refactor this fix out by adding keys to the model, inserting new
+    # records via independent, short lived transactions.
+    # I want to make doi the primary key, but I have pubmed records that have no doi
+    # We may also want to add an expiry to some of these records just to keep them
+    # somewhat fresh over time.
+
+    defaults={
+        'source': choices.CROSSREF,
+        'title': parsed_data['title'],
+        'raw_data': result,
+        'parsed_data': parsed_data,
+    }
+
+    try:
+        ref, created = Reference.objects.get_or_create(
+            doi=parsed_data['doi'],
+            defaults=defaults
+        )
+
+    except Reference.MultipleObjectsReturned:
+        while Reference.objects.filter(doi=parsed_data['doi']).count() > 1:
+            print("clearing extra references")
+            Reference.objects.filter(doi=parsed_data['doi']).last().delete()
+        return Reference.objects.filter(doi=parsed_data['doi']).first(), False
+
     return ref, created
 
 
