@@ -801,7 +801,7 @@ span.help-block {
 }
 a.comment-count,
 a.share-link {
-    color: #444444;
+    color: #ddd;
     display: inline-block;
     text-align: center;
     font-size: 14px;
@@ -809,6 +809,15 @@ a.share-link {
     font-weight: bold;
     margin-bottom: 10px;
 }
+.comment-count-text {
+    color: #444;
+}
+a.comment-count:hover,
+a.comment-count.empty:hover,
+a.share-link:hover {
+    color: #256180;
+}
+
 .comment-count i,
 .share-link i {
     font-size: 20px;
