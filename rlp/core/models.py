@@ -111,30 +111,7 @@ class SharedObjectMixin(models.Model):
         return users
 
     def is_shared_with_user(self, user):
-        """ Check the content's activity stream for shares to the user.
-            Will actually work with any object that extends the 
-            SharesContentMixin, so groups work here too.
-        """
-        #return (user in self.get_viewers_as_users()) or user.is_superuser
-        if user.is_superuser:
-            return True
-
-        self_ct = ContentType.objects.get_for_model(self.__class__)
-        user_ct = ContentType.objects.get_for_model(user.__class__)
-
-        if Action.objects.filter( verb="shared",
-                                  action_object_content_type=self_ct,
-                                  action_object_object_id=self.id,
-                                  target_content_type=user_ct,
-                                  target_object_id=user.id).count() > 0:
-            return True
-        return False
-
-    def is_shared_with_users_groups(self, user):
-        for group in user.active_projects():
-            if self.is_shared_with_user(group):
-                return True
-        return False
+        return user in self.get_viewers_as_users() or user.is_superuser
 
     def share_with(self, viewers, shared_by, comment=None):
         # add an entry to the target viewer's activity stream
