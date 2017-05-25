@@ -5,5 +5,12 @@ by {% if request.user == action.actor %} Me {% else %} <a href="{{ action.actor.
 {% if action.verb == 'shared' %} to {{ action.target|link }}
     {% if action.others %}{% for other in action.others %}{% if forloop.last %} and {%  else %}, {% endif %}{{ other.target|link }}{%  endfor %}{% endif %}
 {% endif %}
-{% if action.action_object_content_type.model == 'threadedcomment' %}on <a href="{{ action.action_object.content_object.get_absolute_url }}">{{ action.action_object.content_object|truncatewords_html:10 }}</a>{% endif %}
+{% if action.action_object_content_type.model == 'threadedcomment' %}
+    {%  with comment=action.action_object %}
+        {% if comment.is_reply %}
+            to {{ comment.get_parent.user }}
+        {% endif %}
+        on <a href="{{ commment.discussion_root.content_object.get_absolute_url }}">{{ comment.discussion_root.content_object|truncatewords_html:10 }}</a>
+    {% endwith %}
+{% endif %}
 | {{ action.timestamp|date:"j M Y" }}

@@ -157,6 +157,18 @@ class ThreadedComment(Comment, SharedObjectMixin):
         ).exclude(id=self.id)
         return children
 
+    def has_parent(self):
+        return self.parent_id and self.parent_id != self.id
+
+    def is_reply(self):
+        return self.has_parent()
+
+    def get_parent(self):
+        try:
+            return ThreadedComment.objects.get(id=self.parent_id)
+        except ThreadedComment.DoesNotExist:
+            return self
+
     @property
     def discussion_root(self):
         if self.thread_id == 0:
