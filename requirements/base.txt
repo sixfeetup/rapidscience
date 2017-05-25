@@ -2,7 +2,8 @@
 aldryn-search==0.3.0
 backport-collections==0.1
 bcrypt==3.1.1
-biopython==1.68
+#biopython==1.68
+-e git+https://github.com/gfranxman/biopython.git@master#egg=biopython
 bleach==1.5.0
 cmsplugin-filer==1.1.3
 django-activity-stream==0.6.3
