@@ -45,7 +45,7 @@ $(document).ready(function() {
             x++; //text box increment
             $(wrapper).append('<div class="form-group col-md-8 col-xs-8 "><label for="title">Authorized Email:</label>' +
                     '<input  class="form-control col-md-11" id="author_email" type="email" placeholder="Healthcare professional or administrator authorized to edit this record" name="author"/>' +
-                    '<a href="#" class="remove_field"><i class="fa  fa-times"></i></a></div>'); //add input box
+                    '<a href="#" class="remove_field">✕</a></div>'); //add input box
         }
     });
 
@@ -151,7 +151,7 @@ function captcha(){
                             '<input name="test" class="form-control test" ></div>'+
                             '<div class="form-group col-xs-6">'+
                           '<input type="text" name="test_result" class="form-control"></div>'+
-                    '<a href="#" class="remove_field"><i class="fa  fa-times"></i></a></div>'); //add input box
+                    '<a href="#" class="remove_field">✕</i></a></div>'); //add input box
         }
     });
 
@@ -200,7 +200,7 @@ $(document).ready(function() {
                 '<div class="helpText">' +
                     'You must use an institutional email address' +
                 '</div>' +
-                '</div><div class="col-md-1"><a href="#" class="remove_phy"><i class="fa fa-times"></i></a></div></div>'
+                '</div><div class="col-md-1"><a href="#" class="remove_phy">✕</a></div></div>'
             );
             if ($('.row.physician').length > 0) {
                 $(".add_phy_button_text").text('Add another co-author');
@@ -395,7 +395,7 @@ $(document).ready(function() {
                     '<label for="attachment1_description">Description</label>'+
                     '<textarea id="attachment' + x + '_description" name="attachment' + x + '_description"'+
                               'rows="4" cols="73" class="form-control attachment' + x + '_description editor"></textarea>'+
-                '</div><div class="col-md-1"><a href="#" class="remove_att"><i class="fa fa-times"></i></a></div></div>'
+                '</div><div class="col-md-1"><a href="#" class="remove_att">✕</a></div></div>'
             );
             if ($('.row.attachment').length >= max_fields) {
                 add_button.hide();

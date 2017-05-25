@@ -10,7 +10,7 @@
     $(".add_treatment").click(function(e){ 
         e.preventDefault();
         if(field_count < max_fields){ //max input box allowed
-            var new_treatment = '<a href="#" class="remove_treatment"><i class="fa fa-times"></i></a>' + treatment_content;
+            var new_treatment = '<a href="#" class="remove_treatment">✕</a>' + treatment_content;
             new_treatment = new_treatment.replace(/_1/g, "_" + field_count)
             $(new_treatment).find("input").val("");
             $(treatment_wrapper).append('<div class="row treatment">' + new_treatment + '</div>');
