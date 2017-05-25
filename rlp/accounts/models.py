@@ -174,9 +174,20 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
         )
         return q
 
+    def _get_activity_excluding_shares_with_me(self):
+        my_ct = ContentType.objects.get_for_model(self)
+        # exclude shares with self
+        q = ~Q(
+            actor_content_type=my_ct,
+            actor_object_id=self.id,
+            verb__exact='shared',
+            target_content_type=my_ct,
+            target_object_id=self.id,
+        )
+        return q
+
     def _get_activity_in_my_projects_query(self):
         from rlp.projects.models import Project  # here to avoid circular import
-        from casereport.models import CaseReport
         active_projects = self.active_projects()
         project_ct = ContentType.objects.get_for_model(Project)
         q = Q(
@@ -189,9 +200,15 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
     def get_activity_stream(self, type_class=None):
         from casereport.models import CaseReport
         activity_stream_queryset = Action.objects.filter(
-            self._get_my_activity_query() \
-            | self._get_activity_involving_me_query() \
-            | self._get_activity_in_my_projects_query())
+            (
+                (
+                    self._get_my_activity_query()
+                    | self._get_activity_involving_me_query()
+                )
+                & self._get_activity_excluding_shares_with_me()
+            )
+            | self._get_activity_in_my_projects_query()
+        )
 
         # exclude shares to me of casereports that arent mine and live,
         if True: #not self.is_staff:
