@@ -952,7 +952,6 @@ input:focus + div.info {
 
 .required:after{
     content:"*" ;
-    color:red;
     padding-left: 3px;
 }
 
