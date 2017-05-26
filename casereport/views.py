@@ -193,7 +193,9 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
             physicians.append(physician)
         age = data.get('age')
         gender = data.get('gender')
-        subtype = SubtypeOption.objects.get(name=data.get('subtype'))
+        subtype = None
+        if data.get('subtype'):
+            subtype = SubtypeOption.objects.get(name=data.get('subtype'))
         subtype_other = data.get('subtype_other')
         attachment1 = request.FILES.get('attachment1')
         attachment2 = request.FILES.get('attachment2')
@@ -484,6 +486,7 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
         case = get_object_or_404(CaseReport, id=case_id)
         case.title = data['casetitle']
         alt_email = data.get('author', None)
+        subtype = data.get('subtype', None)
         case.authorized_reps.clear()
         if alt_email:
             author = AuthorizedRep.objects.get_or_create(email=alt_email)
@@ -501,7 +504,9 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
             case.referring_physician.add(author)
         case.age = data['age']
         case.gender = data['gender']
-        case.subtype = SubtypeOption.objects.get(name=data['subtype'])
+        if subtype:
+            case.subtype = SubtypeOption.objects.get(name=data['subtype'])
+        case.subtype_other = data['subtype_other']
         case.presentation = data['presentation']
         case.aberrations.clear()
         if data.getlist('aberrations', None):
