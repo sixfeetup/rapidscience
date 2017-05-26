@@ -1,8 +1,12 @@
 function search() {
     var url = window.location.href;
+    var newquery = $("input.search").val();
     url = url.split('&')[0];
     if (url.split('?').length == 1)
         url = url + '?'
+    url = url.split('q=');
+    var front = url[0];
+    url = front + "q=" + encodeURIComponent(newquery);
     var selected_gender =  $('.gender-section input:checked');
     selected_gender.each(function(index, el) {
         url = url + '&' + $(el).attr('data-url');
@@ -30,6 +34,11 @@ function search() {
     window.location.href = url;
 
 }
+
+$('.search-cases').on('submit', function (e) {
+    e.preventDefault();
+    search();
+});
 
 
 function toggleChevron(e) {
