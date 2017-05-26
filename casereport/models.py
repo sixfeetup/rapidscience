@@ -90,14 +90,13 @@ class CaseFile(CRDBBase):
 @python_2_unicode_compatible
 class MolecularAbberation(CRDBBase):
     name = models.CharField(max_length=255)
-    molecule = models.CharField(max_length=255)
 
     class Meta:
         verbose_name = 'Genetic Aberration'
         verbose_name_plural = 'Genetic Aberrations'
 
     def __str__(self):
-        return '%s: %s' % (self.molecule, self.name)
+        return self.name
 
 
 @python_2_unicode_compatible
