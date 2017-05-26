@@ -236,17 +236,12 @@ function validate(ev) {
         $(".choose-message").show();
         return false;
     } else {
-        if(subtype == '') {
+        if(subtype == '' && subtypeOther == '') {
             caseform.subtype.focus()
             $(".required-message").show();
             $(".subtype-message").show();
         return false;
         }$(".subtype-message").hide();
-        if(subtype == 'Other' && subtypeOther == '') {
-            $("#subtype-other").focus();
-            $(".subtype-message").show()
-            return false;
-        }$(".subtype-message").hide()
         $(".choose-message").hide();
         if (!$('#consent').prop('checked')) {
             $(".agree-message").show();
