@@ -37,8 +37,8 @@ def enforce_sharedobject_permissions(cls, obj_class, id_name, methods=None):
                     if settings.DEBUG:
                         print("wrapper:", fn, args, kwargs, file=sys.stderr)
                     obj = oc.objects.get(id=kwargs[id_name])
-                    if hasattr(obj, 'can_edit'):
-                        if obj.can_edit(user=request.user):
+                    if hasattr(obj, 'can_view'):
+                        if obj.can_view(user=request.user):
                             return vf(self, request, *args, **kwargs)
                     if obj.is_shared_with_user(request.user):
                         if settings.DEBUG:

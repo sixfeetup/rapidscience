@@ -212,6 +212,11 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     def get_workflow_icon(self):
         return WorkflowState.ICONS.get(self.workflow_state, "")
 
+    def can_view(self, user=None):
+        if not user:
+            user = CurrentUserMiddleware.get_user()
+        return (user.email == self.primary_physician.email) or user.is_staff
+
     def can_edit(self, user=None):
         if not user:
             user = CurrentUserMiddleware.get_user()
