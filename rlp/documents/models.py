@@ -1,5 +1,7 @@
+from actstream.models import Action
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 from embed_video.fields import EmbedVideoField
@@ -84,8 +86,13 @@ class Document(PolymorphicModel, SharedObjectMixin):
     def get_viewers(self):
         '''override to get the viewers for the main object'''
         doc_obj = Document.objects.non_polymorphic().get(id=self.id)
-        refs = doc_obj._related.select_related('viewer_type').all()
-        return {r.viewer for r in refs}
+        my_type = ContentType.objects.get_for_model(doc_obj)
+        shares = Action.objects.filter(
+            action_object_object_id=doc_obj.id,
+            action_object_content_type=my_type,
+            verb__exact='shared',
+        )
+        return {s.target for s in shares}
 
 
 class File(Document):

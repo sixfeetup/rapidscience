@@ -1,3 +1,4 @@
+from actstream.models import Action
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
@@ -178,5 +179,10 @@ class ThreadedComment(Comment, SharedObjectMixin):
     def get_viewers(self):
         '''override to get the viewers for the discussion'''
         top_comment = self.discussion_root
-        refs = top_comment._related.select_related('viewer_type').all()
-        return {r.viewer for r in refs}
+        my_type = ContentType.objects.get_for_model(top_comment)
+        shares = Action.objects.filter(
+            action_object_object_id=top_comment.id,
+            action_object_content_type=my_type,
+            verb__exact='shared',
+        )
+        return {s.target for s in shares}
