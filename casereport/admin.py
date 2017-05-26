@@ -75,7 +75,6 @@ admin.site.register(CaseReport, CaseReportAdmin)
 
 
 class MolecularAbberationForm(ModelForm):
-    molecule = AutoCompleteField('molecularabberation', required=False)
 
     class Meta:
         fields = "__all__"
