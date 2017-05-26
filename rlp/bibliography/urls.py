@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'add/article/$', views.add_article, name='add_article'),
     url(r'(?P<reference_pk>\d+)/$', views.reference_detail, name='reference_detail'),
     url(r'(?P<pk>\d+)/add/$', views.ReferenceAttachView.as_view(), name='reference_add'),
-    url(r'(?P<reference_pk>\d+)/edit/$', views.reference_edit, name='reference_edit'),
+    url(r'(?P<pk>\d+)/edit/$', views.ReferenceAttachView.as_view(), name='reference_edit'),
+    #url(r'(?P<reference_pk>\d+)/edit/$', views.reference_edit, name='reference_edit'),
     url(r'(?P<reference_pk>\d+)/delete/$', views.reference_delete, name='reference_delete'),
 ]

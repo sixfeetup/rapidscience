@@ -79,7 +79,7 @@ class Reference(SharedObjectMixin):
         if self.source != choices.MEMBER and not Tag.objects.count():
             return
         return reverse('bibliography:reference_edit', kwargs={
-            'reference_pk': self.pk,
+            'pk': self.pk,
         })
 
     def get_delete_url(self):
