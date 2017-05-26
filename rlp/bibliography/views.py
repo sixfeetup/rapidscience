@@ -24,7 +24,6 @@ from .forms import (
     BookSectionForm,
     JournalArticleForm,
     ReferenceShareForm,
-    ProjectReferenceForm,
     SearchForm,
 )
 from .models import Reference
@@ -252,7 +251,7 @@ def reference_edit(request, reference_pk, template_name='bibliography/edit_refer
             return add_book_chapter(request, reference_pk)
     # The rest of this view is for adding tags to references coming from Pubmed or Crossref
     if request.method == 'POST':
-        form = ProjectReferenceForm(request.POST, instance=reference)
+        form = AttachReferenceForm(request.POST)
         if form.is_valid():
             tags = form.cleaned_data.get('tags') or []
             reference.tags.set(*tags)
@@ -264,10 +263,17 @@ def reference_edit(request, reference_pk, template_name='bibliography/edit_refer
             # or /groups/<group slug>/bibliography/
             return redirect('/')
     else:
-        form = ProjectReferenceForm(instance=reference, initial={'tags': reference.tags.all()})
-    # It shouldn't be possible to land on the edit page if there aren't any tags, but just in case, remove the form
-    if not Tag.objects.count():
-        form = None
+        form = AttachReferenceForm()
+        form.fields['description'].initial = reference.description
+        form.fields['tags'].initial = [tag.id for tag in reference.tags.all()]
+        form.fields['members'].choices = member_choices(
+            None,  # prevent omitting the current user
+            reference,
+        )
+        form.fields['groups'].choices = group_choices(
+            request.user,
+            reference,
+        )
     context = {
         'form': form,
         'instance': reference,

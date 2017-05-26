@@ -190,20 +190,6 @@ class JournalArticleForm(BaseReferenceForm):
         return data
 
 
-class ProjectReferenceForm(forms.ModelForm):
-    tags = forms.ModelMultipleChoiceField(
-        widget=forms.CheckboxSelectMultiple(),
-        queryset=Tag.objects.all(),
-        required=False
-    )
-
-    class Meta:
-        fields = [
-            'tags'
-        ]
-        model = Reference
-
-
 class AttachReferenceForm(forms.Form):
     description = forms.CharField(
         widget=forms.Textarea(attrs={'rows': 6, 'cols': 40}),
