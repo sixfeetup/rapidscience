@@ -7,7 +7,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-6 col-md-push-3">
-                <h1>New Reference</h1>
+                <h1>Edit Reference</h1>
             </div>
         </div>
     </div>
@@ -35,7 +35,7 @@
             {% if field.label == 'Description / Comment' %}
                 <div class="form-group">
                     <label class="control-label section-label" for="id_description">Description / Comment</label>
-                    <textarea class="form-control comment-field remaining-characters" cols="40" id="id_description" maxlength="2000" name="comment" rows="3" title=""></textarea>
+                    <textarea class="form-control comment-field remaining-characters" cols="40" id="id_description" maxlength="2000" name="{{ field.name }}" rows="3" title=""></textarea>
                     <div class="helpText">
                         <div class="character-count">2000/2000 characters</div>
                     </div>
