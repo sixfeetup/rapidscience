@@ -118,7 +118,15 @@ class RegistrationForm(UserCreationForm):
     institution_country = forms.CharField(max_length=80, required=False)
     institution_website = forms.CharField(max_length=80, required=False)
     title = forms.CharField(label="Position", max_length=80, required=False)
-    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
+    password1 = forms.CharField(
+        label='Password',
+        widget=forms.PasswordInput,
+        help_text="Your password must contain at least:"+
+                  "<br />12 characters"+
+                  "<br />1 uppercase letter, A-Z."+
+                  "<br />1 lowercase letter, a-z."+
+                  "<br />1 symbol: ()[]{}|\`~!@#$%&*_-+=;:'\",<>./?"
+    )
     password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
     field_order = ['first_name', 'last_name', 'institution', 'new_institution',
                    'institution_name', 'institution_city', 'institution_state',
