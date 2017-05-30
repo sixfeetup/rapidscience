@@ -90,6 +90,8 @@ class CaseFile(CRDBBase):
 @python_2_unicode_compatible
 class MolecularAbberation(CRDBBase):
     name = models.CharField(max_length=255)
+    # molecule field no longer used but needs to be kept for migrations
+    molecule = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:
         verbose_name = 'Genetic Aberration'

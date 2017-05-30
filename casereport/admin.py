@@ -82,6 +82,7 @@ class MolecularAbberationForm(ModelForm):
 
 
 class MolecularAbberationAdmin(admin.ModelAdmin):
+    exclude = ('molecule',)
     form = MolecularAbberationForm
 
 class EventBaseForm(ModelForm):

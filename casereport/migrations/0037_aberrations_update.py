@@ -94,7 +94,7 @@ def update_aberrations(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('casereport', '0035_casereport_subtype_other'),
+        ('casereport', '0036_aberrations_molecule_null'),
     ]
 
     operations = [
