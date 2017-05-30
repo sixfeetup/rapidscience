@@ -1315,6 +1315,22 @@ input:focus + div.info {
 
 /* Add new case form */
 
+.case-submit-hero {
+	background-color: rgb(238, 238, 238);
+    height: 100px;
+}
+.case-submit-hero .container {
+    background-image: url('../images/cases-central-bkgd.jpg');
+    background-position: bottom right;
+    background-size: auto 150px;
+    background-repeat: no-repeat;
+}
+.case-submit-hero h1 {
+    text-transform: none;
+    margin: 0;
+    line-height: 100px;
+}
+
 #caseform .radio-box {
 	background-color: rgb(238, 238, 238);
 	border-radius: 4px;
@@ -1388,13 +1404,4 @@ input:focus + div.info {
     position: fixed;
     top: 300px;
 	z-index: 2;
-}
-
-.casetitle {
-    margin-top: 42px;
-}
-#casetitle {
-    margin-bottom: 68px;
-    border-color: #3792bf;
-    border-width: 2px;
 }

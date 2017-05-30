@@ -21,11 +21,10 @@
     {% csrf_token %}
 
 <div class="main-wrapper">
-  <div class="case-hero">
+  <div class="case-submit-hero">
     <div class="container">
         <div class="col-md-10 col-md-offset-1">
-            <h4><label for="casetitle" class="casetitle">Case Title</label></h4>
-            <input name="casetitle" value="{{ casereport.title }}" type="text" class="form-control" id="casetitle">
+            <h1>Submit Case</h1>
         </div>
     </div>
   </div>
@@ -33,6 +32,10 @@
   <div class="container">
       <div class="inside-wrapper">
       <div class="form submit-form">
+
+                <h4><label for="casetitle">Case Title</label></h4>
+                <input name="casetitle" value="{{ casereport.title }}" type="text" class="form-control" id="casetitle">
+
 
                 <h4 class="title-name">Primary Author/Contact</h4>
                 <p class="user-meta"><strong>{{ request.user.get_full_name }}
