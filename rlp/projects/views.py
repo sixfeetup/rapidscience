@@ -79,8 +79,10 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
         context['activity_stream'] = activity_stream
         context['filter_form'] = filter_form
     elif tab == 'documents':
+        docs = [doc for doc in project.get_bookmarked_content(Document)
+                if doc is not None]
         context['documents'] = sorted(
-            project.get_bookmarked_content(Document),
+            docs,
             key=lambda c: c.date_added,
             reverse=True,
         )
