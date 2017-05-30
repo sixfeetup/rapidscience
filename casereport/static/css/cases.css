@@ -471,46 +471,51 @@ background: linear-gradient(to bottom, rgba(226,226,226,1) 0%, rgba(209,209,209,
 
 .cases-central-header {
     background-color: rgb(238, 238, 238);
-    padding-top: 38px;
-    padding-bottom: 45px;
+}
+.cases-central-header .container {
+    background-image: url('../images/cases-central-bkgd.jpg');
+    background-position: right;
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 150px;
 }
 .main > .container > .cases-central-header.row > div {
     margin-top: 0;
 }
-.cases-central-header h1 {
+.search-div {
+    margin-top: 28px;
+}
+.search-div h1 {
+    margin-bottom: 18px;
     margin-top: 0;
     color: #444;
     font-weight: normal;
     font-size: 48px;
 }
-.cases-central-header h1 .btn {
+.search-div h1 .btn {
     height: 40px;
-    position: relative;
     text-transform: none;
-    top: 10px;
-    line-height: 11px;
-    margin-left: 20px;
-    margin-bottom: 30px;
-}
-.cases-central-header h1 .btn .enbiggen {
-    font-size: 2.5em;
-    position: relative;
-    top: 7px;
-    margin-right: 5px;
+    line-height: 24px;
+    margin-left: 30px;
 }
 
 .search-div button{
-    height: 50px;
-    width: 100%;
-    font-size: 24px;
+    height: 40px;
+    font-size: 20px;
 }
 
 .search-button{
-    padding: 0px 20px;
+    width: 70px;
+    text-align: center;
 }
+.search-button .fa {
+    position: relative;
+    top: -2px;
+}
+
 .search-div input{
-    font-size: 16px;
-    height: 50px;
+    font-size: 18px;
+    height: 40px;
     background: #fff;
 }
 .search-div input::placeholder {
