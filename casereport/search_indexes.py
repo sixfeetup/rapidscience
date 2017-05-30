@@ -17,6 +17,7 @@ class CaseReportIndex(BaseIndex, indexes.Indexable):
     text = indexes.CharField(document=True)
     title = indexes.CharField(model_attr='title')
     primary_physician = indexes.CharField(faceted=True)
+    workflow_state = indexes.CharField(faceted=True)
     gender = indexes.CharField(model_attr='gender', faceted=True)
     age = indexes.IntegerField(model_attr='age', faceted=True)
     abberations = indexes.CharField(faceted=True)
