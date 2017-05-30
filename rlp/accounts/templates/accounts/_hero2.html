@@ -1,12 +1,9 @@
 {% load staticfiles thumbnail %}
-<div class="hero">
-  <div class="image-container">
-    {% if user.banner %}
-      <img src="{{ user.banner.url }}" />
-    {% else %}
-      {% include 'projects/_institution_hero_image.html' %}
-    {% endif %}
-  </div>
+{% if user.banner %}
+<div class="hero" style="background-image: url({{ user.banner.url }})">
+{% else %}
+<div class="hero" style="background-image: url('{% static "img/bg-profile1.jpg" %}')">
+{% endif %}
   <div class="container">
     <div class="row">
       <div class="col-md-3 profile-image">

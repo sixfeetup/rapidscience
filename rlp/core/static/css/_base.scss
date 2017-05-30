@@ -234,10 +234,11 @@ small {
 }
 
 .hero {
-  height: 150px;
+  min-height: 150px;
   position: relative;
   background-color: #20232b;
-  overflow: hidden;
+  background-size: 100%;
+  background-position: center;
   .container {
     position: relative;
 
@@ -294,7 +295,7 @@ small {
     }
   }
   .profile-image + div {
-    height: 150px;
+    min-height: 150px;
     padding-top: 20px;
     padding-bottom: 20px;
   }

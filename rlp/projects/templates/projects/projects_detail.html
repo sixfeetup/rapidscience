@@ -5,16 +5,13 @@
 {% endblock css %}
 
 {% block hero %}
-    <div class="hero">
-        <div class="image-container">
-            {% if project.cover_photo %}
-                <img src="{{ project.cover_photo.url }}">
-            {% elif project.approval_required %}
-                <img class="default" src='{% static "img/bg-cc-med.jpg" %}'>
-            {% else %}
-                <img class="default" src='{% static "img/bg-group1-med.jpg" %}'>
-            {% endif %}
-        </div>
+    {% if project.cover_photo %}
+    <div class="hero" style="background-image: url('{{ project.cover_photo.url }}')">
+    {% elif project.approval_required %}
+    <div class="hero" style="background-image: url('{% static "img/bg-cc-med.jpg" %}')">
+    {% else %}
+    <div class="hero" style="background-image: url('{% static "img/bg-group1-med.jpg" %}')">
+    {% endif %}
         <div class="container">
             <div class="row">
                 <div class="col-md-8">
