@@ -490,9 +490,11 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
 @login_required
 def profile(request, pk, template_name='accounts/profile.html', extra_context=None):
     user = get_object_or_404(User, pk=pk)
+    institution = user.institution
     projects = user.active_projects()
     context = {
         'user': user,
+        'institution': institution,
         'projects': projects,
     }
     if extra_context is not None:

@@ -14,6 +14,22 @@
 {% block main_content %}
     <div class="row">
         <div class="col-md-7 col-md-offset-3">
+            {% if user.title or user.department or user.institution %}
+            <div class="section">
+                <p class="section-label">Affiliation</p>
+                <p>{{ user.title }}{% if user.title and user.department %}, {% endif %}{{ user.department }}{% if user.department and user.institution or user.title and user.institution %}, {% endif %}
+                   {% if institution.website %}
+                       <a href="{{ institution.website }}">
+                           {{ user.institution }}
+                       </a>
+                   {% else %}
+                       {{ user.institution }}
+                   {% endif %}
+                   {% if user.title or user.department or user.institution %}<br />{% endif %}
+                   {{ institution.city }}{% if institution.city and institution.state %}, {% endif %}
+                   {{ institution.state }}</p>
+            {% endif %}
+            </div>
             {% if user.bio %}
                 <div class="section">
                     <p class="section-label">Biography</p>
