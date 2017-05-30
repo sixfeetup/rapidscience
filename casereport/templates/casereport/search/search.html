@@ -84,7 +84,7 @@
                                          </div>
                                          <div class="checkbox">
                                              <label for="category3">
-                                                <input class="filter-checkbox" type="checkbox" id="category3" value="2" name="category"  />
+                                                <input class="filter-checkbox" type="checkbox" id="category3" value="2" name="category" data-url="selected_facets=workflow_state_exact:draft" {% check_value_is_active "workflow_state_exact" "draft" request.get_full_path %} />
                                                 My draft cases
                                              </label>
                                          </div>

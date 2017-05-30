@@ -16,6 +16,7 @@ RETURN_VALUES = {'gender': 'checked',
                  'treatment_type': 'selected',
                  'country': 'selected',
                  'primary_physician': 'checked',
+                 'workflow_state_exact': 'checked',
                  'authornot': 'checked'}
 
 @register.simple_tag
