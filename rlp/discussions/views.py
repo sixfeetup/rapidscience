@@ -174,7 +174,6 @@ class CreateDiscussion(LoginRequiredMixin, FormView):
         )
         new_discussion.save()
 
-        discussion_url = new_discussion.get_absolute_url()
         target = bookmark_and_notify(
             new_discussion, self, self.request,
             'discussions', 'threadedcomment',
@@ -187,4 +186,5 @@ class CreateDiscussion(LoginRequiredMixin, FormView):
             action_object=new_discussion,
             target=target,
         )
+        discussion_url = new_discussion.get_absolute_url()
         return redirect(discussion_url)
