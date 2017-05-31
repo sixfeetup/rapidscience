@@ -230,8 +230,17 @@ class ReferenceAttachView(LoginRequiredMixin, FormView):
         ref.description = data.get('description')
         ref.tags.set(*data['tags'])
         ref.save()
-        bookmark_and_notify(
+        target = bookmark_and_notify(
             ref, self, self.request, 'bibliography', 'reference',
+        )
+        user = self.request.user
+        if not target:
+            target = user
+        action.send(
+            user,
+            verb='added',
+            action_object=ref,
+            target=target,
         )
         last_viewed_path = self.request.session.get('last_viewed_path', '/')
         return redirect(last_viewed_path)
