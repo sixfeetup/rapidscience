@@ -511,7 +511,18 @@ def profile_edit(request, template_name='accounts/profile_edit.html'):
         project_form = ProjectMembershipForm
     if request.method == 'POST':
         form = UserProfileForm(request.POST, request.FILES, instance=request.user)
+        data = request.POST.copy()
+
         if form.is_valid():
+            if 'new_institution' in data:
+                new_inst = Institution()
+                new_inst.name = data['institution_name']
+                new_inst.city = data['institution_city']
+                new_inst.state = data['institution_state']
+                new_inst.country = data['institution_country']
+                new_inst.website = data['institution_website']
+                new_inst.save()
+                request.user.institution = new_inst
             form.save()
             messages.success(request, "Profile updated successfully")
             sync_user.send(sender=request.user.__class__, user=request.user)

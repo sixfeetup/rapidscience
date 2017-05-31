@@ -18,7 +18,7 @@
                     </div>
                 </div>
                 {% for field in form %}
-                    <div class="row profile-field">
+                    <div class="row profile-field" id="wrapper-{{ field.auto_id }}">
                         <div class="col-md-2 col-md-offset-1 profile-thumbnail">
                             {% if field.name == 'photo' %}
                                 {% if user.photo %}
@@ -52,3 +52,17 @@
             </div>
         </form>
 {% endblock main_content %}
+
+{% block js-footer %}
+<script type="text/javascript">
+  (function($) { $(function() {
+      $("#id_new_institution").click(function(){
+          if ($(this).is(':checked')) {
+              $("[id^='wrapper-id_institution_']").slideDown()
+          } else {
+              $("[id^='wrapper-id_institution_']").slideUp()
+          }
+      })
+  }); })(jQuery);
+</script>
+{% endblock %}

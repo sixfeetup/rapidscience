@@ -1096,6 +1096,10 @@ a.comment-count.empty {
     .section-label {
         margin-bottom: 14px;
     }
+    form div[id^='wrapper-id_institution_'] {
+        display: none;
+        padding-left: 25px;
+    }
 }
 
 /* profile */

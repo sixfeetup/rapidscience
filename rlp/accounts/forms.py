@@ -194,12 +194,26 @@ class UserProfileForm(forms.ModelForm):
     first_name = forms.CharField(max_length=30, required=True)
     last_name = forms.CharField(max_length=30, required=True)
     title = forms.CharField(max_length=255, required=True, label='Position')
+    institution = forms.ModelChoiceField(
+        label="Primary Institution",
+        queryset=Institution.objects.all(),
+        required=False)
+    new_institution = forms.BooleanField(
+        label="My institution is not listed",
+        required=False)
+    institution_name = forms.CharField(max_length=80, required=False)
+    institution_city = forms.CharField(max_length=80, required=False)
+    institution_state = forms.CharField(max_length=80, required=False)
+    institution_country = forms.CharField(max_length=80, required=False)
+    institution_website = forms.CharField(max_length=80, required=False)
 
     class Meta:
         model = User
         fields = [
             'photo', 'banner', 'first_name', 'last_name', 'degrees', 'title',
-            'department', 'institution', 'email', 'website',
+            'department', 'institution', 'new_institution',
+            'institution_name', 'institution_city', 'institution_state',
+            'institution_country', 'institution_website', 'email', 'website',
             'orcid', 'linkedin', 'twitter', 'bio', 'research_interests',
         ]
         widgets = {
