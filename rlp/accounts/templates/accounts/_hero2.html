@@ -17,10 +17,6 @@
       <div class="col-md-9">
         <h1>{{ user.get_full_name }}{% if user.degrees %}, {{ user.degrees }}{% endif %} {% if edit %}{% include "accounts/_edit_pencil.html" %}{% endif %}</h1>
 
-        <p class="profile-title">
-          {% if user.title %}{{ user.title }}{% if user.institution %}, {% endif %}{% endif %}
-          {% if user.institution %}{{ user.institution }}{% endif %}
-        </p>
         <p class="profile-meta">
             {% if user.website %}<a href="{{ user.website }}" target="_blank">WEBSITE</a>{% endif %}
             {% if user.website and user.orcid %} &nbsp;|&nbsp; {% endif %}
