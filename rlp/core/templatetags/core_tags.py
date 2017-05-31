@@ -1,5 +1,6 @@
 from django.contrib.sites.shortcuts import get_current_site
 from django import template
+from django.core.urlresolvers import reverse
 
 register = template.Library()
 
@@ -78,7 +79,14 @@ def display_shared_with(item, user=None):
     for v in viewers:
         if user == v:
             continue
-        vlist += '<b>{0}</b>, '.format(v)
+        if v._meta.model_name == "user":
+            url = reverse('profile', args=[v.id])
+            vlist += '<a href="{0}">{1}</a>, '.format(url, v)
+        elif v._meta.model_name == "project":
+            url = reverse('projects:projects_detail', args=[v.id, v.slug])
+            vlist += '<a href="{0}">{1}</a>, '.format(url, v)
+        else:
+            vlist += '{0}, '.format(v)
     if vlist:
         return 'Shared with {0}'.format(vlist[:-2])
     else:
