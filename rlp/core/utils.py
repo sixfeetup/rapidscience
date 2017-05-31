@@ -72,6 +72,8 @@ def bookmark_and_notify(obj, view, request, app_label, model_name):
         group = Project.objects.get(id=initial_proj)
         group.bookmark(obj)
         obj.share_with([group], request.user)
+    else:
+        group = None
     SendToView.post(
         view,
         request,
@@ -79,3 +81,4 @@ def bookmark_and_notify(obj, view, request, app_label, model_name):
         model_name,
         obj.id,
     )
+    return group
