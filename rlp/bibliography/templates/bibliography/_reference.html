@@ -12,21 +12,25 @@
       {% if not add_reference %}
         {% if not search %}<p class="small edit-link">{% endif %}
           {% with edit_url=obj.get_edit_url %}
-            {% if edit_url %}<a href="{{ edit_url }}">Edit</a>{% endif %}
+            {% if edit_url %}<a href="{{ edit_url }}">Edit</a><br />{% endif %}
           {% endwith %}
           {% autoescape off %}{% display_shared_with obj request.user %}{% endautoescape %}
         {% if not search %}</p>{% endif %}
       {% endif %}
-    {% if obj.description %}<blockquote>{{ obj.description }}</blockquote>{% endif %}
+    {% if obj.description %}
+        {% if not search %}<p class="more">{% endif %}
+            {{ obj.description|urlize|linebreaksbr }}
+        {% if not search %}</p>{% endif %}
+    {% endif %}
     {% if not search %}
-        {% if not obj.tags %}
-        <p class="tags">
+        {% if obj.tags.all %}
+        {% if not search %}<p class="tags">{% endif %}
             {% for tag in obj.tags.all %}
-                <a role="button" class="btn btn-tag btn-xs" href="{% url 'haystack_search' %}?tags={{ tag.id }}">
+                {% if not search %}<a role="button" class="btn btn-tag btn-xs" href="{% url 'haystack_search' %}?tags={{ tag.id }}">{% endif %}
                   {{ tag }}
-                </a>
+                {% if not search %}</a>{% endif %}
             {% endfor %}
-        </p>
+        {% if not search %}</p>{% endif %}
         {% endif %}
     {% endif %}
   {% if not search %}
