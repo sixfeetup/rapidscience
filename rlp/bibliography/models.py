@@ -20,10 +20,12 @@ from rlp.core.models import SharedObjectMixin
 from rlp.discussions.models import ThreadedComment
 from rlp.projects.models import Project
 from . import choices
+from .search_topics import TOPICS
 
 logger = logging.getLogger(__name__)
 
 # From http://blog.crossref.org/2015/08/doi-regular-expressions.html
+# 10.1080/13577140500162409
 DOI_RE = re.compile(r'^10.\d{4,9}/[-._;()/:A-Za-z0-9]+$')
 PMID_RE = re.compile(r'^\d+$')
 CROSSREF_BASE_URL = "https://api.crossref.org/works"
@@ -400,13 +402,17 @@ def fetch_crossref_by_doi(doi):
     return r.json()['message']
 
 
-def fetch_crossref_by_query(query=None, orcid=None):
+def fetch_crossref_by_query(query=None, orcid=None, topics=None):
     filters = ['type:{}'.format(t) for t in choices.CROSSREF_TYPES]
     if orcid:
         filters.append('orcid:{}'.format(orcid))
+    if topics:
+        for category in topics:
+            filters.append( 'category-name:{cat}'.format(cat=category))
     params = {
         'filter': ','.join(filters),
         'rows': 100,
+        #'facet': 'category-name:*',
     }
     if query:
         params['query'] = query
@@ -420,36 +426,35 @@ def fetch_crossref_by_query(query=None, orcid=None):
 def get_or_create_reference(query):
     # Remove any leading/trailing whitespace
     query = query.strip()
+    references = []
     # check the db first and bail if we have a match
-    references = Reference.objects.filter(
-        Q(pubmed_id__icontains=query) | Q(doi__icontains=query))
-    if references:
-        return references
+    #references = Reference.objects.filter(
+    #    Q(pubmed_id__icontains=query) | Q(doi__icontains=query))#
+    #if references:
+    #    return references
     # Otherwise, check against the services, but only if the query matches regex
+    references = []
     if DOI_RE.match(query):
         # fetch from crossref
         result = fetch_crossref_by_doi(query)
         reference, created = get_or_create_reference_from_crossref(result)
         return [reference]
-    elif PMID_RE.match(query):
+    elif PMID_RE.match(query):# or DOI_RE.match(query):
         Entrez.email = settings.PUBMED_EMAIL
         results = Entrez.read(
             Entrez.efetch(db='pubmed', retmode='xml', id=query)
         )
-        references = []
         for result_type, result in results.items():
             for item in result:
                 reference, created = get_or_create_reference_from_pubmed(item)
                 references.append(reference)
-        if references:
-            return references
     else:
-        results = fetch_crossref_by_query(query=query)
+        results = fetch_crossref_by_query(query=query, topics=TOPICS)
         references = []
         for result in results:
             reference, created = get_or_create_reference_from_crossref(result)
             references.append(reference)
-        if references:
-            return references
-    return Reference.objects.filter(Q(pubmed_id__icontains=query) | Q(doi__icontains=query) | Q(title__icontains=query))
+
+    return references
+    #return Reference.objects.filter(Q(pubmed_id__icontains=query) | Q(doi__icontains=query) | Q(title__icontains=query))
 
