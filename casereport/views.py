@@ -146,10 +146,12 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
     form_class = CaseForm
 
     def get(self, request, *args, **kwargs):
+        heading = 'Submit Case'
         subtypes = SubtypeOption.objects.order_by('name')
         aberrations = MolecularAbberation.objects.all()
         form = self.get_form()
         return self.render_to_response(self.get_context_data(
+            heading=heading,
             form=form,
             subtypes=subtypes,
             aberrations=aberrations), )
@@ -466,6 +468,7 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
     template_name = 'casereport/new_add_casereport.html'
 
     def get(self, request, case_id):
+        heading = 'Edit Case'
         casereport = get_object_or_404(CaseReport, id=case_id)
         subtypes = SubtypeOption.objects.order_by('name')
         aberrations = MolecularAbberation.objects.all()
@@ -476,6 +479,7 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
         )
         form.fields['groups'].choices = group_choices(request.user, casereport)
         return self.render_to_response(self.get_context_data(
+            heading=heading,
             form=form,
             casereport=casereport,
             subtypes=subtypes,
