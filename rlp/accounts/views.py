@@ -1,3 +1,5 @@
+from itertools import chain
+
 from django.conf import settings
 # Avoid shadowing the login() and logout() views below.
 from django.contrib.auth import (REDIRECT_FIELD_NAME, login as auth_login, logout as auth_logout, authenticate)
@@ -342,43 +344,64 @@ class ActivationView(TemplateView):
             return None
 
 
-def consolidate(inp, keyfunc, rollup_name):
+def rollup(input, simfunc, samefunc, rollup_name):
     """ Rolls similar items in a list up under an array on the first i
         similar item.
-        Given a keyfunc that looks at only the second and third column,
+        Adjacent, equivalent items are dropped entirely.
+
+        Given a simfunc that looks at only the second and third column,
+        and a samefunc that looks at the second, third and fourth,
+        The simfunc tests for similar objects ( can be consolidated )
+        and the samefunc tests for equivalent ( which can be dropped ).
+        
         Turns this:
              1 | a | b | c
              2 | d | e | f
              3 | d | e | g
-             4 | d | h | i
+             4 | d | e | f
+             5 | d | h | i
         into
              1 | a | b | c | []
              2 | d | e | f | [3]   
-             4 | d | h | i | []
-         Item 3 rolled up into 2 because its key fields(d,e) were the same.
-        """
-    inp_len = len(inp)
-    if inp_len < 2:
-        return inp
+             5 | d | h | i | []
+             
+        Item 3 rolled up into 2 because its key fields(d,e) were the same.
+        Item 4 is dropped because it is equivalent to item 2.
+        
+    """
+    input_iter = iter(input)
 
-    for i in range(inp_len - 1, 0, -1):
-        elem = inp[i]
-        ekey = keyfunc(elem)
-        prev_elem = inp[i - 1]
-        pekey = keyfunc(prev_elem)
-        if ekey == pekey:
-            # ensure the rollup name exists
-            if not hasattr(prev_elem, rollup_name):
-                setattr(prev_elem, rollup_name, [])
-            # add elem to prev_elem
-            getattr(prev_elem, rollup_name).append(elem)
-            # and any of its rollups:
-            if hasattr(elem, rollup_name):
-                getattr(prev_elem, rollup_name).extend(
-                    getattr(elem, rollup_name))
-            # slice elem out of the input
-            inp = inp[:i] + inp[i + 1:]
-    return inp
+    for i in input_iter:
+
+        try:
+            n = next(input_iter)
+        except StopIteration as last_i:
+            yield i
+            break
+
+        i_sim = simfunc(i)
+        equivalent_ids = set([samefunc(i),])
+
+        while True:
+            n_sim = simfunc(n)
+            n_same = samefunc(n)
+
+            # if similar but not the same, roll it up
+            if n_sim == i_sim:
+                if n_same not in equivalent_ids:
+                    equivalent_ids.add( n_same )
+                    if not hasattr( i, rollup_name ):
+                        setattr( i, rollup_name, [] )
+                    getattr(i, rollup_name).append( n )
+                #else:
+                #    print( "dropping equivalent obj", i, n)
+            else:
+                yield i
+                #print("yield n") # ugh, n needs to become the next i
+                #yield n
+                for n2 in rollup(chain([n], input_iter), simfunc, samefunc, rollup_name):
+                    yield n2
+            n = next(input_iter)
 
 
 @login_required
@@ -430,14 +453,21 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
         else:
             filter_form = ProjectContentForm(user=request.user)
 
-        # consolidate duplicate entries ( they really differ by target only )
-        activity_stream = consolidate(
-            list(activity_stream),
+        # roll up similar entries, and drop duplicate ones
+        activity_stream = list(rollup(
+            activity_stream,
             lambda a: str((a.actor_object_id,
                            a.verb,
                            a.action_object_content_type,
                            a.action_object_object_id)),
-            'others')
+            lambda a: str((a.actor_object_id,
+                           a.verb,
+                           a.action_object_content_type,
+                           a.action_object_object_id,
+                           a.target_object_id)),
+            'others'))
+
+
         context.update({
             'activity_stream': activity_stream,
             'filter_form': filter_form,

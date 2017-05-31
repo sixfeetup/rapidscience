@@ -20,6 +20,7 @@ from el_pagination.decorators import page_template
 from casereport.constants import WorkflowState
 from casereport.models import CaseReport
 from rlp.accounts.models import User
+from rlp.accounts.views import rollup
 from rlp.bibliography.models import Reference
 from rlp.discussions.models import ThreadedComment
 from rlp.documents.models import Document
@@ -68,6 +69,7 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
         request.user.can_access_project(project)
     )
     if tab == 'activity':
+        print("project activity")
         activity_stream = project.get_activity_stream(user=request.user)
         if 'content_type' in request.GET:
             filter_form = ActionObjectForm(request.GET)
@@ -76,6 +78,21 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
                     action_object_content_type=filter_form.cleaned_data['content_type'])
         else:
             filter_form = ActionObjectForm()
+
+        print("consolidating")
+        activity_stream = list(rollup(
+            activity_stream,
+            lambda a: str((a.actor_object_id,
+                           a.verb,
+                           a.action_object_content_type,
+                           a.action_object_object_id)),
+            lambda a: str((a.actor_object_id,
+                           a.verb,
+                           a.action_object_content_type,
+                           a.action_object_object_id,
+                           a.target_object_id)),
+            'others'))
+
         context['activity_stream'] = activity_stream
         context['filter_form'] = filter_form
     elif tab == 'documents':
