@@ -11,6 +11,8 @@ from django import http
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import FormView
 
+from actstream import action
+
 from rlp.accounts.models import User
 from rlp.core.forms import member_choices, group_choices
 from rlp.core.utils import bookmark_and_notify
@@ -173,8 +175,16 @@ class CreateDiscussion(LoginRequiredMixin, FormView):
         new_discussion.save()
 
         discussion_url = new_discussion.get_absolute_url()
-        bookmark_and_notify(
+        target = bookmark_and_notify(
             new_discussion, self, self.request,
             'discussions', 'threadedcomment',
+        )
+        if not target:
+            target = user
+        action.send(
+            user,
+            verb='started',
+            action_object=new_discussion,
+            target=target,
         )
         return redirect(discussion_url)
