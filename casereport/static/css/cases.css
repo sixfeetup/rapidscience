@@ -1399,8 +1399,33 @@ input:focus + div.info {
     text-transform: uppercase;
     width: 50px;
 }
-.sticky {
-    position: fixed;
-    top: 300px;
-	z-index: 2;
+body.casereport-view {
+    position: relative;
+}
+.sticky.affix-top {
+    width: 200px;
+}
+.sticky.affix {
+    top: 77px;
+    width: 200px;
+}
+.sticky.affix-bottom {
+}
+.sticky .nav-pills {
+    position: relative;
+    left: -15px;
+}
+.sticky .nav-pills li a {
+    box-shadow: none;
+    font-weight: normal;
+}
+.sticky li.active a {
+    background-color: #eee !important;
+    color: rgb(55, 146, 191) !important;
+}
+.sticky .nav-pills li a:hover,
+.sticky .nav-pills li a:focus {
+    background-color: #eee;
+    color: rgb(55, 146, 191);
+    cursor: pointer;
 }
