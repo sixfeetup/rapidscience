@@ -62,6 +62,10 @@ class CaseReportIndex(BaseIndex, indexes.Indexable):
         treatments = list(treatments)
         return treatments
 
+    def prepare_workflow_state(self, obj):
+        # Haystack doesn't seem to read directly from an FSMField
+        return obj.workflow_state
+
     def get_synonyms(self, obj):
         terms = []
         mols = obj.molecular_abberations.all()
