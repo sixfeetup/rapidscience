@@ -1,7 +1,6 @@
 {% load core_tags %}
 <div class="row">
   <div class="col-md-11">
-    <h4><a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a></h4>
     {% if 'Image' in obj.display_type %}
         {% load thumbnail %}
         {% thumbnail obj.upload 700x160 crop upscale HIGH_RESOLUTION as thumbnail %}
@@ -15,6 +14,7 @@
         {% video shared_video 'small' %}
         {% endvideo %}
     {% endif %}
+    <h4><a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a></h4>
     <p class="small">
         Posted by
       <a href="{{ obj.owner.get_absolute_url }}">
@@ -27,6 +27,15 @@
       {% autoescape off %}{% display_shared_with obj request.user %}{% endautoescape %}
     </p>
     <p class="more">{{ obj.description|urlize|linebreaksbr }}</p>
+    {% if obj.tags %}
+        <p class="tags">
+                {% for tag in obj.tags.all %}
+                  <a role="button" class="btn btn-tag btn-xs" href="{% url 'haystack_search' %}?tags={{ tag.id }}">
+                    {{ tag }}
+                  </a>
+                {% endfor %}
+        </p>
+    {% endif %}
   </div>
   <div class="col-md-1">
     {% include 'discussions/discussion_count_widget.html' %}
