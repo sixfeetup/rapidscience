@@ -19,7 +19,7 @@
                 {% for item in aberrations %}
                     <option value="{{ item.id }}"
                             {% if item in casereport.aberrations.all %}selected{% endif %}>
-                        {{ item.molecule }}: {{ item.name }}
+                        {{ item.name }}
                     </option>
                 {% endfor %}
             </select>

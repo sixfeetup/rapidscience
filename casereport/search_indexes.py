@@ -69,7 +69,7 @@ class CaseReportIndex(BaseIndex, indexes.Indexable):
         treatments = TreatmentEvent.objects.filter(casereport_f=obj)
         diagnosis = DiagnosisEvent.objects.filter(casereport_f=obj)
         for mol in mols:
-            terms.append(mol.molecule)
+            terms.append(mol.name)
         for test in tests:
             terms.append(test.name)
             terms.append(test.body_part)

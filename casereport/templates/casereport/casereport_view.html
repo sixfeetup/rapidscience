@@ -145,7 +145,7 @@
       {% if casereport.aberrations.all|length > 0 or casereport.aberrations_other %}
          <div class="molecule-abberation" id="section-aberrations">
               <h4>Genetic Aberrations</h4>
-              <p>{% for aberration in casereport.aberrations.all %}{{ aberration.molecule }}: {{ aberration.name }}<br />{% endfor %}
+              <p>{% for aberration in casereport.aberrations.all %}{{ aberration.name }}<br />{% endfor %}
               {{ casereport.aberrations_other }}
               </p>
           </div>

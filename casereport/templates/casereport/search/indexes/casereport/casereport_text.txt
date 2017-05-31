@@ -22,7 +22,6 @@ sarcoma
 {% endfor %}
 {% for m in object.aberrations.all %}
     {{m.name}}
-    {{m.molecule}}
 {% endfor %}
 
 {% for treatment in object.get_treatments %}
