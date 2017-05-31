@@ -4,6 +4,17 @@
 {{object.date_added}}
 sarcoma
 {{object.subtype}}
+{{object.presentation}}
+{{object.aberrations_other}}
+{{object.biomarkers}}
+{{object.pathology}}
+{{object.additional_comment}}
+{{object.attachment1_title}}
+{{object.attachment1_description}}
+{{object.attachment2_title}}
+{{object.attachment2_description}}
+{{object.attachment3_title}}
+{{object.attachment3_description}}
 {% for physician in object.referring_physician.all %}
     {{ physician.name }}
     {{ physician.email }}
@@ -28,16 +39,3 @@ sarcoma
     {{ treatment.name }}
     {{ treatment.notes }}
 {% endfor %}
-
-
-
-
-
-
-
-
-
-
-
-
-
