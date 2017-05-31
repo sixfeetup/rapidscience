@@ -791,13 +791,42 @@ span.help-block {
         border-bottom: 1px solid #dddddd;
         margin-bottom: 2em;
     }
+    .small {
+        margin-bottom: 24px;
+    }
+    .tags {
+        margin-bottom: 2px;
+    }
+}
+
+/* documents tab */
+
+.tab-content .tab-documents {
+    h4 {
+        margin-bottom: 7px;
+    }
+    img {
+        margin-bottom: 13px;
+    }
+    iframe {
+        margin-bottom: 10px;
+        margin-top: 10px;
+    }
+    hr {
+        margin-top: 16px;
+        margin-bottom: 28px;
+    }
 }
 
 /* discussion */
 #discussions .comment-item {
-    padding-bottom: 2em;
+    padding-bottom: 25px;
     border-bottom: 1px solid #dddddd;
     margin-bottom: 2em;
+    margin-top: 28px;
+}
+.tab-pane .comment-item p.more {
+    margin-bottom: 0;
 }
 a.comment-count,
 a.share-link {
@@ -1151,9 +1180,9 @@ input#id_to_dashboard {
     }
 }
 
-/* dashboard tab-pane */
+/* activity tab */
 
-.tab-pane {
+#activity {
     .more {
         margin-bottom: 30px;
     }
@@ -1172,10 +1201,27 @@ input#id_to_dashboard {
     hr {
         margin-top: 0;
     }
+    .reference {
+        margin-bottom: 24px;
+    }
 }
 
-#bibliography .tags {
-    margin-top: 0;
+/* bibliography tab */
+
+#bibliography {
+    blockquote {
+        margin-top: 23px;
+        margin-bottom: 0;
+    }
+    .tags {
+        margin-top: 0;
+    }
+    hr {
+        margin-bottom: 25px;
+    }
+    .edit-link {
+        margin-bottom: -5px;
+    }
 }
 
 /* labels */
