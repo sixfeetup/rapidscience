@@ -1,6 +1,10 @@
 {% load core_tags %}
-{{ action.action_object.display_type }}
-{% if action.action_object_content_type.model != 'threadedcomment' %}{{ action.verb }}{% endif %}
+{% if action.verb == 'started' %}
+  Discussion started
+{% else %}
+  {{ action.action_object.display_type }}
+  {% if action.action_object_content_type.model != 'threadedcomment' %}{{ action.verb }}{% endif %}
+{% endif %}
 by {% if request.user == action.actor %} you {% else %} <a href="{{ action.actor.get_absolute_url }}">{{ action.actor.get_full_name }}</a>{% endif %}
 {% if action.verb == 'shared' %} with {{ action.target|link }}
     {% if action.others %}{% for other in action.others %}{% if forloop.last %} and {%  else %}, {% endif %}{{ other.target|link }}{%  endfor %}{% endif %}
