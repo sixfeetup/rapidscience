@@ -505,10 +505,9 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
             reverse=True,
         )
     elif tab == 'bibliography':
-        refs = request.user.get_bookmarked_content(Reference)
         context['references'] = sorted(
-            refs,
-            key=lambda c: c.date_added,
+            request.user.get_bookmarked_content(Reference),
+            key=lambda c: c.date_updated,
             reverse=True,
         )
 
