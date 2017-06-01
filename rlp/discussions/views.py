@@ -180,11 +180,19 @@ class CreateDiscussion(LoginRequiredMixin, FormView):
         )
         if not target:
             target = user
+
+        is_public = False
+        #is_public = True
+        # if the discussion hasnt been bookmarked, then treat it as private
+        #if len(new_discussion.get_viewers() - {user}) == 0:
+        #   is_public = False
+
         action.send(
             user,
             verb='started',
             action_object=new_discussion,
             target=target,
+            public=is_public,
         )
         discussion_url = new_discussion.get_absolute_url()
         return redirect(discussion_url)

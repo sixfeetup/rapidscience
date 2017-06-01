@@ -117,12 +117,16 @@ class SharedObjectMixin(models.Model):
         # add an entry to the target viewer's activity stream
         for viewer in viewers:
             # ghf - need to create Actions to go along with this.
+            is_public = True
+            if shared_by == viewer:
+                is_public = False
             action.send(
                 shared_by,
                 verb='shared',
                 description=comment,
                 action_object=self,
                 target=viewer,
+                public=is_public,
             )
 
 

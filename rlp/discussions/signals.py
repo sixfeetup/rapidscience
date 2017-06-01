@@ -23,30 +23,40 @@ def create_comment_activity(**kwargs):
         verb = 'reply'
     else:
         verb = 'comment'
+
+    is_public = True
+
+    # find the object being commented on
+    top_comment = comment.discussion_root
+    if top_comment.is_discussion:
+        # unshared discussion activity is kept private
+        # this presumes we are sharing discussion roots and not individual items
+        if len(top_comment.get_viewers() - {comment.user}) == 0:
+            is_public = False
+        content = top_comment
+    else:
+        content = top_comment.content_object
+
+
     new_action = action.send(
         comment.user,
         verb=verb,
         action_object=comment,
-    )
-    # find the object being commented on
-    top_comment = comment.discussion_root
-    if top_comment.is_discussion:
-        content = top_comment
-    else:
-        content = top_comment.content_object
-    if not hasattr(content, 'share_with'):
-        # the rest only applies to shared content
-        return
-    content.notify_viewers(
-        '{}: A new comment was posted'.format(
-            settings.SITE_PREFIX.upper(),
-        ),
-        {'action': new_action[0][1]},
+        public=is_public,
     )
 
-    # add it to the AF of the others
-    for interested_party in content.get_viewers() - {request.user}:
-        action.send( comment.user,
-                     verb=verb,
-                     action_object=comment,
-                     target=interested_party)
+
+    if hasattr(content, 'share_with'):
+        content.notify_viewers(
+            '{}: A new comment was posted'.format(
+                settings.SITE_PREFIX.upper(),
+            ),
+            {'action': new_action[0][1]},
+        )
+
+        # add it to the AF of the others
+        for interested_party in content.get_viewers() - {request.user}:
+            action.send( comment.user,
+                         verb=verb,
+                         action_object=comment,
+                         target=interested_party)

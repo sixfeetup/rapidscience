@@ -11,6 +11,7 @@ from django.core import signing
 from django.core.mail import EmailMultiAlternatives
 from django.core.urlresolvers import reverse
 from django.db import transaction
+from django.db.models import F
 from django.shortcuts import get_object_or_404, redirect, render, resolve_url
 from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
@@ -354,18 +355,24 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
     request.session['last_viewed_path'] = request.get_full_path()
     # if user dashboard was viewed, prevent adding things to a group
     request.session['last_viewed_project'] = None
-    activity_stream = Action.objects.filter(
-        public=True
-    )
 
     if tab == 'activity':
-        project_ct = ContentType.objects.get_for_model(Project)
-        user_ct = ContentType.objects.get_for_model(User)
-        if not request.user.can_access_all_projects:
+        if request.user.can_access_all_projects:
+            # TOOD: move this into the account model? as get_administrative_activity_stream ??? for site?
+            # we'll start with public actions
+            # that arent between a user and themself.
+            # You could argue that these should be public=False.
+            activity_stream = Action.objects.filter(public=True)
+        else:
+            # otherwise, use the user's own AF stream.
             activity_stream = request.user.get_activity_stream()
 
+
         if 'project' in request.GET or 'content_type' in request.GET or 'user_activity_only' in request.GET:
+            project_ct = ContentType.objects.get_for_model(Project)
+            user_ct = ContentType.objects.get_for_model(User)
             filter_form = ProjectContentForm(request.GET, user=request.user)
+
             if filter_form.is_valid() and filter_form.cleaned_data.get(
                 'content_type'):
                 activity_stream = activity_stream.filter(
@@ -393,7 +400,7 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
         activity_stream = list(rollup(
             activity_stream,
             lambda a: str((a.actor_object_id,
-                           a.verb,
+                           'posted' if a.verb in ('shared','posted') else a.verb,
                            a.action_object_content_type,
                            a.action_object_object_id)),
             lambda a: str((a.actor_object_id,
