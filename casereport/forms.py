@@ -53,7 +53,7 @@ class MultiFacetedSearchForm(FacetedSearchForm):
         if not query:
             query = 'sarcoma'
 
-        sqs = self.searchqueryset.filter(content__startswith=query)
+        sqs = self.searchqueryset.filter(content=query)
         multi_facet = defaultdict(list)
 
         if self.load_all:
