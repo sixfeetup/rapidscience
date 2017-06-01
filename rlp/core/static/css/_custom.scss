@@ -1250,6 +1250,14 @@ input#id_to_dashboard {
         .reply {
             margin-bottom: 25px;
         }
+        &.verb-shared {
+            .more {
+                margin-bottom: 9px;
+            }
+            .meta {
+                margin-bottom: 25px;
+            }
+        }
     }
 }
 

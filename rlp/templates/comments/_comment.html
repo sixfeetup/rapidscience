@@ -1,3 +1,4 @@
+{% load core_tags %}
 {% if obj.title %}
   <h4><a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a></h4>
 {% endif %}
@@ -6,3 +7,11 @@
   {{ obj.comment }}
 </p>
 {% endwith %}
+{% if action.verb == 'shared' %}
+    <p class="small meta">
+        Posted by
+        <a href="{% url 'profile' action.actor_object_id  %}">{{ action.actor }}</a>
+        | {{ obj.submit_date|date:"j M Y" }}<br />
+      {% autoescape off %}{% display_shared_with obj request.user %}{% endautoescape %}
+    </p>
+{% endif %}
