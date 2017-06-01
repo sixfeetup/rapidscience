@@ -27,12 +27,14 @@
       {% autoescape off %}{% display_shared_with obj request.user %}{% endautoescape %}
     </p>
     <p class="more">{{ obj.description|urlize|linebreaksbr }}</p>
-    {% if obj.tags %}
+    {% if obj.tags.all %}
         <p class="tags">
                 {% for tag in obj.tags.all %}
+                  {% if tag == None %}
                   <a role="button" class="btn btn-tag btn-xs" href="{% url 'haystack_search' %}?tags={{ tag.id }}">
                     {{ tag }}
                   </a>
+                  {% endif %}
                 {% endfor %}
         </p>
     {% endif %}
