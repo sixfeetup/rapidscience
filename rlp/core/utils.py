@@ -60,7 +60,10 @@ def enforce_sharedobject_permissions(cls, obj_class, id_name, methods=None):
     return cls
 
 
-def bookmark_and_notify(obj, view, request, app_label, model_name):
+def bookmark_and_notify(
+    obj, view, request, app_label,
+    model_name, comment=None,
+):
     '''When using the "send to" form:
         * bookmark content for the user creating the content
         * bookmark for the group last viewed (if any)
@@ -73,7 +76,7 @@ def bookmark_and_notify(obj, view, request, app_label, model_name):
         Project = project_type.model_class()
         group = Project.objects.get(id=initial_proj)
         group.bookmark(obj)
-        obj.share_with([group], request.user)
+        obj.share_with([group], request.user, comment)
     else:
         group = None
     SendToView.post(
