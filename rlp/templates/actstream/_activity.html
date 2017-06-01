@@ -2,88 +2,95 @@
 
 {% lazy_paginate activity_stream %}
 {% for action in activity_stream %}
-  <div class="activity-stream">
-    {% if action.action_object %}
-    <div class="row">
-      {% with obj=action.action_object model=action.action_object_content_type.model %}
-      <div class="col-md-11">
-        <p class="small">
-          {% include 'actstream/_action_detail.html' %}
-        </p>
-        {% if model == 'file' %}
-          {% include 'documents/_file.html' %}
-        {% elif model == 'image' %}
-          {% include 'documents/_image.html' %}
-        {% elif model == 'link' %}
-          {% include 'documents/_link.html' %}
-        {% elif model == 'video' %}
-          {% include 'documents/_video.html' %}
-        {% elif model == 'threadedcomment' %}
-          {% include 'comments/_comment.html' %}
-        {% elif model == 'referenceshare' %}
-          <blockquote>
-            <p>{{ obj.comment }}</p>
-          </blockquote>
-          {% include 'bibliography/_ref_activity.html' with ref=obj %}
-        {% elif model == 'reference' %}
-          {% include 'bibliography/_ref_activity.html' with ref=obj %}
-        {% elif model == "casereport" %}
-          {% include 'casereport/casereport_activity.html' %}
-        {% endif %}
-        {% if action.description %}
-        <blockquote>
-          <p>{{ action.description }}</p>
-        </blockquote>
-        {% endif %}
-
-        {% if action.action_object.tags or model == "casereport" %}
-          <p class="tags">
-            {% if model == "casereport" %}
-                <span class="btn btn-tag btn-xs">
-                    <i class="{{ obj.get_workflow_icon }}" aria-hidden="true"></i>
-                    {% if obj.workflow_state == 'live' %}
-                        Posted
-                    {% elif obj.workflow_state == 'draft' %}
-                        Draft
-                    {% elif obj.workflow_state == 'author review' %}
-                        Author Review
-                    {% elif obj.workflow_state == 'processing' %}
-                        Submitted
-                    {% else %}
-                        {{ obj.workflow_state }}
-                    {% endif %}
-                </span>
+  {% with obj=action.action_object model=action.action_object_content_type.model %}
+  <div class="activity-stream activity-{{ model }}">
+    {% if obj %}
+      <div class="row">
+          <div class="col-md-11">
+            <p class="small">
+              {% include 'actstream/_action_detail.html' %}
+            </p>
+            {% if model == 'file' %}
+              {% include 'documents/_file.html' %}
+            {% elif model == 'image' %}
+              {% include 'documents/_image.html' %}
+            {% elif model == 'link' %}
+              {% include 'documents/_link.html' %}
+            {% elif model == 'video' %}
+              {% include 'documents/_video.html' %}
+            {% elif model == 'threadedcomment' %}
+              {% include 'comments/_comment.html' %}
+            {% elif model == 'referenceshare' %}
+              <blockquote>
+                <p>{{ obj.comment }}</p>
+              </blockquote>
+              {% include 'bibliography/_ref_activity.html' with ref=obj %}
+            {% elif model == 'reference' %}
+              {% include 'bibliography/_ref_activity.html' with ref=obj %}
+            {% elif model == "casereport" %}
+                {% if action.description %}
+                <blockquote>
+                  <p>{{ action.description }}</p>
+                </blockquote>
+                {% endif %}
+              {% include 'casereport/casereport_activity.html' %}
             {% endif %}
-            {% for tag in action.action_object.tags.all %}
-              <a role="button" class="btn btn-tag btn-xs" href="{% url 'haystack_search' %}?tags={{ tag.id }}">
-                {{ tag }}
-              </a>
-            {% endfor %}
-          </p>
-        {% endif %}
-      </div>
-      <div class="col-md-1 activity-actions">
-        {% if model != 'referenceshare' %}
-            {% include 'discussions/discussion_count_widget.html' %}
-        {% endif %}
-        {% if model == 'file' or model == 'image' or model == 'link' or model == 'video' or model == 'document' %}
-            <a class="share-link" href="/send/documents/document/{{ obj.id }}"><i class="fa fa-share"></i></a>
-        {% elif model == "casereport" %}
-            <a class="share-link" href="/send/casereport/casereport/{{ obj.id }}"><i class="fa fa-share"></i></a>
-        {% elif model == 'threadedcomment' %}
-          {% if comment.is_discussion %}
-            <a class="share-link" href="/send/discussions/threadedcomment/{{ obj.id }}"><i class="fa fa-share"></i></a>
-          {% endif %}
-        {% elif model == 'reference' %}
-            <a class="share-link" href="/send/bibliography/reference/{{ obj.id }}"><i class="fa fa-share"></i></a>
-        {% endif %}
+            {% if action.description and model != "casereport" %}
+            <blockquote>
+              <p>{{ action.description }}</p>
+            </blockquote>
+            {% endif %}
+
+            {% if action.verb != 'shared' %}
+                {% if action.action_object.tags or model == "casereport" %}
+                  <p class="tags">
+                    {% if model == "casereport" %}
+                        <span class="btn btn-tag btn-xs">
+                            <i class="{{ obj.get_workflow_icon }}" aria-hidden="true"></i>
+                            {% if obj.workflow_state == 'live' %}
+                                Posted
+                            {% elif obj.workflow_state == 'draft' %}
+                                Draft
+                            {% elif obj.workflow_state == 'author review' %}
+                                Author Review
+                            {% elif obj.workflow_state == 'processing' %}
+                                Submitted
+                            {% else %}
+                                {{ obj.workflow_state }}
+                            {% endif %}
+                        </span>
+                    {% endif %}
+                    {% for tag in action.action_object.tags.all %}
+                      <a role="button" class="btn btn-tag btn-xs" href="{% url 'haystack_search' %}?tags={{ tag.id }}">
+                        {{ tag }}
+                      </a>
+                    {% endfor %}
+                  </p>
+                {% endif %}
+            {% endif %}
+          </div>
+          <div class="col-md-1 activity-actions">
+            {% if model != 'referenceshare' %}
+                {% include 'discussions/discussion_count_widget.html' %}
+            {% endif %}
+            {% if model == 'file' or model == 'image' or model == 'link' or model == 'video' or model == 'document' %}
+                <a class="share-link" href="/send/documents/document/{{ obj.id }}"><i class="fa fa-share"></i></a>
+            {% elif model == "casereport" %}
+                <a class="share-link" href="/send/casereport/casereport/{{ obj.id }}"><i class="fa fa-share"></i></a>
+            {% elif model == 'threadedcomment' %}
+              {% if comment.is_discussion %}
+                <a class="share-link" href="/send/discussions/threadedcomment/{{ obj.id }}"><i class="fa fa-share"></i></a>
+              {% endif %}
+            {% elif model == 'reference' %}
+                <a class="share-link" href="/send/bibliography/reference/{{ obj.id }}"><i class="fa fa-share"></i></a>
+            {% endif %}
 
 
+          </div>
       </div>
-      {% endwith %}
-    </div>
     {% endif %}
   </div>
+  {% endwith %}
   <hr>
 {% empty %}
   <p>There is no recent activity</p>

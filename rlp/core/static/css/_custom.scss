@@ -1189,6 +1189,22 @@ input#id_to_dashboard {
 
 /* activity tab */
 
+.tab-pane {
+    blockquote {
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+    span.btn {
+        cursor: default;
+        &:hover,
+        &:active {
+            box-shadow: none;
+            background-color: #eee;
+            border-color: #ccc;
+        }
+    }
+}
+
 #activity {
     .more {
         margin-bottom: 30px;
@@ -1210,6 +1226,14 @@ input#id_to_dashboard {
     }
     .reference {
         margin-bottom: 24px;
+    }
+    .activity-casereport {
+        .tags {
+            margin-top: 16px;
+        }
+        .meta {
+            margin-bottom: 25px;
+        }
     }
 }
 
@@ -1253,3 +1277,4 @@ input#id_to_dashboard {
         margin-bottom: 30px;
     }
 }
+
