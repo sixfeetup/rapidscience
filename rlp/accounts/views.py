@@ -1,45 +1,41 @@
-from itertools import chain
-
+from actstream.models import Action
 from django.conf import settings
+from django.contrib import messages
 # Avoid shadowing the login() and logout() views below.
-from django.contrib.auth import (REDIRECT_FIELD_NAME, login as auth_login, logout as auth_logout, authenticate)
+from django.contrib.auth import (REDIRECT_FIELD_NAME, login as auth_login,
+                                 logout as auth_logout, authenticate)
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.shortcuts import get_current_site
-from django.contrib import messages
-from django.core.mail import EmailMultiAlternatives
 from django.core import signing
+from django.core.mail import EmailMultiAlternatives
 from django.core.urlresolvers import reverse
-from django.db.models import Q
-from django.forms import inlineformset_factory
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render, resolve_url
 from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
 from django.utils.http import is_safe_url
 from django.utils.translation import ugettext as _
-from django.views.decorators.debug import sensitive_post_parameters
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic.base import TemplateView
-
-from actstream.models import Action
 from el_pagination.decorators import page_template
 from formtools.wizard.views import SessionWizardView
 
 from casereport.constants import WorkflowState
 from casereport.models import CaseReport
 from rlp.accounts.models import Institution
-from rlp.bibliography.models import fetch_publications_for_user
 from rlp.bibliography.models import Reference
 from rlp.core.email import send_transactional_mail
+from rlp.core.utils import rollup
 from rlp.core.views import MESSAGES_DEFAULT_FORM_ERROR
 from rlp.discussions.models import ThreadedComment
 from rlp.documents.models import Document
-from rlp.projects.models import Project, ProjectMembership
-from rlp.search.forms import ActionObjectForm, ProjectContentForm
-
-from .forms import RegistrationForm, UserProfileForm, AuthenticationForm, ProjectMembershipForm, \
+from rlp.projects.models import Project
+from rlp.search.forms import ProjectContentForm
+from .forms import RegistrationForm, UserProfileForm, AuthenticationForm, \
+    ProjectMembershipForm, \
     RestrictedProjectMembershipForm
 from .models import User
 from .signals import sync_user
@@ -342,66 +338,6 @@ class ActivationView(TemplateView):
         # catch either one.
         except signing.BadSignature:
             return None
-
-
-def rollup(input, simfunc, samefunc, rollup_name):
-    """ Rolls similar items in a list up under an array on the first i
-        similar item.
-        Adjacent, equivalent items are dropped entirely.
-
-        Given a simfunc that looks at only the second and third column,
-        and a samefunc that looks at the second, third and fourth,
-        The simfunc tests for similar objects ( can be consolidated )
-        and the samefunc tests for equivalent ( which can be dropped ).
-        
-        Turns this:
-             1 | a | b | c
-             2 | d | e | f
-             3 | d | e | g
-             4 | d | e | f
-             5 | d | h | i
-        into
-             1 | a | b | c | []
-             2 | d | e | f | [3]   
-             5 | d | h | i | []
-             
-        Item 3 rolled up into 2 because its key fields(d,e) were the same.
-        Item 4 is dropped because it is equivalent to item 2.
-        
-    """
-    input_iter = iter(input)
-
-    for i in input_iter:
-
-        try:
-            n = next(input_iter)
-        except StopIteration as last_i:
-            yield i
-            break
-
-        i_sim = simfunc(i)
-        equivalent_ids = set([samefunc(i),])
-
-        while True:
-            n_sim = simfunc(n)
-            n_same = samefunc(n)
-
-            # if similar but not the same, roll it up
-            if n_sim == i_sim:
-                if n_same not in equivalent_ids:
-                    equivalent_ids.add( n_same )
-                    if not hasattr( i, rollup_name ):
-                        setattr( i, rollup_name, [] )
-                    getattr(i, rollup_name).append( n )
-                #else:
-                #    print( "dropping equivalent obj", i, n)
-            else:
-                yield i
-                #print("yield n") # ugh, n needs to become the next i
-                #yield n
-                for n2 in rollup(chain([n], input_iter), simfunc, samefunc, rollup_name):
-                    yield n2
-            n = next(input_iter)
 
 
 @login_required

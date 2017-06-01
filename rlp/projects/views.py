@@ -20,7 +20,7 @@ from el_pagination.decorators import page_template
 from casereport.constants import WorkflowState
 from casereport.models import CaseReport
 from rlp.accounts.models import User
-from rlp.accounts.views import rollup
+from rlp.core.utils import rollup
 from rlp.bibliography.models import Reference
 from rlp.discussions.models import ThreadedComment
 from rlp.documents.models import Document
