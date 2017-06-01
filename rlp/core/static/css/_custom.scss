@@ -1193,6 +1193,7 @@ input#id_to_dashboard {
     blockquote {
         padding-top: 0;
         padding-bottom: 0;
+        font-style: italic;
     }
     span.btn {
         cursor: default;
@@ -1223,6 +1224,7 @@ input#id_to_dashboard {
     }
     hr {
         margin-top: 0;
+        margin-bottom: 25px;
     }
     .reference {
         margin-bottom: 24px;
@@ -1233,6 +1235,15 @@ input#id_to_dashboard {
         }
         .meta {
             margin-bottom: 25px;
+        }
+    }
+    .activity-reference {
+        blockquote {
+            margin-bottom: 15px;
+        }
+        .meta {
+            margin-bottom: 25px;
+            margin-top: -13px;
         }
     }
 }

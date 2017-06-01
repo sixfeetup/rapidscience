@@ -26,6 +26,9 @@
               </blockquote>
               {% include 'bibliography/_ref_activity.html' with ref=obj %}
             {% elif model == 'reference' %}
+              <blockquote>
+                <p>{{ action.description }}</p>
+              </blockquote>
               {% include 'bibliography/_ref_activity.html' with ref=obj %}
             {% elif model == "casereport" %}
                 {% if action.description %}
@@ -35,7 +38,7 @@
                 {% endif %}
               {% include 'casereport/casereport_activity.html' %}
             {% endif %}
-            {% if action.description and model != "casereport" %}
+            {% if action.description and model != "casereport" and model != "reference" %}
             <blockquote>
               <p>{{ action.description }}</p>
             </blockquote>
