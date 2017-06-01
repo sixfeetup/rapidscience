@@ -407,6 +407,11 @@ class MyFacetedSearchView(FacetedSearchView):
                 context['suggestions'] = []
 
         context.update(self.extra_context())
+        # keep genders sorted
+        context['facets']['fields']['gender'] = sorted(
+            context['facets']['fields']['gender'],
+            key=lambda g: g[0],
+        )
         form_class = CaseForm
         captchaform = form_class()
         data = self.request.GET.copy()
