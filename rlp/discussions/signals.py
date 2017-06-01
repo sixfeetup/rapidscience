@@ -5,6 +5,8 @@ from django.dispatch import receiver
 from actstream import action
 from django_comments.signals import comment_was_posted
 
+from casereport.models import CaseReportReview
+from rlp.accounts.models import User
 
 @receiver(comment_was_posted)
 def create_comment_activity(**kwargs):
@@ -37,16 +39,27 @@ def create_comment_activity(**kwargs):
     else:
         content = top_comment.content_object
 
+    # per #746   a comment by an admin on a CaseReportReview, we need to set
+    # the target to the CRR's casereport author
+    action_kwargs = {
+        'verb': verb,
+        'action_object': comment,
+        'public': is_public,
+    }
+    send_to_viewers = True
+    if comment.user.is_staff:
+        if isinstance(top_comment.content_object, CaseReportReview):
+            author = User.objects.filter(
+                email__iexact=top_comment.content_object.casereport\
+                    .primary_physician.email).first()
+            action_kwargs['target'] = author
+            # this is notice from an admin to a user,
+            # so do not propagate the message if there are pending shares
+            send_to_viewers = False
+    new_action = action.send(comment.user, **action_kwargs)
 
-    new_action = action.send(
-        comment.user,
-        verb=verb,
-        action_object=comment,
-        public=is_public,
-    )
 
-
-    if hasattr(content, 'share_with'):
+    if send_to_viewers and hasattr(content, 'share_with'):
         content.notify_viewers(
             '{}: A new comment was posted'.format(
                 settings.SITE_PREFIX.upper(),
