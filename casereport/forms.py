@@ -47,7 +47,7 @@ class MultiFacetedSearchForm(FacetedSearchForm):
     def search(self):
         # sqs = super(FacetedSearchForm, self).search()
         if self.is_valid():
-            query = self.cleaned_data.get('q', 'sarcoma')
+            query = self.cleaned_data.get('q') or 'sarcoma'
         else:
             query = 'sarcoma'
 
