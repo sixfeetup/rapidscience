@@ -43,3 +43,10 @@ def create_comment_activity(**kwargs):
         ),
         {'action': new_action[0][1]},
     )
+
+    # add it to the AF of the others
+    for interested_party in content.get_viewers() - {request.user}:
+        action.send( comment.user,
+                     verb=verb,
+                     action_object=comment,
+                     target=interested_party)
