@@ -245,6 +245,7 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
 
         bookmark_and_notify(
             case, self, self.request, 'casereport', 'casereport',
+            comment=data.get('comment') or None,
         )
         past_tense_verb = 'created'
         for group_id in data.getlist('groups'):
