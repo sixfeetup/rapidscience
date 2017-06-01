@@ -1,6 +1,8 @@
 {% load core_tags %}
 {% if action.verb == 'started' %}
   Discussion started
+{% elif action.verb == 'added' %}
+  Reference posted
 {% elif action.verb == 'reply' %}
   Comment
 {% else %}

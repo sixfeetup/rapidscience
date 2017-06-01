@@ -21,14 +21,18 @@
             {% elif model == 'threadedcomment' %}
               {% include 'comments/_comment.html' %}
             {% elif model == 'referenceshare' %}
+              {% if obj.comment %}
               <blockquote>
                 <p>{{ obj.comment }}</p>
               </blockquote>
+              {% endif %}
               {% include 'bibliography/_ref_activity.html' with ref=obj %}
             {% elif model == 'reference' %}
+              {% if action.description %}
               <blockquote>
                 <p>{{ action.description }}</p>
               </blockquote>
+              {% endif %}
               {% include 'bibliography/_ref_activity.html' with ref=obj %}
             {% elif model == "casereport" %}
                 {% if action.description %}
