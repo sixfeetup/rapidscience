@@ -1,7 +1,7 @@
 {% load core_tags %}
 <!-- casereport/casereport_activity -->
 {% with casereport=obj %}
-    <h4><a href="{{ casereport.get_absolute_url }}">Case: {{ casereport.title }}</a></h4>
+    <h4><a href="{{ casereport.get_absolute_url }}">{{ casereport.title }}</a></h4>
     {% if action.verb == 'shared' %}
         <p class="small meta">
             Posted by
