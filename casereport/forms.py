@@ -28,7 +28,8 @@ class CaseForm(forms.Form):
         choices=(),  # gets filled in by the view
         required=False,
     )
-    invitation_message = forms.CharField(
+    comment = forms.CharField(
+        label='Invitation Message',
         max_length=600,
         widget=forms.Textarea,
         required=False,

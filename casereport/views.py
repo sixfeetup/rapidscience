@@ -172,7 +172,7 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
             form.fields['members'].widget.attrs['class'] = 'select2 hiddenField'
             form.fields['groups'].widget.attrs['class'] = 'select2 hiddenField'
             form.fields['external'].widget.attrs['class'] = 'hiddenField'
-            form.fields['invitation_message'].widget.attrs['class'] = 'hiddenField'
+            form.fields['comment'].widget.attrs['class'] = 'hiddenField'
         else:
             form.fields['members'].choices = all_members
             form.fields['groups'].choices = group_choices(user)
