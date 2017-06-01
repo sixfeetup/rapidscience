@@ -83,17 +83,6 @@ class Document(PolymorphicModel, SharedObjectMixin):
                 return "Compressed File (zip)"
             return 'Document'
 
-    def get_viewers(self):
-        '''override to get the viewers for the main object'''
-        doc_obj = Document.objects.non_polymorphic().get(id=self.id)
-        my_type = ContentType.objects.get_for_model(doc_obj)
-        shares = Action.objects.filter(
-            action_object_object_id=doc_obj.id,
-            action_object_content_type=my_type,
-            verb__exact='shared',
-        )
-        return {s.target for s in shares}
-
 
 class File(Document):
     upload = models.FileField(upload_to="docs/%Y/%m/%d")
