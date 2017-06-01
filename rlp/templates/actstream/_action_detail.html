@@ -15,11 +15,18 @@ by {% if request.user == action.actor and action.verb != 'reply' %} me {% else %
 {% endif %}
 {% if action.action_object_content_type.model == 'threadedcomment' and action.verb != 'started' and action.verb != 'shared' %}
     {%  with comment=action.action_object parent_user=action.action_object.get_parent.user %}
-        {% if comment.is_reply %}on{% endif %}
+        {% if comment.is_reply or 'casereport' in comment.discussion_root.content_object.get_content_type %}on{% endif %}
+        {% if 'casereport' in comment.discussion_root.content_object.get_content_type %}
+        <a href="{{ comment.discussion_root.content_object.get_absolute_url }}">
+            {% if comment.is_reply %}{{ comment.discussion_root.user }}: {% endif %}
+            {{ comment.discussion_root.content_object.title|truncatewords_html:10 }}
+        </a>
+        {% else %}
         <a href="{{ comment.discussion_root.get_absolute_url }}">
             {% if comment.is_reply %}{{ comment.discussion_root.user }}: {% endif %}
             {{ comment.discussion_root.title|truncatewords_html:10 }}
         </a>
+        {% endif %}
     {% endwith %}
 {% endif %}
 | {{ action.timestamp|date:"j M Y" }}
