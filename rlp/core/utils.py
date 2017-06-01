@@ -115,34 +115,26 @@ def rollup(input, simfunc, samefunc, rollup_name):
     """
     input_iter = iter(input)
 
-    for i in input_iter:
+    i = next( input_iter )
+    i_sim = simfunc(i)
+    equivalent_ids = set([samefunc(i),])
 
-        try:
-            n = next(input_iter)
-        except StopIteration as last_i:
+    for n in input_iter:
+        n_sim = simfunc(n)
+        n_same = samefunc(n)
+
+        # if similar but not the same, roll it up
+        if n_sim == i_sim:
+            if n_same not in equivalent_ids:
+                equivalent_ids.add( n_same )
+                if not hasattr( i, rollup_name ):
+                    setattr( i, rollup_name, [] )
+                getattr(i, rollup_name).append( n )
+        else:
             yield i
-            break
+            i = n
+            i_sim = simfunc(i)
+            equivalent_ids = set([samefunc(i),])
 
-        i_sim = simfunc(i)
-        equivalent_ids = set([samefunc(i),])
+    yield i
 
-        while True:
-            n_sim = simfunc(n)
-            n_same = samefunc(n)
-
-            # if similar but not the same, roll it up
-            if n_sim == i_sim:
-                if n_same not in equivalent_ids:
-                    equivalent_ids.add( n_same )
-                    if not hasattr( i, rollup_name ):
-                        setattr( i, rollup_name, [] )
-                    getattr(i, rollup_name).append( n )
-                #else:
-                #    print( "dropping equivalent obj", i, n)
-            else:
-                yield i
-                #print("yield n") # ugh, n needs to become the next i
-                #yield n
-                for n2 in rollup(chain([n], input_iter), simfunc, samefunc, rollup_name):
-                    yield n2
-            n = next(input_iter)
