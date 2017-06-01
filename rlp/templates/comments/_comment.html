@@ -2,7 +2,7 @@
   <h4><a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a></h4>
 {% endif %}
 {% with truncated_comment=obj.comment|truncatewords:20 %}
-<p id="c{{ obj.id }}" class="more small">
+<p id="c{{ obj.id }}" class="{% if action.verb != 'reply' %}more {% endif %}{% if action.verb == 'reply' %}reply {% endif %}small">
   {{ obj.comment }}
 </p>
 {% endwith %}

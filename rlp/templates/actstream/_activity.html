@@ -3,7 +3,7 @@
 {% lazy_paginate activity_stream %}
 {% for action in activity_stream %}
   {% with obj=action.action_object model=action.action_object_content_type.model %}
-  <div class="activity-stream activity-{{ model }}">
+  <div class="activity-stream activity-{{ model }} verb-{{ action.verb }}">
     {% if obj %}
       <div class="row">
           <div class="col-md-11">

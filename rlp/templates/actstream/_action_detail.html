@@ -1,24 +1,25 @@
 {% load core_tags %}
 {% if action.verb == 'started' %}
   Item posted
+{% elif action.verb == 'shared' %}
+  Item shared
+{% elif action.verb == 'reply' %}
+  Comment
 {% else %}
   {{ action.action_object.display_type }}
   {% if action.action_object_content_type.model != 'threadedcomment' %}{{ action.verb }}{% endif %}
 {% endif %}
-by {% if request.user == action.actor %} me {% else %} <a href="{{ action.actor.get_absolute_url }}">{{ action.actor.get_full_name }}</a>{% endif %}
+by {% if request.user == action.actor and action.verb != 'reply' %} me {% else %} <a href="{{ action.actor.get_absolute_url }}">{{ action.actor.get_full_name }}</a>{% endif %}
 {% if action.verb == 'shared' %} with {{ action.target|link }}
     {% if action.others %}{% for other in action.others %}{% if forloop.last %} and {%  else %}, {% endif %}{{ other.target|link }}{%  endfor %}{% endif %}
 {% endif %}
-{% if action.action_object_content_type.model == 'threadedcomment' %}
+{% if action.action_object_content_type.model == 'threadedcomment' and action.verb != 'started' and action.verb != 'shared' %}
     {%  with comment=action.action_object parent_user=action.action_object.get_parent.user %}
-        {% if comment.is_reply %}
-            {% if parent_user = request.user %}
-                to you
-            {%  else %}
-                to <a href="{{ parent_user.get_absolute_url }}">{{ parent_user.get_full_name }}</a>
-            {% endif %}
-        {% endif %}
-        {% if action.verb != 'started' %}on <a href="{{ comment.discussion_root.content_object.get_absolute_url }}">{{ comment.discussion_root.content_object|truncatewords_html:10 }}</a>{% endif %}
+        {% if comment.is_reply %}on{% endif %}
+        <a href="{{ comment.discussion_root.get_absolute_url }}">
+            {% if comment.is_reply %}{{ parent_user.get_full_name }}: {% endif %}
+            {{ comment.discussion_root.title|truncatewords_html:10 }}
+        </a>
     {% endwith %}
 {% endif %}
 | {{ action.timestamp|date:"j M Y" }}
