@@ -898,6 +898,20 @@ a.comment-count.empty {
     margin-bottom: 14px;
 }
 
+.reference-detail {
+    .initial {
+        font-size: 20px;
+        line-height: 26px;
+        margin-bottom: 14px;
+    }
+    hr {
+        margin-bottom: 25px;
+    }
+    .form-group h4 {
+        margin-top: 25px;
+    }
+}
+
 .backlink {
     margin-top: 30px;
 }
