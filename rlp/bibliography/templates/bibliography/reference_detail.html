@@ -22,6 +22,9 @@
                     {% with edit_url=obj.get_edit_url %}
                       {% if edit_url %}| <a href="{{ edit_url }}">Edit</a>{% endif %}
                     {% endwith %}
+                    {% with delete_url=obj.get_delete_url %}
+                      {% if delete_url %}| <a href="{{ delete_url }}">Delete</a>{% endif %}
+                    {% endwith %}
                   </p>
                   <p>
                     {% if obj.parsed_data.authors %}{{ obj.parsed_data.authors }}. {% endif %},
