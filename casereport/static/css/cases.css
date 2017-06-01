@@ -1157,7 +1157,7 @@ input:focus + div.info {
 	color: rgb(55, 146, 191);
 }
 .headingBanner {
-	padding: 20px 15px 5px;
+	padding: 31px 15px 5px;
 	position: relative;
 }
 .headingBanner h1 {
@@ -1165,11 +1165,15 @@ input:focus + div.info {
 	color: rgb(68, 68, 68);
 	clear: both;
 	text-transform: none;
+    margin-top: 0;
 }
 .headingBanner p {
 	font-size: 16px;
 	font-weight: bold;
-	margin-bottom: 30px;
+	margin-bottom: 8px;
+}
+.headingBanner .case-meta {
+    margin-bottom: 30px;
 }
 .headingBanner .notes-trigger {
 	font-weight: normal;

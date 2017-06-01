@@ -17,27 +17,31 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="headingBanner">
-                    <div>
-                        {% if last_viewed_path %}
-                        <p class="back"><a href="{{ last_viewed_path }}">&larr; Back</a></p>
-                        {% elif request.META.HTTP_REFERER %}
-                        <a href="{{request.META.HTTP_REFERER}}">&laquo; Return To Search Results</a>
-                            {% else %}
-                            <a href="{% url 'haystac' %}">&laquo; All Cases</a>
-                        {% endif %}
-                    </div>
-                    {% if review_allowed %}
-                    <p class="pull-right notes-trigger">
-                        <a href="{% url 'review' casereport.id %}">Editorial Notes</a>
-                        <i class="fa fa-caret-down" aria-hidden="true"></i>
-                        
-                        <div id="editorial-notes">
-                            <iframe src="{% url 'review' casereport.id %}"></iframe>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            {% if last_viewed_path %}
+                            <p class="back"><a href="{{ last_viewed_path }}">&larr; Back</a></p>
+                            {% elif request.META.HTTP_REFERER %}
+                            <a href="{{request.META.HTTP_REFERER}}">&laquo; Return To Search Results</a>
+                                {% else %}
+                                <a href="{% url 'haystac' %}">&laquo; All Cases</a>
+                            {% endif %}
                         </div>
-                    </p>
-                    {% endif %}
+                        <div class="col-xs-6">
+                            {% if review_allowed %}
+                            <p class="pull-right notes-trigger">
+                                <a href="{% url 'review' casereport.id %}">Editorial Notes</a>
+                                <i class="fa fa-caret-down" aria-hidden="true"></i>
+
+                                <div id="editorial-notes">
+                                    <iframe src="{% url 'review' casereport.id %}"></iframe>
+                                </div>
+                            </p>
+                            {% endif %}
+                        </div>
+                    </div>
                     <h1>{{ casereport.title }}</h1>
-                    <p>
+                    <p class="case-meta">
                         Case ID: {{ casereport.id }} |
                         Submitted: {{ casereport.created_on|date:"M d, Y" }} |
                         Last revision: {{ casereport.modified_on|date:"M d, Y" }}
