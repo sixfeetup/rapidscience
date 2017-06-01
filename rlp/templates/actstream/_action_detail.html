@@ -1,11 +1,11 @@
 {% load core_tags %}
 {% if action.verb == 'started' %}
-  Discussion started
+  Item posted
 {% else %}
   {{ action.action_object.display_type }}
   {% if action.action_object_content_type.model != 'threadedcomment' %}{{ action.verb }}{% endif %}
 {% endif %}
-by {% if request.user == action.actor %} you {% else %} <a href="{{ action.actor.get_absolute_url }}">{{ action.actor.get_full_name }}</a>{% endif %}
+by {% if request.user == action.actor %} me {% else %} <a href="{{ action.actor.get_absolute_url }}">{{ action.actor.get_full_name }}</a>{% endif %}
 {% if action.verb == 'shared' %} with {{ action.target|link }}
     {% if action.others %}{% for other in action.others %}{% if forloop.last %} and {%  else %}, {% endif %}{{ other.target|link }}{%  endfor %}{% endif %}
 {% endif %}
@@ -18,7 +18,7 @@ by {% if request.user == action.actor %} you {% else %} <a href="{{ action.actor
                 to <a href="{{ parent_user.get_absolute_url }}">{{ parent_user.get_full_name }}</a>
             {% endif %}
         {% endif %}
-        on <a href="{{ comment.discussion_root.content_object.get_absolute_url }}">{{ comment.discussion_root.content_object|truncatewords_html:10 }}</a>
+        {% if action.verb != 'started' %}on <a href="{{ comment.discussion_root.content_object.get_absolute_url }}">{{ comment.discussion_root.content_object|truncatewords_html:10 }}</a>{% endif %}
     {% endwith %}
 {% endif %}
 | {{ action.timestamp|date:"j M Y" }}
