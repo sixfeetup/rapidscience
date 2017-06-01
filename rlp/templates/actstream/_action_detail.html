@@ -17,7 +17,7 @@ by {% if request.user == action.actor and action.verb != 'reply' %} me {% else %
     {%  with comment=action.action_object parent_user=action.action_object.get_parent.user %}
         {% if comment.is_reply %}on{% endif %}
         <a href="{{ comment.discussion_root.get_absolute_url }}">
-            {% if comment.is_reply %}{{ parent_user.get_full_name }}: {% endif %}
+            {% if comment.is_reply %}{{ comment.discussion_root.user }}: {% endif %}
             {{ comment.discussion_root.title|truncatewords_html:10 }}
         </a>
     {% endwith %}
