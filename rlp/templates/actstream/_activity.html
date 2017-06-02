@@ -87,8 +87,8 @@
             {% elif model == "casereport" %}
                 <a class="share-link" href="/send/casereport/casereport/{{ obj.id }}"><i class="fa fa-share"></i></a>
             {% elif model == 'threadedcomment' %}
-              {% if comment.is_discussion %}
-                <a class="share-link" href="/send/discussions/threadedcomment/{{ obj.id }}"><i class="fa fa-share"></i></a>
+              {% if obj.discussion_root.is_discussion %}
+                <a class="share-link" href="/send/discussions/threadedcomment/{{ obj.discussion_root.id }}"><i class="fa fa-share"></i></a>
               {% endif %}
             {% elif model == 'reference' %}
                 <a class="share-link" href="/send/bibliography/reference/{{ obj.id }}"><i class="fa fa-share"></i></a>
