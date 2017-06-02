@@ -7,7 +7,7 @@
     {% if obj %}
       <div class="row">
           <div class="col-md-11">
-            <p class="small">
+            <p class="small action-detail">
               {% include 'actstream/_action_detail.html' %}
             </p>
             {% if model == 'file' %}
@@ -68,7 +68,7 @@
                         </span>
                     {% endif %}
                     {% for tag in action.action_object.tags.all %}
-                      {% if tag == None %}
+                      {% if tag.slug != '' %}
                       <a role="button" class="btn btn-tag btn-xs" href="{% url 'haystack_search' %}?tags={{ tag.id }}">
                         {{ tag }}
                       </a>

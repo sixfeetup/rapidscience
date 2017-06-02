@@ -1221,60 +1221,40 @@ input#id_to_dashboard {
 }
 
 #activity {
-    .more {
-        margin-bottom: 30px;
+    .activity-stream {
+        padding-bottom: 10px;
     }
-    iframe {
-        margin-top: -10px;
-        margin-bottom: 30px;
+    .action-detail {
+        margin-bottom: 12px;
+    }
+    h4 {
+        margin-bottom: 14px;
+    }
+    blockquote {
+        margin-bottom: 20px;
+    }
+    .more {
+        margin-bottom: 14px;
     }
     .tags {
-        margin-top: -10px;
-        margin-bottom: 30px;
+        margin-top: 0;
+        margin-bottom: 20px;
     }
     .thumbnail-image {
-        margin-top: -10px;
-        margin-bottom: 30px;
+        margin-top: 0;
+        margin-bottom: 20px;
+    }
+    iframe {
+        margin-top: 0;
+        margin-bottom: 20px;
+    }
+    .meta {
+        margin-top: 0;
+        margin-bottom: 20px;
     }
     hr {
         margin-top: 0;
         margin-bottom: 25px;
-    }
-    .reference {
-        margin-bottom: 24px;
-    }
-    .activity-casereport {
-        .tags {
-            margin-top: 16px;
-        }
-        .meta {
-            margin-bottom: 25px;
-        }
-    }
-    .activity-reference {
-        blockquote {
-            margin-bottom: 15px;
-        }
-        .meta {
-            margin-bottom: 25px;
-            margin-top: -13px;
-        }
-        .more {
-            margin-bottom: 35px;
-        }
-    }
-    .activity-threadedcomment {
-        .reply {
-            margin-bottom: 25px;
-        }
-        &.verb-shared {
-            .more {
-                margin-bottom: 9px;
-            }
-            .meta {
-                margin-bottom: 25px;
-            }
-        }
     }
 }
 
