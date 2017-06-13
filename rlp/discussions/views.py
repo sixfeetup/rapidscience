@@ -70,11 +70,7 @@ def comment_edit(request, comment_pk, template_name='discussions/comment_edit.ht
     if request.user != comment.user:
         messages.error(request, "You do not have permission to edit this.")
         return redirect(comment.get_absolute_url())
-    # Allow editing of the title if this is a top-level 'topic' thread.
-    if comment.content_type.model_class() == Project:
-        form_class = ThreadedCommentWithTitleEditForm
-    else:
-        form_class = ThreadedCommentEditForm
+    form_class = ThreadedCommentWithTitleEditForm
     if request.method == 'POST':
         form = form_class(request.POST, instance=comment)
         if form.is_valid():

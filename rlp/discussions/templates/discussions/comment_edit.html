@@ -8,7 +8,12 @@
             <p>{{ comment.comment }}</p>
             <form method="post" action="">
               {% csrf_token %}
-              {% bootstrap_form form %}
+              {% for field in form %}
+                  {% if field.name == 'title' and comment.level != 0 %}
+                  {% else %}
+                    {% bootstrap_field field %}
+                  {% endif %}
+              {% endfor %}
               <button class="btn btn-primary" type="submit">
                 Edit
               </button>
