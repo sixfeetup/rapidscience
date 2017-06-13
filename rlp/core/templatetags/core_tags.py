@@ -75,19 +75,23 @@ def setvar(parser,token):
 def display_shared_with(item, user=None):
     # Display 'Shared with...' text if shared with more than the current user
     viewers = item.get_viewers()
-    vlist = ''
+    vlist = []
     for v in viewers:
         if user == v:
             continue
         if v._meta.model_name == "user":
             url = reverse('profile', args=[v.id])
-            vlist += '<a href="{0}">{1}</a>, '.format(url, v)
+            vlist.append('<a href="{0}">{1}</a>, '.format(url, v))
         elif v._meta.model_name == "project":
             url = reverse('projects:projects_detail', args=[v.id, v.slug])
-            vlist += '<a href="{0}">{1}</a>, '.format(url, v)
+            vlist.append('<a href="{0}">{1}</a>, '.format(url, v))
         else:
-            vlist += '{0}, '.format(v)
+            vlist.append('{0}, '.format(v))
     if vlist:
+        if len(vlist) > 1:
+            vlist[-2] = vlist[-1][:-2]
+            vlist.insert(-1, ' and ')
+        vlist = "".join(vlist)
         return 'Shared with {0}'.format(vlist[:-2])
     else:
         return ''
