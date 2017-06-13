@@ -158,7 +158,7 @@
       {% if casereport.biomarkers %}
          <div id="section-biomarkers">
               <h4>Biomarkers</h4>
-              <p>{{ casereport.biomarkers }}</p>
+              <p>{{ casereport.biomarkers|linebreaks }}</p>
           </div>
       {% endif %}
 
@@ -195,7 +195,7 @@
                         <span class="treatment-stat">PS: {{ treatment.status }}</span>
                       {% endif %}
                   </p>
-                  <p>{{ treatment.notes }}</p>
+                  <p>{{ treatment.notes|linebreaks }}</p>
               </div>
           {% endfor %}
       </div>
@@ -204,7 +204,7 @@
       {% if casereport.additional_comment %}
       <div id="section-comments">
           <h4>Additional Comments</h4>
-          <p>{{ casereport.additional_comment }}</p>
+          <p>{{ casereport.additional_comment|linebreaks }}</p>
       </div>
       {% endif %}
 
@@ -230,11 +230,11 @@
           {% for attachment in casereport.get_attachments %}
           {% if attachment.file %}
               <img src="{{ attachment.file.url }}" alt="{{ attachment.title }}"/>
-              <p class="caption">
-                  <strong>{{ forloop.counter }}. {% if attachment.title %}{{ attachment.title }}{% endif %}</strong>
-                  {% if attachment.description %}<br />{{ attachment.description }}{% endif %}
-                  <br /><a href="{{ attachment.file.url }}" target="_blank" class="download">Download full image</a>
-              </p>
+              <div class="caption">
+                  <p><strong>{{ forloop.counter }}. {% if attachment.title %}{{ attachment.title }}{% endif %}</strong></p>
+                  {% if attachment.description %}{{ attachment.description|linebreaks }}{% endif %}
+                  <p><a href="{{ attachment.file.url }}" target="_blank" class="download">Download full image</a></p>
+              </div>
           {% endif %}
           {% endfor %}
       </div>
