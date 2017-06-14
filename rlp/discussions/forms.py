@@ -1,6 +1,7 @@
 from django.conf import settings
 from django import forms
 from django_comments.forms import CommentForm as BaseCommentForm
+from taggit.models import Tag
 
 from rlp.core.forms import MemberListField, GroupListField
 from rlp.discussions.models import ThreadedComment
@@ -60,10 +61,16 @@ class ThreadedCommentWithTitleEditForm(forms.ModelForm):
                                      'rows': 3}),
         max_length=settings.COMMENT_MAX_LENGTH
     )
+    tags = forms.ModelMultipleChoiceField(
+        queryset=Tag.objects.all(),
+        help_text='Separate tags with commas',
+        required=False,
+    )
+    tags.widget.attrs['class'] = 'select2'
 
     class Meta:
         model = ThreadedComment
-        fields = ['title', 'comment']
+        fields = ['title', 'comment', 'tags']
 
 
 internal_member_field = MemberListField(
@@ -95,6 +102,12 @@ class NewDiscussionForm(forms.Form):
         widget=forms.HiddenInput,
         initial=True,
     )
+    tags = forms.ModelMultipleChoiceField(
+        queryset=Tag.objects.all(),
+        help_text='Separate tags with commas',
+        required=False,
+    )
+    tags.widget.attrs['class'] = 'select2'
 
     field_order = ['discussion_title', 'discussion_body', 'members',
-                   'groups']
+                   'groups', 'tags']

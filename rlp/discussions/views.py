@@ -2,7 +2,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.views.decorators.cache import never_cache
-from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.contrib.sites.models import Site
 from django.core.exceptions import ObjectDoesNotExist
@@ -12,13 +11,13 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import FormView
 
 from actstream import action
+from taggit.models import Tag
 
 from rlp.accounts.models import User
 from rlp.core.forms import member_choices, group_choices
 from rlp.core.utils import bookmark_and_notify
 from rlp.projects.models import Project
 from .forms import (
-    ThreadedCommentEditForm,
     ThreadedCommentWithTitleEditForm,
     NewDiscussionForm
 )
@@ -72,13 +71,24 @@ def comment_edit(request, comment_pk, template_name='discussions/comment_edit.ht
         return redirect(comment.get_absolute_url())
     form_class = ThreadedCommentWithTitleEditForm
     if request.method == 'POST':
+        tag_ids = request.POST.getlist('tags', [])
         form = form_class(request.POST, instance=comment)
         if form.is_valid():
             form.save()
+            if tag_ids:
+                try:
+                    tags = Tag.objects.filter(id__in=tag_ids)
+                    comment.tags.set(*tags)
+                except:
+                    comment.tags.add(*tag_ids[0].split(","))
+                comment.save()
             messages.success(request, "Comment successfully updated!")
             return redirect(comment.get_absolute_url())
     else:
-        form = form_class(instance=comment)
+        initial = {}
+        if comment and comment.tags.count():
+            initial['tags'] = comment.tags.all()
+        form = form_class(instance=comment, initial=initial)
     context = {
         'comment': comment,
         'form': form,
@@ -169,6 +179,7 @@ class CreateDiscussion(LoginRequiredMixin, FormView):
             object_pk=site.id,
         )
         new_discussion.save()
+        new_discussion.tags.set(*data['tags'])
 
         target = bookmark_and_notify(
             new_discussion, self, self.request,
