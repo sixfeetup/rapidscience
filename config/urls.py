@@ -18,6 +18,7 @@ from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
+from django.views.generic.base import RedirectView
 
 from rlp.core import views
 from rlp.sitemaps import sitemaps
@@ -52,6 +53,7 @@ urlpatterns = [
         views.SendToView.as_view(),
         name='sendto',
     ),
+    url(r'^about/', RedirectView.as_view(url='http://rapidscience.org/sarcoma', permanent=True), name='about'),
     url(r'^', include('cms.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
