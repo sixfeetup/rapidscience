@@ -1,5 +1,7 @@
 {% extends "left_col.html" %}{% load bootstrap3 cms_tags comments discussion_tags project_tags %}{% load static from staticfiles %}
 
+{% block body_class %}project_detail{% endblock %}
+
 {% block css %}{{ block.super }}
 <link rel="stylesheet" type="text/css" href="{% static 'js/vendor/chosen/chosen.min.css' %}" media="screen">
 {% endblock css %}
@@ -50,7 +52,7 @@
 {% endblock hero %}
 
 {% block left_column %}
-  <div class="box">
+  <div class="box about-box">
     <p class="section-label">About<span style="float:right">{%  if request.user in project.moderators %} <a href="{%  url 'projects:projects_edit' project.pk project.slug %}#" class="edit-group-link" title="Edit group">
       <i class="fa fa-cog"></i>
     </a>{%  endif %}</span></p>
@@ -60,6 +62,19 @@
   {% endif %}
   </div>
   {% show_project_members project %}
+  
+  <div class="cc-box">
+      <img src="{% static "images/logo-CC.png" %}" class="img-responsive"/>
+      <p>Submit and search the database of case reports, N of 1 studies, and clinical trial summaries.</p>
+      <div class="row">
+          <div class="col-xs-6">
+              <a href="{%  url 'haystac' %}" class="btn btn-primary btn-block">Search</a>
+          </div>
+          <div class="col-xs-6">
+           <a href="{%  url 'add_casereport' %}" class="btn btn-primary btn-block">Submit</a>
+          </div>
+      </div>
+  </div>
 
   <div class="overlay-form" id="project-invite">
     <form method="post" action="{% url 'projects:projects_invite' project.pk project.slug %}">
