@@ -1,12 +1,9 @@
-from actstream.models import Action
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
-from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 from embed_video.fields import EmbedVideoField
 from polymorphic.models import PolymorphicModel
-from taggit.managers import TaggableManager
 
 from rlp.core.models import SharedObjectMixin
 from rlp.discussions.models import ThreadedComment
@@ -23,7 +20,6 @@ class Document(PolymorphicModel, SharedObjectMixin):
         object_id_field='object_pk',
     )
 
-    tags = TaggableManager()
     copyright = models.BooleanField(blank=True, default=False)
 
     class Meta:

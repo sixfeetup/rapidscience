@@ -9,10 +9,9 @@ from django.contrib.postgres.fields import JSONField
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.db import models
-from django.db.models import Q
+# from django.db.models import Q
 
 from Bio import Entrez
-from taggit.managers import TaggableManager
 from taggit.models import Tag
 
 from rlp.accounts.models import User
@@ -47,7 +46,6 @@ class Reference(SharedObjectMixin):
         ThreadedComment,
         object_id_field='object_pk',
     )
-    tags = TaggableManager()
 
     class Meta:
         verbose_name = 'Raw Reference'
@@ -457,4 +455,3 @@ def get_or_create_reference(query):
 
     return references
     #return Reference.objects.filter(Q(pubmed_id__icontains=query) | Q(doi__icontains=query) | Q(title__icontains=query))
-

@@ -5,6 +5,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models.lookups import DateTransform
 from actstream import action
+from taggit.managers import TaggableManager
+
 
 @models.DateTimeField.register_lookup
 class WeekTransform(DateTransform):
@@ -88,6 +90,7 @@ class SharedObjectMixin(models.Model):
         content_type_field='target_type',
         object_id_field='target_id',
     )
+    tags = TaggableManager()
 
     def get_viewers(self):
         my_type = ContentType.objects.get_for_model(self)
