@@ -25,6 +25,7 @@ try:
     from django.urls import reverse
 except ImportError as old_django:
     from django.core.urlresolvers import reverse
+from taggit.models import Tag
 
 from casereport.api import PhysicianInstanceResource
 from casereport.api import TreatmentInstanceResource
@@ -36,7 +37,6 @@ from .models import (
     AuthorizedRep,
     CaseReport,
     SubtypeOption,
-    CaseReportReview,
     CaseFile,
     Treatment,
     MolecularAbberation,
@@ -235,6 +235,8 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
                           attachment2_description=attachment2_description,
                           attachment3_description=attachment3_description)
         case.save()
+        tags = Tag.objects.filter(id__in=request.POST.getlist('tags'))
+        case.tags.set(*tags)
         if author:
             case.authorized_reps.add(author[0])
         update_treatments_from_request(case, data)
@@ -484,6 +486,8 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
             casereport,
         )
         form.fields['groups'].choices = group_choices(request.user, casereport)
+        if casereport.tags.count():
+            form.fields['tags'].initial = casereport.tags.all()
         return self.render_to_response(self.get_context_data(
             heading=heading,
             form=form,
@@ -552,7 +556,8 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
         # any edit by an admin needs to clear the author approved.
         if request.user.is_staff and request.user.email != case.primary_physician.email:
             case.author_approved = False
-
+        tags = Tag.objects.filter(id__in=request.POST.getlist('tags'))
+        case.tags.set(*tags)
 
         case.save()
         bookmark_and_notify(

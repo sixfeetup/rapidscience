@@ -2,6 +2,7 @@ __author__ = 'yaseen'
 
 from collections import defaultdict
 from haystack.forms import FacetedSearchForm
+from taggit.models import Tag
 
 from django import forms
 
@@ -40,6 +41,12 @@ class CaseForm(forms.Form):
         widget=forms.HiddenInput,
         initial=True,
     )
+    tags = forms.ModelMultipleChoiceField(
+        queryset=Tag.objects.all(),
+        help_text='Separate tags with commas',
+        required=False,
+    )
+    tags.widget.attrs['class'] = 'select2'
 
 
 class MultiFacetedSearchForm(FacetedSearchForm):
