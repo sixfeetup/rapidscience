@@ -168,14 +168,6 @@
         <div role="tabpanel" class="tab-pane{% if tab == 'bibliography' %} active{% endif %}" id="bibliography">
           {% if tab == 'bibliography' %}
             {% bootstrap_messages %}
-            {% if user_interaction %}
-            <div>
-              <a role="button" href="{% url 'bibliography:reference_search' %}" class="btn btn-primary">
-                Add Reference
-              </a>
-            </div>
-            <hr>
-            {% endif %}
             {% for ref in references %}
               {% include 'bibliography/_reference.html' with obj=ref %}
             {% endfor %}
