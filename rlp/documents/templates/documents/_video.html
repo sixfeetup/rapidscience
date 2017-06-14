@@ -1,6 +1,6 @@
 {% load embed_video_tags %}
 {% video obj.share_link as shared_video %}
-<h4><a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a></h4>
-<p class="more">{{ obj.description|urlize }}</p>
 {% video shared_video 'small' %}
 {% endvideo %}
+<h4><a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a></h4>
+<p class="more">{{ obj.description|urlize }}</p>

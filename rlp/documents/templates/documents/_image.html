@@ -1,13 +1,13 @@
 {% load thumbnail %}
 
+{% thumbnail obj.upload 700x160 crop upscale HIGH_RESOLUTION as thumbnail %}
+<a href="{{ obj.upload.url }}" target="_blank">
+  <img class="thumbnail-image" alt="{{ obj.title }}" src="{{ thumbnail.url }}" width="100%">
+</a>
+
 <h4><a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a></h4>
 
 {% if obj.description %}
   <p class="more">{{ obj.description|urlize }}</p>
 {% endif %}
-
-{% thumbnail obj.upload 700x160 crop upscale HIGH_RESOLUTION as thumbnail %}
-<a href="{{ obj.upload.url }}" target="_blank">
-  <img class="thumbnail-image" alt="{{ obj.title }}" src="{{ thumbnail.url }}" width="100%">
-</a>
 
