@@ -8,7 +8,7 @@
         <div class="col-md-8 col-md-push-2">
   {% with obj=document %}
   <div class="row">
-    <div class="col-md-11">
+    <div class="col-md-12">
       {% if last_viewed_path %}
       <p class="backlink"><a href="{{ last_viewed_path }}">&larr; Back</a></p>
       {% endif %}
@@ -52,9 +52,6 @@
           </p>
         {% endif %}
       {% endwith %}
-    </div>
-    <div class="col-md-1">
-      {% if obj.owner == request.user %}{% include 'forms/_edit_dropdown.html' with edit_url=obj.get_edit_url delete_url=obj.get_delete_url %}{% endif %}
     </div>
   </div>
   <hr>
