@@ -81,6 +81,7 @@
             {% if model != 'referenceshare' %}
                 {% include 'discussions/discussion_count_widget.html' %}
             {% endif %}
+            <a href="#"><i class="fa fa-star" aria-hidden="true"></i></a>
             {% if model == 'file' or model == 'image' or model == 'link' or model == 'video' or model == 'document' %}
                 <a class="share-link" href="/send/documents/document/{{ obj.id }}"><i class="fa fa-share"></i></a>
             {% elif model == "casereport" %}
