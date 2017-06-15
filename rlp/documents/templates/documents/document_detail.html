@@ -13,7 +13,13 @@
       <p class="backlink"><a href="{{ last_viewed_path }}">&larr; Back</a></p>
       {% endif %}
       <a class="share-link pull-right" href="/send/documents/document/{{ obj.id }}"><i class="fa fa-share"></i></a>
-      <h1 class="detail-view-heading">{{ obj.title }}</h1>
+      {% if document.polymorphic_ctype.model == 'link' %}
+        <a href="{{ obj.url }}" target="_blank">
+            <h1 class="detail-view-heading">{{ obj.title }}</h1>
+        </a>
+      {% else %}
+        <h1 class="detail-view-heading">{{ obj.title }}</h1>
+      {% endif %}
       <p class="small">
         {% include 'actstream/_action_detail.html' with action=document.action_object_actions.first %}
         {% if request.user == obj.owner %} | <a href="{% url 'documents:document_edit' obj.id %}">Edit</a>{% endif %} <br />
@@ -28,12 +34,6 @@
         <a href="{{ obj.upload.url }}" target="_blank">
           <img alt="{{ obj.title }}" src="{{ obj.upload.url }}" width="{% if obj.upload.width < 500 %}{{ obj.upload.width }}{% else %}500px{% endif %}">
         </a>
-      {% elif document.polymorphic_ctype.model == 'link' %}
-        <blockquote>
-        <a href="{{ obj.url }}" target="_blank">
-          {{ obj.url }}
-        </a>
-        </blockquote>
       {% elif document.polymorphic_ctype.model == 'video' %}
         {% video obj.share_link as shared_video %}
         {% video shared_video 'medium' %}
