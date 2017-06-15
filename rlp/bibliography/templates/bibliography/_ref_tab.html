@@ -6,6 +6,9 @@
         Posted by
         <a href="{% url 'profile' user.id  %}">{% if user = request.user %}me{% else %}{{ user.get_full_name }}{% endif %}</a>
         | {{ ref.date_updated|date:"j M Y" }}
+        {% with edit_url=obj.get_edit_url %}
+          {% if edit_url %}| <a href="{{ edit_url }}">Edit</a>{% endif %}
+        {% endwith %}
         <br />
       {% autoescape off %}{% display_shared_with ref request.user %}{% endautoescape %}
     </p>
