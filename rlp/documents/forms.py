@@ -1,7 +1,6 @@
 from django import forms
 
 from embed_video.fields import EmbedVideoFormField
-from taggit.managers import TaggableManager
 from taggit.models import Tag
 
 from rlp.core.forms import MemberListField, GroupListField
@@ -21,10 +20,12 @@ class AddMediaForm(forms.Form):
     share_link = EmbedVideoFormField(help_text='YouTube URL', required=False)
     title = forms.CharField(max_length=400)
     description = forms.CharField(widget=forms.Textarea)
-    tags = forms.CharField(
-        max_length=400,
+    tags = forms.ModelMultipleChoiceField(
+        queryset=Tag.objects.all(),
+        help_text='Separate tags with commas',
         required=False,
-        help_text="Separate tags with commas")
+    )
+    tags.widget.attrs['class'] = 'select2'
     copyright = forms.BooleanField(label=CLABEL, required=False)
     members = MemberListField(
         label='Members',
@@ -52,10 +53,10 @@ class BaseDocumentForm(forms.ModelForm):
         self.fields['copyright'].label = CLABEL
         if Tag.objects.count():
             self.fields['tags'] = forms.ModelMultipleChoiceField(
-                widget=forms.CheckboxSelectMultiple(),
                 queryset=Tag.objects.all(),
                 required=False
             )
+            self.fields['tags'].widget.attrs['class'] = 'select2'
 
     class Meta:
         model = Document
