@@ -481,11 +481,8 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
         subtypes = SubtypeOption.objects.order_by('name')
         aberrations = MolecularAbberation.objects.all()
         form = self.form_class()
-        form.fields['members'].choices = member_choices(
-            request.user,
-            casereport,
-        )
-        form.fields['groups'].choices = group_choices(request.user, casereport)
+        form.fields['members'].choices = member_choices()
+        form.fields['groups'].choices = group_choices(request.user)
         if casereport.tags.count():
             form.fields['tags'].initial = casereport.tags.all()
         return self.render_to_response(self.get_context_data(

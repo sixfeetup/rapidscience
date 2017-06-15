@@ -23,31 +23,20 @@ class GroupListField(forms.MultipleChoiceField):
         return Project.objects.filter(id__in=value)
 
 
-def member_choices(user, content=None):
-    '''return (ID, name) pairs for any member not viewing this content'''
-    current = []
-    if content:
-        current = [
-            vwr for vwr in content.get_viewers()
-            if not hasattr(vwr, 'users')  # skip groups
-        ]
+def member_choices():
+    '''return (ID, name) pairs for all members'''
     for member in User.objects.all():
-        if member == user or member in current:
-            continue
         yield (member.id, member.get_full_name())
 
 
-def group_choices(user, content=None):
+def group_choices(user):
     '''
     return (ID, name) pairs for any group where
       * the user is in the group
-      * the group is not already viewing this content
     '''
-    if not user and not content:
+    if not user:
         return
     for group in user.active_projects():
-        if content and group in content.get_viewers():
-            continue
         yield (group.id, group.title)
 
 
@@ -86,8 +75,8 @@ def get_sendto_form(user, content, type_key, data=None):
 
     form = SendToForm(data)
     form.label_suffix = ''
-    form.fields['groups'].choices = group_choices(user, content)
-    form.fields['members'].choices = member_choices(user, content)
+    form.fields['groups'].choices = group_choices(user)
+    form.fields['members'].choices = member_choices()
     if user in content.get_viewers():
         # don't show the checkbox if the user already has this content
         form.fields['to_dashboard'].widget = forms.HiddenInput()

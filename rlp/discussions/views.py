@@ -14,7 +14,7 @@ from actstream import action
 from taggit.models import Tag
 
 from rlp.accounts.models import User
-from rlp.core.forms import member_choices, group_choices
+from rlp.core.forms import group_choices
 from rlp.core.utils import bookmark_and_notify
 from rlp.projects.models import Project
 from .forms import (

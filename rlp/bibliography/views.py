@@ -213,14 +213,8 @@ class ReferenceAttachView(LoginRequiredMixin, FormView):
             form = AttachReferenceForm()
             form.fields['description'].initial = ref.description
             form.fields['tags'].initial = [tag.id for tag in ref.tags.all()]
-            form.fields['members'].choices = member_choices(
-                None,  # prevent omitting the current user
-                ref,
-            )
-            form.fields['groups'].choices = group_choices(
-                self.request.user,
-                ref,
-            )
+            form.fields['members'].choices = member_choices()
+            form.fields['groups'].choices = group_choices(self.request.user)
             context['form'] = form
         return context
 
@@ -275,14 +269,8 @@ def reference_edit(request, reference_pk, template_name='bibliography/edit_refer
         form = AttachReferenceForm()
         form.fields['description'].initial = reference.description
         form.fields['tags'].initial = [tag.id for tag in reference.tags.all()]
-        form.fields['members'].choices = member_choices(
-            None,  # prevent omitting the current user
-            reference,
-        )
-        form.fields['groups'].choices = group_choices(
-            request.user,
-            reference,
-        )
+        form.fields['members'].choices = member_choices()
+        form.fields['groups'].choices = group_choices(request.user)
     context = {
         'form': form,
         'instance': reference,
