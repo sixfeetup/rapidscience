@@ -31,6 +31,19 @@
             <p class="initial">
                 {{ comment.comment|urlize|linebreaksbr }}
             </p>
+            
+            {% if comment.tags.all %}
+                <p class="tags">
+                        {% for tag in comment.tags.all %}
+                          {% if tag.slug != '' %}
+                          <a role="button" class="btn btn-tag btn-xs" href="{% url 'haystack_search' %}?tags={{ tag.id }}">
+                            {{ tag }}
+                          </a>
+                          {% endif %}
+                        {% endfor %}
+                </p>
+            {% endif %}
+            <hr />
         </div>
         <div class="col-md-1 col-xs-2 col-md-push-2 action">
           {% if comment.is_discussion %}
