@@ -83,7 +83,7 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
         activity_stream = list(rollup(
             activity_stream,
             lambda a: str((a.actor_object_id,
-                           'shared' if a.verb in ('shared', 'added', 'created') \
+                           'shared' if a.verb in ('shared', 'added', 'created', 'started') \
                            else a.verb,
                            a.action_object_content_type,
                            a.action_object_object_id)),
