@@ -1,17 +1,32 @@
 {% load core_tags %}
-{% if action.verb == 'started' %}
-  Discussion started
-{% elif action.verb == 'added' %}
-  Reference posted
-{% elif action.verb == 'reply' %}
-  Comment
+{#object#}
+{% if action.action_object_content_type.model == 'threadedcomment' and action.verb == 'started' %}
+    Discussion
+{% elif action.action_object_content_type.model == 'threadedcomment' %}
+    Comment
 {% else %}
-  {{ action.action_object.display_type }}
-  {% if action.action_object_content_type.model != 'threadedcomment' %}{{ action.verb }}{% endif %}
+    {{ action.action_object.display_type }}
 {% endif %}
+
+{#verb#}
+{% if action.verb == 'reply' or action.verb == 'comment' %}
+    <!-- verb suppressed to read like Comment by ... -->
+{% elif action.verb == 'added' %}
+    posted
+{% else %}
+  {{ action.verb }}
+{% endif %}
+
+{# actor #}
 by {% if request.user == action.actor and action.verb != 'reply' %} me {% else %} <a href="{{ action.actor.get_absolute_url }}">{{ action.actor.get_full_name }}</a>{% endif %}
-{% if action.verb == 'shared' %} with {{ action.target|link }}
+
+{# target #}
+{% if action.verb == 'shared' %} to {{ action.target|link }}
     {% if action.others %}{% for other in action.others %}{% if forloop.last %} and {%  else %}, {% endif %}{{ other.target|link }}{%  endfor %}{% endif %}
+{% elif action.verb == 'added' %}
+    {% if action.others %} to {{ action.others.0.target|link }}
+        {% for other in action.others|slice:"1:" %}{% if forloop.last %} and {%  else %}, {% endif %}{{ other.target|link }}{%  endfor %}
+    {% endif %}
 {% endif %}
 {% if action.action_object_content_type.model == 'threadedcomment' and action.verb != 'started' and action.verb != 'shared' %}
     {%  with comment=action.action_object parent_user=action.action_object.get_parent.user %}
@@ -29,4 +44,5 @@ by {% if request.user == action.actor and action.verb != 'reply' %} me {% else %
         {% endif %}
     {% endwith %}
 {% endif %}
+{# timestamp #}
 | {{ action.timestamp|date:"j M Y" }}
