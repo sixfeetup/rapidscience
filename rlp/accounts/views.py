@@ -400,7 +400,8 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
         activity_stream = list(rollup(
             activity_stream,
             lambda a: str((a.actor_object_id,
-                           'shared' if a.verb in ('shared','added') else a.verb,
+                           'shared' if a.verb in ('shared', 'added', 'created') \
+                               else a.verb,
                            a.action_object_content_type,
                            a.action_object_object_id)),
             lambda a: str((a.actor_object_id,
