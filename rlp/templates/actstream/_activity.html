@@ -48,7 +48,7 @@
             </blockquote>
             {% endif %}
 
-            {% if action.verb != 'shared' %}
+                {# tags and workflow status #}
                 {% if action.action_object.tags or model == "casereport" %}
                   <p class="tags">
                     {% if model == "casereport" %}
@@ -76,7 +76,6 @@
                     {% endfor %}
                   </p>
                 {% endif %}
-            {% endif %}
           </div>
           <div class="col-md-1 activity-actions">
             {% if model != 'referenceshare' %}
