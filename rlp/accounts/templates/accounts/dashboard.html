@@ -94,7 +94,7 @@
     {% if tab == 'bibliography' %}
       {% bootstrap_messages %}
       {% for ref in references %}
-        {% include 'bibliography/_reference.html' with obj=ref %}
+        {% include 'bibliography/_ref_tab.html' with obj=ref user=request.user %}
       {% endfor %}
     {% endif %}
   </div>

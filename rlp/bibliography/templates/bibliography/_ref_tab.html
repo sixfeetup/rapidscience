@@ -1,0 +1,32 @@
+{% load core_tags %}
+<div class="row reference-item">
+  <div class="col-md-11">
+    <h4>{% if ref.get_source_url %}<a href="{{ ref.get_source_url }}" {% if 'http' in ref.get_source_url and not email %}target="_blank"{% endif %}>{% endif %}{{ ref.parsed_data.title|striptags }}{% if ref.get_source_url %}</a>{% endif %}</h4>
+    <p class="small meta">
+        Posted by
+        <a href="{% url 'profile' user.id  %}">{% if user = request.user %}me{% else %}{{ user.get_full_name }}{% endif %}</a>
+        | {{ ref.date_updated|date:"j M Y" }}
+        <br />
+      {% autoescape off %}{% display_shared_with ref request.user %}{% endautoescape %}
+    </p>
+    {% if obj.description %}
+        <p class="more">
+            {{ obj.description|urlize|linebreaksbr }}
+        </p>
+    {% endif %}
+    {% if obj.tags.all %}
+        <p class="tags">
+            {% for tag in obj.tags.all %}
+                <a role="button" class="btn btn-tag btn-xs" href="{% url 'haystack_search' %}?tags={{ tag.id }}">
+                  {{ tag }}
+                </a>
+            {% endfor %}
+        </p>
+    {% endif %}
+  </div>
+  <div class="col-md-1">
+        <a class="comment-count" href="{% url 'bibliography:reference_detail' obj.id %}"><i class="fa fa-comment" aria-hidden="true"></i></a>
+        <a class="share-link" href="/send/bibliography/reference/{{ obj.id }}"><i class="fa fa-share"></i></a>
+  </div>
+</div>
+<hr>
