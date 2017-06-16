@@ -59,6 +59,9 @@ class SendToView(LoginRequiredMixin, View):
                 shared_by=request.user,
                 comment=form.cleaned_data['comment'],
             )
+            # automatically bookmark for user when sharing
+            if not shared_content.is_bookmarked_to(request.user):
+                request.user.bookmark(shared_content)
             if 'referrer' in request.session:
                 url = request.session['referrer']
                 if url:
