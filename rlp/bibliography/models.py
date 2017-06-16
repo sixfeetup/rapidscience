@@ -1,5 +1,6 @@
 import logging
 import re
+from simplejson import JSONDecodeError
 
 import requests
 
@@ -396,8 +397,11 @@ def get_or_create_reference_from_crossref(result):
 
 def fetch_crossref_by_doi(doi):
     doi_url = "{}/{}".format(CROSSREF_BASE_URL, doi)
-    r = requests.get(doi_url)
-    return r.json()['message']
+    try:
+        r = requests.get(doi_url)
+        return r.json()['message']
+    except JSONDecodeError as not_found:
+        return None
 
 
 def fetch_crossref_by_query(query=None, orcid=None, topics=None):
