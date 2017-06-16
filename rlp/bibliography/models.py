@@ -428,7 +428,7 @@ def fetch_crossref_by_query(query=None, orcid=None, topics=None):
 def get_or_create_reference(query):
     # Remove any leading/trailing whitespace
     query = query.strip()
-    references = []
+
     # check the db first and bail if we have a match
     existing_references = Reference.objects.filter(
         Q(pubmed_id__iexact=query) | Q(doi__iexact=query))
@@ -436,12 +436,14 @@ def get_or_create_reference(query):
         return existing_references
 
     references = []
+    # Otherwise, check against the services, but only if the query matches regex
     if DOI_RE.match(query):
         # fetch from crossref
         result = fetch_crossref_by_doi(query)
-        reference, created = get_or_create_reference_from_crossref(result)
-        return [reference]
-    elif PMID_RE.match(query):# or DOI_RE.match(query):
+        if result:
+            reference, created = get_or_create_reference_from_crossref(result)
+            return [reference]
+    if not references and PMID_RE.match(query):# or DOI_RE.match(query):
         Entrez.email = settings.PUBMED_EMAIL
         results = Entrez.read(
             Entrez.efetch(db='pubmed', retmode='xml', id=query)
@@ -450,9 +452,8 @@ def get_or_create_reference(query):
             for item in result:
                 reference, created = get_or_create_reference_from_pubmed(item)
                 references.append(reference)
-    else:
+    if not references:
         results = fetch_crossref_by_query(query=query, topics=TOPICS)
-        references = []
         for result in results:
             reference, created = get_or_create_reference_from_crossref(result)
             references.append(reference)
