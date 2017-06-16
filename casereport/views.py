@@ -62,7 +62,7 @@ def is_review_allowed(user, casereport):
 
 
 @partial(enforce_sharedobject_permissions, obj_class=CaseReport, id_name='case_id')
-class CaseReportDetailView(TemplateView):
+class CaseReportDetailView(LoginRequiredMixin, TemplateView):
     template_name = 'casereport/casereport_view.html'
 
     def get(self, request, case_id, **kwargs):
