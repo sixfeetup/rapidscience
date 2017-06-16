@@ -75,6 +75,7 @@ INSTALLED_APPS = (
     'rlp.accounts.apps.AccountsConfig',
     'actstream.apps.ActstreamConfig',
     'bootstrap3',
+    'ckeditor',
     'cms',
     'filer',
     'cmsplugin_filer_file',
@@ -259,6 +260,22 @@ USE_I18N = False
 USE_L10N = True
 
 USE_TZ = True
+
+# CKEDITOR
+#CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'
+CKEDITOR_JQUERY_URL = '/static/js/vendor/jquery-3.1.1.min.js'
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'Custom',
+        'toolbar_Custom': [
+            ['Bold', 'Italic', 'Underline'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['Link', 'Unlink'],
+            ['RemoveFormat', 'Source']
+        ],
+        'width': '100%'
+    }
+}
 
 # FIXTURE CONFIGURATION
 # -----------------------------------------------------------------------------

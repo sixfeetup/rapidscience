@@ -12,6 +12,7 @@ django-appconf==1.0.2
 django-appdata==0.1.6
 django-bootstrap3==7.1.0
 django-classy-tags==0.8.0
+django-ckeditor==5.2.2
 django-cms==3.3.3
 django-compressor==2.1
 django-contrib-comments==1.7.3
