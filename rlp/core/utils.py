@@ -1,8 +1,9 @@
 from itertools import chain
 
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseRedirect
 import sys
 
 from rlp.core.views import SendToView
@@ -50,7 +51,8 @@ def enforce_sharedobject_permissions(cls, obj_class, id_name, methods=None):
                     # but we dont have a good way to select the appropriate project
                     if settings.DEBUG:
                         print('sorry, denied', file=sys.stderr)
-                    return HttpResponseForbidden()
+                    messages.warning(request, "Permission to access {dt}:{i} denied.".format(dt=oc.__name__,i=kwargs[id_name]))
+                    return HttpResponseRedirect(redirect_to="/")
 
                 return wrapper
 
