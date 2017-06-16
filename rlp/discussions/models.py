@@ -185,4 +185,4 @@ class ThreadedComment(Comment, SharedObjectMixin):
             action_object_content_type=my_type,
             verb__exact='shared',
         )
-        return {s.target for s in shares}
+        return {s.target for s in shares if s.target}

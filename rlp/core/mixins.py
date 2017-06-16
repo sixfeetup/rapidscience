@@ -56,7 +56,7 @@ class SharesContentMixin(Model):
                 target_type=content_type
             )
 
-        targets = {r.target for r in refs}
+        targets = {r.target for r in refs if r.target}
 
         # refs#454  We want the returned targets to have a way back to who
         # made the bookmark to the project.

@@ -99,7 +99,7 @@ class SharedObjectMixin(models.Model):
             action_object_content_type=my_type,
             verb__exact='shared',
         )
-        return {s.target for s in shares}
+        return {s.target for s in shares if s.target}
 
     def get_viewers_as_users(self):
         '''resolve group viewers into lists of individuals'''
