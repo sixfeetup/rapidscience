@@ -17,7 +17,7 @@ django-compressor==2.1
 django-contrib-comments==1.7.3
 django-countries==4.0
 django-el-pagination==3.0.1
-django-embed-video==1.1.0
+django-embed-video==1.1.2
 django-environ==0.4.1
 django-filer==1.2.6rc2
 django-formtools==1.0
