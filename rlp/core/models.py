@@ -116,6 +116,23 @@ class SharedObjectMixin(models.Model):
     def is_shared_with_user(self, user):
         return user in self.get_viewers_as_users() or user.is_superuser
 
+    def is_bookmarked_by(self, viewer):
+        '''see if a user or group has this bookmarked'''
+        target = self
+        if (hasattr(self, 'polymorphic_model_marker')
+           and len(self._meta.parents)):
+            # for polymorphic types, the parent reference is bookmarked
+            parent_type = list(self._meta.parents)[-1]
+            target = parent_type.objects.non_polymorphic().get(id=self.id)
+        viewer_type = ContentType.objects.get_for_model(viewer)
+        target_type = ContentType.objects.get_for_model(target)
+        return bool(SharedContent.objects.filter(
+            target_id=target.id,
+            viewer_id=viewer.id,
+            target_type_id=target_type.id,
+            viewer_type_id=viewer_type.id,
+        ))
+
     def share_with(self, viewers, shared_by, comment=None):
         # add an entry to the target viewer's activity stream
         for viewer in viewers:
@@ -131,7 +148,6 @@ class SharedObjectMixin(models.Model):
                 target=viewer,
                 public=is_public,
             )
-
 
     def get_content_type(self, resolve_polymorphic=True):
         target = self
