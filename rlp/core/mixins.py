@@ -1,3 +1,4 @@
+import actstream
 from actstream.models import Action
 
 from django.contrib.contenttypes.fields import GenericRelation
@@ -54,9 +55,25 @@ class SharesContentMixin(Model):
             refs = self._shared.select_related('target_type').filter(
                 target_type=content_type
             )
-        #return refs
-        # this deduping is only neccessary because we had some bad data
-        return {r.target for r in refs}
+
+        targets = {r.target for r in refs}
+
+        # refs#454  We want the returned targets to have a way back to who
+        # made the bookmark to the project.
+        my_content_type = ContentType.objects.get_for_model(self)
+        for t in targets:
+            target_content_type = ContentType.objects.get_for_model(t)
+            bookmark_actions = Action.objects.filter(
+                #verb='added',
+                action_object_content_type=target_content_type,
+                action_object_object_id=t.id,
+                target_content_type= my_content_type,
+                target_object_id=self.id,
+                ).order_by('timestamp')
+
+            if bookmark_actions.count():
+                t.bookmarked_by = bookmark_actions.first().actor
+        return targets
 
     def get_shared_content(self, type_class=None):
         """ get items 'shared' with self in the activitystream
