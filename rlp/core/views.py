@@ -88,3 +88,27 @@ class BookmarkView(LoginRequiredMixin, View):
             if url:
                 return redirect(url)
         return redirect('/')
+
+
+class BookmarkRemoveView(LoginRequiredMixin, View):
+    def post(self, request):
+        type_id = request.POST.get('content_type')
+        content_type = ContentType.objects.get(id=type_id)
+        content_id = request.POST.get('content_id')
+        content = content_type.get_object_for_this_type(id=content_id)
+        if request.POST.get('dashboard') == 'on':
+            request.user.remove_bookmark(content)
+        if request.POST.get('group') == 'on':
+            initial_proj = request.session.get('last_viewed_project')
+            if initial_proj:
+                project_type = ContentType.objects.get_by_natural_key(
+                    'projects', 'project',
+                )
+                Project = project_type.model_class()
+                group = Project.objects.get(id=initial_proj)
+                group.remove_bookmark(content)
+        if 'referrer' in request.session:
+            url = request.session['referrer']
+            if url:
+                return redirect(url)
+        return redirect('/')

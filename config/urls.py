@@ -54,6 +54,11 @@ urlpatterns = [
         name='sendto',
     ),
     url(r'^bookmark$', views.BookmarkView.as_view(), name='bookmark_content'),
+    url(
+        r'^remove_bookmark$',
+        views.BookmarkRemoveView.as_view(),
+        name='remove_bookmark',
+    ),
     url(r'^about/', RedirectView.as_view(url='http://rapidscience.org/sarcoma', permanent=True), name='about'),
     url(r'^', include('cms.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
