@@ -116,7 +116,7 @@ class SharedObjectMixin(models.Model):
     def is_shared_with_user(self, user):
         return user in self.get_viewers_as_users() or user.is_superuser
 
-    def is_bookmarked_by(self, viewer):
+    def is_bookmarked_to(self, viewer):
         '''see if a user or group has this bookmarked'''
         target = self
         if (hasattr(self, 'polymorphic_model_marker')

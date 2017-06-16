@@ -45,7 +45,7 @@ def create_comment_activity(**kwargs):
     last_proj = request.session.get('last_viewed_project')
     if last_proj:
         group = Project.objects.get(id=last_proj)
-        if not content.is_bookmarked_by(group):
+        if not content.is_bookmarked_to(group):
             group.bookmark(content)
 
     # per #746   a comment by an admin on a CaseReportReview, we need to set
