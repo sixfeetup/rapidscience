@@ -7,6 +7,8 @@ from django_comments.signals import comment_was_posted
 
 from casereport.models import CaseReportReview
 from rlp.accounts.models import User
+from rlp.projects.models import Project
+
 
 @receiver(comment_was_posted)
 def create_comment_activity(**kwargs):
@@ -38,6 +40,13 @@ def create_comment_activity(**kwargs):
         content = top_comment
     else:
         content = top_comment.content_object
+
+    # automatically bookmark when commenting from a group
+    last_proj = request.session.get('last_viewed_project')
+    if last_proj:
+        group = Project.objects.get(id=last_proj)
+        if not content.is_bookmarked_by(group):
+            group.bookmark(content)
 
     # per #746   a comment by an admin on a CaseReportReview, we need to set
     # the target to the CRR's casereport author
