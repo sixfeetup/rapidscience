@@ -62,7 +62,7 @@
   {% endif %}
   </div>
   {% show_project_members project %}
-  
+
   <div class="cc-box">
       <img src="{% static "images/logo-CC.png" %}" class="img-responsive"/>
       <p>Submit and search the database of case reports, N of 1 studies, and clinical trial summaries.</p>
@@ -169,7 +169,7 @@
           {% if tab == 'bibliography' %}
             {% bootstrap_messages %}
             {% for ref in references %}
-              {% include 'bibliography/_reference.html' with obj=ref %}
+              {% include 'bibliography/_ref_tab.html' with obj=ref user=ref.bookmarked_by %}
             {% endfor %}
           {% endif %}
         </div>
