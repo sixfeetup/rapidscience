@@ -103,9 +103,14 @@ def link(obj, extra='', autoescape=True):
         Use extra for class, id, or other attributes.
         ex.
             {{ user|link:'class="userlinks" id="myid"' }}
-        
+
         nb: the careful nesting of quotes.
     """
-    res = """<a href="{url}" {extra} >{obj}</a>""".format( url=obj.get_absolute_url(), extra=extra, obj=obj)
-    return mark_safe( res )
+    if not obj:
+        return mark_safe("<!-- {obj} -->".format(obj=obj))
+    try:
+        res = """<a href="{url}" {extra} >{obj}</a>""".format( url=obj.get_absolute_url(), extra=extra, obj=obj)
+        return mark_safe( res )
+    except AttributeError as not_linkable:
+        return mark_safe(str(obj))
 
