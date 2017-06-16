@@ -27,6 +27,22 @@ class SharesContentMixin(Model):
             target = parent_type.objects.non_polymorphic().get(id=content.id)
         SharedContent.objects.create(viewer=self, target=target)
 
+    def remove_bookmark(self, content):
+        target = content
+        if (hasattr(content, 'polymorphic_model_marker')
+           and len(content._meta.parents)):
+            # for polymorphic types, bookmark the parent reference
+            parent_type = list(content._meta.parents)[-1]
+            target = parent_type.objects.non_polymorphic().get(id=content.id)
+        viewer_type = ContentType.objects.get_for_model(self)
+        target_type = ContentType.objects.get_for_model(target)
+        SharedContent.objects.filter(
+            target_id=target.id,
+            viewer_id=self.id,
+            target_type_id=target_type.id,
+            viewer_type_id=viewer_type.id,
+        ).delete()
+
     def get_bookmarked_content(self, type_class=None):
         """ takes an optional type by which to filter
             returns a set of objects
