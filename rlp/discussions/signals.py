@@ -41,7 +41,10 @@ def create_comment_activity(**kwargs):
     else:
         content = top_comment.content_object
 
-    # automatically bookmark when commenting from a group
+    # automatically bookmark when commenting
+    if not content.is_bookmarked_to(comment.user):
+        comment.user.bookmark(content)
+    
     last_proj = request.session.get('last_viewed_project')
     if last_proj:
         group = Project.objects.get(id=last_proj)
