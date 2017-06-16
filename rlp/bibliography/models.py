@@ -10,7 +10,7 @@ from django.contrib.postgres.fields import JSONField
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.db import models
-# from django.db.models import Q
+from django.db.models import Q
 
 from Bio import Entrez
 from taggit.models import Tag
@@ -430,11 +430,11 @@ def get_or_create_reference(query):
     query = query.strip()
     references = []
     # check the db first and bail if we have a match
-    #references = Reference.objects.filter(
-    #    Q(pubmed_id__icontains=query) | Q(doi__icontains=query))#
-    #if references:
-    #    return references
-    # Otherwise, check against the services, but only if the query matches regex
+    existing_references = Reference.objects.filter(
+        Q(pubmed_id__iexact=query) | Q(doi__iexact=query))
+    if existing_references:
+        return existing_references
+
     references = []
     if DOI_RE.match(query):
         # fetch from crossref
