@@ -131,7 +131,26 @@
     <script src="{% static 'js/vendor/jasny-bootstrap.js' %}"></script>
     <script src="{% static 'el-pagination/js/el-pagination.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
-    <script>$.endlessPaginate({paginateOnScroll: true, onCompleted: function(context, fragment) {show_more();remaining_characters();}});</script>
+    <script>
+        function setBookmarks() {
+            console.log('Foo');
+            $(".bookmark-trigger").on('click', function(e) {
+                e.preventDefault();
+                element = $(this);
+                $.ajax({
+                    url:'/bookmark',
+                    type:'post',
+                    data:$(element).parent().serialize(),
+                    success:function(){
+                        $(element).addClass('saved');
+                    }
+                });
+            });
+        }
+        setBookmarks();
+        $.endlessPaginate({paginateOnScroll: true, onCompleted: function(context, fragment) {setBookmarks();}});
+
+    </script>
     {% block js-compress-inline %}
     {% endblock %}
 {% endcompress %}

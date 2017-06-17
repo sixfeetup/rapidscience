@@ -2,7 +2,7 @@
 
 {% lazy_paginate activity_stream %}
 {% for action in activity_stream %}
-  {% with obj=action.action_object model=action.action_object_content_type.model %}
+  {% with obj=action.action_object model=action.action_object_content_type.model content_type=action.action_object_content_type.id%}
   <div class="activity-stream activity-{{ model }} verb-{{ action.verb }}">
     {% if obj %}
       <div class="row">
@@ -81,17 +81,23 @@
             {% if model != 'referenceshare' %}
                 {% include 'discussions/discussion_count_widget.html' %}
             {% endif %}
-            <a href="#"><i class="fa fa-star" aria-hidden="true"></i></a>
+            <form class="bookmark-form" method="POST" action="{% url 'bookmark_content' %}">
+            {% csrf_token %}
+            <input type="hidden" name="{% if project %}group{% else %}dashboard{% endif %}" value="on" />
+            <input type="hidden" name="content_type" value="{{ content_type }}" />
+            <input type="hidden" name="content_id" value="{{ obj.id }}" />
+            <a href="#" class="bookmark-trigger" title="Save Bookmark"><i class="fa fa-star" aria-hidden="true"></i></a>
+            </form>
             {% if model == 'file' or model == 'image' or model == 'link' or model == 'video' or model == 'document' %}
-                <a class="share-link" href="/send/documents/document/{{ obj.id }}"><i class="fa fa-share"></i></a>
+                <a class="share-link" href="/send/documents/document/{{ obj.id }}" title="Share"><i class="fa fa-share"></i></a>
             {% elif model == "casereport" %}
-                <a class="share-link" href="/send/casereport/casereport/{{ obj.id }}"><i class="fa fa-share"></i></a>
+                <a class="share-link" href="/send/casereport/casereport/{{ obj.id }}" title="Share"><i class="fa fa-share"></i></a>
             {% elif model == 'threadedcomment' %}
               {% if obj.discussion_root.is_discussion %}
-                <a class="share-link" href="/send/discussions/threadedcomment/{{ obj.discussion_root.id }}"><i class="fa fa-share"></i></a>
+                <a class="share-link" href="/send/discussions/threadedcomment/{{ obj.discussion_root.id }}" title="Share"><i class="fa fa-share"></i></a>
               {% endif %}
             {% elif model == 'reference' %}
-                <a class="share-link" href="/send/bibliography/reference/{{ obj.id }}"><i class="fa fa-share"></i></a>
+                <a class="share-link" href="/send/bibliography/reference/{{ obj.id }}" title="Share"><i class="fa fa-share"></i></a>
             {% endif %}
 
 

@@ -86,11 +86,7 @@ class BookmarkView(LoginRequiredMixin, View):
                 Project = project_type.model_class()
                 group = Project.objects.get(id=initial_proj)
                 group.bookmark(content)
-        if 'referrer' in request.session:
-            url = request.session['referrer']
-            if url:
-                return redirect(url)
-        return redirect('/')
+        return HttpResponse("Success", content_type="text/plain")
 
 
 class BookmarkRemoveView(LoginRequiredMixin, View):
@@ -110,8 +106,4 @@ class BookmarkRemoveView(LoginRequiredMixin, View):
                 Project = project_type.model_class()
                 group = Project.objects.get(id=initial_proj)
                 group.remove_bookmark(content)
-        if 'referrer' in request.session:
-            url = request.session['referrer']
-            if url:
-                return redirect(url)
-        return redirect('/')
+        return HttpResponse("Success", content_type="text/plain")

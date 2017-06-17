@@ -1326,3 +1326,16 @@ input#id_to_dashboard {
 .django-ckeditor-widget {
     width: 100%;
 }
+
+/* activity feed bookmarks */
+.bookmark-form {
+    margin-bottom: 10px;
+    font-size: 20px;
+    a {
+        color: #ebebeb;
+        &:hover,
+        &.saved {
+            color: #256180;
+        }
+    }
+}
