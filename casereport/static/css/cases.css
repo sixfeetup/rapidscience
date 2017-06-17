@@ -953,9 +953,15 @@ input:focus + div.info {
     display: none;
 }
 
-.required:after{
+.required:after, 
+.add-comment label:after,
+.replies label:after {
     content:"*" ;
     padding-left: 3px;
+}
+.add-comment .required:after,
+.replies .required:after {
+    content: none;
 }
 
 .process-message{

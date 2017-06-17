@@ -1187,46 +1187,6 @@ input#id_to_dashboard {
     border-bottom-right-radius: 0;
 }
 
-.comment-form {
-    .helpText {
-        padding: 0;
-    }
-
-    .btn {
-        font-style: normal;
-        height: 43px;
-        width: 90px;
-    }
-
-    .btn-primary {
-        border-top-left-radius: 0;
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
-        display: inline-block;
-        margin-right: 0;
-    }
-
-    .btn-default {
-        background-color: transparent;
-        border-bottom: none;
-        border-left: none;
-        border-radius: 0;
-        border-top: none;
-        display: inline-block;
-        line-height: 31px;
-        margin-left: 0;
-        margin-right: 10px;
-    }
-
-    .btn-default:hover {
-        background-color: #fff;
-    }
-
-    .helpText .character-count {
-        display: inline-block;
-    }
-}
-
 /* activity tab */
 
 .tab-pane {

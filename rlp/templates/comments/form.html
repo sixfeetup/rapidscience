@@ -2,6 +2,7 @@
 
 <div class="plugin-form comment-form">
   <form action="{% comment_form_target %}" method="POST" class="rpds-form">
+    {{ form.media }}
     {% csrf_token %}
     {% if form.title %}
     {% bootstrap_field form.title %}
@@ -13,18 +14,8 @@
     {% bootstrap_field form.timestamp %}
     {% bootstrap_field form.security_hash %}
     <input type="hidden" name="next" value="{{ next }}"/>
-    <div class="form-group">
-        <h4><label class="control-label" for="id_comment">Add Comment</label></h4>
-        <textarea class="form-control comment-field remaining-characters" cols="40" id="id_comment" maxlength="2000" name="comment" rows="3" title=""></textarea>
-        <div class="helpText">
-            <button class="btn btn-primary" type="submit">
-              {{ button_label|default:"Post" }}
-            </button><!-- No Space
-            --><a role="button" class="btn btn-default cancel-button-collapse" href="#">
-              Cancel
-            </a>
-            <div class="character-count">2000/2000 characters</div>
-        </div>
-    </div>
-  </form>
+    <h4><label class="control-label" for="id_comment">Add Comment</label></h4>
+    {% bootstrap_field form.comment layout='inline' %}
+    {% buttons submit='Post' reset="Cancel" %}{% endbuttons %}
+    </form>
 </div>

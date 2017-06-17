@@ -262,7 +262,6 @@ USE_L10N = True
 USE_TZ = True
 
 # CKEDITOR
-#CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'
 CKEDITOR_JQUERY_URL = '/static/js/vendor/jquery-3.1.1.min.js'
 CKEDITOR_CONFIGS = {
     'default': {
@@ -273,7 +272,8 @@ CKEDITOR_CONFIGS = {
             ['Link', 'Unlink'],
             ['RemoveFormat', 'Source']
         ],
-        'width': '100%'
+        'width': '100%',
+        'height': '150'
     }
 }
 

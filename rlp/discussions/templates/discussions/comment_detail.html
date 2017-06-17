@@ -28,9 +28,9 @@
               Shared with <b>{{ comment.get_viewers|join:"</b>, <b>" }}</b>
             </p>
 
-            <p class="initial">
-                {{ comment.comment|urlize|linebreaksbr }}
-            </p>
+            <div class="initial">
+                {% autoescape off %}{{ comment.comment }}{% endautoescape %}
+            </div>
             
             {% if comment.tags.all %}
                 <p class="tags">

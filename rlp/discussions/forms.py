@@ -2,6 +2,7 @@ from django.conf import settings
 from django import forms
 from django_comments.forms import CommentForm as BaseCommentForm
 from taggit.models import Tag
+from ckeditor.widgets import CKEditorWidget
 
 from rlp.core.forms import MemberListField, GroupListField
 from rlp.discussions.models import ThreadedComment
@@ -10,9 +11,7 @@ from rlp.discussions.models import ThreadedComment
 class ThreadedCommentForm(BaseCommentForm):
     comment = forms.CharField(
         label='Comment',
-        widget=forms.Textarea(attrs={'class': 'remaining-characters',
-                                     'rows': 3}),
-        max_length=settings.COMMENT_MAX_LENGTH,)
+        widget=CKEditorWidget(),)
     reply_to = forms.IntegerField(required=True, initial=0, widget=forms.HiddenInput())
 
     def __init__(self, *args, **kwargs):
@@ -24,6 +23,8 @@ class ThreadedCommentForm(BaseCommentForm):
         super().__init__(*args, **kwargs)
         if self.initial['content_type'] == 'projects.project':
             self.fields['title'] = forms.CharField(label='Title', required=True)
+        if comment:
+            self.fields['comment'].widget.attrs['id'] = "editor-" + str(comment.pk)
 
     def get_comment_model(self):
         return ThreadedComment
@@ -43,9 +44,7 @@ class ThreadedCommentForm(BaseCommentForm):
 class ThreadedCommentEditForm(forms.ModelForm):
     comment = forms.CharField(
         label='Comment',
-        widget=forms.Textarea(attrs={'class': 'remaining-characters',
-                                     'rows': 3}),
-        max_length=settings.COMMENT_MAX_LENGTH
+        widget=CKEditorWidget(),
     )
 
     class Meta:
@@ -57,9 +56,7 @@ class ThreadedCommentWithTitleEditForm(forms.ModelForm):
     title = forms.CharField(label='Title', required=True)
     comment = forms.CharField(
         label='Comment',
-        widget=forms.Textarea(attrs={'class': 'remaining-characters',
-                                     'rows': 3}),
-        max_length=settings.COMMENT_MAX_LENGTH
+        widget=CKEditorWidget(),
     )
     tags = forms.ModelMultipleChoiceField(
         queryset=Tag.objects.all(),
@@ -89,11 +86,7 @@ group_field = GroupListField(
 
 class NewDiscussionForm(forms.Form):
     discussion_title = forms.CharField(label='Title', required=True)
-    discussion_body = forms.CharField(
-        widget=forms.Textarea(attrs={'class': 'remaining-characters',
-                                     'rows': 3}),
-        max_length=settings.COMMENT_MAX_LENGTH
-    )
+    discussion_body = forms.CharField(widget=CKEditorWidget(),)
     members = internal_member_field
     groups = group_field
     to_dashboard = forms.BooleanField(
