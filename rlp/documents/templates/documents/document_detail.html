@@ -25,7 +25,7 @@
         {% if request.user == obj.owner %} | <a href="{% url 'documents:document_edit' obj.id %}">Edit</a>{% endif %} <br />
         Shared with <b>{{ obj.get_viewers|join:"</b>, <b>" }}</b>
       </p>
-      {% if obj.description %}<p class="initial">{{ obj.description|urlize }}</p>{% endif %}
+      {% if obj.description %}<div class="initial">{% autoescape off %}{{ obj.description }}{% endautoescape %}</div>{% endif %}
       {% if document.polymorphic_ctype.model == 'file' %}
         <p class="initial"><a class="btn btn-primary" href="{{ obj.upload.url }}" target="_blank">
           Download

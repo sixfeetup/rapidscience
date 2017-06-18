@@ -2,6 +2,7 @@ from django import forms
 
 from embed_video.fields import EmbedVideoFormField
 from taggit.models import Tag
+from ckeditor.widgets import CKEditorWidget
 
 from rlp.core.forms import MemberListField, GroupListField
 from .models import Document, File, Image, Link, Video
@@ -19,7 +20,7 @@ class AddMediaForm(forms.Form):
     url = forms.URLField(required=False)
     share_link = EmbedVideoFormField(help_text='YouTube URL', required=False)
     title = forms.CharField(max_length=400)
-    description = forms.CharField(widget=forms.Textarea)
+    description = forms.CharField(widget=CKEditorWidget())
     tags = forms.ModelMultipleChoiceField(
         queryset=Tag.objects.all(),
         help_text='Separate tags with commas',

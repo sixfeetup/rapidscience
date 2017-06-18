@@ -26,7 +26,7 @@
         {% endwith %}<br />
       {% autoescape off %}{% display_shared_with obj request.user %}{% endautoescape %}
     </p>
-    <p class="more">{{ obj.description|urlize|linebreaksbr }}</p>
+    <div class="more">{% autoescape off %}{{ obj.description }}{% endautoescape %}</div>
     {% if obj.tags.all %}
         <p class="tags">
                 {% for tag in obj.tags.all %}

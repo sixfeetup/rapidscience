@@ -23,6 +23,7 @@
 {% endfor %}
 
 <form class="rpds-form" method="post" enctype="multipart/form-data" action="">
+  {{ form.media }}
   {% csrf_token %}
   
   <div class="type-choices">
