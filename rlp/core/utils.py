@@ -91,6 +91,14 @@ def bookmark_and_notify(
     return group
 
 
+COMBINABLE_VERBS = (
+    'shared',
+    'added',
+    'created',
+    'started',
+    'uploaded',
+)
+
 def rollup(input, simfunc, samefunc, rollup_name):
     """ Rolls similar items in a list up under an array on the first i
         similar item.
@@ -126,6 +134,7 @@ def rollup(input, simfunc, samefunc, rollup_name):
         n_same = samefunc(n)
 
         # if similar but not the same, roll it up
+        # this rolls n up into i
         if n_sim == i_sim:
             if n_same not in equivalent_ids:
                 equivalent_ids.add( n_same )
