@@ -19,7 +19,7 @@
       {% endif %}
     {% if obj.description %}
         {% if not search %}<p class="more">{% endif %}
-            {{ obj.description|urlize|linebreaksbr }}
+            {% autoescape off %}{{ obj.description }}{% endautoescape %}
         {% if not search %}</p>{% endif %}
     {% endif %}
     {% if not search %}

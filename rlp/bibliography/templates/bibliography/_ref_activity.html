@@ -10,9 +10,9 @@
   {% if not search %}</a>{% endif %}
 {% if not search %}</h4>{% endif %}
 {% if ref.description %}
-  {% if not search %}<p class="more">{% endif %}
-    {{ ref.description }}
-  {% if not search %}</p>{% endif %}
+  {% if not search %}<div class="more">{% endif %}
+    {% autoescape off %}{{ ref.description }}{% endautoescape %}
+  {% if not search %}</div>{% endif %}
 {% endif %}
 {% if action.verb == 'shared' %}
     {% if not search %}<p class="small meta">{% endif %}

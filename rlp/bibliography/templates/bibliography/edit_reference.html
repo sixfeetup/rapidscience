@@ -26,26 +26,17 @@
 
         {% if form %}
         <form method="post" action="">
+          {{ form.media }}
           {% csrf_token %}
           {% for field in form %}
             {% if field.label == 'Members' %}
               <p class="section-label">Sharing</p>
               <div class="sharing-wrapper">
             {% endif %}
-            {% if field.label == 'Description / Comment' %}
-                <div class="form-group">
-                    <label class="control-label section-label" for="id_description">Description / Comment</label>
-                    <textarea class="form-control comment-field remaining-characters" cols="40" id="id_description" maxlength="2000" name="{{ field.name }}" rows="3" title=""></textarea>
-                    <div class="helpText">
-                        <div class="character-count">2000/2000 characters</div>
-                    </div>
-                </div>
+            {% if field.label == 'Members' or field.label == 'My Groups'%}
+              {% bootstrap_field field label_class="sub-label" %}
             {% else %}
-              {% if field.label == 'Members' or field.label == 'My Groups'%}
-                {% bootstrap_field field label_class="sub-label" %}
-              {% else %}
-                {% bootstrap_field field label_class="section-label" %}
-              {% endif %}
+              {% bootstrap_field field label_class="section-label" %}
             {% endif %}
             {% if forloop.last %}
               </div>

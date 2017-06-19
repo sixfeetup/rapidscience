@@ -22,9 +22,9 @@
       {% autoescape off %}{% display_shared_with ref request.user %}{% endautoescape %}
     </p>
     {% if obj.description %}
-        <p class="more">
-            {{ obj.description|urlize|linebreaksbr }}
-        </p>
+        <div class="more">
+            {% autoescape off %}{{ obj.description }}{% endautoescape %}
+        </div>
     {% endif %}
     {% if obj.tags.all %}
         <p class="tags">

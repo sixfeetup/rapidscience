@@ -2,6 +2,7 @@ from django import forms
 from django.utils.timezone import now
 
 from taggit.models import Tag
+from ckeditor.widgets import CKEditorWidget
 
 from . import choices
 from .models import (
@@ -192,7 +193,7 @@ class JournalArticleForm(BaseReferenceForm):
 
 class AttachReferenceForm(forms.Form):
     description = forms.CharField(
-        widget=forms.Textarea(attrs={'rows': 6, 'cols': 40}),
+        widget=CKEditorWidget(),
         label='Description / Comment',
         required=False,
     )
