@@ -1,4 +1,4 @@
-{% load bookmarks comments discussion_tags el_pagination_tags %}
+{% load bookmarks comments discussion_tags el_pagination_tags core_tags %}
 
 {% lazy_paginate activity_stream %}
 {% for action in activity_stream %}
@@ -82,7 +82,11 @@
                 {% include 'discussions/discussion_count_widget.html' %}
             {% endif %}
             {% if user != obj.get_poster %}
-            <form class="bookmark-form" method="POST" action="{% url 'bookmark_content' %}">
+            {% if project %}
+            <form class="bookmark-form" method="POST" action="{% toggle_bookmark_url obj project %}">
+            {% else %}
+            <form class="bookmark-form" method="POST" action="{% toggle_bookmark_url obj user %}">
+            {% endif %}
             {% csrf_token %}
             <input type="hidden" name="{% if project %}group{% else %}dashboard{% endif %}" value="on" />
             <input type="hidden" name="content_type" value="{{ content_type }}" />
