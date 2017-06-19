@@ -186,8 +186,10 @@ class CreateDiscussion(LoginRequiredMixin, FormView):
         )
         if not target:
             target = user
+            is_public = False
+        else:
+            is_public = True  # because this should be in the group's public feed
 
-        is_public = False
         #is_public = True
         # if the discussion hasnt been bookmarked, then treat it as private
         #if len(new_discussion.get_viewers() - {user}) == 0:
