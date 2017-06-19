@@ -18,6 +18,7 @@ from rlp.core.forms import group_choices
 from rlp.core.utils import bookmark_and_notify, add_tags
 from rlp.projects.models import Project
 from .forms import (
+    ThreadedCommentEditForm,
     ThreadedCommentWithTitleEditForm,
     NewDiscussionForm
 )
@@ -69,7 +70,11 @@ def comment_edit(request, comment_pk, template_name='discussions/comment_edit.ht
     if request.user != comment.user:
         messages.error(request, "You do not have permission to edit this.")
         return redirect(comment.get_absolute_url())
-    form_class = ThreadedCommentWithTitleEditForm
+    if comment.is_discussion:
+        # allow additional fields if this is a top-level discussion post
+        form_class = ThreadedCommentWithTitleEditForm
+    else:
+        form_class = ThreadedCommentEditForm
     if request.method == 'POST':
         tags = {}
         tags['ids'] = request.POST.getlist('tags', [])
