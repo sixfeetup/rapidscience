@@ -81,6 +81,7 @@
             {% if model != 'referenceshare' %}
                 {% include 'discussions/discussion_count_widget.html' %}
             {% endif %}
+            {% if user != obj.get_poster %}
             <form class="bookmark-form" method="POST" action="{% url 'bookmark_content' %}">
             {% csrf_token %}
             <input type="hidden" name="{% if project %}group{% else %}dashboard{% endif %}" value="on" />
@@ -88,6 +89,7 @@
             <input type="hidden" name="content_id" value="{{ obj.id }}" />
             <a href="#" class="bookmark-trigger" title="Save Bookmark"><i class="fa fa-star" aria-hidden="true"></i></a>
             </form>
+            {% endif %}
             {% if model == 'file' or model == 'image' or model == 'link' or model == 'video' or model == 'document' %}
                 <a class="share-link" href="/send/documents/document/{{ obj.id }}" title="Share"><i class="fa fa-share"></i></a>
             {% elif model == "casereport" %}
