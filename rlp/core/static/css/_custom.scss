@@ -1294,8 +1294,11 @@ input#id_to_dashboard {
     a {
         color: #ebebeb;
         &:hover,
-        &.saved {
+        &.saved:hover {
             color: #256180;
+        }
+        &.saved {
+            color: #444;
         }
     }
 }

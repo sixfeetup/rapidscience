@@ -133,15 +133,21 @@
     <script src="{% static 'js/main.js' %}"></script>
     <script>
         function setBookmarks() {
+            savedlist = $("form[action='/remove_bookmark']");
+            savedlist.each(function (){
+                $(this).children(".bookmark-trigger").addClass('saved');
+            });
             $(".bookmark-trigger").on('click', function(e) {
                 e.preventDefault();
                 element = $(this);
+                form = $(element).parent();
+                action = $(form).attr('action');
                 $.ajax({
-                    url:'{% url 'bookmark_content' %}',
+                    url: action,
                     type:'post',
                     data:$(element).parent().serialize(),
                     success:function(){
-                        $(element).addClass('saved');
+                        $(element).toggleClass('saved');
                     }
                 });
             });

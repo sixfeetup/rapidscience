@@ -37,6 +37,19 @@
   </div>
   <div class="col-md-1">
         <a class="comment-count" href="{% url 'bibliography:reference_detail' obj.id %}"><i class="fa fa-comment" aria-hidden="true"></i></a>
+        {% if user != obj.get_poster %}
+          {% if project %}
+          <form class="bookmark-form" method="POST" action="{% toggle_bookmark_url obj project %}">
+          {% else %}
+          <form class="bookmark-form" method="POST" action="{% toggle_bookmark_url obj user %}">
+          {% endif %}
+          {% csrf_token %}
+          <input type="hidden" name="{% if project %}group{% else %}dashboard{% endif %}" value="on" />
+          <input type="hidden" name="content_type" value="{{ obj.get_content_type_id }}" />
+          <input type="hidden" name="content_id" value="{{ obj.id }}" />
+          <a href="#" class="bookmark-trigger" title="Save Bookmark"><i class="fa fa-star" aria-hidden="true"></i></a>
+          </form>
+        {% endif %}
         <a class="share-link" href="/send/bibliography/reference/{{ obj.id }}"><i class="fa fa-share"></i></a>
   </div>
 </div>
