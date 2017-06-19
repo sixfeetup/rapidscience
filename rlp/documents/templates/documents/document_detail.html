@@ -15,10 +15,10 @@
       <a class="share-link pull-right" href="/send/documents/document/{{ obj.id }}"><i class="fa fa-share"></i></a>
       {% if document.polymorphic_ctype.model == 'link' %}
         <a href="{{ obj.url }}" target="_blank">
-            <h1 class="detail-view-heading">{{ obj.title }}</h1>
+            <h1>{{ obj.title }}</h1>
         </a>
       {% else %}
-        <h1 class="detail-view-heading">{{ obj.title }}</h1>
+        <h1>{{ obj.title }}</h1>
       {% endif %}
       <p class="small">
         Posted by
