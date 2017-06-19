@@ -2,6 +2,8 @@
 {#object#}
 {% if action.action_object_content_type.model == 'threadedcomment' and action.verb == 'started' %}
     Discussion
+{% elif action.action_object_content_type.model == 'threadedcomment' and action.verb == 'shared' %}
+    Discussion
 {% elif action.action_object_content_type.model == 'threadedcomment' %}
     Comment
 {% else %}
