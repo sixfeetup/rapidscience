@@ -88,11 +88,15 @@ def display_shared_with(item, user=None):
         else:
             vlist.append('{0}, '.format(v))
     if vlist:
+        # cut off the trailing ", " from the last item
+        vlist[-1] = vlist[-1][:-2]
         if len(vlist) > 1:
-            vlist[-2] = vlist[-1][:-2]
+            # replace the oxford comma from the second to last
+            vlist[-2] = vlist[-2][:-2]
             vlist.insert(-1, ' and ')
-        vlist = "".join(vlist)
-        return 'Shared with {0}'.format(vlist[:-2])
+
+        combined_viewers = "".join(vlist)
+        return 'Shared with {0}'.format(combined_viewers)
     else:
         return ''
 
