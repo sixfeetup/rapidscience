@@ -81,6 +81,15 @@ class SharedContent(models.Model):
     def __str__(self):
         return u'"%s" shared with "%s"' % (self.target, self.viewer)
 
+
+CREATION_VERBS = (
+    'added',
+    'created',
+    'started',
+    'uploaded',
+)
+
+
 class SharedObjectMixin(models.Model):
     class Meta:
         abstract = True
@@ -112,6 +121,17 @@ class SharedObjectMixin(models.Model):
                 # individual user
                 users.add(vwr)
         return users
+
+    def get_poster(self):
+        my_type = ContentType.objects.get_for_model(self)
+        creation_action = Action.objects.filter(
+            action_object_object_id=self.id,
+            action_object_content_type=my_type,
+            verb__in=CREATION_VERBS,
+        ).first()
+        if not creation_action:
+            return
+        return creation_action.actor
 
     def is_shared_with_user(self, user):
         return user in self.get_viewers_as_users() or user.is_superuser
