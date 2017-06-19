@@ -1,4 +1,4 @@
-{% load thumbnail humanize %}
+{% load thumbnail humanize core_tags %}
 
 {% comment %}
 The template variable 'thumbnail_url' is just what it says.
@@ -35,7 +35,7 @@ In some cases such as Youtube videos, we don't have local images so we can't mak
         {% endif %}
         {% with action=result.object.action_object_actions.first %}
                 <p class="small">{% if action %}{{ action.action_object.display_type }}
-                    {% if action.action_object_content_type.model != 'threadedcomment' %}{{ action.verb }}{% endif %}
+                    {% if action.action_object_content_type.model != 'threadedcomment' %}{{ action.verb|verb_alias }}{% endif %}
                     by <a href="{{ action.actor.get_absolute_url }}">{{ action.actor.get_full_name }}</a>
                     | {{ action.timestamp|naturaltime }}
                     <br />{% endif %}

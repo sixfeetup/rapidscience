@@ -1,11 +1,13 @@
+from actstream import action
 from actstream.models import Action
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models.lookups import DateTransform
-from actstream import action
 from taggit.managers import TaggableManager
+
+from rlp.core.utils import CREATION_VERBS
 
 
 @models.DateTimeField.register_lookup
@@ -80,14 +82,6 @@ class SharedContent(models.Model):
 
     def __str__(self):
         return u'"%s" shared with "%s"' % (self.target, self.viewer)
-
-
-CREATION_VERBS = (
-    'added',
-    'created',
-    'started',
-    'uploaded',
-)
 
 
 class SharedObjectMixin(models.Model):

@@ -8,7 +8,6 @@ import sys
 
 from taggit.models import Tag
 
-from rlp.core.views import SendToView
 
 def enforce_sharedobject_permissions(cls, obj_class, id_name, methods=None):
     """ Class decorator intended for subclasses of ClassBasedViews that serve rlp.core.models.SharedObjectMixin subclasses.
@@ -72,6 +71,7 @@ def bookmark_and_notify(
         * bookmark content for the user creating the content
         * bookmark for the group last viewed (if any)
     '''
+    from rlp.core.views import SendToView
     initial_proj = request.session.get('last_viewed_project')
     if initial_proj:
         project_type = ContentType.objects.get_by_natural_key(
@@ -93,16 +93,18 @@ def bookmark_and_notify(
     return group
 
 
-# the order of these matter.    That further down the list, the more important
-# the verb is considered by the score_verb function.
-# This is mostly so that 'shared' can be beaten by just about anything else
-COMBINABLE_VERBS = (
-    'shared',
+CREATION_VERBS = (
+    'replied',
     'added',
     'created',
     'started',
     'uploaded',
 )
+
+# the order of these matter.    That further down the list, the more important
+# the verb is considered by the score_verb function.
+# This is mostly so that 'shared' can be beaten by just about anything else
+COMBINABLE_VERBS = ( 'shared', ) + CREATION_VERBS
 
 def score_verb( x ):
     try:
@@ -185,3 +187,4 @@ def add_tags(obj, tags):
         obj.tags.add(*tags['new'][0].split(","))
     # Trigger any post-save signals (e.g. Haystack's real-time indexing)
     obj.save()
+

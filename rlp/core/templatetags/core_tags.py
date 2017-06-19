@@ -2,6 +2,8 @@ from django.contrib.sites.shortcuts import get_current_site
 from django import template
 from django.core.urlresolvers import reverse
 
+from rlp.core.utils import CREATION_VERBS
+
 register = template.Library()
 
 
@@ -124,3 +126,9 @@ def toggle_bookmark_url(content, viewer):
     if content.is_bookmarked_to(viewer):
         return reverse('remove_bookmark')
     return reverse('bookmark_content')
+
+@register.filter
+def verb_alias(verb):
+    if verb in CREATION_VERBS:
+        return 'posted'
+    return verb
