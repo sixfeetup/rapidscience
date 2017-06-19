@@ -1,15 +1,14 @@
 {% load core_tags %}
 <div class="row reference-item">
   <div class="col-md-11">
-    <h4>{% if ref.get_source_url %}
-        <a href="{{ ref.get_source_url }}" {% if 'http' in ref.get_source_url and not email %}target="_blank"{% endif %}>{% endif %}
-        {% if obj.parsed_data.authors %}{{ obj.parsed_data.authors }}. {% endif %}{{ obj.parsed_data.title|striptags }},
+    <h4>{% if obj.parsed_data.authors %}{{ obj.parsed_data.authors }}. {% if ref.get_source_url %}
+        <a href="{{ ref.get_source_url }}" {% if 'http' in ref.get_source_url and not email %}target="_blank"{% endif %}>{% endif %}{% endif %}{{ obj.parsed_data.title|striptags }}
+        {% if ref.get_source_url %}</a>{% endif %},
         {% if obj.parsed_data.container_title %}in <em>{{ obj.parsed_data.container_title }}</em>,{% endif %}
         {% if obj.parsed_data.page %}pp {{ obj.parsed_data.page }}.{% endif %}
         {% if obj.parsed_data.publication_date %}{{ obj.parsed_data.publication_date }};{% endif %}
         {{ obj.parsed_data.publisher }} {{ obj.parsed_data.journal_title }}
         {% if obj.parsed_data.doi %}DOI: {{ obj.parsed_data.doi }}{% endif %} {% if obj.parsed_data.pubmed_id %}PMID: {{ obj.parsed_data.pubmed_id }}{% endif %}
-        </a>
     </h4>
     <p class="small meta">
         Posted by
