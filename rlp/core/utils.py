@@ -91,6 +91,9 @@ def bookmark_and_notify(
     return group
 
 
+# the order of these matter.    That further down the list, the more important
+# the verb is considered by the score_verb function.
+# This is mostly so that 'shared' can be beaten by just about anything else
 COMBINABLE_VERBS = (
     'shared',
     'added',
@@ -99,7 +102,13 @@ COMBINABLE_VERBS = (
     'uploaded',
 )
 
-def rollup(input, simfunc, samefunc, rollup_name):
+def score_verb( x ):
+    try:
+        return COMBINABLE_VERBS.index(x)
+    except ValueError as not_in_list:
+        return -1
+
+def rollup(input, simfunc, samefunc, scorefunc, rollup_name):
     """ Rolls similar items in a list up under an array on the first i
         similar item.
         Adjacent, equivalent items are dropped entirely.
@@ -117,10 +126,11 @@ def rollup(input, simfunc, samefunc, rollup_name):
              5 | d | h | i
         into
              1 | a | b | c | []
-             2 | d | e | f | [3]
+             3 | d | e | f | [2]
              5 | d | h | i | []
 
-        Item 3 rolled up into 2 because its key fields(d,e) were the same.
+        Item 2 rolled up into 3 because its key fields(d,e) were the same, and
+        and it is assumed the sequence is reverse chronological.
         Item 4 is dropped because it is equivalent to item 2.
     """
     input_iter = iter(input)
@@ -134,13 +144,18 @@ def rollup(input, simfunc, samefunc, rollup_name):
         n_same = samefunc(n)
 
         # if similar but not the same, roll it up
-        # this rolls n up into i
+        # this swaps them, then rolls n up into the new i
         if n_sim == i_sim:
             if n_same not in equivalent_ids:
                 equivalent_ids.add( n_same )
+                if scorefunc(n) > scorefunc(i):
+                    (i, n) = (n, i)
                 if not hasattr( i, rollup_name ):
                     setattr( i, rollup_name, [] )
                 getattr(i, rollup_name).append( n )
+                # and move any previous rollups into the new ia
+                if hasattr(n, rollup_name):
+                    getattr(i, rollup_name).extend( getattr(n,rollup_name))
         else:
             yield i
             i = n

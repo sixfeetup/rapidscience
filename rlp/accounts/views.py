@@ -29,7 +29,7 @@ from casereport.models import CaseReport
 from rlp.accounts.models import Institution
 from rlp.bibliography.models import Reference
 from rlp.core.email import send_transactional_mail
-from rlp.core.utils import rollup, COMBINABLE_VERBS
+from rlp.core.utils import rollup, score_verb, COMBINABLE_VERBS
 from rlp.core.views import MESSAGES_DEFAULT_FORM_ERROR
 from rlp.discussions.models import ThreadedComment
 from rlp.documents.models import Document
@@ -409,6 +409,7 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
                            a.action_object_object_id,
                            a.target_content_type,
                            a.target_object_id)),
+            lambda a: score_verb(a.verb),
             'others'))
 
 

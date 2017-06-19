@@ -20,7 +20,7 @@ from el_pagination.decorators import page_template
 from casereport.constants import WorkflowState
 from casereport.models import CaseReport
 from rlp.accounts.models import User
-from rlp.core.utils import rollup, COMBINABLE_VERBS
+from rlp.core.utils import rollup, score_verb, COMBINABLE_VERBS
 from rlp.bibliography.models import Reference
 from rlp.discussions.models import ThreadedComment
 from rlp.documents.models import Document
@@ -92,6 +92,7 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
                            a.action_object_object_id,
                            a.target_content_type,
                            a.target_object_id)),
+            lambda a: score_verb(a.verb),
             'others'))
 
         context['activity_stream'] = activity_stream
