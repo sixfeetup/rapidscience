@@ -1,7 +1,7 @@
 {% load core_tags %}
 {% if not search %}<h4>{% endif %}
-  {% if ref.parsed_data.authors %}{{ ref.parsed_data.authors }}. {% if ref.get_source_url %}{% if not search %}<a href="{{ ref.get_source_url }}" {% if 'http' in ref.get_source_url and not email %}target="_blank"{% endif %}>{% endif %}{% endif %}
-  {% endif %}{{ ref.parsed_data.title|striptags }}{% if ref.get_source_url %}{% if not search %}</a>{% endif %}{% endif %},
+  {% if ref.parsed_data.authors %}{{ ref.parsed_data.authors }}. {% endif %}{% if ref.get_source_url %}{% if not search %}<a href="{{ ref.get_source_url }}" {% if 'http' in ref.get_source_url and not email %}target="_blank"{% endif %}>{% endif %}{% endif %}
+  {{ ref.parsed_data.title|striptags }}{% if ref.get_source_url %}{% if not search %}</a>{% endif %}{% endif %},
   {% if ref.parsed_data.container_title %}in <em>{{ ref.parsed_data.container_title }}</em>,{% endif %}
   {% if ref.parsed_data.page %}pp {{ ref.parsed_data.page }}.{% endif %}
   {% if ref.parsed_data.publication_date %}{{ ref.parsed_data.publication_date }};{% endif %}
