@@ -10,6 +10,11 @@
             <p class="small action-detail">
               {% include 'actstream/_action_detail.html' %}
             </p>
+            {% if action.description and model != "casereport" and model != "reference" %}
+            <blockquote>
+              <p>{{ action.description }}</p>
+            </blockquote>
+            {% endif %}
             {% if model == 'file' %}
               {% include 'documents/_file.html' %}
             {% elif model == 'image' %}
@@ -41,11 +46,6 @@
                 </blockquote>
                 {% endif %}
               {% include 'casereport/casereport_activity.html' %}
-            {% endif %}
-            {% if action.description and model != "casereport" and model != "reference" %}
-            <blockquote>
-              <p>{{ action.description }}</p>
-            </blockquote>
             {% endif %}
 
                 {# tags and workflow status #}
