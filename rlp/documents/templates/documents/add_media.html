@@ -44,7 +44,7 @@
             <h4>Sharing</h4>
           {% endif %}
           
-          {% if field.auto_id != 'id_copyright' %}
+          {% if field.auto_id != 'id_copyright' and field.label %}
               <h4>
                   <label for="{{ field.id_for_label }}">
                       {{ field.label }}{% if field.field.required %} <span class="required">*</span>{% endif %}

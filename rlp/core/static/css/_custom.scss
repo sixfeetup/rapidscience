@@ -990,6 +990,10 @@ a.comment-count.empty {
     margin-left: 20px;
     display: block;
 }
+#wrapper-id_members h4,
+#wrapper-id_groups h4 {
+    margin: 1em 0 5px 0;
+}
 #wrapper-id_members h4 label,
 #wrapper-id_groups h4 label {
     font-size: 14px;
