@@ -148,7 +148,8 @@ def rollup(input, simfunc, samefunc, scorefunc, rollup_name):
         if n_sim == i_sim:
             if n_same not in equivalent_ids:
                 equivalent_ids.add( n_same )
-                if scorefunc(n) > scorefunc(i):
+                #if n score higher, or isnt in out ranked list, swap to the top
+                if scorefunc(n) > scorefunc(i) or scorefunc(n) == -1:
                     (i, n) = (n, i)
                 if not hasattr( i, rollup_name ):
                     setattr( i, rollup_name, [] )
