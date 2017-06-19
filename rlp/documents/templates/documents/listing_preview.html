@@ -14,7 +14,11 @@
         {% video shared_video 'small' %}
         {% endvideo %}
     {% endif %}
-    <h4><a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a></h4>
+    {% if 'Link' in obj.display_type %}
+        <h4><a href="{{ obj.url }}" target="_blank">{{ obj.title }}</a></h4>
+    {% else %}
+        <h4><a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a></h4>
+    {% endif %}
     <p class="small">
         Posted by
       <a href="{{ obj.owner.get_absolute_url }}">
