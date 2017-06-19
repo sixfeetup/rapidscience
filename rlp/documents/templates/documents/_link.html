@@ -1,2 +1,13 @@
+{% load core_tags %}
+
 <h4><a href="{{ obj.url }}" target="_blank">{{ obj.title }}</a></h4>
 <div class="more">{% autoescape off %}{{ obj.description }}{% endautoescape %}</div>
+
+{% if action.verb == 'shared' %}
+    <p class="small meta">
+        Posted by
+        <a href="{% url 'profile' action.actor_object_id  %}">{{ action.actor }}</a>
+        | {{ obj.date_updated|date:"j M Y" }}<br />
+      {% autoescape off %}{% display_shared_with obj request.user %}{% endautoescape %}
+    </p>
+{% endif %}

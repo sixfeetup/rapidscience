@@ -1,6 +1,14 @@
-{% load embed_video_tags %}
+{% load core_tags embed_video_tags %}
 {% video obj.share_link as shared_video %}
 {% video shared_video 'small' %}
 {% endvideo %}
 <h4><a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a></h4>
 <div class="more">{% autoescape off %}{{ obj.description }}{% endautoescape %}</div>
+{% if action.verb == 'shared' %}
+    <p class="small meta">
+        Posted by
+        <a href="{% url 'profile' action.actor_object_id  %}">{{ action.actor }}</a>
+        | {{ obj.date_updated|date:"j M Y" }}<br />
+      {% autoescape off %}{% display_shared_with obj request.user %}{% endautoescape %}
+    </p>
+{% endif %}
