@@ -7,6 +7,7 @@
 <h2>{% if document %}Edit{% else %}Add{% endif %} Link</h2>
 
 <form method="post" action="">
+  {{ form.media }}
   {% csrf_token %}
   {% bootstrap_form form %}
   <button class="btn btn-primary" type="submit">

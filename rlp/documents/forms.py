@@ -52,6 +52,7 @@ class BaseDocumentForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['copyright'].label = CLABEL
+        self.fields['description'].widget = CKEditorWidget()
         if Tag.objects.count():
             self.fields['tags'] = forms.ModelMultipleChoiceField(
                 queryset=Tag.objects.all(),
