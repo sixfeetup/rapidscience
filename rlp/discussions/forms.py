@@ -113,4 +113,4 @@ class NewDiscussionForm(forms.Form):
                    Separate with commas.")
 
     field_order = ['discussion_title', 'discussion_body', 'members',
-                   'groups', 'tags', new_tags]
+                   'groups', 'tags', 'new_tags']
