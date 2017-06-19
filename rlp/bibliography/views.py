@@ -15,7 +15,7 @@ from actstream import action
 from taggit.models import Tag
 
 from rlp.core.forms import member_choices, group_choices
-from rlp.core.utils import bookmark_and_notify
+from rlp.core.utils import bookmark_and_notify, add_tags
 from rlp.discussions.models import ThreadedComment
 from . import choices
 from .forms import (
@@ -63,7 +63,9 @@ def add_book(request, reference_pk=None, template_name='bibliography/add_book.ht
         # Make a copy so we can manipulate
         POST = request.POST.copy()
         # Remove tags, if present
-        tag_ids = POST.pop('tags', [])
+        tags = {}
+        tags['ids'] = POST.pop('tags', [])
+        tags['new'] = POST.pop('new_tags', [])
         form = BookForm(POST, request.FILES, instance=instance)
         if form.is_valid():
             with transaction.atomic():
@@ -73,15 +75,7 @@ def add_book(request, reference_pk=None, template_name='bibliography/add_book.ht
                 else:
                     action.send(request.user, verb='added', action_object=reference)
                     messages.success(request, "Reference added successfully!")
-                # Set the tags
-                if tag_ids:
-                    try:
-                        tags = Tag.objects.filter(id__in=tag_ids)
-                    except:
-                        tags = []
-                    reference.tags.set(*tags)
-                    # Trigger any post-save signals (e.g. Haystack's real-time indexing)
-                    reference.save()
+                add_tags(reference, tags)
             # TODO redirect to ?
             return redirect('/')
     else:
@@ -112,7 +106,9 @@ def add_book_chapter(request, reference_pk=None, template_name='bibliography/add
         # Make a copy so we can manipulate
         POST = request.POST.copy()
         # Remove tags, if present
-        tag_ids = POST.pop('tags', [])
+        tags = {}
+        tags['ids'] = POST.pop('tags', [])
+        tags['new'] = POST.pop('new_tags', [])
         form = BookSectionForm(POST, request.FILES, instance=instance)
         if form.is_valid():
             with transaction.atomic():
@@ -123,14 +119,7 @@ def add_book_chapter(request, reference_pk=None, template_name='bibliography/add
                     action.send(request.user, verb='added', action_object=reference)
                     messages.success(request, "Reference added successfully!")
                 # Set the tags
-                if tag_ids:
-                    try:
-                        tags = Tag.objects.filter(id__in=tag_ids)
-                    except:
-                        tags = []
-                    reference.tags.set(*tags)
-                    # Trigger any post-save signals (e.g. Haystack's real-time indexing)
-                    reference.save()
+                add_tags(reference, tags)
             # TODO redirect to ?
             return redirect('/')
     else:
@@ -161,7 +150,9 @@ def add_article(request, reference_pk=None, template_name='bibliography/add_arti
         # Make a copy so we can manipulate
         POST = request.POST.copy()
         # Remove tags, if present
-        tag_ids = POST.pop('tags', [])
+        tags = {}
+        tags['ids'] = POST.pop('tags', [])
+        tags['new'] = POST.pop('new_tags', [])
         form = JournalArticleForm(POST, request.FILES, instance=instance)
         if form.is_valid():
             with transaction.atomic():
@@ -171,15 +162,7 @@ def add_article(request, reference_pk=None, template_name='bibliography/add_arti
                 else:
                     action.send(request.user, verb='added', action_object=reference)
                     messages.success(request, "Reference added successfully!")
-                # Set the tags
-                if tag_ids:
-                    try:
-                        tags = Tag.objects.filter(id__in=tag_ids)
-                    except:
-                        tags = []
-                    reference.tags.set(*tags)
-                    # Trigger any post-save signals (e.g. Haystack's real-time indexing)
-                    reference.save()
+                add_tags(reference, tags)
             # TODO redirect to ?
             return redirect('/')
     else:
@@ -222,8 +205,11 @@ class ReferenceAttachView(LoginRequiredMixin, FormView):
         data = form.cleaned_data
         ref = Reference.objects.get(pk=self.kwargs['pk'])
         ref.description = data.get('description')
-        ref.tags.set(*data['tags'])
         ref.save()
+        tags = {}
+        tags['ids'] = data.pop('tags', [])
+        tags['new'] = [data.pop('new_tags')] if data['new_tags'] else []
+        add_tags(ref, tags)
         target = bookmark_and_notify(
             ref, self, self.request, 'bibliography', 'reference',
         )
@@ -256,10 +242,10 @@ def reference_edit(request, reference_pk, template_name='bibliography/edit_refer
     if request.method == 'POST':
         form = AttachReferenceForm(request.POST)
         if form.is_valid():
-            tags = form.cleaned_data.get('tags') or []
-            reference.tags.set(*tags)
-            # Trigger any post-save signals (e.g. Haystack's real-time indexing)
-            reference.save()
+            tags = {}
+            tags['ids'] = form.cleaned_data.getlist('tags', [])
+            tags['new'] = form.cleaned_data.getlist('new_tags', [])
+            add_tags(ref, tags)
             messages.success(request, "Reference updated successfully!")
             # TODO redirect to ?
             # should go to accounts/dashboard/bibliography/

@@ -46,7 +46,7 @@ from .models import (
 from rlp.accounts.models import User
 from rlp.core.forms import member_choices
 from rlp.core.forms import group_choices
-from rlp.core.utils import bookmark_and_notify
+from rlp.core.utils import bookmark_and_notify, add_tags
 from rlp.core.utils import enforce_sharedobject_permissions
 from rlp.projects.models import Project
 from functools import partial
@@ -235,8 +235,10 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
                           attachment2_description=attachment2_description,
                           attachment3_description=attachment3_description)
         case.save()
-        tags = Tag.objects.filter(id__in=request.POST.getlist('tags'))
-        case.tags.set(*tags)
+        tags = {}
+        tags['ids'] = request.POST.getlist('tags', [])
+        tags['new'] = request.POST.getlist('new_tags', [])
+        add_tags(case, tags)
         if author:
             case.authorized_reps.add(author[0])
         update_treatments_from_request(case, data)
@@ -553,8 +555,10 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
         # any edit by an admin needs to clear the author approved.
         if request.user.is_staff and request.user.email != case.primary_physician.email:
             case.author_approved = False
-        tags = Tag.objects.filter(id__in=request.POST.getlist('tags'))
-        case.tags.set(*tags)
+        tags = {}
+        tags['ids'] = request.POST.getlist('tags', [])
+        tags['new'] = request.POST.getlist('new_tags', [])
+        add_tags(case, tags)
 
         case.save()
         bookmark_and_notify(

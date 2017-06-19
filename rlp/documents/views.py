@@ -14,7 +14,7 @@ from taggit.models import Tag
 
 from rlp.accounts.models import User
 from rlp.core.forms import group_choices
-from rlp.core.utils import bookmark_and_notify
+from rlp.core.utils import bookmark_and_notify, add_tags
 from rlp.discussions.models import ThreadedComment
 from rlp.projects.models import Project
 from .forms import AddMediaForm, FileForm, ImageForm, LinkForm, VideoForm
@@ -93,7 +93,9 @@ def add_document(request, add_form=None, doc_pk=None, template_name='documents/a
         # Make a copy so we can manipulate
         POST = request.POST.copy()
         # Remove tags, if present
-        tag_ids = POST.pop('tags', [])
+        tags = {}
+        tags['ids'] = POST.pop('tags', [])
+        tags['new'] = POST.pop('new_tags', [])
         if 'upload' in request.FILES:
             try:
                 Image.open(request.FILES['upload'])
@@ -110,14 +112,7 @@ def add_document(request, add_form=None, doc_pk=None, template_name='documents/a
                 document = form.save(commit=False)
                 document.owner = request.user
                 document.save()
-                if tag_ids:
-                    try:
-                        tags = Tag.objects.filter(id__in=tag_ids)
-                        document.tags.set(*tags)
-                    except:
-                        document.tags.add(*tag_ids[0].split(","))
-                    # Trigger any post-save signals (e.g. Haystack's real-time indexing)
-                    document.save()
+                add_tags(document, tags)
                 if doc_pk:
                     message = "Updated successfully!"
                 else:
@@ -166,21 +161,16 @@ def add_link(request, add_form=None, doc_pk=None, template_name='documents/add_l
         # Make a copy so we can manipulate
         POST = request.POST.copy()
         # Remove tags, if present
-        tag_ids = POST.pop('tags', [])
+        tags = {}
+        tags['ids'] = POST.pop('tags', [])
+        tags['new'] = POST.pop('new_tags', [])
         form = LinkForm(POST, instance=document)
         if form.is_valid():
             with transaction.atomic():
                 link = form.save(commit=False)
                 link.owner = request.user
                 link.save()
-                if tag_ids:
-                    try:
-                        tags = Tag.objects.filter(id__in=tag_ids)
-                        link.tags.set(*tags)
-                    except:
-                        link.tags.add(*tag_ids[0].split(","))
-                    # Trigger any post-save signals (e.g. Haystack's real-time indexing)
-                    link.save()
+                add_tags(link, tags)
                 if doc_pk:
                     message = "Updated successfully!"
                 else:
@@ -228,21 +218,16 @@ def add_video(request, add_form=None, doc_pk=None, template_name='documents/add_
         # Make a copy so we can manipulate
         POST = request.POST.copy()
         # Remove tags, if present
-        tag_ids = POST.pop('tags', [])
+        tags = {}
+        tags['ids'] = POST.pop('tags', [])
+        tags['new'] = POST.pop('new_tags', [])
         form = VideoForm(POST, instance=document)
         if form.is_valid():
             with transaction.atomic():
                 video = form.save(commit=False)
                 video.owner = request.user
                 video.save()
-                if tag_ids:
-                    try:
-                        tags = Tag.objects.filter(id__in=tag_ids)
-                        video.tags.set(*tags)
-                    except:
-                        video.tags.add(*tag_ids[0].split(","))
-                    # Trigger any post-save signals (e.g. Haystack's real-time indexing)
-                    video.save()
+                add_tags(video, tags)
                 if doc_pk:
                     message = "Updated successfully!"
                 else:

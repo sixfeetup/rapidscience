@@ -61,6 +61,11 @@ class BaseReferenceForm(forms.ModelForm):
                 queryset=Tag.objects.all(),
                 required=False
             )
+        self.fields['new_tags'] = forms.CharField(
+            max_length=400,
+            required=False,
+            help_text="Terms added here will be added as new tags in the system. \
+                       Separate with commas.")
 
     publication_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
     authors = forms.CharField(max_length=255,
@@ -203,6 +208,11 @@ class AttachReferenceForm(forms.Form):
         required=False,
     )
     tags.widget.attrs['class'] = 'select2'
+    new_tags = forms.CharField(
+        max_length=400,
+        required=False,
+        help_text="Terms added here will be added as new tags in the system. \
+                   Separate with commas.")
     members = MemberListField(
         label='Members',
         help_text='Separate names with commas',

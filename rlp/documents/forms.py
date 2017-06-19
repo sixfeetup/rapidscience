@@ -27,6 +27,11 @@ class AddMediaForm(forms.Form):
         required=False,
     )
     tags.widget.attrs['class'] = 'select2'
+    new_tags = forms.CharField(
+        max_length=400,
+        required=False,
+        help_text="Terms added here will be added as new tags in the system. \
+                   Separate with commas.")
     copyright = forms.BooleanField(label=CLABEL, required=False)
     members = MemberListField(
         label='Members',
@@ -59,6 +64,11 @@ class BaseDocumentForm(forms.ModelForm):
                 required=False
             )
             self.fields['tags'].widget.attrs['class'] = 'select2'
+        self.fields['new_tags'] = forms.CharField(
+            max_length=400,
+            required=False,
+            help_text="Terms added here will be added as new tags in the system. \
+                       Separate with commas.")
 
     class Meta:
         model = Document

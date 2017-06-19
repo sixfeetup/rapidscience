@@ -6,6 +6,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect
 import sys
 
+from taggit.models import Tag
+
 from rlp.core.views import SendToView
 
 def enforce_sharedobject_permissions(cls, obj_class, id_name, methods=None):
@@ -165,3 +167,21 @@ def rollup(input, simfunc, samefunc, scorefunc, rollup_name):
 
     yield i
 
+
+def add_tags(obj, tags):
+    """ Passing an object and tags, add the tags to the object and save.
+        Tags should be a dictionary with 'ids' of existing tags,
+        and 'new' with a list of new tags to be added
+    """
+    if tags['ids']:
+        try:
+            set_tags = Tag.objects.filter(id__in=tags['ids'])
+            obj.tags.set(*set_tags)
+        except:
+            obj.tags.add(*tags['ids'][0].split(","))
+    else:
+        obj.tags.clear()
+    if tags['new'] and tags['new'] != ['']:
+        obj.tags.add(*tags['new'][0].split(","))
+    # Trigger any post-save signals (e.g. Haystack's real-time indexing)
+    obj.save()

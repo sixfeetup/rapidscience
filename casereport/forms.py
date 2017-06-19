@@ -47,6 +47,11 @@ class CaseForm(forms.Form):
         required=False,
     )
     tags.widget.attrs['class'] = 'select2'
+    new_tags = forms.CharField(
+        max_length=400,
+        required=False,
+        help_text="Terms added here will be added as new tags in the system. \
+                   Separate with commas.")
 
 
 class MultiFacetedSearchForm(FacetedSearchForm):

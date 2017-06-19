@@ -64,10 +64,15 @@ class ThreadedCommentWithTitleEditForm(forms.ModelForm):
         required=False,
     )
     tags.widget.attrs['class'] = 'select2'
+    new_tags = forms.CharField(
+        max_length=400,
+        required=False,
+        help_text="Terms added here will be added as new tags in the system. \
+                   Separate with commas.")
 
     class Meta:
         model = ThreadedComment
-        fields = ['title', 'comment', 'tags']
+        fields = ['title', 'comment', 'tags', 'new_tags']
 
 
 internal_member_field = MemberListField(
@@ -101,6 +106,11 @@ class NewDiscussionForm(forms.Form):
         required=False,
     )
     tags.widget.attrs['class'] = 'select2'
+    new_tags = forms.CharField(
+        max_length=400,
+        required=False,
+        help_text="Terms added here will be added as new tags in the system. \
+                   Separate with commas.")
 
     field_order = ['discussion_title', 'discussion_body', 'members',
-                   'groups', 'tags']
+                   'groups', 'tags', new_tags]

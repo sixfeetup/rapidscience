@@ -15,7 +15,7 @@ from taggit.models import Tag
 
 from rlp.accounts.models import User
 from rlp.core.forms import group_choices
-from rlp.core.utils import bookmark_and_notify
+from rlp.core.utils import bookmark_and_notify, add_tags
 from rlp.projects.models import Project
 from .forms import (
     ThreadedCommentWithTitleEditForm,
@@ -71,17 +71,13 @@ def comment_edit(request, comment_pk, template_name='discussions/comment_edit.ht
         return redirect(comment.get_absolute_url())
     form_class = ThreadedCommentWithTitleEditForm
     if request.method == 'POST':
-        tag_ids = request.POST.getlist('tags', [])
+        tags = {}
+        tags['ids'] = request.POST.getlist('tags', [])
+        tags['new'] = request.POST.getlist('new_tags', [])
         form = form_class(request.POST, instance=comment)
         if form.is_valid():
             form.save()
-            if tag_ids:
-                try:
-                    tags = Tag.objects.filter(id__in=tag_ids)
-                    comment.tags.set(*tags)
-                except:
-                    comment.tags.add(*tag_ids[0].split(","))
-                comment.save()
+            add_tags(comment, tags)
             messages.success(request, "Comment successfully updated!")
             return redirect(comment.get_absolute_url())
     else:
@@ -168,6 +164,9 @@ class CreateDiscussion(LoginRequiredMixin, FormView):
         user = self.request.user
         ct = ContentType.objects.get_for_model(Site)
         site = Site.objects.get_current()
+        tags = {}
+        tags['ids'] = self.request.POST.pop('tags', [])
+        tags['new'] = self.request.POST.pop('new_tags', [])
         new_discussion = ThreadedComment(
             title=data['discussion_title'],
             user=user,
@@ -179,7 +178,7 @@ class CreateDiscussion(LoginRequiredMixin, FormView):
             object_pk=site.id,
         )
         new_discussion.save()
-        new_discussion.tags.set(*data['tags'])
+        add_tags(new_discussion, tags)
 
         target = bookmark_and_notify(
             new_discussion, self, self.request,
