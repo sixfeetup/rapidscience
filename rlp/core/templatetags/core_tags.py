@@ -118,3 +118,9 @@ def link(obj, extra='', autoescape=True):
     except AttributeError as not_linkable:
         return mark_safe(str(obj))
 
+
+@register.simple_tag
+def toggle_bookmark_url(content, viewer):
+    if content.is_bookmarked_to(viewer):
+        return reverse('remove_bookmark')
+    return reverse('bookmark_content')
