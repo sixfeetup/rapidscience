@@ -138,7 +138,7 @@
                 e.preventDefault();
                 element = $(this);
                 $.ajax({
-                    url:'/bookmark',
+                    url:'{% url 'bookmark_content' %}',
                     type:'post',
                     data:$(element).parent().serialize(),
                     success:function(){
