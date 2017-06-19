@@ -42,14 +42,15 @@ def create_comment_activity(**kwargs):
         content = top_comment.content_object
 
     # automatically bookmark when commenting
-    if not content.is_bookmarked_to(comment.user):
-        comment.user.bookmark(content)
-    
-    last_proj = request.session.get('last_viewed_project')
-    if last_proj:
-        group = Project.objects.get(id=last_proj)
-        if not content.is_bookmarked_to(group):
-            group.bookmark(content)
+    if hasattr(content, 'is_bookmarked_to'):
+        if not content.is_bookmarked_to(comment.user):
+            comment.user.bookmark(content)
+
+        last_proj = request.session.get('last_viewed_project')
+        if last_proj:
+            group = Project.objects.get(id=last_proj)
+            if not content.is_bookmarked_to(group):
+                group.bookmark(content)
 
     # per #746   a comment by an admin on a CaseReportReview, we need to set
     # the target to the CRR's casereport author
