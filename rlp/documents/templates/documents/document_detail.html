@@ -21,10 +21,14 @@
         <h1 class="detail-view-heading">{{ obj.title }}</h1>
       {% endif %}
       <p class="small">
-        {% include 'actstream/_action_detail.html' with action=document.action_object_actions.first %}
-        {% if request.user == obj.owner %} | <a href="{% url 'documents:document_edit' obj.id %}">Edit</a>{% endif %} <br />
+        Posted by
+        {% if request.user == obj.owner %} me {% else %} <a href="{{ obj.owner.get_absolute_url }}">{{ obj.owner.get_full_name }}</a>{% endif %}
+        | {{ obj.date_updated|date:"j M Y" }}
+        {% if request.user == obj.owner %} | <a href="{% url 'documents:document_edit' obj.id %}">Edit</a>{% endif %}
+        <br />
         Shared with <b>{{ obj.get_viewers|join:"</b>, <b>" }}</b>
       </p>
+
       {% if obj.description %}<div class="initial">{% autoescape off %}{{ obj.description }}{% endautoescape %}</div>{% endif %}
       {% if document.polymorphic_ctype.model == 'file' %}
         <p class="initial"><a class="btn btn-primary" href="{{ obj.upload.url }}" target="_blank">
