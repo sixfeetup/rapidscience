@@ -81,22 +81,25 @@
             {% if model != 'referenceshare' %}
                 {% include 'discussions/discussion_count_widget.html' %}
             {% endif %}
-            {% if user != obj.get_poster %}
-            {% if project %}
-            <form class="bookmark-form" method="POST" action="{% toggle_bookmark_url obj project %}">
+            {% if model == "casereport" and obj.workflow_state != 'live' %}
+                <!-- SUPPRESSED SHARE BTN for {{action.verb }} CR -->
             {% else %}
-            <form class="bookmark-form" method="POST" action="{% toggle_bookmark_url obj user %}">
-            {% endif %}
-            {% csrf_token %}
-            <input type="hidden" name="{% if project %}group{% else %}dashboard{% endif %}" value="on" />
-            <input type="hidden" name="content_type" value="{{ content_type }}" />
-            <input type="hidden" name="content_id" value="{{ obj.id }}" />
-            <a href="#" class="bookmark-trigger" data-toggle="tooltip"><i class="fa fa-star" aria-hidden="true"></i></a>
-            </form>
+                {% if user != obj.get_poster %}
+                    {% if project %}
+                        <form class="bookmark-form" method="POST" action="{% toggle_bookmark_url obj project %}">
+                    {% else %}
+                        <form class="bookmark-form" method="POST" action="{% toggle_bookmark_url obj user %}">
+                    {% endif %}
+                    {% csrf_token %}
+                    <input type="hidden" name="{% if project %}group{% else %}dashboard{% endif %}" value="on" />
+                    <input type="hidden" name="content_type" value="{{ content_type }}" />
+                    <input type="hidden" name="content_id" value="{{ obj.id }}" />
+                    <a href="#" class="bookmark-trigger" data-toggle="tooltip"><i class="fa fa-star" aria-hidden="true"></i></a>
+                    </form>
+                {% endif %}
             {% endif %}
             {% if model == 'file' or model == 'image' or model == 'link' or model == 'video' or model == 'document' %}
                 <a class="share-link" href="/send/documents/document/{{ obj.id }}" title="Share"><i class="fa fa-share"></i></a>
-            {% elif model == "casereport" %}
                 <a class="share-link" href="/send/casereport/casereport/{{ obj.id }}" title="Share"><i class="fa fa-share"></i></a>
             {% elif model == 'threadedcomment' %}
               {% if obj.discussion_root.is_discussion %}
