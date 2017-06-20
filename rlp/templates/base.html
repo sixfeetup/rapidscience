@@ -160,10 +160,11 @@
                             $(element).parent().attr('action', '/bookmark');
                         } else {
                             newTitle = "Saved";
-                            $(element).attr('data-original-title', newTitle);
+                            $(element).attr('data-original-title', newTitle);     
                             $(element).parent().attr('action', '/remove_bookmark');
                         }
                         $(element).parent().find('.tooltip-inner').text(newTitle);
+                        $(element).toggleClass('saved');
                     }
                 });
             });
