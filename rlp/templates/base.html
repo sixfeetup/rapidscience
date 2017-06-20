@@ -158,6 +158,12 @@
                             newTitle = "Unsaved";
                             $(element).attr('data-original-title', newTitle);
                             $(element).parent().attr('action', '/bookmark');
+                            if($(element).parents('.activity-stream').length == 0) {
+                                row = $(element).parents('.row').first();
+                                rule = $(row).next('hr');
+                                $(row).slideUp();
+                                $(rule).slideUp();
+                            }
                         } else {
                             newTitle = "Saved";
                             $(element).attr('data-original-title', newTitle);     
