@@ -69,7 +69,7 @@ class MultiFacetedSearchForm(FacetedSearchForm):
         if self.load_all:
             sqs = sqs.load_all()
 
-        or_search = ['gender', 'country', 'authornot', 'primary_physician']
+        or_search = ['gender', 'country', 'authornot', 'primary_author']
         facet_primary = [False, '']
         facet_author = [False, '']
         for facet in self.selected_facets:
@@ -79,8 +79,8 @@ class MultiFacetedSearchForm(FacetedSearchForm):
             if 'authornot' in facet:
                 idx = facet.replace('authornot:', '')
                 facet_author = [True, idx]
-            if 'primary_physician' in facet:
-                idx = facet.replace('primary_physician:', '')
+            if 'primary_author' in facet:
+                idx = facet.replace('primary_author:', '')
                 facet_primary = [True, idx]
 
             field, value = facet.split(":", 1)
@@ -94,11 +94,11 @@ class MultiFacetedSearchForm(FacetedSearchForm):
 
         if facet_author[0]:
             if not facet_primary[0]:
-                sqs = sqs.exclude(primary_physician='{0}'.format(facet_author[1]))
+                sqs = sqs.exclude(primary_author='{0}'.format(facet_author[1]))
             self.selected_facets.remove('authornot:{0}'.format(facet_author[1]))
         elif facet_primary[0]:
-            sqs = sqs.narrow('primary_physician:{0}'.format(facet_primary[1]))
-        or_search.remove('primary_physician')
+            sqs = sqs.narrow('primary_author:{0}'.format(facet_primary[1]))
+        or_search.remove('primary_author')
         or_search.remove('authornot')
 
         for field, values in multi_facet.items():

@@ -32,9 +32,9 @@ class Command(BaseCommand):
         authorized_recipient = []
         for author in case.authorized_reps.all():
             authorized_recipient.append(str(author))
-        for phy in case.referring_physician.all():
-            recipient.append(str(phy.email))
-        message = render_to_string('live_case_email.html', {'recipient': case.referring_physician.all(),
+        for coauthor in case.co_author.all():
+            recipient.append(str(coauthor.email))
+        message = render_to_string('live_case_email.html', {'recipient': case.co_author.all(),
                                                             'title': case.title,
                                                             'id': case.id,
                                                             'DOMAIN': settings.DOMAIN})

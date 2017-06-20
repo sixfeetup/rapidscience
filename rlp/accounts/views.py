@@ -428,13 +428,7 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
     elif tab == 'casereports':
         reports = [r for r in request.user.get_bookmarked_content(CaseReport)
                    if r.workflow_state == WorkflowState.LIVE]
-        from casereport.models import Physician
-        try:
-            phys = Physician.objects.filter(email=request.user.email)
-            for phy in phys:
-                reports += CaseReport.objects.filter(primary_physician=phy)
-        except Physician.DoesNotExist:
-            pass
+        reports += CaseReport.objects.filter(primary_author=request.user)
         reps = {r for r in reports}
         context['case_reports'] = sorted(
             reps,

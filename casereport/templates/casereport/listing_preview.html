@@ -5,7 +5,7 @@
         {{ obj.title }}
       </a></h4>
       <p class="small">
-          Posted by {{ obj.primary_physician }}
+          Posted by {{ obj.primary_author }}
         | {{ obj.date_updated|date:"j M Y" }}<br />
         {% autoescape off %}{% display_shared_with obj request.user %}{% endautoescape %}
       </p>

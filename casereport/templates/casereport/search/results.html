@@ -15,7 +15,7 @@
                             {{ result.object.title }}
                         </a>
                     </h3>
-                    Case ID: {{ result.object.id }} | {{ result.object.get_physician|capfirst }}{% if result.object.primary_physician.affiliation.country %},  {{ result.object.primary_physician.affiliation.country.name }}{% endif %}
+                    Case ID: {{ result.object.id }} | {{ result.object.get_author|capfirst }}{% if result.object.primary_author.institution.country %},  {{ result.object.primary_author.institution.country }}{% endif %}
                      |  {{ result.object.sort_date|date:"M d, Y" }}
                 </div>
                 <div class="col-md-2 crstatus {{ result.object.workflow_state|slugify }}">

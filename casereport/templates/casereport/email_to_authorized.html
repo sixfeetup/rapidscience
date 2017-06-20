@@ -1,6 +1,6 @@
 <p>Hello {{ name  }},</p>
 
-<p>You have been authorized by {{ primary_physician|title }} to review and edit/approve the case report "{{ title }}",
+<p>You have been authorized by {{ primary_author|title }} to review and edit/approve the case report "{{ title }}",
     submitted on {{ Date |date:"M d Y" }}.
     It has been standardized and coded by our data science team.
     Please review the structured report and submit your approval or revisions: <a href="http{% if request.is_secure %}s{% endif %}://{{ DOMAIN }}/casereport/edit/{{ id }}/{{ token}}"> Click Here</a></p>

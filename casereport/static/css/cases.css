@@ -299,7 +299,7 @@ body{
     width: 0px;
     color: #d82a46;
 }
- .remove_phy{
+ .remove_coauthor{
      float: left;
      width: 0px;
      padding-top:28px;
@@ -1358,11 +1358,11 @@ input:focus + div.info {
 #caseform .file-form {
 	display: none;
 }
-#caseform .add_phy_button {
+#caseform .add_coauthor_button {
 	margin-top: 1em;
 	display: inline-block;
 }
-#caseform .physician-div .remove_phy,
+#caseform .coauthor-div .remove_coauthor,
 #caseform .attachments-div .remove_att {
 	float: none;
 	display: inline-block;

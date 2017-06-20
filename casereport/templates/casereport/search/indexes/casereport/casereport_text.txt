@@ -17,15 +17,15 @@ sarcoma
 {{object.attachment2_description}}
 {{object.attachment3_title}}
 {{object.attachment3_description}}
-{% for physician in object.referring_physician.all %}
-    {{ physician.name }}
-    {{ physician.email }}
+{% for coauthor in object.co_author.all %}
+    {{ coauthor.name }}
+    {{ coauthor.email }}
     {% if forloop.last %}
-        {{ physician.affiliation.name }}
-        {{ physician.affiliation.city }}
-        {{ physician.get_country }}
-        {{ physician.get_country_code }}
-        {{ physician.affiliation.address }}
+        {{ coauthor.institution.name }}
+        {{ coauthor.institution.city }}
+        {{ coauthor.institution.country }}
+        {{ coauthor.institution.get_country_code }}
+        {{ coauthor.institution.address }}
     {% endif %}
 {% endfor %}
 {% for author in object.authorized_reps.all %}

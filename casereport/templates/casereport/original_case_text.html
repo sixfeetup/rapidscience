@@ -2,30 +2,30 @@
     <tbody>
         <tr>
             <td class="col-md-4">Author/Primary Contact:</td>
-            <td>{{ casereport.get_physician }}</td>
+            <td>{{ casereport.get_author }}</td>
         </tr>
         <tr>
             <td>Email:</td>
-            <td>{{ casereport.primary_physician.email }}</td>
+            <td>{{ casereport.primary_author.email }}</td>
         </tr>
-        {% for physician in casereport.referring_physician.all %}
+        {% for coauthor in casereport.co_author.all %}
             {% if not forloop.counter == 1 %}
                 <tr>
-                    <td>Physician
-                        {% if physician.name %}
+                    <td>Co-author
+                        {% if coauthor.get_full_name() %}
                             Name
                         {% endif %}
-                        {% if physician.email %}
+                        {% if coauthor.email %}
                             /Email
                         {% endif %}
                         :
                     </td>
                     <td>
-                        {% if physician.name %}
-                            {{ physician.name }}
+                        {% if coauthor.get_full_name() %}
+                            {{ coauthor.get_full_name() }}
                         {% endif %}
-                        {% if physician.email %}
-                            /{{ physician.email }}
+                        {% if coauthor.email %}
+                            /{{ coauthor.email }}
                         {% endif %}
                     </td>
                 </tr>
@@ -39,15 +39,15 @@
         {% endfor %}
         <tr>
             <td>Affiliation/Institution:</td>
-            <td>{{ casereport.get_physician_affiliation }}</td>
+            <td>{{ casereport.primary_author.institution }}</td>
         </tr>
         <tr>
             <td>City:</td>
-            <td>{{ casereport.get_physician_affiliation.city|title  }}</td>
+            <td>{{ casereport.primary_author.institution.city|title  }}</td>
         </tr>
         <tr>
             <td>Country:</td>
-            <td>{{ casereport.primary_physician.get_country|title }}</td>
+            <td>{{ casereport.primary_author.institute.country|title }}</td>
         </tr>
         {% if casereport.history %}
             <tr>

@@ -15,7 +15,7 @@ RETURN_VALUES = {'gender': 'checked',
                  'cr_tests': 'selected',
                  'treatment_type': 'selected',
                  'country': 'selected',
-                 'primary_physician': 'checked',
+                 'primary_author': 'checked',
                  'workflow_state_exact': 'checked',
                  'authornot': 'checked'}
 
@@ -31,9 +31,9 @@ def check_value_is_active(field, value, url):
     if field == 'gender' and 'gender' not in url:
         return RETURN_VALUES[field]
     if field == 'authornot' and 'authornot' not in url:
-        if 'primary_physician' not in url:
+        if 'primary_author' not in url:
             return RETURN_VALUES[field]
-    if field == 'primary_physician' and 'primary_physician' not in url:
+    if field == 'primary_author' and 'primary_author' not in url:
         if 'authornot' not in url:
             return RETURN_VALUES[field]
     return ''

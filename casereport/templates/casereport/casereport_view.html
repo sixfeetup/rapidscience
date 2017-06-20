@@ -111,11 +111,11 @@
 
       <div class="author-list" id="section-primary">
           <h4>Primary Author/Contact</h4>
-          <p><strong>{{ casereport.primary_physician }}
-             {% if casereport.primary_physician.affiliation or casereport.primary_physician.affiliation.city or casereport.primary_physician.affiliation.country %} | {% endif %}
-             {% if casereport.primary_physician.affiliation %} {{ casereport.primary_physician.affiliation }}, {% endif %}
-             {% if casereport.primary_physician.affiliation.city %}{{ casereport.primary_physician.affiliation.city }} | {% endif %}
-             {{ casereport.primary_physician.affiliation.country }}</strong></p>
+          <p><strong>{{ casereport.primary_author }}
+             {% if casereport.primary_author.institution or casereport.primary_author.institution.city or casereport.primary_author.institution.country %} | {% endif %}
+             {% if casereport.primary_author.institution %} {{ casereport.primary_author.institution }}, {% endif %}
+             {% if casereport.primary_author.institution.city %}{{ casereport.primary_author.institution.city }} | {% endif %}
+             {{ casereport.primary_author.institution.country }}</strong></p>
       </div>
 
       {% if casereport.get_coauthors %}

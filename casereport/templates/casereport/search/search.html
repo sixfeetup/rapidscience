@@ -77,8 +77,8 @@
                                          <div class="checkbox">
                                              <label for="category2">
                                                 <input class="filter-checkbox" type="checkbox" id="category2" value="1" name="category"
-                                                       data-url="selected_facets=primary_physician:{{ request.user.pk }}"
-                                                       {% check_value_is_active "primary_physician" request.user.pk request.get_full_path %}/>
+                                                       data-url="selected_facets=primary_author:{{ request.user.pk }}"
+                                                       {% check_value_is_active "primary_author" request.user.pk request.get_full_path %}/>
                                                 My cases
                                              </label>
                                          </div>

@@ -64,7 +64,7 @@ def create_comment_activity(**kwargs):
         if isinstance(top_comment.content_object, CaseReportReview):
             author = User.objects.filter(
                 email__iexact=top_comment.content_object.casereport\
-                    .primary_physician.email).first()
+                    .primary_author.email).first()
             action_kwargs['target'] = author
             # this is notice from an admin to a user,
             # so do not propagate the message if there are pending shares

@@ -175,49 +175,49 @@ function captcha(){
 
 
 
-//for physician
+//for coauthors
 
 $(document).ready(function() {
     var max_fields      = 20; //maximum input boxes allowed
-    var phy_wrapper         = $(".physician-div"); //Fields wrapper
-    var add_button      = $(".add_phy_button"); //Add button ID
+    var coauthor_wrapper         = $(".coauthor-div"); //Fields wrapper
+    var add_button      = $(".add_coauthor_button"); //Add button ID
     
-    var x = $(".physician-div .row.physician").length; //initlal text box count
+    var x = $(".coauthor-div .row.coauthor").length; //initlal text box count
     $(add_button).click(function(e){ //on add input button click
         e.preventDefault();
         if(x < max_fields){ //max input box allowed
             x++; //text box increment
-            $(phy_wrapper).append(
-                '<div class="row physician"><div class="form-group col-md-6">' +
-                '<label for="physician_name' + x + '">Name</label>' +
-                '<input name="physician_name" type="text" class="form-control" id="physician_name' + x + '" placeholder="First and Last Name">'+
+            $(coauthor_wrapper).append(
+                '<div class="row coauthor"><div class="form-group col-md-6">' +
+                '<label for="coauthor_name' + x + '">Name</label>' +
+                '<input name="coauthor_name" type="text" class="form-control" id="coauthor_name' + x + '" placeholder="First and Last Name">'+
                 '<div class="helpText">' +
                     'ex: John Smith, MD, PhD' +
                 '</div>' +
                 '</div><div class="form-group col-md-5">' +
-                '<label for="physician_email' + x + '">Email Address</label>' +
-                '<input name="physician_email" type="EMAIL" class="form-control" id="physician_email' + x + '" placeholder="Email">'+
+                '<label for="coauthor_email' + x + '">Email Address</label>' +
+                '<input name="coauthor_email" type="EMAIL" class="form-control" id="coauthor_email' + x + '" placeholder="Email">'+
                 '<div class="helpText">' +
                     'You must use an institutional email address' +
                 '</div>' +
-                '</div><div class="col-md-1"><a href="#" class="remove_phy">✕</a></div></div>'
+                '</div><div class="col-md-1"><a href="#" class="remove_coauthor">✕</a></div></div>'
             );
-            if ($('.row.physician').length > 0) {
-                $(".add_phy_button_text").text('Add another co-author');
+            if ($('.row.coauthor').length > 0) {
+                $(".add_coauthor_button_text").text('Add another co-author');
             }
-            if ($('.row.physician').length >= max_fields) {
+            if ($('.row.coauthor').length >= max_fields) {
                 add_button.hide();
             }
         }
     });
 
-    $(phy_wrapper).on("click",".remove_phy", function(e){ //user click on remove text
-        e.preventDefault(); $(this).parents('.row.physician').remove();
-        if ($('.row.physician').length == 0) {
-            $(".add_phy_button_text").text('Add co-author(s)');
+    $(coauthor_wrapper).on("click",".remove_coauthor", function(e){ //user click on remove text
+        e.preventDefault(); $(this).parents('.row.coauthor').remove();
+        if ($('.row.coauthor').length == 0) {
+            $(".add_coauthor_button_text").text('Add co-author(s)');
         }
-        if ($('.row.physician').length <= max_fields) {
-            $(".add_phy_button").show();
+        if ($('.row.coauthor').length <= max_fields) {
+            $(".add_coauthor_button").show();
         }
     })
 

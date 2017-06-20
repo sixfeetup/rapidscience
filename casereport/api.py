@@ -3,33 +3,10 @@ __author__ = 'yaseen'
 from django.shortcuts import get_object_or_404
 from casereport.models import AuthorizedRep
 from casereport.models import CaseReport
-from casereport.models import Institution
 from casereport.models import MolecularAbberation
-from casereport.models import Physician
 from casereport.models import CaseReportHistory
 from casereport.models import Treatment
 
-
-
-class PhysicianInstanceResource:
-
-    def _get(self):
-        pass
-
-    def _post(self, name, email):
-        phy, created = Physician.objects.get_or_create(name=name, email=email)
-        return phy
-
-
-class InstitutionInstanceResource:
-
-    def _get(self):
-        pass
-
-    def _post(self, name, city, country):
-        institution, created = Institution.objects.get_or_create(name=name,
-            city=city, country=country )
-        return institution
 
 
 class AbberationInstanceResource:
@@ -54,25 +31,6 @@ class AbberationListResource:
             obj, status = MolecularAbberation.objects.get_or_create(name=abb, molecule=molecule[i])
             m_abbs.append(obj)
         return m_abbs
-
-
-class CaseReportHistoryInstanceResource:
-
-    def get(self):
-        pass
-
-    def post(self, case, diagnosis=None, physician=None, tests=None,
-              molecular_abberations=None, treatments=None):
-        """
-
-        :create the update history object for a case report
-        """
-        result = CaseReportHistory(case=case, physician=physician, tests=tests,
-                            molecular_abberations=molecular_abberations,
-                            treatments=treatments,
-                            diagnosis=diagnosis)
-        result.save()
-        return result
 
 
 class TreatmentInstanceResource:

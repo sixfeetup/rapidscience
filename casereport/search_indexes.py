@@ -16,7 +16,7 @@ from .models import DiagnosisEvent
 class CaseReportIndex(BaseIndex, indexes.Indexable):
     text = indexes.CharField(document=True)
     title = indexes.CharField(model_attr='title')
-    primary_physician = indexes.CharField(faceted=True)
+    primary_author = indexes.CharField(faceted=True)
     workflow_state = indexes.CharField(faceted=True)
     gender = indexes.CharField(model_attr='gender', faceted=True)
     age = indexes.IntegerField(model_attr='age', faceted=True)
@@ -49,12 +49,11 @@ class CaseReportIndex(BaseIndex, indexes.Indexable):
              'treatment_names': treatment_names})
         return searchstring
 
-    def prepare_primary_physician(self, obj):
-        return obj.primary_physician.get_rlpuser()
-
     def prepare_country(self, obj):
-        physician = obj.primary_physician
-        return [physician.get_country()]
+        author = obj.primary_author
+        if author.institution:
+            return [author.institution.country]
+        return None
 
     def prepare_treatments(self, obj):
         events = obj.get_treatments()

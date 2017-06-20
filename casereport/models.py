@@ -79,7 +79,6 @@ class Physician(CRDBBase):
 
 @python_2_unicode_compatible
 class CaseFile(CRDBBase):
-    # referring_physician = models.ForeignKey(Physician, null=True, blank=True)
     name = models.CharField(max_length=200)
     document = models.FileField()
 
@@ -146,13 +145,16 @@ class CaseReport(CRDBBase, SharedObjectMixin):
                               null=True,
                               blank=True)
     age = models.IntegerField(null=True, blank=True)
-    primary_physician = models.ForeignKey(Physician,
-                                          related_name='primary_case',
-                                          verbose_name='Case Report Author')
-    referring_physician = \
-        models.ManyToManyField(Physician,
-                               blank=True,
-                               verbose_name='Case Report Co-Authors')
+    primary_author = models.ForeignKey(
+        User,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name='primary_case',
+        verbose_name='Case Report Author')
+    co_author = models.ManyToManyField(
+        User,
+        blank=True,
+        verbose_name='Case Report Co-Authors')
     authorized_reps = \
         models.ManyToManyField(AuthorizedRep,
                                blank=True,
@@ -217,13 +219,13 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     def can_view(self, user=None):
         if not user:
             user = CurrentUserMiddleware.get_user()
-        return (user.email == self.primary_physician.email) or user.is_staff
+        return (user.email == self.primary_author.email) or user.is_staff
 
     def can_edit(self, user=None):
         if not user:
             user = CurrentUserMiddleware.get_user()
         if self.workflow_state in (
-        WorkflowState.DRAFT,WorkflowState.RETRACTED, WorkflowState.AUTHOR_REVIEW) and user.email == self.primary_physician.email:
+        WorkflowState.DRAFT,WorkflowState.RETRACTED, WorkflowState.AUTHOR_REVIEW) and user.email == self.primary_author.email:
             return True
         if self.workflow_state in (
         WorkflowState.ADMIN_REVIEW,) and user.is_staff:
@@ -258,7 +260,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         # ensure author
         if not user:
             user = CurrentUserMiddleware.get_user()
-        return user.email == self.primary_physician.email  # and self.author_approved
+        return user.email == self.primary_author.email  # and self.author_approved
 
     @transition(field=workflow_state,
                 source=[WorkflowState.AUTHOR_REVIEW,],
@@ -305,7 +307,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         self.admin_approved = False
         self.notify_authors()
         user = CurrentUserMiddleware.get_user()
-        author = User.objects.get(email__exact=self.primary_physician.email)
+        author = User.objects.get(email__exact=self.primary_author.email)
         action.send(user, verb='sent back', action_object=self, target=author)
         return "TBD: The case report has been sent back to its author."
 
@@ -325,7 +327,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         self.notify_viewers("CaseReport has been published", {})
         self.notify_authors()
         user = CurrentUserMiddleware.get_user()
-        author = User.objects.get(email__exact=self.primary_physician.email)
+        author = User.objects.get(email__exact=self.primary_author.email)
         action.send(user, verb='published', action_object=self, target=author)
         # TODO: put pushed into each shared with group activity feed?
         return "This case report has been published!"
@@ -334,7 +336,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         # ensure author or admin
         if not user:
             user = CurrentUserMiddleware.get_user()
-        return user.email == self.primary_physician.email
+        return user.email == self.primary_author.email
 
     def can_retract_as_admin(self, user=None):
         # ensure author or admin
@@ -459,7 +461,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
             id=self.id, url=self.get_absolute_url(),
             state=self.get_workflow_state_display())
 
-        recipient = self.primary_physician.email
+        recipient = self.primary_author.email
         message = EmailMessage(subject,
                                message_body,
                                settings.SERVER_EMAIL,
@@ -474,7 +476,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         message_body = render_to_string('casereport/admin_notify.html',
                                         {'title': self.title,
                                          'status': self.workflow_state,
-                                         'name': self.primary_physician.name})
+                                         'name': self.primary_author.name})
         recipient_members = settings.DATA_SCIENCE_TEAM
         for member in recipient_members:
             message = EmailMessage(subject,
@@ -490,7 +492,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
                                 salt=settings.TOKEN_SALT)
         Headers = {'Reply-To': settings.SERVER_EMAIL}
         recipients = list(self.authorized_reps.all())
-        primary_recipient = self.primary_physician
+        primary_recipient = self.primary_author
         subject = settings.CASE_READY_SUBJECT
         if self.workflow_state == WorkflowState.ADMIN_REVIEW and not history_obj:
             for recipient in recipients:
@@ -503,7 +505,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
                         'token': token,
                         'DOMAIN': getattr(settings, 'DOMAIN', ''),
                         'Date': self.created_on,
-                        'primary_physician': self.primary_physician.get_name()
+                        'primary_author': self.primary_author.get_name()
                                                 })
                     msg = EmailMessage(subject,
                                        message,
@@ -519,7 +521,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         authorized_emails = []
         for entry in recipients:
             authorized_emails.append(str(entry))
-        message = render_to_string('casereport/email_to_physician.html',
+        message = render_to_string('casereport/email_to_author.html',
                                    {'id': self.id,
                                     'title': self.title,
                                     'name': primary_recipient.get_name(),
@@ -585,33 +587,20 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     def get_diagnosis_events_in_order(self):
         return self.ordered_event('diagnosis')
 
-    def get_physicians_info(self):
-        physicians = ''
-        for physician in self.referring_physician.all():
-            physicians += '%s, ' % physician.name
-        else:
-            physicians = physicians[:-2]
-            physicians += ' - %s' % (physician.affiliation)
-        return physicians
-
-    def get_physician(self):
-        return self.primary_physician.name
+    def get_author(self):
+        return self.primary_author.get_full_name()
 
     def get_coauthors(self):
-        # return referring_physicians that are not the primary author
         coauthors = []
-        for ref in self.referring_physician.all():
-            if ref.pk != self.primary_physician.pk:
-                coauthors.append(ref.name)
+        for ref in self.co_author.all():
+            if ref.pk != self.primary_author.pk:
+                coauthors.append(ref.get_full_name())
         return coauthors
 
     def get_presented(self):
         event = Event.objects.filter(casereport_f=self,
                                      parent_event__isnull=True)
         return event[0].get_info()
-
-    def get_physician_affiliation(self):
-        return self.primary_physician.affiliation
 
     def get_reported_date(self):
         try:

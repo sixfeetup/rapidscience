@@ -27,7 +27,6 @@ except ImportError as old_django:
     from django.core.urlresolvers import reverse
 from taggit.models import Tag
 
-from casereport.api import PhysicianInstanceResource
 from casereport.api import TreatmentInstanceResource
 from casereport.constants import SARCOMA_TYPE, WorkflowState
 from casereport.forms import CaseForm
@@ -39,8 +38,7 @@ from .models import (
     SubtypeOption,
     CaseFile,
     Treatment,
-    MolecularAbberation,
-    Physician
+    MolecularAbberation
     )
 
 from rlp.accounts.models import User
@@ -57,7 +55,7 @@ __author__ = 'yaseen'
 def is_review_allowed(user, casereport):
     return (
         user.is_staff or
-        user.id == casereport.primary_physician.get_rlpuser()
+        user.id == casereport.primary_author.pk
     )
 
 
@@ -181,18 +179,21 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
     def post(self, request, *args, **kwargs):
         data = request.POST.copy()
         title = data.get('casetitle')
-        email = data.getlist('physician_email')
-        name = data.getlist('physician_name')
+        email = data.getlist('coauthor_email')
+        name = data.getlist('coauthor_name')
         alt_email = data.get('author', None)
-        author = None
+        author_alt = None
         if alt_email:
-            author = AuthorizedRep.objects.get_or_create(email=alt_email)
-        physicians = []
-        primary_physician = PhysicianInstanceResource()._post(request.user.get_full_name(), request.user.email)
-        physicians.append(primary_physician)
+            author_alt = AuthorizedRep.objects.get_or_create(email=alt_email)
+        primary_author = User.objects.get(pk=request.user.id)
+        coauthors = []
         for i in range(0, len(name)):
-            physician = PhysicianInstanceResource()._post(name[i], email[i])
-            physicians.append(physician)
+            try:
+                coauthor = User.objects.get(email=email[i])
+                coauthors.append(coauthor)
+            except User.DoesNotExist:
+                # need to do something here, see #855
+                pass
         age = data.get('age')
         gender = data.get('gender')
         subtype = None
@@ -224,7 +225,7 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
                           aberrations_other=aberrations_other,
                           biomarkers=biomarkers, pathology=pathology,
                           additional_comment=additional_comment,
-                          primary_physician=physicians[0],
+                          primary_author=primary_author,
                           free_text=details, consent=consent,
                           attachment1=attachment1,
                           attachment2=attachment2, attachment3=attachment3,
@@ -239,13 +240,13 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         tags['ids'] = request.POST.getlist('tags', [])
         tags['new'] = request.POST.getlist('new_tags', [])
         add_tags(case, tags)
-        if author:
-            case.authorized_reps.add(author[0])
+        if author_alt:
+            case.authorized_reps.add(author_alt[0])
         update_treatments_from_request(case, data)
         if aberrations:
             case.aberrations.add(*aberrations)
-        for physician in physicians:
-            case.referring_physician.add(physician)
+        for coauth in coauthors:
+            case.co_author.add(coauth)
 
         bookmark_and_notify(
             case, self, self.request, 'casereport', 'casereport',
@@ -266,15 +267,14 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
             return redirect(case.get_absolute_url())
         else:
             self.template_name = 'casereport/add_casereport_success.html'
-            self.case_success_mail(physicians, author)
+            self.case_success_mail(primary_author, coauthors, author_alt)
             return self.render_to_response({'case_number': case.id})
 
-    def case_success_mail(self, physicians, author):
+    def case_success_mail(self, author, coauthors, author_alt):
         Headers = {'Reply-To': settings.CRDB_SERVER_EMAIL}
-        recipient = physicians[0]
+        recipient = author
         copied = []
-        copied.append(author)
-        coauthors = physicians[1:]
+        copied.append(author_alt)
         copied = copied + [i.email for i in coauthors] + ['support@rapidscience.org ']
         message = render_to_string('casereport/case_submit_email.html', {'name': recipient.get_name(),
                                                               'DOMAIN': settings.CRDB_DOMAIN})
@@ -366,16 +366,9 @@ class MyFacetedSearchView(FacetedSearchView):
             for item in group.get_shared_content(CaseReport):
                 if item.workflow_state == WorkflowState.LIVE:
                     shared_pks.update([item.pk,])
-        try:
-            phys = Physician.objects.filter(email=self.request.user.email)
-            authored_pks = set()
-            for phy in phys:
-                authored_pks.update({cr.pk for cr in CaseReport.objects.filter(
-                    primary_physician=phy)})
-            shared_pks.update(authored_pks)
-        except Physician.DoesNotExist:
-            pass
-
+        user = User.objects.get(email=self.request.user.email)
+        authored_pks = set({cr.pk for cr in CaseReport.objects.filter(primary_author=user)})
+        shared_pks.update(authored_pks)
 
         for case in results:
             if case.pk not in shared_pks:
@@ -505,16 +498,18 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
             author = AuthorizedRep.objects.get_or_create(email=alt_email)
             if author:
                 case.authorized_reps.add(author[0])
+
         # co-authors
-        email = data.getlist('physician_email')
-        name = data.getlist('physician_name')
-        coauthors = []
+        email = data.getlist('coauthor_email')
+        name = data.getlist('coauthor_name')
+        case.co_author.clear()
         for i in range(0, len(name)):
-            author = PhysicianInstanceResource()._post(name[i], email[i])
-            coauthors.append(author)
-        case.referring_physician.clear()
-        for author in coauthors:
-            case.referring_physician.add(author)
+            try:
+                coauthor = User.objects.get(email=email[i])
+                case.co_author.append(coauthor)
+            except User.DoesNotExist:
+                # need to do something here, see #855
+                pass
         case.age = data['age']
         case.gender = data['gender']
         if subtype:
@@ -553,7 +548,7 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
         #    case.take_action_for_user(action)
 
         # any edit by an admin needs to clear the author approved.
-        if request.user.is_staff and request.user.email != case.primary_physician.email:
+        if request.user.is_staff and request.user.email != case.primary_author.email:
             case.author_approved = False
         tags = {}
         tags['ids'] = request.POST.getlist('tags', [])
@@ -571,13 +566,6 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
 
         messages.success(request, "Edits saved!")
         return redirect(reverse('casereport_detail', args=(case.id, case.title)))
-        #if case.status == 'draft':
-        #    messages.success(request, "Edits saved!")
-        #    return redirect(case.get_absolute_url())
-        #else:
-        #    self.template_name = 'casereport/add_casereport_success.html'
-        #    # self.case_success_mail(physicians, author)
-        #    return self.render_to_response({'case_report':case})
 
 
 class ReviewDetailView(LoginRequiredMixin, DetailView):

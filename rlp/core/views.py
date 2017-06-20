@@ -67,7 +67,7 @@ class SendToView(LoginRequiredMixin, View):
                 print( shared_content)
                 if isinstance(shared_content, CaseReport):
                     is_admin = request.user.is_staff or request.user.is_superuser
-                    is_author = request.user.email == shared_content.primary_physician.email
+                    is_author = request.user.email == shared_content.primary_author.email
                     #      is admin   |   is author
                     #         x       |       x     bookmark it
                     #         o       |       x     bookmark it
