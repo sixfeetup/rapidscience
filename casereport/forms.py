@@ -39,7 +39,7 @@ class CaseForm(forms.Form):
         label='',
         required=False,
         widget=forms.HiddenInput,
-        initial=True,
+        initial=False,
     )
     tags = forms.ModelMultipleChoiceField(
         queryset=Tag.objects.all(),

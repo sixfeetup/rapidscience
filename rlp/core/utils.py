@@ -92,11 +92,13 @@ def bookmark_and_notify(
     )
     return group
 
-
+# these are the verbs related to the creation of public content
+# which is why 'created' is not listed -- its a private workflow state
+# and 'published' is listed.
 CREATION_VERBS = (
     'replied',
     'added',
-    'created',
+    'published',
     'started',
     'uploaded',
 )

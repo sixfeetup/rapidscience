@@ -7,6 +7,7 @@ from django.shortcuts import render
 from django.views.decorators.cache import never_cache
 from django.views.generic import View
 
+from casereport.models import CaseReport
 from rlp.core.forms import get_sendto_form
 
 
@@ -59,9 +60,28 @@ class SendToView(LoginRequiredMixin, View):
                 shared_by=request.user,
                 comment=form.cleaned_data['comment'],
             )
+
             # automatically bookmark for user when sharing
             if not shared_content.is_bookmarked_to(request.user):
-                request.user.bookmark(shared_content)
+                # unless this is an admin editing a casereport
+                print( shared_content)
+                if isinstance(shared_content, CaseReport):
+                    is_admin = request.user.is_staff or request.user.is_superuser
+                    is_author = request.user.email == shared_content.primary_physician.email
+                    #      is admin   |   is author
+                    #         x       |       x     bookmark it
+                    #         o       |       x     bookmark it
+                    #         x       |       o     do nothing
+                    #         o       |       o     bookmark it
+                    print("is admin / is authopr")
+                    print(is_admin, is_author)
+                    if is_admin and not is_author:
+                        pass
+                    else:
+                        request.user.bookmark(shared_content)
+                else:
+                    request.user.bookmark(shared_content)
+
             if 'referrer' in request.session:
                 url = request.session['referrer']
                 if url:
