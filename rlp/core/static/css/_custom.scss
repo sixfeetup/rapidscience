@@ -1305,4 +1305,14 @@ input#id_to_dashboard {
             color: #444;
         }
     }
+    .tooltip.bottom {
+        .tooltip-inner {
+            border-radius: 0;
+            background-color: #ebebeb;
+            color: #000;
+        }
+        .tooltip-arrow {
+            display: none;
+        }
+    }
 }

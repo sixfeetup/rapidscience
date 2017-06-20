@@ -136,6 +136,13 @@
             savedlist = $("form[action='/remove_bookmark']");
             savedlist.each(function (){
                 $(this).children(".bookmark-trigger").addClass('saved');
+                $(this).children(".bookmark-trigger").attr('data-placement', 'bottom').attr('title', 'Unsave');
+                $(this).children(".bookmark-trigger").tooltip();
+            });
+            notsavedlist = $("form[action='/bookmark']");
+            notsavedlist.each(function (){
+                $(this).children(".bookmark-trigger").attr('data-placement', 'bottom').attr('title', 'Save');
+                $(this).children(".bookmark-trigger").tooltip();
             });
             $(".bookmark-trigger").on('click', function(e) {
                 e.preventDefault();
@@ -147,7 +154,16 @@
                     type:'post',
                     data:$(element).parent().serialize(),
                     success:function(){
-                        $(element).toggleClass('saved');
+                        if($(element).hasClass('saved')) {
+                            newTitle = "Unsaved";
+                            $(element).attr('data-original-title', newTitle);
+                            $(element).parent().attr('action', '/bookmark');
+                        } else {
+                            newTitle = "Saved";
+                            $(element).attr('data-original-title', newTitle);
+                            $(element).parent().attr('action', '/remove_bookmark');
+                        }
+                        $(element).parent().find('.tooltip-inner').text(newTitle);
                     }
                 });
             });
