@@ -476,7 +476,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         message_body = render_to_string('casereport/admin_notify.html',
                                         {'title': self.title,
                                          'status': self.workflow_state,
-                                         'name': self.primary_author.name})
+                                         'name': self.primary_author.get_full_name()})
         recipient_members = settings.DATA_SCIENCE_TEAM
         for member in recipient_members:
             message = EmailMessage(subject,
