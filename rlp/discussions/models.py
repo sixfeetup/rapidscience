@@ -92,9 +92,14 @@ class ThreadedComment(Comment, SharedObjectMixin):
         super(ThreadedComment, self).delete(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse('comments-detail', kwargs={
-            'comment_pk': self.discussion_root.pk
-        })
+        if self.content_object == Site.objects.get_current():
+            # discussion - link to its root
+            return reverse('comments-detail', kwargs={
+                'comment_pk': self.discussion_root.pk
+            })
+        else:
+            # another type - link to the object being commented on
+            return self.content_object.get_absolute_url()
 
     def _calculate_thread_data(self):
         # Implements the following approach:
