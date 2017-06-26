@@ -22,7 +22,7 @@ class AddMediaForm(forms.Form):
     title = forms.CharField(max_length=400)
     description = forms.CharField(widget=CKEditorWidget())
     tags = forms.ModelMultipleChoiceField(
-        queryset=Tag.objects.all(),
+        queryset=Tag.objects.order_by('slug'),
         help_text='Separate tags with commas',
         required=False,
     )
@@ -60,7 +60,7 @@ class BaseDocumentForm(forms.ModelForm):
         self.fields['description'].widget = CKEditorWidget()
         if Tag.objects.count():
             self.fields['tags'] = forms.ModelMultipleChoiceField(
-                queryset=Tag.objects.all(),
+                queryset=Tag.objects.order_by('slug'),
                 required=False
             )
             self.fields['tags'].widget.attrs['class'] = 'select2'

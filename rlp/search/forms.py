@@ -98,7 +98,7 @@ class ModelSearchForm(BaseModelSearchForm):
         )
     )
     tags = forms.ModelMultipleChoiceField(
-        queryset=Tag.objects.all(),
+        queryset=Tag.objects.order_by('slug'),
         required=False,
         widget=forms.CheckboxSelectMultiple(),
     )

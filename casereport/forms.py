@@ -42,7 +42,7 @@ class CaseForm(forms.Form):
         initial=False,
     )
     tags = forms.ModelMultipleChoiceField(
-        queryset=Tag.objects.all(),
+        queryset=Tag.objects.order_by('slug'),
         help_text='Separate tags with commas',
         required=False,
     )

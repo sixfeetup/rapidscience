@@ -59,7 +59,7 @@ class ThreadedCommentWithTitleEditForm(forms.ModelForm):
         widget=CKEditorWidget(),
     )
     tags = forms.ModelMultipleChoiceField(
-        queryset=Tag.objects.all(),
+        queryset=Tag.objects.order_by('slug'),
         help_text='Separate tags with commas',
         required=False,
     )
@@ -101,7 +101,7 @@ class NewDiscussionForm(forms.Form):
         initial=True,
     )
     tags = forms.ModelMultipleChoiceField(
-        queryset=Tag.objects.all(),
+        queryset=Tag.objects.order_by('slug'),
         help_text='Separate tags with commas',
         required=False,
     )

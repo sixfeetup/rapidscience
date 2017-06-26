@@ -162,6 +162,7 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         form = super(CaseReportFormView, self).get_form(form_class)
         user = self.request.user
         all_members = ((member.id, member.get_full_name()) for member in User.objects.all())
+        # form.fields['tags'].queryset = Tag.objects.order_by('slug')
         if group and group.approval_required:
             form.fields['members'].hide_field = True
             form.fields['members'].choices = [(user.id, user.get_full_name())]

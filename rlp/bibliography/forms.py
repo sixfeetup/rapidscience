@@ -58,7 +58,7 @@ class BaseReferenceForm(forms.ModelForm):
         if Tag.objects.count():
             self.fields['tags'] = forms.ModelMultipleChoiceField(
                 widget=forms.CheckboxSelectMultiple(),
-                queryset=Tag.objects.all(),
+                queryset=Tag.objects.order_by('slug'),
                 required=False
             )
         self.fields['new_tags'] = forms.CharField(
@@ -203,7 +203,7 @@ class AttachReferenceForm(forms.Form):
         required=False,
     )
     tags = forms.ModelMultipleChoiceField(
-        queryset=Tag.objects.all(),
+        queryset=Tag.objects.order_by('slug'),
         help_text='Separate tags with commas',
         required=False,
     )
