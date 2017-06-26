@@ -1,4 +1,4 @@
-{% load core_tags %}
+{% load core_tags discussion_tags %}
 <div class="row reference-item">
   <div class="col-md-11">
     <h4>{% if obj.parsed_data.authors %}{{ obj.parsed_data.authors }}. {% endif %}{% if ref.get_source_url %}
@@ -36,7 +36,11 @@
     {% endif %}
   </div>
   <div class="col-md-1">
-        <a class="comment-count" href="{% url 'bibliography:reference_detail' obj.id %}"><i class="fa fa-comment" aria-hidden="true"></i></a>
+        {% get_threaded_comment_count for obj as comment_count %}
+        <a class="comment-count {% if comment_count < 1 %}empty{% endif %}" href="{% url 'bibliography:reference_detail' obj.id %}">
+          <i class="fa fa-comment" aria-hidden="true"></i><br>
+          {%  if comment_count > 0 %} <span class="comment-count-text">{{ comment_count }}</span> {% endif %}
+        </a>
         {% if user != obj.get_poster %}
           {% if project %}
           <form class="bookmark-form" method="POST" action="{% toggle_bookmark_url obj project %}">
