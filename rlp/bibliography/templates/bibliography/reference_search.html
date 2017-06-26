@@ -79,6 +79,7 @@
         $(".clearSearch").click(function(e){
             $("#id_q").val("");
             buttonDisplay();
+            $(".row.reference-item").remove();
             e.preventDefault();
         })
     }); })(jQuery);
