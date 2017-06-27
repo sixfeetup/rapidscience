@@ -1,16 +1,6 @@
 {% load core_tags %}
 {#object#}
-{% if action.action_object_content_type.model == 'threadedcomment' and action.verb == 'started' %}
-    Discussion
-{% elif action.action_object_content_type.model == 'threadedcomment' and action.verb == 'shared' %}
-    Discussion
-{% elif action.action_object_content_type.model == 'threadedcomment' and action.verb == 'comment' %}
-    Discussion
-{% elif action.action_object_content_type.model == 'threadedcomment' %}{#  I think that only leave 'reply' at this point #}
-    Comment
-{% else %}
-    {{ action.action_object.display_type }}
-{% endif %}
+{{ action.action_object.display_type }}
 
 {#verb#}
 {% if action.verb == 'reply' or action.verb == 'comment' %}

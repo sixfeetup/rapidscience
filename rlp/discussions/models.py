@@ -141,6 +141,8 @@ class ThreadedComment(Comment, SharedObjectMixin):
     def display_type(self):
         if self.is_reply():
             return 'Reply'
+        elif self.is_discussion:
+            return 'Discussion'
         return 'Comment'
 
     def is_reply(self):
