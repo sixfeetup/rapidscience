@@ -293,6 +293,9 @@ class ActivationView(TemplateView):
                 else:
                     user.is_active = True
                     user.save()
+                    # add the user to any auto opt-in groups
+                    for auto_group in Project.objects.filter(auto_opt_in=True):
+                        auto_group.add_member(user)
                     # Notify the user they can now login and complete their profile
                     subject = "Your account has been approved!"
                     template = 'emails/registration_approved'
