@@ -93,9 +93,14 @@
              <h4>Sharing</h4>
              {% if casereport.get_viewers %}
              <ul class="jumpMenu">
-                 <li>
-                     {{ casereport.get_viewers|join:"</li><li>" }}
-                 </li>
+                 {% for viewer in casereport.get_viewers %}
+                    {% if viewer != request.user %}
+                     <li>
+                        {% if not viewer.users %}<a href="{% url 'profile' viewer.id %}">{{ viewer.get_full_name }}</a>{% endif %}
+                        {% if viewer.users %}<a href="{% url 'projects:projects_detail' viewer.id viewer.slug %}">{{ viewer }}</a>{% endif %}
+                     </li>
+                    {% endif %}
+                 {% endfor %}
              </ul>
              {% endif %}
            </div>
