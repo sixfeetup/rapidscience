@@ -3,12 +3,17 @@
 {% for result in object_list %}
   {% if  'accounts.' in result.content_type %}
     {% include "search/_result_item.html" with label=result.verbose_name title=result.title link=result.link description=result.text highlighted=result.highlighted %}
+  {% elif 'discussions.' in result.content_type %}
+    {% include 'comments/list_item.html' with view='tab-content' comment=result.object highlighted=result.highlighted %}
   {% elif 'casereport.' in result.content_type %}
-    {% include 'search/_result_item.html' with label=result.status title=result.title link=result.link description=result.text highlighted=result.highlighted %}
+    {% include 'casereport/listing_preview.html' with obj=result.object highlighted=result.highlighted %}
+  {% elif 'documents.' in result.content_type %}
+    {% include 'documents/listing_preview.html' with obj=result.object highlighted=result.highlighted %}
+  {% elif 'bibliography.' in result.content_type %}
+    {% include 'bibliography/_ref_tab.html' with obj=result.object ref=result.object user=request.user highlighted=result.highlighted %}
   {% else %}
     {% include "search/_result_item.html" with title=result.title link=result.link description=result.text highlighted=result.highlighted %}
   {% endif %}
-  <hr>
 {% empty %}
     <p>No results found.</p>
 {% endfor %}

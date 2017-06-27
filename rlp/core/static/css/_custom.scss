@@ -223,6 +223,9 @@ h1.detail-view-heading {
 .tags {
     margin-bottom: 10px;
 }
+.search-page .tags {
+    margin-bottom: 0;
+}
 
 .tags > .tag {
     margin-top: 10px;
@@ -813,8 +816,6 @@ span.help-block {
 /* case reports tab */
 #casereports {
     .comment-item {
-        padding-bottom: 2em;
-        border-bottom: 1px solid #dddddd;
         margin-bottom: 2em;
     }
     .small {
@@ -849,8 +850,6 @@ span.help-block {
 
 /* discussion */
 #discussions .comment-item {
-    padding-bottom: 25px;
-    border-bottom: 1px solid #dddddd;
     margin-bottom: 2em;
     margin-top: 28px;
 }
@@ -958,7 +957,8 @@ a.comment-count.empty {
         margin-top: 20px;
     }
 }
-#discussions .replies .comment-item {
+#discussions .replies .comment-item,
+.search-page .replies .comment-item {
     border-left: none;
     padding-left: 0;
 }

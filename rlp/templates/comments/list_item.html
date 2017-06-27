@@ -6,7 +6,7 @@
       {% if comment.title %}
       <h4>
         <a href="{{ comment.get_absolute_url }}">
-          {{ comment.title }}
+        {% autoescape off %}{% if highlighted.title %}{{ highlighted.title.0 }}{% else %}{{ comment.title }}{% endif %}{% endautoescape %}
         </a>
       </h4>
       {% endif %}
@@ -89,3 +89,4 @@
 {%  comment  %}{% render_comment_list for comment %} {%  endcomment %}
 </div>
 </div>
+<hr>

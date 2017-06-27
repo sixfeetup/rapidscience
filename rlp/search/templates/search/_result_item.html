@@ -25,7 +25,7 @@ In some cases such as Youtube videos, we don't have local images so we can't mak
             {% if link %}
                 <a {% if target_blank or 'http' in link %}target="_blank" {% endif %}href="{{ link }}">
                     {% autoescape off %}
-                    {%  if highlighted.title %}{{ highlighted.title.0 }}{% else %}{{ title }}{% endif %}
+                    {% if highlighted.title %}{{ highlighted.title.0 }}{% else %}{{ title }}{% endif %}
                     {% endautoescape %}
                 </a>
             {% else %}
@@ -81,3 +81,4 @@ In some cases such as Youtube videos, we don't have local images so we can't mak
         {% endwith %}
     </div>
 </div>
+<hr>

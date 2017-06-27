@@ -15,9 +15,13 @@
         {% endvideo %}
     {% endif %}
     {% if 'Link' in obj.display_type %}
-        <h4><a href="{{ obj.url }}" target="_blank">{{ obj.title }}</a></h4>
+        <h4><a href="{{ obj.url }}" target="_blank">
+        {% autoescape off %}{% if highlighted.title %}{{ highlighted.title.0 }}{% else %}{{ obj.title }}{% endif %}{% endautoescape %}
+        </a></h4>
     {% else %}
-        <h4><a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a></h4>
+        <h4><a href="{{ obj.get_absolute_url }}">
+        {% autoescape off %}{% if highlighted.title %}{{ highlighted.title.0 }}{% else %}{{ obj.title }}{% endif %}{% endautoescape %}
+        </a></h4>
     {% endif %}
     <p class="small">
         Posted by
