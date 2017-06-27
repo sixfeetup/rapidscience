@@ -46,17 +46,6 @@
 
 {% block js-footer %}{{ block.super }}
   <script>
-    $('.form-reference-add').submit(function(event) {
-      var form = $(this);
-      event.preventDefault();
-      // Clear out any old messages
-      $('.alert-dismissable').remove();
-      $.post($(this).attr('action'), $(this).serialize(), function(data) {
-        if (data.messages) {
-          $(form).replaceWith(data.messages);
-        }
-      });
-    });
     function buttonDisplay(){
         searchterm = '{{ query }}';
         searchval = $("#id_q").val();
@@ -81,7 +70,39 @@
             buttonDisplay();
             $(".row.reference-item").remove();
             e.preventDefault();
-        })
+        });
+        $(".add-reference-button").on("click", function(e) {
+            e.preventDefault();
+            reference = $(this).parents(".reference-item");
+            refid = $(this).data('refid');
+            formUrl = "/bibliography/" + refid + "/add/";
+            results = $(".reference-item");
+            others = $(reference).siblings();
+            if ($(reference).find('.fa-plus-circle').length > 0) {
+              $('html, body').animate({scrollTop: 0});
+              $(others).slideUp();
+              $.ajax({
+                url: formUrl,
+                success: function(data) {
+                  form = $(data).find('.edit-reference-form');
+                  $(form).attr('action', formUrl);
+                  $(reference).after(form);
+                  $(".select2").select2()
+                },
+                error: function() {
+                  console.log('Error occurred.');
+                }
+              });
+            } else {
+              $(".edit-reference-form").slideUp(function() {
+                $(".edit-reference-form").remove();
+              });
+              $(others).slideDown();
+            }
+            $(reference).find('.fa').toggleClass('fa-plus-circle');
+            $(reference).find('.fa').toggleClass('fa-times-circle-o');
+        });
+
     }); })(jQuery);
   </script>
 {% endblock js-footer %}
