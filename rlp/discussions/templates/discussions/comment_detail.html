@@ -18,7 +18,7 @@
             <p class="small">
               Posted by
               <a href="{{ comment.user.get_absolute_url }}">
-                {{ comment.user.get_full_name }}
+              {% if comment.user = request.user %}me{% else %}{{ comment.user.get_full_name }}{% endif %}
               </a>
               | {{ comment.submit_date|date:"j M Y" }}
               | {% with edit_url=comment.get_edit_url %}

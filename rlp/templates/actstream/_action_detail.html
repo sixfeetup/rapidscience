@@ -20,7 +20,7 @@
 {% endif %}
 
 {# actor #}
-by {% if request.user == action.actor and action.verb != 'reply' %} me {% else %} <a href="{{ action.actor.get_absolute_url }}">{{ action.actor.get_full_name }}</a>{% endif %}
+by <a href="{{ action.actor.get_absolute_url }}">{% if request.user == action.actor %} me {% else %} {{ action.actor.get_full_name }}{% endif %}</a>
 
 {# target #}
 {% if action.verb == 'shared' %} to {{ action.target|link }}

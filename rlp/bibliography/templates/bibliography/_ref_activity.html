@@ -16,7 +16,7 @@
 {% if action.verb == 'shared' %}
     {% if not search %}<p class="small meta">{% endif %}
         Posted by
-        <a href="{% url 'profile' action.actor_object_id  %}">{{ action.actor }}</a>
+        <a href="{% url 'profile' action.actor_object_id  %}">{% if request.user == action.actor %} me {% else %} {{ action.actor }} {% endif %}</a>
         | {{ ref.date_updated|date:"j M Y" }}{% if not search %}<br />{% endif %}
       {% autoescape off %}{% display_shared_with ref request.user %}{% endautoescape %}
     {% if not search %}</p>{% endif %}

@@ -5,7 +5,7 @@
         {% autoescape off %}{%  if highlighted.title %}{{ highlighted.title.0 }}{% else %}{{ obj.title }}{% endif %}{% endautoescape %}
       </a></h4>
       <p class="small">
-          Posted by <a href="{% url "profile" obj.primary_author.id %}">{{ obj.primary_author }}</a>
+          Posted by <a href="{% url "profile" obj.primary_author.id %}">{% if request.user == obj.primary_author %} me {% else %} {{ obj.primary_author }} {% endif %}</a>
         | {{ obj.date_updated|date:"j M Y" }}<br />
         {% autoescape off %}{% display_shared_with obj request.user %}{% endautoescape %}
       </p>

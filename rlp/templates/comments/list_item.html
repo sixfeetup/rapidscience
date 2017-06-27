@@ -15,7 +15,7 @@
           <p class="small">
               {% if crcomments != 'True' %}Posted by{% endif %}
             <a href="{{ comment.user.get_absolute_url }}">
-              {{ comment.user.get_full_name }}
+              {% if request.user == comment.user %} me {% else %} {{ comment.user.get_full_name }} {% endif %}
             </a>
             | {{ comment.submit_date|date:"j M Y" }}
             | {% with edit_url=comment.get_edit_url %}

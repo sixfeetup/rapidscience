@@ -22,7 +22,7 @@
       {% endif %}
       <p class="small">
         Posted by
-        {% if request.user == obj.owner %} me {% else %} <a href="{{ obj.owner.get_absolute_url }}">{{ obj.owner.get_full_name }}</a>{% endif %}
+        <a href="{{ obj.owner.get_absolute_url }}">{% if request.user == obj.owner %} me {% else %} {{ obj.owner.get_full_name }}{% endif %}</a>
         | {{ obj.date_updated|date:"j M Y" }}
         {% if request.user == obj.owner %} | <a href="{% url 'documents:document_edit' obj.id %}">Edit</a>{% endif %}
         <br />
