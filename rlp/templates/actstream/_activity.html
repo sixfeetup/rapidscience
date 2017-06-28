@@ -53,7 +53,7 @@
                   <p class="tags">
                     {% if model == "casereport" %}
                         {% if request.user.is_superuser or request.user == obj.primary_author %}
-                        <span class="btn btn-tag btn-xs">
+                        <span class="btn btn-tag btn-xs cr-workflow">
                             <i class="{{ obj.get_workflow_icon }}" aria-hidden="true"></i>
                             {% if obj.workflow_state == 'live' %}
                                 Posted
