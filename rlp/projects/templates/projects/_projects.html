@@ -2,9 +2,13 @@
 {% for project in top_level_projects %}
  <div class="project-preview">
     <h3>
+        {% if not project.approval_required or request.user in project.active_members or request.user in project.moderators %}
         <a href="{{ project.get_absolute_url }}">
             {{ project.title }}
         </a>
+        {% else %}
+            {{ project.title }}
+        {% endif %}
     </h3>
     <p class="group-status">
         {% if project.approval_required %}
