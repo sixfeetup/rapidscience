@@ -13,11 +13,14 @@ from django.db import models
 from django.db.models import Q
 
 from Bio import Entrez
+from taggit.managers import TaggableManager
 from taggit.models import Tag
 
+from casereport.middleware import CurrentUserMiddleware
 from rlp.accounts.models import User
 from rlp.core.models import SharedObjectMixin
 from rlp.discussions.models import ThreadedComment
+from rlp.managedtags.models import TaggedByManagedTag
 from rlp.projects.models import Project
 from . import choices
 from .search_topics import TOPICS
@@ -42,6 +45,7 @@ class Reference(SharedObjectMixin):
     upload = models.FileField('Upload file', upload_to='references', blank=True, max_length=255)
     date_added = models.DateTimeField(auto_now_add=True, db_index=True)
     date_updated = models.DateTimeField(auto_now=True)
+    # descriptions, discussions, tags and mtags are deprecated
     description = models.CharField(blank=True, max_length=2000)
     discussions = GenericRelation(
         ThreadedComment,
@@ -53,6 +57,19 @@ class Reference(SharedObjectMixin):
 
     def __str__(self):
         return self.title
+
+    def current_user_reference(self, user=None):
+        if not user:
+            user = CurrentUserMiddleware.get_user()
+
+        uref =  self.userreference_set.filter(user=user).first()
+        if not uref:
+            uref = self
+        print("uref:",uref)
+        return uref
+
+    def user_description(self, user=None):
+        return self.current_user_reference().description
 
     def get_source_url(self):
         if self.doi:
@@ -103,6 +120,27 @@ class ReferenceShare(models.Model):
     @property
     def display_type(self):
         return 'Reference'
+
+
+class UserReference(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    reference = models.ForeignKey(Reference, on_delete=models.CASCADE)
+    date_added = models.DateTimeField(auto_now_add=True, db_index=True)
+    date_updated = models.DateTimeField(auto_now=True)
+    description = models.CharField(blank=True, max_length=2000)
+    discussions = GenericRelation(
+        ThreadedComment,
+        object_id_field='object_pk',
+    )
+    tags = TaggableManager()
+    mtags = TaggableManager(through=TaggedByManagedTag,
+                            help_text="A Comma separated list of UNAPPROVED tags.")
+
+    class Meta:
+        unique_together = ('user', 'reference')
+
+    def __str__(self):
+        return "{u} reference to {r}".format(u=self.user, r=self.reference)
 
 
 class Publication(models.Model):

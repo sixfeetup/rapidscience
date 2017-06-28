@@ -69,13 +69,25 @@
                         </span>
                         {% endif %}
                     {% endif %}
-                    {% for tag in action.action_object.tags.all %}
-                      {% if tag.slug != '' %}
-                      <a role="button" class="btn btn-tag btn-xs" href="{% url 'haystack_search' %}?tags={{ tag.id }}">
-                        {{ tag }}
-                      </a>
-                      {% endif %}
-                    {% endfor %}
+                    {%  if model == 'reference' %}
+
+                        {% for tag in action.action_object.current_user_reference.tags.all %}
+                            {% if tag.slug != '' %}
+                                <a role="button" class="btn btn-tag btn-xs" href="{% url 'haystack_search' %}?tags={{ tag.id }}">
+                                    {{ tag }}
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+
+                        {% for tag in action.action_object.tags.all %}
+                          {% if tag.slug != '' %}
+                          <a role="button" class="btn btn-tag btn-xs" href="{% url 'haystack_search' %}?tags={{ tag.id }}">
+                            {{ tag }}
+                          </a>
+                          {% endif %}
+                        {% endfor %}
+                    {% endif %}
                   </p>
                 {% endif %}
           </div>

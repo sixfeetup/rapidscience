@@ -24,8 +24,10 @@
 {% elif obj %}
     <!-- from obj -->
     {%  setvar obj.get_absolute_url as discussion_link %}
-    {%  get_threaded_comment_count for obj as comment_count %}<!-- cant seem to get_threaded_comment_count for {{ obj }} -->
-    {%  if comment_count == 0 %}
+    {% if obj.current_user_reference %}
+        {%  get_threaded_comment_count for obj.current_user_reference as comment_count %}<!-- cant seem to get_threaded_comment_count for {{ obj }} -->
+    {% else %}
+        {%  get_threaded_comment_count for obj as comment_count %}<!-- cant seem to get_threaded_comment_count for {{ obj }} -->
     {% endif %}
 
 {% elif comment %}

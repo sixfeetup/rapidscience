@@ -34,8 +34,8 @@
                     {{ obj.parsed_data.publisher }} {{ obj.parsed_data.journal_title }}
                     {% if obj.parsed_data.doi %}DOI: {{ obj.parsed_data.doi }}{% endif %} {% if obj.parsed_data.pubmed_id %}PMID: {{ obj.parsed_data.pubmed_id }}{% endif %}
                   </p>
-                  {% if obj.description %}<div class="initial">{% autoescape off %}{{ obj.description }}{% endautoescape %}</div>{% endif %}
-                  {% for tag in obj.tags.all %}
+                  {% if user_reference.description %}<div class="initial">{% autoescape off %}{{ user_reference.description }}{% endautoescape %}</div>{% endif %}
+                  {% for tag in user_reference.tags.all %}
                     {% if tag.slug != '' %}
                     <a role="button" class="btn btn-tag btn-xs" href="{% url 'haystack_search' %}?tags={{ tag.id }}">
                       {{ tag }}
@@ -48,8 +48,8 @@
               </div>
             </div>
             <hr>
-            {% render_comment_form for obj %}
-            {% render_comment_list for obj %}
+            {% render_comment_form for user_reference %}
+            {% render_comment_list for user_reference %}
         </div>
     </div>
 </div>

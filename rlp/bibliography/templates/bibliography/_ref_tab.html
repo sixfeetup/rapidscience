@@ -21,14 +21,14 @@
         <br />
       {% autoescape off %}{% display_shared_with ref request.user %}{% endautoescape %}
     </p>
-    {% if obj.description %}
+    {% if obj.user_description %}
         <div class="more">
-            {% autoescape off %}{{ obj.description }}{% endautoescape %}
+            {% autoescape off %}{{ obj.user_description }}{% endautoescape %}
         </div>
     {% endif %}
-    {% if obj.tags.all %}
+    {% if obj.current_user_reference.tags.all %}
         <p class="tags">
-            {% for tag in obj.tags.all %}
+            {% for tag in obj.current_user_reference.tags.all %}
                 <a role="button" class="btn btn-tag btn-xs" href="{% url 'haystack_search' %}?tags={{ tag.id }}">
                   {{ tag }}
                 </a>

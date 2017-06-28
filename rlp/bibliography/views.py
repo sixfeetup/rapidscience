@@ -25,7 +25,7 @@ from .forms import (
     ReferenceShareForm,
     SearchForm,
 )
-from .models import Reference
+from .models import Reference, UserReference
 from rlp.core.email import send_transactional_mail
 
 
@@ -189,30 +189,44 @@ class ReferenceAttachView(LoginRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super(ReferenceAttachView, self).get_context_data(**kwargs)
         ref = Reference.objects.get(pk=self.kwargs['pk'])
+        user = self.request.user
+
+        try:
+            uref = UserReference.objects.get(reference=ref, user=user)
+        except UserReference.DoesNotExist as dne:
+            uref = UserReference(reference=ref, user=user)
+            uref.id = -1 # fake, so that the tag lookup in the templates doesnt fail.
+
         context['reference'] = ref
         if self.request.method == 'GET':
             # populate initial data
             form = AttachReferenceForm()
-            form.fields['description'].initial = ref.description
+            form.fields['description'].initial = uref.description
             form.fields['members'].choices = member_choices()
             form.fields['groups'].choices = group_choices(self.request.user)
-            fill_tags(ref, form)
+            fill_tags(uref, form)
             context['form'] = form
         return context
 
     def form_valid(self, form):
         data = form.cleaned_data
+        user = self.request.user
         ref = Reference.objects.get(pk=self.kwargs['pk'])
-        ref.description = data.get('description')
-        ref.save()
+        try:
+            uref = UserReference.objects.get(reference=ref, user=user)
+        except UserReference.DoesNotExist as dne:
+            uref = UserReference(reference=ref, user=user)
+
+        uref.description = data.get('description')
+        uref.save()
+
         tags = {}
         tags['ids'] = data.pop('tags', [])
         tags['new'] = [data.pop('new_tags')] if data['new_tags'] else []
-        add_tags(ref, tags)
+        add_tags(uref, tags)
         target = bookmark_and_notify(
             ref, self, self.request, 'bibliography', 'reference',
         )
-        user = self.request.user
         if not target:
             target = user
         action.send(
@@ -225,44 +239,44 @@ class ReferenceAttachView(LoginRequiredMixin, FormView):
         return redirect(last_viewed_path)
 
 
-@never_cache
-@login_required
-def reference_edit(request, reference_pk, template_name='bibliography/edit_reference.html'):
-    reference = get_object_or_404(Reference, pk=reference_pk)
-    # For manually added references, show the custom forms for each type
-    if 'reference_type' in reference.raw_data:
-        if reference.raw_data['reference_type'] == choices.JOURNAL_ARTICLE:
-            return add_article(request, reference_pk)
-        elif reference.raw_data['reference_type'] == choices.BOOK:
-            return add_book(request, reference_pk)
-        elif reference.raw_data['reference_type'] == choices.BOOK_SECTION:
-            return add_book_chapter(request, reference_pk)
-    # The rest of this view is for adding tags to references coming from Pubmed or Crossref
-    if request.method == 'POST':
-        form = AttachReferenceForm(request.POST)
-        if form.is_valid():
-            tags = {}
-            tags['ids'] = form.cleaned_data.getlist('tags', [])
-            tags['new'] = form.cleaned_data.getlist('new_tags', [])
-            add_tags(reference, tags)
-            messages.success(request, "Reference updated successfully!")
-            # TODO redirect to ?
-            # should go to accounts/dashboard/bibliography/
-            # or /groups/<group slug>/bibliography/
-            return redirect('/')
-    else:
-        form = AttachReferenceForm()
-        form.fields['description'].initial = reference.description
-        form.fields['members'].choices = member_choices()
-        form.fields['groups'].choices = group_choices(request.user)
-        fill_tags(reference, form)
-    context = {
-        'form': form,
-        'instance': reference,
-        'tab': 'bibliography',
-    }
-    return render(request, template_name, context)
-
+# @never_cache
+# @login_required
+# def reference_edit(request, reference_pk, template_name='bibliography/edit_reference.html'):
+#     reference = get_object_or_404(Reference, pk=reference_pk)
+#     # For manually added references, show the custom forms for each type
+#     if 'reference_type' in reference.raw_data:
+#         if reference.raw_data['reference_type'] == choices.JOURNAL_ARTICLE:
+#             return add_article(request, reference_pk)
+#         elif reference.raw_data['reference_type'] == choices.BOOK:
+#             return add_book(request, reference_pk)
+#         elif reference.raw_data['reference_type'] == choices.BOOK_SECTION:
+#             return add_book_chapter(request, reference_pk)
+#     # The rest of this view is for adding tags to references coming from Pubmed or Crossref
+#     if request.method == 'POST':
+#         form = AttachReferenceForm(request.POST)
+#         if form.is_valid():
+#             tags = {}
+#             tags['ids'] = form.cleaned_data.getlist('tags', [])
+#             tags['new'] = form.cleaned_data.getlist('new_tags', [])
+#             add_tags(reference, tags)
+#             messages.success(request, "Reference updated successfully!")
+#             # TODO redirect to ?
+#             # should go to accounts/dashboard/bibliography/
+#             # or /groups/<group slug>/bibliography/
+#             return redirect('/')
+#     else:
+#         form = AttachReferenceForm()
+#         form.fields['description'].initial = reference.description
+#         form.fields['members'].choices = member_choices()
+#         form.fields['groups'].choices = group_choices(request.user)
+#         fill_tags(reference, form)
+#     context = {
+#         'form': form,
+#         'instance': reference,
+#         'tab': 'bibliography',
+#     }
+#     return render(request, template_name, context)
+#
 
 @login_required
 def reference_share(request, reference_pk):
@@ -319,6 +333,9 @@ def reference_share(request, reference_pk):
 @login_required
 def reference_delete(request, reference_pk, template_name='bibliography/reference_delete.html'):
     reference = get_object_or_404(Reference, pk=reference_pk)
+    user = request.user
+    user_reference = UserReference.objects.get( user=user, reference=reference)
+
     if request.POST:
         title = reference.title
         ctype = ContentType.objects.get_for_model(Reference)
@@ -326,7 +343,7 @@ def reference_delete(request, reference_pk, template_name='bibliography/referenc
         with transaction.atomic():
             # Recursively find all comments and replies for this reference and delete them.
             # TODO: turn this into a model manager method
-            qs_to_delete = ThreadedComment.objects.filter(object_pk=reference.id, content_type=ctype)
+            qs_to_delete = ThreadedComment.objects.filter(object_pk=user_reference.id, content_type=ctype)
             comment_children_ids = list(qs_to_delete.values_list('id', flat=True))
             qs_to_delete.delete()
             while comment_children_ids:
@@ -334,12 +351,13 @@ def reference_delete(request, reference_pk, template_name='bibliography/referenc
                     content_type=comment_ctype, parent_id__in=comment_children_ids)
                 comment_children_ids = list(qs_to_delete.values_list('id', flat=True))
                 qs_to_delete.delete()
-            reference.delete()
+            user_reference.delete()
         messages.success(request, "Successfully deleted '{}'".format(title))
         # TODO redirect to ?
         return redirect('/')
     context = {
         'obj': reference,
+        'user_reference': user_reference,
         'tab': 'bibliography',
     }
     return render(request, template_name, context)
@@ -349,9 +367,11 @@ def reference_delete(request, reference_pk, template_name='bibliography/referenc
 @login_required
 def reference_detail(request, reference_pk, template_name='bibliography/reference_detail.html'):
     reference = get_object_or_404(Reference, pk=reference_pk)
+    user_reference = UserReference.objects.get(reference_id=reference_pk, user_id = request.user.id)
     context = {
         'obj': reference,
+        'user_reference': user_reference,
         'tab': 'bibliography',
-        'comment_list': reference.discussions.all(),
+        'comment_list': user_reference.discussions.all(),
     }
     return render(request, template_name, context)
