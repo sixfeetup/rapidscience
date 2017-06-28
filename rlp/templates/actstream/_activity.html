@@ -52,6 +52,7 @@
                 {% if action.action_object.tags or model == "casereport" %}
                   <p class="tags">
                     {% if model == "casereport" %}
+                        {% if request.user.is_superuser or request.user == obj.primary_author %}
                         <span class="btn btn-tag btn-xs">
                             <i class="{{ obj.get_workflow_icon }}" aria-hidden="true"></i>
                             {% if obj.workflow_state == 'live' %}
@@ -66,6 +67,7 @@
                                 {{ obj.workflow_state }}
                             {% endif %}
                         </span>
+                        {% endif %}
                     {% endif %}
                     {% for tag in action.action_object.tags.all %}
                       {% if tag.slug != '' %}
