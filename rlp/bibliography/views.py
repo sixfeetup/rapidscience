@@ -12,10 +12,9 @@ from django.views.decorators.cache import never_cache
 from django.views.generic.edit import FormView
 
 from actstream import action
-from taggit.models import Tag
 
 from rlp.core.forms import member_choices, group_choices
-from rlp.core.utils import bookmark_and_notify, add_tags
+from rlp.core.utils import bookmark_and_notify, add_tags, fill_tags
 from rlp.discussions.models import ThreadedComment
 from . import choices
 from .forms import (
@@ -83,8 +82,8 @@ def add_book(request, reference_pk=None, template_name='bibliography/add_book.ht
             data = instance.raw_data.copy()
             if instance.upload:
                 data['upload'] = instance.upload
-            data['tags'] = instance.tags.all()
             form = BookForm(initial=data)
+            fill_tags(instance, form)
         else:
             form = BookForm()
     context = {
@@ -127,8 +126,8 @@ def add_book_chapter(request, reference_pk=None, template_name='bibliography/add
             data = instance.raw_data.copy()
             if instance.upload:
                 data['upload'] = instance.upload
-            data['tags'] = instance.tags.all()
             form = BookSectionForm(initial=data)
+            fill_tags(instance, form)
         else:
             form = BookSectionForm()
     context = {
@@ -170,9 +169,9 @@ def add_article(request, reference_pk=None, template_name='bibliography/add_arti
             data = instance.raw_data.copy()
             if instance.upload:
                 data['upload'] = instance.upload
-            data['tags'] = instance.tags.all()
             data['publication_date'] = datetime.strptime(data['publication_date'], '%d %b %Y')
             form = JournalArticleForm(initial=data)
+            fill_tags(instance, form)
         else:
             form = JournalArticleForm()
     context = {
@@ -195,9 +194,9 @@ class ReferenceAttachView(LoginRequiredMixin, FormView):
             # populate initial data
             form = AttachReferenceForm()
             form.fields['description'].initial = ref.description
-            form.fields['tags'].initial = [tag.id for tag in ref.tags.all()]
             form.fields['members'].choices = member_choices()
             form.fields['groups'].choices = group_choices(self.request.user)
+            fill_tags(ref, form)
             context['form'] = form
         return context
 
@@ -245,7 +244,7 @@ def reference_edit(request, reference_pk, template_name='bibliography/edit_refer
             tags = {}
             tags['ids'] = form.cleaned_data.getlist('tags', [])
             tags['new'] = form.cleaned_data.getlist('new_tags', [])
-            add_tags(ref, tags)
+            add_tags(reference, tags)
             messages.success(request, "Reference updated successfully!")
             # TODO redirect to ?
             # should go to accounts/dashboard/bibliography/
@@ -254,9 +253,9 @@ def reference_edit(request, reference_pk, template_name='bibliography/edit_refer
     else:
         form = AttachReferenceForm()
         form.fields['description'].initial = reference.description
-        form.fields['tags'].initial = [tag.id for tag in reference.tags.all()]
         form.fields['members'].choices = member_choices()
         form.fields['groups'].choices = group_choices(request.user)
+        fill_tags(reference, form)
     context = {
         'form': form,
         'instance': reference,

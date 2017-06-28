@@ -10,11 +10,12 @@ from django.views.generic.edit import FormView
 
 from actstream import action
 from PIL import Image
+from lxml.html.formfill import fill_form
 from taggit.models import Tag
 
 from rlp.accounts.models import User
 from rlp.core.forms import group_choices
-from rlp.core.utils import bookmark_and_notify, add_tags
+from rlp.core.utils import bookmark_and_notify, add_tags, fill_tags
 from rlp.discussions.models import ThreadedComment
 from rlp.projects.models import Project
 from .forms import AddMediaForm, FileForm, ImageForm, LinkForm, VideoForm
@@ -25,7 +26,7 @@ class AddMedia(FormView):
     form_class = AddMediaForm
     template_name = 'documents/add_media.html'
     success_url = '/'
-    
+
     def get_form(self, form_class):
         form = super(AddMedia, self).get_form(form_class)
         try:
@@ -139,9 +140,8 @@ def add_document(request, add_form=None, doc_pk=None, template_name='documents/a
 
     else:
         initial = {}
-        if document and document.tags.count():
-            initial['tags'] = document.tags.all()
         form = form_class(instance=document, initial=initial)
+        fill_tags( document, form)
     context = {
         'form': form,
         'document': document,
@@ -196,9 +196,8 @@ def add_link(request, add_form=None, doc_pk=None, template_name='documents/add_l
             messages.error(request, "Check the errors below.")
     else:
         initial = {}
-        if document and document.tags.count():
-            initial['tags'] = document.tags.all()
         form = LinkForm(instance=document, initial=initial)
+        fill_form(document, form)
     context = {
         'form': form,
         'document': document,
@@ -253,9 +252,8 @@ def add_video(request, add_form=None, doc_pk=None, template_name='documents/add_
             messages.error(request, "Check the errors below.")
     else:
         initial = {}
-        if document and document.tags.count():
-            initial['tags'] = document.tags.all()
         form = VideoForm(instance=document, initial=initial)
+        fill_tags(document, form)
     context = {
         'form': form,
         'document': document,

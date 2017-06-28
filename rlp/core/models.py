@@ -6,8 +6,10 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models.lookups import DateTransform
 from taggit.managers import TaggableManager
+from taggit.models import TagBase, GenericTaggedItemBase
 
 from rlp.core.utils import CREATION_VERBS
+from rlp.managedtags.models import TaggedByManagedTag
 
 
 @models.DateTimeField.register_lookup
@@ -94,6 +96,8 @@ class SharedObjectMixin(models.Model):
         object_id_field='target_id',
     )
     tags = TaggableManager()
+    mtags = TaggableManager(through=TaggedByManagedTag,
+                            help_text="A Comma separated list of UNAPPROVED tags.")
 
     def get_viewers(self):
         my_type = ContentType.objects.get_for_model(self)

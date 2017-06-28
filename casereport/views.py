@@ -44,7 +44,7 @@ from .models import (
 from rlp.accounts.models import User
 from rlp.core.forms import member_choices
 from rlp.core.forms import group_choices
-from rlp.core.utils import bookmark_and_notify, add_tags
+from rlp.core.utils import bookmark_and_notify, add_tags, fill_tags
 from rlp.core.utils import enforce_sharedobject_permissions
 from rlp.projects.models import Project
 from functools import partial
@@ -479,8 +479,8 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
         form = self.form_class()
         form.fields['members'].choices = member_choices()
         form.fields['groups'].choices = group_choices(request.user)
-        if casereport.tags.count():
-            form.fields['tags'].initial = casereport.tags.all()
+        fill_tags(casereport, form)
+
         return self.render_to_response(self.get_context_data(
             heading=heading,
             form=form,

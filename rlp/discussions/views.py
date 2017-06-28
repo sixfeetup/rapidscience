@@ -87,9 +87,8 @@ def comment_edit(request, comment_pk, template_name='discussions/comment_edit.ht
             return redirect(comment.get_absolute_url())
     else:
         initial = {}
-        if comment and comment.tags.count():
-            initial['tags'] = comment.tags.all()
         form = form_class(instance=comment, initial=initial)
+        fill_tags(comment, form)
     context = {
         'comment': comment,
         'form': form,

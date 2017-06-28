@@ -1,12 +1,13 @@
-from itertools import chain
+import sys
 
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect
-import sys
-
+from django.utils.text import slugify
 from taggit.models import Tag
+
+from rlp.managedtags.models import ManagedTag
 
 
 def enforce_sharedobject_permissions(cls, obj_class, id_name, methods=None):
@@ -194,6 +195,17 @@ def rollup(input, rollup_name):
     yield i
 
 
+def fill_tags(tagged_obj, form):
+    """ populate the tags and new_tags fields of the form with the tags
+        and the UNAPPROVED managed_tags of the tagged instance
+    """
+    if tagged_obj.tags.count():
+        form.fields['tags'].initial = tagged_obj.tags.all()
+    if tagged_obj.mtags.count():
+        form.fields['new_tags'].initial = ", ".join(
+            [mt.name for mt in tagged_obj.mtags.all() if not mt.approved])
+
+
 def add_tags(obj, tags):
     """ Passing an object and tags, add the tags to the object and save.
         Tags should be a dictionary with 'ids' of existing tags,
@@ -207,7 +219,19 @@ def add_tags(obj, tags):
             obj.tags.add(*tags['ids'][0].split(","))
     else:
         obj.tags.clear()
-    if tags['new'] and tags['new'] != ['']:
-        obj.tags.add(*tags['new'][0].split(","))
+    if tags['new']:
+        obj.mtags.clear()
+        new_tagwords = [tw for tw in map(str.strip, tags['new'][0].split(","))
+                        if tw]
+        for ntw in new_tagwords:
+            managed_tag, is_new = ManagedTag.objects.get_or_create(name=ntw,
+                                                                   slug=slugify(
+                                                                       ntw))
+            if managed_tag.approved:
+                t = Tag.objects.get(slug=slugify(ntw))
+                obj.tags.add(t)
+            else:
+                obj.mtags.add(managed_tag)
+
     # Trigger any post-save signals (e.g. Haystack's real-time indexing)
     obj.save()

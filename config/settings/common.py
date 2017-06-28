@@ -104,6 +104,7 @@ INSTALLED_APPS = (
     'parler',
     'taggit',
     'taggit_autosuggest',
+    'rlp.managedtags',
     'rlp.bibliography.apps.BibliographyConfig',
     'rlp.bookmarks.apps.BookmarksConfig',
     'rlp.core.apps.CoreConfig',
