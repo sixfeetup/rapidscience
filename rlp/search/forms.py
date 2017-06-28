@@ -27,7 +27,7 @@ def get_action_object_content_types():
     from casereport.models import CaseReport
     choices = [
         ('', 'All Types'),
-        (get_model_ct(ThreadedComment), 'Comments'),
+        (get_model_ct(ThreadedComment), 'Discussions'),
         (get_model_ct(CaseReport), 'Case Reports'),
         (get_model_ct(File), 'Documents'),
         (get_model_ct(Image), 'Images'),
