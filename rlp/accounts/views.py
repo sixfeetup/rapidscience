@@ -11,7 +11,6 @@ from django.core import signing
 from django.core.mail import EmailMultiAlternatives
 from django.core.urlresolvers import reverse
 from django.db import transaction
-from django.db.models import F
 from django.shortcuts import get_object_or_404, redirect, render, resolve_url
 from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
@@ -29,7 +28,7 @@ from casereport.models import CaseReport
 from rlp.accounts.models import Institution
 from rlp.bibliography.models import Reference
 from rlp.core.email import send_transactional_mail
-from rlp.core.utils import rollup, score_verb, COMBINABLE_VERBS
+from rlp.core.utils import rollup
 from rlp.core.views import MESSAGES_DEFAULT_FORM_ERROR
 from rlp.discussions.models import ThreadedComment
 from rlp.documents.models import Document
@@ -361,7 +360,7 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
 
     if tab == 'activity':
         if request.user.can_access_all_projects:
-            # TOOD: move this into the account model? as get_administrative_activity_stream ??? for site?
+            # TODO: move this into the account model? as get_administrative_activity_stream ??? for site?
             # we'll start with public actions
             # that arent between a user and themself.
             # You could argue that these should be public=False.
@@ -400,21 +399,7 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
             filter_form = ProjectContentForm(user=request.user)
 
         # roll up similar entries, and drop duplicate ones
-        activity_stream = list(rollup(
-            activity_stream,
-            lambda a: str((a.actor_object_id,
-                           'combined' if a.verb in COMBINABLE_VERBS else a.verb,
-                           a.action_object_content_type,
-                           a.action_object_object_id)),
-            lambda a: str((a.actor_object_id,
-                           #a.verb,
-                           a.action_object_content_type,
-                           a.action_object_object_id,
-                           a.target_content_type,
-                           a.target_object_id)),
-            lambda a: score_verb(a.verb),
-            'others'))
-
+        activity_stream = list(rollup(activity_stream, 'others'))
 
         context.update({
             'activity_stream': activity_stream,

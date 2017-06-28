@@ -92,6 +92,7 @@ def bookmark_and_notify(
     )
     return group
 
+
 # these are the verbs related to the creation of public content
 # which is why 'created' is not listed -- its a private workflow state
 # and 'published' is listed.
@@ -104,25 +105,20 @@ CREATION_VERBS = (
 )
 
 # the order of these matter.    That further down the list, the more important
-# the verb is considered by the score_verb function.
+# the verb is considered by the score_action function.
 # This is mostly so that 'shared' can be beaten by just about anything else
-COMBINABLE_VERBS = ( 'shared', ) + CREATION_VERBS
+COMBINABLE_VERBS = ('shared',) + CREATION_VERBS
 
-def score_verb( x ):
-    try:
-        return COMBINABLE_VERBS.index(x)
-    except ValueError as not_in_list:
-        return -1
 
-def rollup(input, simfunc, samefunc, scorefunc, rollup_name):
+def rollup(input, rollup_name):
     """ Rolls similar items in a list up under an array on the first i
         similar item.
         Adjacent, equivalent items are dropped entirely.
 
-        Given a simfunc that looks at only the second and third column,
-        and a samefunc that looks at the second, third and fourth,
-        The simfunc tests for similar objects ( can be consolidated )
-        and the samefunc tests for equivalent ( which can be dropped ).
+        similar_action() looks at only the second and third column,
+        and same_action looks at the second, third and fourth,
+        similar_action() tests for similar objects ( can be consolidated )
+        and same_action() tests for equivalent ( which can be dropped ).
 
         Turns this:
              1 | a | b | c
@@ -139,35 +135,61 @@ def rollup(input, simfunc, samefunc, scorefunc, rollup_name):
         and it is assumed the sequence is reverse chronological.
         Item 4 is dropped because it is equivalent to item 2.
     """
-    input_iter = iter(input)
+    def score_action(action):
+        try:
+            return COMBINABLE_VERBS.index(action.verb)
+        except ValueError:
+            return -1
 
-    i = next( input_iter )
-    i_sim = simfunc(i)
-    equivalent_ids = set([samefunc(i),])
+    def similar_action(action):
+        return str(
+            (
+                action.actor_object_id,
+                'combined' if action.verb in COMBINABLE_VERBS else action.verb,
+                action.action_object_content_type,
+                action.action_object_object_id
+            )
+        )
+
+    def same_action(action):
+        return str(
+            (
+                action.actor_object_id,
+                action.action_object_content_type,
+                action.action_object_object_id,
+                action.target_content_type,
+                action.target_object_id
+            )
+        )
+
+    input_iter = iter(input)
+    i = next(input_iter)
+    i_sim = similar_action(i)
+    equivalent_ids = {same_action(i)}
 
     for n in input_iter:
-        n_sim = simfunc(n)
-        n_same = samefunc(n)
+        n_sim = similar_action(n)
+        n_same = same_action(n)
 
         # if similar but not the same, roll it up
         # this swaps them, then rolls n up into the new i
         if n_sim == i_sim:
             if n_same not in equivalent_ids:
-                equivalent_ids.add( n_same )
+                equivalent_ids.add(n_same)
                 #if n score higher, or isnt in out ranked list, swap to the top
-                if scorefunc(n) > scorefunc(i) or scorefunc(n) == -1:
+                if score_action(n) > score_action(i) or score_action(n) == -1:
                     (i, n) = (n, i)
-                if not hasattr( i, rollup_name ):
-                    setattr( i, rollup_name, [] )
-                getattr(i, rollup_name).append( n )
+                if not hasattr(i, rollup_name):
+                    setattr(i, rollup_name, [])
+                getattr(i, rollup_name).append(n)
                 # and move any previous rollups into the new ia
                 if hasattr(n, rollup_name):
-                    getattr(i, rollup_name).extend( getattr(n,rollup_name))
+                    getattr(i, rollup_name).extend(getattr(n, rollup_name))
         else:
             yield i
             i = n
-            i_sim = simfunc(i)
-            equivalent_ids = set([samefunc(i),])
+            i_sim = similar_action(i)
+            equivalent_ids = {same_action(i)}
 
     yield i
 
@@ -189,4 +211,3 @@ def add_tags(obj, tags):
         obj.tags.add(*tags['new'][0].split(","))
     # Trigger any post-save signals (e.g. Haystack's real-time indexing)
     obj.save()
-

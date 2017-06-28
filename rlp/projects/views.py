@@ -7,20 +7,19 @@ from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
 from django.core.mail import send_mass_mail
 from django.core.urlresolvers import reverse
-from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.utils.text import slugify
 from django.views.decorators.cache import never_cache
-from django.views.generic import View, FormView, UpdateView
+from django.views.generic import View, FormView
 
 from el_pagination.decorators import page_template
 
 from casereport.constants import WorkflowState
 from casereport.models import CaseReport
 from rlp.accounts.models import User
-from rlp.core.utils import rollup, score_verb, COMBINABLE_VERBS
+from rlp.core.utils import rollup
 from rlp.bibliography.models import Reference
 from rlp.discussions.models import ThreadedComment
 from rlp.documents.models import Document
@@ -80,20 +79,7 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
             filter_form = ActionObjectForm()
 
         print("consolidating")
-        activity_stream = list(rollup(
-            activity_stream,
-            lambda a: str((a.actor_object_id,
-                           'combined' if a.verb in COMBINABLE_VERBS else a.verb,
-                           a.action_object_content_type,
-                           a.action_object_object_id)),
-            lambda a: str((a.actor_object_id,
-                           #a.verb,
-                           a.action_object_content_type,
-                           a.action_object_object_id,
-                           a.target_content_type,
-                           a.target_object_id)),
-            lambda a: score_verb(a.verb),
-            'others'))
+        activity_stream = list(rollup(activity_stream, 'others'))
 
         context['activity_stream'] = activity_stream
         context['filter_form'] = filter_form
