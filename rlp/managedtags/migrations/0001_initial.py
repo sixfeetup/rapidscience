@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('object_id', models.IntegerField(db_index=True, verbose_name='Object id')),
                 ('content_type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='managedtags_taggedbymanagedtag_tagged_items', to='contenttypes.ContentType', verbose_name='Content type')),
-                ('tag', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='managedtags_taggedbymanagedtag_items', to='rlp.managedtags.ManagedTag')),
+                ('tag', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='managedtags_taggedbymanagedtag_items', to='managedtags.ManagedTag')),
             ],
             options={
                 'abstract': False,
