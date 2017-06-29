@@ -95,9 +95,10 @@ class SharedObjectMixin(models.Model):
         content_type_field='target_type',
         object_id_field='target_id',
     )
-    tags = TaggableManager()
+    tags = TaggableManager(blank=True)
     mtags = TaggableManager(through=TaggedByManagedTag,
-                            help_text="A Comma separated list of UNAPPROVED tags.")
+                            help_text="A Comma separated list of UNAPPROVED tags.",
+                            blank=True)
 
     def get_viewers(self):
         my_type = ContentType.objects.get_for_model(self)
