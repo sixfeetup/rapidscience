@@ -4,6 +4,7 @@
 {% block css %}
     {{ block.super }}
     <link rel="stylesheet" href="{% static 'djangocms_text_ckeditor/css/cms.ckeditor.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-tagsinput.css' %}">
 {% endblock  %}
 
 {% block body_class %}new-add-casereport{% endblock %}
@@ -137,9 +138,9 @@
                             </div>
                     </div>
 
-                    <div class="form-group col-md-8 col-xs-8">
+                    <!-- <div class="form-group col-md-8 col-xs-8">
                         <label class="required" for="subtype"> Subtype:</label>
-                           <select name="subtype" class="form-control select2" id="subtype">
+                           <select name="subtype" class="form-control typeahead" id="subtype" data-role="tagsinput">
                                  <option value="">select sub type</option>
                                  {% for item in subtypes %}
                                      <option value="{{ item }}" {% if item == casereport.subtype %}selected{% endif %}>
@@ -153,6 +154,12 @@
                        <div class="subtype-message">
                         <p>This field is required.</p>
                        </div>
+                   </div> -->
+                   
+                   <div class="form-group col-md-8 col-xs-8">
+                       <label class="required" for="subtype"> Subtype:</label>
+                       <input id="subtype" class="typeahead" type="text"
+                              data-role="tagsinput" placeholder="select subtype">
                    </div>
         </div>
 
@@ -257,7 +264,8 @@
     <script src="{{STATIC_URL}}js/add_case_report.js"></script>
     <script src="{% static "djangocms_text_ckeditor/ckeditor/ckeditor.js" %}"></script>
     <script src="{% static "cms/js/modules/cms.base.js" %}"></script>
-    <script src="{% static 'djangocms_text_ckeditor/js/cms.ckeditor.js' %}"></script>
+    <script src="{% static 'js/vendor/bootstrap-tagsinput.js' %}"></script>
+    <script src="{% static 'js/vendor/typeahead.js' %}"></script>
     <script src="{{STATIC_URL}}js/free-text.js"></script>
 
     <script type="text/javascript">
@@ -303,5 +311,31 @@
          extraPlugins: '',
          width: '100%'
      });
+     
+     var subtype_options = []
+     var selected_subtypes = []
+     {% for item in subtypes %}
+        subtype_options.push("{{ item }}");
+        {% if item == casereport.subtype %}
+            selected_subtypes.push("{{ item }}");
+        {% endif %}
+     {% endfor %}
+     
+     // $('#subtype.typeahead').typeahead({
+    //       hint: true,
+    //       highlight: true,
+    //       minLength: 0
+    //     },
+    //     {
+    //       name: 'subtypes',
+    //       source: substringMatcher(subtype_options)
+    //     });
+    $('#subtype.typeahead').tagsinput({
+        typeaheadjs: {
+            name: 'subtypes',
+            source: substringMatcher(subtype_options)
+        }
+    });
+     
     </script>
 {% endblock %}
