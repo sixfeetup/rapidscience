@@ -70,10 +70,17 @@ class ProjectContentForm(ActionObjectForm):
 
 def model_choices(using=DEFAULT_ALIAS):
     choices = [
-        (get_model_ct(m), smart_text(m._meta.verbose_name_plural).title())
+        [get_model_ct(m), smart_text(m._meta.verbose_name_plural).title()]
         for m in connections[using].get_unified_index().get_indexed_models()
         if m.__name__ not in EXCLUDE_MODELS
     ]
+    for index, sublist in enumerate(choices):
+        if sublist[1] == "Comments":
+            choices[index][1] = "Discussions"
+        if sublist[1] == "Projects":
+            choices[index][1] = "Groups"
+        if sublist[1] == "Raw References":
+            choices[index][1] = "References"
     return sorted(choices, key=lambda x: x[1])
 
 
