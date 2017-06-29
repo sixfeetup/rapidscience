@@ -12,8 +12,10 @@
         {% if obj.parsed_data.doi %}DOI: {{ obj.parsed_data.doi }}{% endif %} {% if obj.parsed_data.pubmed_id %}PMID: {{ obj.parsed_data.pubmed_id }}{% endif %}
     </h4>
     <p class="small meta">
-        Posted by
-        <a href="{% url 'profile' user.id  %}">{% if user = request.user %}me{% else %}{{ user.get_full_name }}{% endif %}</a>
+        {% if user.id %}
+            Posted by
+            <a href="{% url 'profile' user.id  %}">{% if user = request.user %}me{% else %}{{ user.get_full_name }}{% endif %}</a>
+        {% endif %}
         | {{ ref.date_updated|date:"j M Y" }}
         {% with edit_url=obj.get_edit_url %}
           {% if edit_url %}| <a href="{{ edit_url }}">Edit</a>{% endif %}
