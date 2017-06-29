@@ -1,4 +1,4 @@
-{% load bookmarks comments discussion_tags el_pagination_tags core_tags %}
+{% load bookmarks comments discussion_tags el_pagination_tags core_tags casereport_tags %}
 
 {% lazy_paginate activity_stream %}
 {% for action in activity_stream %}
@@ -96,7 +96,9 @@
                 {% include 'discussions/discussion_count_widget.html' %}
             {% endif %}
             {% if model == "casereport" and obj.workflow_state != 'live' %}
-                <!-- SUPPRESSED SHARE BTN for {{action.verb }} CR -->
+                <!-- SUPPRESSED BOOKMARK ICON for non-live {{action.verb }} CR -->
+            {% elif action.verb|is_workflow_verb %}
+                <!-- SUPPRESSED BOOKMARK ICON for workflow verb:{{ action.verb }} -->
             {% else %}
                 {% if user != obj.get_poster %}
                     {% if project %}

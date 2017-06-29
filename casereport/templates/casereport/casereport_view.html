@@ -1,5 +1,5 @@
 {% extends "casereport/search/search.html" %}
-{% load mytags %}
+{% load casereport_tags %}
 {% load static %}
 {% load comments %}
 
@@ -257,7 +257,7 @@
     </div>
 
  </div><!--tab content-end-->
- 
+
  <div class="col-xs-12 action-buttons">
      {% if casereport.get_next_actions_for_user %}
          <!-- current casereport workflow_state: {{ casereport.workflow_state }} -->

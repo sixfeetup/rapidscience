@@ -78,3 +78,11 @@ def age_range(url, facet_ages):
         min_age, max_age = facet_ages[0][0], facet_ages[-1][0]
     return '%s-%s' %(min_age, max_age)
 
+@register.filter
+def is_workflow_verb(verb):
+    v = verb.lower()
+    for wfv in ( 'moved', 'edited', 'approved', 'created', 'published', 'revised', 'sent back', 'submitted'):
+        if wfv in v:
+            return v
+
+    return ''
