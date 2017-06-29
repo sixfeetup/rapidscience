@@ -35,7 +35,7 @@ class CaseReportIndex(TaggableBaseIndex, indexes.Indexable):
         return prepared_data
 
     def index_queryset(self, using=None):
-        cases = CaseReport.objects.all().filter(workflow_state='live')
+        cases = CaseReport.objects.all()#.filter(workflow_state='live')
         return cases
 
     def prepare_text(self, obj):
