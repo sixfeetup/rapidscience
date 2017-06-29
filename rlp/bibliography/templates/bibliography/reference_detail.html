@@ -20,8 +20,10 @@
                       {% if obj.parsed_data.doi %}DOI: {{ obj.parsed_data.doi }}{% endif %} {% if obj.parsed_data.pubmed_id %}PMID: {{ obj.parsed_data.pubmed_id }}{% endif %}
                   </h1>
                   <p class="small">
-                    Posted by
-                    <a href="{{ obj.owner.get_absolute_url }}">{% if request.user == obj.owner %} me {% else %} {{ obj.owner.get_full_name }}{% endif %}</a>
+                    {% if obj.owner %}
+                        Posted by
+                        <a href="{{ obj.owner.get_absolute_url }}">{% if request.user == obj.owner %} me {% else %} {{ obj.owner.get_full_name }}{% endif %}</a>
+                    {% endif %}
                     | {{ obj.date_updated|date:"j M Y" }}
                     {% with edit_url=obj.get_edit_url %}
                       {% if edit_url %}| <a href="{{ edit_url }}">Edit</a>{% endif %}
