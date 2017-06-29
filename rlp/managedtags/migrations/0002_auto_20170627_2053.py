@@ -43,9 +43,10 @@ def load_tags(apps, schema_editor):
     from taggit.models import Tag
     print("creating tags")
     for word in tag_words:
-        tag, is_new = Tag.objects.get_or_create( name=word, slug=word )
+        tag, is_new = Tag.objects.get_or_create(slug=word, defaults={
+            'name':word})
         if is_new:
-            print( tag )
+            print(tag)
 
 class Migration(migrations.Migration):
 
