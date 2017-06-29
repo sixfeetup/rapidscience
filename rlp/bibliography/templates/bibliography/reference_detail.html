@@ -5,35 +5,34 @@
 {% block content %}
 <div class="container">
     <div class="row">
-        <div class="col-md-8 col-md-push-2">
+        <div class="col-md-9 col-md-push-2">
             <div class="row">
               <div class="col-md-11">
                   {% bootstrap_messages %}
-                  <h1 class="detail-view-heading">
-                      {% if obj.get_source_url %}
-                        <a href="{{ obj.get_source_url }}" target="_blank">
-                      {% endif %}
-                        {{ obj.parsed_data.title|striptags }}
-                      {% if obj.get_source_url %}</a>{% endif %}
+                  <h1>{% if obj.parsed_data.authors %}{{ obj.parsed_data.authors }}. {% endif %}{% if obj.get_source_url %}
+                      <a href="{{ obj.get_source_url }}" {% if 'http' in obj.get_source_url and not email %}target="_blank"{% endif %}>{% endif %}
+                      {% autoescape off %}{% if highlighted.title %}{{ highlighted.title.0 }}{% else %}{{ obj.parsed_data.title }}{% endif %}{% endautoescape %}
+                      {% if obj.get_source_url %}</a>{% endif %},
+                      {% if obj.parsed_data.container_title %}in <em>{{ obj.parsed_data.container_title }}</em>,{% endif %}
+                      {% if obj.parsed_data.page %}pp {{ obj.parsed_data.page }}.{% endif %}
+                      {% if obj.parsed_data.publication_date %}{{ obj.parsed_data.publication_date }};{% endif %}
+                      {{ obj.parsed_data.publisher }} {{ obj.parsed_data.journal_title }}
+                      {% if obj.parsed_data.doi %}DOI: {{ obj.parsed_data.doi }}{% endif %} {% if obj.parsed_data.pubmed_id %}PMID: {{ obj.parsed_data.pubmed_id }}{% endif %}
                   </h1>
                   <p class="small">
-                    Reference added to {{ obj.get_viewers|join:", " }}
-                    | {{ obj.date_added|date:"j M Y" }}
+                    Posted by
+                    <a href="{{ obj.owner.get_absolute_url }}">{% if request.user == obj.owner %} me {% else %} {{ obj.owner.get_full_name }}{% endif %}</a>
+                    | {{ obj.date_updated|date:"j M Y" }}
                     {% with edit_url=obj.get_edit_url %}
                       {% if edit_url %}| <a href="{{ edit_url }}">Edit</a>{% endif %}
                     {% endwith %}
                     {% with delete_url=obj.get_delete_url %}
                       {% if delete_url %}| <a href="{{ delete_url }}">Delete</a>{% endif %}
                     {% endwith %}
+                    <br />
+                    Shared with <b>{{ obj.get_viewers|join:"</b>, <b>" }}</b>
                   </p>
-                  <p>
-                    {% if obj.parsed_data.authors %}{{ obj.parsed_data.authors }}. {% endif %},
-                    {% if obj.parsed_data.container_title %}in <em>{{ obj.parsed_data.container_title }}</em>,{% endif %}
-                    {% if obj.parsed_data.page %}pp {{ obj.parsed_data.page }}.{% endif %}
-                    {% if obj.parsed_data.publication_date %}{{ obj.parsed_data.publication_date }};{% endif %}
-                    {{ obj.parsed_data.publisher }} {{ obj.parsed_data.journal_title }}
-                    {% if obj.parsed_data.doi %}DOI: {{ obj.parsed_data.doi }}{% endif %} {% if obj.parsed_data.pubmed_id %}PMID: {{ obj.parsed_data.pubmed_id }}{% endif %}
-                  </p>
+                  
                   {% if user_reference.description %}<div class="initial">{% autoescape off %}{{ user_reference.description }}{% endautoescape %}</div>{% endif %}
                   {% for tag in user_reference.tags.all %}
                     {% if tag.slug != '' %}
