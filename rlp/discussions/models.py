@@ -139,7 +139,9 @@ class ThreadedComment(Comment, SharedObjectMixin):
 
     @property
     def display_type(self):
-        if self.is_reply():
+        if self.is_editorial_note:
+            return 'Editorial Note'
+        elif self.is_reply():
             return 'Reply'
         elif self.is_discussion:
             return 'Discussion'
@@ -158,6 +160,11 @@ class ThreadedComment(Comment, SharedObjectMixin):
             self.id == self.thread_id and
             self.content_object == Site.objects.get_current()
         )
+
+    @property
+    def is_editorial_note(self):
+        from casereport.models import CaseReportReview
+        return isinstance(self.content_object, CaseReportReview)
 
     def children(self):
         children = ThreadedComment.objects.filter(
