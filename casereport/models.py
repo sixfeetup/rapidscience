@@ -325,7 +325,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         self.admin_approved = True
         self.date_published = datetime.now()
         self.notify_viewers("CaseReport has been published", {})
-        self.notify_authors()
+        self.notify_authors(transition='Publish')
         user = CurrentUserMiddleware.get_user()
         author = User.objects.get(email__exact=self.primary_author.email)
         action.send(user, verb='published', action_object=self, target=author)
@@ -455,16 +455,39 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         super(CaseReport, self).save(*args, **kwargs)
 
 
-    def notify_authors(self, subject=None, message=None):
-        subject = "Author Notification"
-        message_body = "CaseReport {id} {url} has moved to {state}.".format(
-            id=self.id, url=self.get_absolute_url(),
-            state=self.get_workflow_state_display())
+    def notify_authors(self, subject=None, message=None, transition=None):
+        if transition == "Publish":
+            subject = "Your case report is live!"
+            message_body = """<p>Dear {0},</p>
+                           <p>Congratulations – your case report, {1}, is
+                           now live in the Cases Central database and can be
+                           viewed by validated members of the community. To
+                           view it,
+                           <a href="http://sarcoma.rapidscience.org{2}">
+                           click here</a>.</p>
+                           <p>We appreciate your contribution to this important
+                           project. If you would like to make revisions to this
+                           report, there is an Edit button at the bottom of the
+                           report for your convenience. Revisions will be
+                           reviewed by our editors before being posted.</p>
+                           <p>Editorial Team
+                           <br /><a href="https://sarcoma.rapidscience.org">
+                               Sarcoma Central</a>
+                           <br /><a href="https://twitter.com/RapidScience">
+                               @RapidScience</a></p>""".format(
+                           self.primary_author.get_full_name(),
+                           self.title, self.get_absolute_url()
+                           )
+        else:
+            subject = "Author Notification"
+            message_body = "CaseReport {id} {url} has moved to {state}.".format(
+                id=self.id, url=self.get_absolute_url(),
+                state=self.get_workflow_state_display())
 
         recipient = self.primary_author.email
         message = EmailMessage(subject,
                                message_body,
-                               settings.SERVER_EMAIL,
+                               "Cases Central <edit@rapidscience.org>",
                                [recipient])
         message.content_subtype = 'html'
         message.send()
