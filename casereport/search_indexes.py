@@ -4,7 +4,7 @@ from django.template.loader import render_to_string
 
 from haystack import indexes
 
-from rlp.search.search_indexes import BaseIndex
+from rlp.search.search_indexes import TaggableBaseIndex
 from casereport.havoc_interface import get_all_synonyms
 
 from .models import CaseReport, ResultValueEvent
@@ -13,7 +13,7 @@ from .models import TreatmentEvent
 from .models import DiagnosisEvent
 
 
-class CaseReportIndex(BaseIndex, indexes.Indexable):
+class CaseReportIndex(TaggableBaseIndex, indexes.Indexable):
     text = indexes.CharField(document=True)
     title = indexes.CharField(model_attr='title')
     primary_author = indexes.CharField(faceted=True)

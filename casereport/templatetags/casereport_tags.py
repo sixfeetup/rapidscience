@@ -81,7 +81,8 @@ def age_range(url, facet_ages):
 @register.filter
 def is_workflow_verb(verb):
     v = verb.lower()
-    for wfv in ( 'moved', 'edited', 'approved', 'created', 'published', 'revised', 'sent back', 'submitted'):
+    for wfv in ('moved', 'edited', 'approved', 'created',
+                'published', 'revised', 'sent back', 'submitted'):
         if wfv in v:
             return v
 
