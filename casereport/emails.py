@@ -44,3 +44,19 @@ def invite_people(casereport, address):
                         [address, ])
     mail.content_subtype = "html"
     mail.send()
+
+
+def invite_coauthor(casereport, user):
+    email_context = {
+        "casereport": casereport,
+        "user": user
+    }
+    subject = "You are invited to join Sarcoma Central"
+    template = 'casereport/emails/invite_coauthor'
+    message_body = render_to_string('{}.txt'.format(template), email_context)
+    recipient = user.email
+    mail = EmailMessage(subject, message_body,
+                        "Cases Central <edit@rapidscience.org>",
+                        [recipient])
+    mail.content_subtype = "html"
+    mail.send()

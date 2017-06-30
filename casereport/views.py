@@ -188,16 +188,6 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         if alt_email:
             author_alt = AuthorizedRep.objects.get_or_create(email=alt_email)
         primary_author = User.objects.get(pk=request.user.id)
-        coauthors = []
-        for i in range(0, len(name)):
-            try:
-                coauthor = User.objects.get(email=email[i])
-                coauthors.append(coauthor)
-            except User.DoesNotExist:
-                coauthor = User(email=email[i], last_name=name[i],
-                                is_active=False)
-                coauthor.save()
-                coauthors.append(coauthor)
         age = data.get('age')
         gender = data.get('gender')
         subtype = None
@@ -249,6 +239,17 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         update_treatments_from_request(case, data)
         if aberrations:
             case.aberrations.add(*aberrations)
+        coauthors = []
+        for i in range(0, len(name)):
+            try:
+                coauthor = User.objects.get(email=email[i])
+                coauthors.append(coauthor)
+            except User.DoesNotExist:
+                coauthor = User(email=email[i], last_name=name[i],
+                                is_active=False)
+                coauthor.save()
+                coauthors.append(coauthor)
+                emails.invite_coauthor(case, coauthor)
         for coauth in coauthors:
             case.co_author.add(coauth)
 
@@ -525,6 +526,7 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
                                 is_active=False)
                 coauthor.save()
                 case.co_author.add(coauthor)
+                emails.invite_coauthor(case, coauthor)
         case.age = data['age']
         case.gender = data['gender']
         if subtype:

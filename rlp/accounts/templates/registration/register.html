@@ -38,6 +38,20 @@
                 {% else %}
                     <div class="fieldWrapper" id="wrapper-{{ field.auto_id }}">
                 {% endif %}
+                {% if request.user_email and 'email' in field.name %}
+                    <div class="readonly">
+                        {{ field.errors }}
+                        <h4><label for="{{ field.id_for_label }}">
+                            {{ field.label }}{% if field.field.required %} <span class="required">*</span>{% endif %}
+                        </label></h4>
+                        <p class="small">(this can be changed after registration)</p>
+                        <input id="{{ field.id_for_label }}" maxlength="254" type="email"
+                               value="{{ request.user_email }}" name="register-{{ field.name }}">
+                        {% if field.help_text %}
+                        <p class="helptext">{{ field.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                {% else %}
                     {{ field.errors }}
                     <h4><label for="{{ field.id_for_label }}">
                         {{ field.label }}{% if field.field.required %} <span class="required">*</span>{% endif %}
@@ -46,6 +60,7 @@
                     {% if field.help_text %}
                     <p class="helptext">{{ field.help_text|safe }}</p>
                     {% endif %}
+                {% endif %}
                 </div>
             {% endfor %}
             <div class="float-buttons">

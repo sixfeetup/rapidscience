@@ -56,6 +56,7 @@ urlpatterns = [
         name='password_reset_complete'),
 
     url(r'^register/$', views.Register.as_view(), name='register'),
+    url(r'^(?P<pk>\d+)/register/$', views.Register.as_view(), name='register_user'),
     url(r'^activate/(?P<activation_key>[-:\w]+)/$',
         views.ActivationView.as_view(),
         name='registration_activate'),

@@ -37,7 +37,10 @@ class UserCreationForm(forms.ModelForm):
     def clean_email(self):
         email = self.cleaned_data.get("email").lower().strip()
         try:
-            User._default_manager.get(email=email)
+            user = User._default_manager.get(email=email)
+            # return TEMP-email in case user exists but is unregistered
+            if not user.is_active:
+                return "TEMP-{0}".format(email)
         except User.DoesNotExist:
             return email
         raise forms.ValidationError(
@@ -54,9 +57,10 @@ class UserCreationForm(forms.ModelForm):
         email2 = self.cleaned_data.get('email_confirmation').lower().strip()
 
         if email1 and email2 and email1 != email2:
-            raise forms.ValidationError(
-                self.error_messages['email_mismatch'],
-                code='email_mismatch')
+            if email1 != "TEMP-{0}".format(email2):
+                raise forms.ValidationError(
+                    self.error_messages['email_mismatch'],
+                    code='email_mismatch')
 
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1")

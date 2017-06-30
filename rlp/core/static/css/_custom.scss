@@ -1089,6 +1089,10 @@ a.comment-count.empty {
     .user-meta {
         color: #444;
     }
+    .readonly {
+        position: relative;
+        z-index: -1;
+    }
     .float-buttons {
         position: fixed;
         bottom: 0;
