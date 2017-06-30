@@ -60,15 +60,15 @@ def create_comment_activity(**kwargs):
         'public': is_public,
     }
     send_to_viewers = True
-    if comment.user.is_staff:
-        if isinstance(top_comment.content_object, CaseReportReview):
-            author = User.objects.filter(
-                email__iexact=top_comment.content_object.casereport\
-                    .primary_author.email).first()
-            action_kwargs['target'] = author
-            # this is notice from an admin to a user,
-            # so do not propagate the message if there are pending shares
-            send_to_viewers = False
+    if comment.user.is_staff and comment.is_editorial_note:
+        casereport = top_comment.content_object.casereport
+        author = User.objects.filter(
+            email__iexact=casereport.primary_author.email
+        ).first()
+        action_kwargs['target'] = author
+        # this is notice from an admin to a user,
+        # so do not propagate the message if there are pending shares
+        send_to_viewers = False
     new_action = action.send(comment.user, **action_kwargs)
 
 
