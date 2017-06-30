@@ -5,8 +5,8 @@ from django.dispatch import receiver
 from actstream import action
 from django_comments.signals import comment_was_posted
 
-from casereport.models import CaseReportReview
 from rlp.accounts.models import User
+from rlp.core.email import send_transactional_mail
 from rlp.projects.models import Project
 
 
@@ -86,3 +86,26 @@ def create_comment_activity(**kwargs):
                          verb=verb,
                          action_object=comment,
                          target=interested_party)
+
+
+@receiver(comment_was_posted)
+def review_notification(**kwargs):
+    '''notify case report author when a review comment is posted'''
+    comment = kwargs['comment']
+    if not comment.user.is_staff:
+        return
+    if not comment.is_editorial_note:
+        return
+    review = comment.content_object
+    author = review.casereport.primary_author
+    mail_data = {
+        'user': author,
+        'casereport': review.casereport,
+        'comment': comment.comment,
+    }
+    send_transactional_mail(
+        author.email,
+        'Your case report submission',
+        'emails/review',
+        mail_data,
+    )

@@ -1,0 +1,21 @@
+{% extends 'emails/base_email.html' %}
+
+{% block content %}
+<p>Dear {{ user }},</p>
+
+<p>An editorial comment has been posted on this case report posted in Sarcoma Central:</p>
+
+<h3 style="margin-left: 2em">{{ casereport }}</h3>
+<div style="margin-left: 2em; border-left: 4pt solid">
+{{ comment|safe }}
+</div>
+
+<p>You are invited to review and make any necessary edits to the case report.</p>
+<p>If you have any questions or concerns, please contact us at edit@rapidscience.org.</p>
+
+<p>Sincerely,</p>
+
+<p>Editorial Team<br>
+<a href="https://sarcoma.rapidscience.org/">Sarcoma Central</a><br>
+<a href="https://twitter.com/RapidScience">@RapidScience</a></p>
+{% endblock content %}
