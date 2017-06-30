@@ -27,6 +27,7 @@ except ImportError as old_django:
     from django.core.urlresolvers import reverse
 from taggit.models import Tag
 
+from casereport import emails
 from casereport.api import TreatmentInstanceResource
 from casereport.constants import SARCOMA_TYPE, WorkflowState
 from casereport.forms import CaseForm
@@ -261,6 +262,13 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
             action.send(request.user, verb=past_tense_verb, action_object=case, target=group)
         else:
             action.send(request.user, verb=past_tense_verb, action_object=case)
+        for userid in data.getlist('members'):
+            user = User.objects.get(id=userid)
+            emails.invite_people(case, user.email)
+        external = data.get('external').split(",")
+        for address in external:
+            emails.invite_people(case, address.strip())
+
 
         # eventually we' want this:
         # #messages.success(self.request, "Saved!")
@@ -570,6 +578,13 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
         past_tense_verb = 'updated'
         for group in data.getlist('groups'):
             print( request.user, past_tense_verb, case, group )
+
+        for userid in data.getlist('members'):
+            user = User.objects.get(id=userid)
+            emails.invite_people(case, user.email)
+        external = data.get('external').split(",")
+        for address in external:
+            emails.invite_people(case, address.strip())
 
         messages.success(request, "Edits saved!")
         return redirect(reverse('casereport_detail', args=(case.id, case.title)))

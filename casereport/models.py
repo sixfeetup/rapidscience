@@ -2,6 +2,7 @@ from datetime import datetime
 
 from access_tokens import tokens
 from actstream import action
+from casereport import emails
 from casereport.constants import GENDER, WorkflowState
 from casereport.constants import TYPE
 from casereport.constants import PERFORMANCE_STATUS
@@ -26,7 +27,6 @@ from rlp.accounts.models import User
 from rlp.discussions.models import ThreadedComment
 from rlp.core.models import SharedObjectMixin
 
-from . import emails
 
 __author__ = 'yaseen'
 

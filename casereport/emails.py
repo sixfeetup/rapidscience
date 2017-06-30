@@ -30,3 +30,17 @@ def send_back(casereport):
                            [recipient])
     message.content_subtype = 'html'
     message.send()
+
+
+def invite_people(casereport, address):
+    email_context = {
+        "casereport": casereport
+    }
+    subject = "Invitation to view sarcoma case report"
+    template = 'casereport/emails/invite_people'
+    message_body = render_to_string('{}.txt'.format(template), email_context)
+    mail = EmailMessage(subject, message_body,
+                        "Cases Central <edit@rapidscience.org>",
+                        [address, ])
+    mail.content_subtype = "html"
+    mail.send()
