@@ -193,8 +193,10 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
                 coauthor = User.objects.get(email=email[i])
                 coauthors.append(coauthor)
             except User.DoesNotExist:
-                # need to do something here, see #855
-                pass
+                coauthor = User(email=email[i], last_name=name[i],
+                                is_active=False)
+                coauthor.save()
+                coauthors.append(coauthor)
         age = data.get('age')
         gender = data.get('gender')
         subtype = None
@@ -509,10 +511,12 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
         for i in range(0, len(name)):
             try:
                 coauthor = User.objects.get(email=email[i])
-                case.co_author.append(coauthor)
+                case.co_author.add(coauthor)
             except User.DoesNotExist:
-                # need to do something here, see #855
-                pass
+                coauthor = User(email=email[i], last_name=name[i],
+                                is_active=False)
+                coauthor.save()
+                case.co_author.add(coauthor)
         case.age = data['age']
         case.gender = data['gender']
         if subtype:
