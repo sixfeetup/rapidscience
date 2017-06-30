@@ -23,7 +23,7 @@ def create_comment_activity(**kwargs):
     # entries to the activity stream.
     if comment.action_object_actions.count():
         return
-    if comment.is_reply():
+    if comment.is_reply:
         verb = 'reply'
     else:
         verb = 'comment'

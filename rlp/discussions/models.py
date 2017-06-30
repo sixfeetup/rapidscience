@@ -141,12 +141,13 @@ class ThreadedComment(Comment, SharedObjectMixin):
     def display_type(self):
         if self.is_editorial_note:
             return 'Editorial Note'
-        elif self.is_reply():
+        elif self.is_reply:
             return 'Reply'
         elif self.is_discussion:
             return 'Discussion'
         return 'Comment'
 
+    @property
     def is_reply(self):
         if self.content_type.name.lower() == 'comment':
             return True
