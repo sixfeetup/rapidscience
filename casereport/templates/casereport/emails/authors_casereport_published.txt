@@ -1,0 +1,13 @@
+Dear {{ casereport.primary_author.get_full_name }},<br><br>
+
+Congratulations – your case report, {{ casereport.title }}, is now live in the 
+Cases Central database and can be viewed by validated members of the community.
+To view it, <a href="http://sarcoma.rapidscience.org{{ casereport.get_absolute_url }}">click here</a>.<br><br>
+
+We appreciate your contribution to this important project. If you would like to
+make revisions to this report, there is an Edit button at the bottom of the report
+for your convenience. Revisions will be reviewed by our editors before being posted.<br><br>
+
+Editorial Team
+<br><a href="https://sarcoma.rapidscience.org">Sarcoma Central</a>
+<br><a href="https://twitter.com/RapidScience">@RapidScience</a>
