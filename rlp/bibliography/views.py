@@ -367,7 +367,11 @@ def reference_delete(request, reference_pk, template_name='bibliography/referenc
 @login_required
 def reference_detail(request, reference_pk, template_name='bibliography/reference_detail.html'):
     reference = get_object_or_404(Reference, pk=reference_pk)
-    user_reference = UserReference.objects.get(reference_id=reference_pk, user_id = request.user.id)
+    try:
+        user_reference = UserReference.objects.get(reference_id=reference_pk, user_id = request.user.id)
+    except UserReference.DoesNotExist as dne:
+        user_reference = UserReference()
+        user_reference.id = 0
     context = {
         'obj': reference,
         'user_reference': user_reference,
