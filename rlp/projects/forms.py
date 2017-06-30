@@ -7,6 +7,8 @@ from rlp.core.forms import MemberListField
 from django import forms
 from django.utils.safestring import mark_safe
 
+from ckeditor.widgets import CKEditorWidget
+
 
 class SimpleImageWidget(forms.FileInput):
     def __init__(self, attrs={}):
@@ -65,7 +67,7 @@ class InviteForm(forms.Form):
     internal = internal_member_field
     external = external_member_field
     invitation_message = forms.CharField(
-        widget=forms.Textarea,
+        widget=CKEditorWidget(),
     )
 
 

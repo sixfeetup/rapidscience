@@ -10,6 +10,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
+from django.template.loader import render_to_string
 from django.utils.text import slugify
 from django.views.decorators.cache import never_cache
 from django.views.generic import View, FormView
@@ -117,12 +118,15 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
     # member invite form
     site = Site.objects.get_current()
     project_url = 'https://' + site.domain + project.get_absolute_url()
+    join_url = 'https://' + site.domain + "/groups/" + str(project.id) + '/join'
     invite_data = {
         'user': request.user.get_full_name(),
         'group': project.title,
+        'join_link': join_url,
         'link': project_url,
     }
-    invite_msg = settings.GROUP_INVITATION_TEMPLATE.format(**invite_data)
+    template = "projects/emails/moderator_invite_to_group"
+    invite_msg = render_to_string('{}.txt'.format(template), invite_data)
     form = InviteForm(
         initial={'invitation_message': invite_msg},
     )
