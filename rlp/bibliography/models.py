@@ -142,6 +142,11 @@ class UserReference(models.Model):
     def __str__(self):
         return "{u} reference to {r}".format(u=self.user, r=self.reference)
 
+    def get_absolute_url(self):
+        return reverse('bibliography:reference_detail', kwargs={
+            'reference_pk': self.reference.pk,
+        })
+
 
 class Publication(models.Model):
     reference = models.ForeignKey(Reference)
