@@ -38,6 +38,15 @@
     </div>
     <div class="col-md-1">
       {% include 'discussions/discussion_count_widget.html' %}
+      {% if user != obj.get_poster %}
+        <form class="bookmark-form" method="POST" action="{% toggle_bookmark_url obj user %}">
+        {% csrf_token %}
+        <input type="hidden" name="{% if project %}group{% else %}dashboard{% endif %}" value="on" />
+        <input type="hidden" name="content_type" value="{{ obj.get_content_type_id }}" />
+        <input type="hidden" name="content_id" value="{{ obj.id }}" />
+        <a href="#" class="bookmark-trigger" data-toggle="tooltip" title="Save Bookmark"><i class="fa fa-star" aria-hidden="true"></i></a>
+        </form>
+      {% endif %}
       <a class="share-link" href="/send/casereport/casereport/{{ obj.id }}"><i class="fa fa-share"></i></a>
     </div>
 </div>
