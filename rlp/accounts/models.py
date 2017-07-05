@@ -108,12 +108,6 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
     website = models.URLField(blank=True)
     linkedin = models.URLField(blank=True)
     twitter = models.URLField(blank=True, help_text='Enter the full url e.g. https://twitter.com/username')
-    orcid = models.CharField(
-        verbose_name='ORCID ID',
-        max_length=100,
-        blank=True,
-        help_text='If you do not have an ORCID ID, you can register for one '
-                  '<a href="https://orcid.org/register" target="_blank">here</a>')
     photo = models.ImageField(upload_to="profile_photos", blank=True)
     banner = models.ImageField(upload_to="banner_photos", blank=True)
     institution = models.ForeignKey(Institution, blank=True, null=True)

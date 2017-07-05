@@ -243,7 +243,7 @@ def get_or_create_reference_from_orcid(result):
 
 
 def fetch_publications_for_user(user):
-    if not user.orcid:
+    if not hasattr(user, 'orcid'):
         return
     token_headers = {
         'Accept': 'application/json',

@@ -22,7 +22,7 @@ class CustomUserAdmin(UserAdmin):
         }),
         (_('Profile'), {
             'fields': (
-                'title', 'degrees', 'bio', 'research_interests', 'website', 'orcid', 'photo', 'institution',
+                'title', 'degrees', 'bio', 'research_interests', 'website', 'photo', 'institution',
                 'linkedin', 'twitter',),
             'classes': ('collapse',)
         }),

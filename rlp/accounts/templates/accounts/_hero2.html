@@ -18,10 +18,7 @@
         <h1>{{ user.get_full_name }}{% if user.degrees %}, {{ user.degrees }}{% endif %} {% if edit %}{% include "accounts/_edit_pencil.html" %}{% endif %}</h1>
 
         <p class="profile-meta">
-            {% if user.website %}<a href="{{ user.website }}" target="_blank">WEBSITE</a>{% endif %}
-            {% if user.website and user.orcid %} &nbsp;|&nbsp; {% endif %}
-            {% if user.orcid %}ORCID {{ user.orcid }}{% endif %}
-            {% if user.website or user.orcird %}
+            {% if user.website %}<a href="{{ user.website }}" target="_blank">WEBSITE</a>
                 {% if user.linkedin or user.twitter %}
                     &nbsp;|&nbsp;
                 {% endif %}
