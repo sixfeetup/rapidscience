@@ -7,7 +7,7 @@
             Posted by
             {{ casereport.primary_author }}
           | {{ casereport.date_added|date:"j M Y" }}<br />
-          {% autoescape off %}{% display_shared_with casereport request.user %}{% endautoescape %}
+          {% display_shared_with casereport request.user %}
         </p>
     {% endif %}
 {% endwith %}

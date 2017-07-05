@@ -7,7 +7,7 @@
       <p class="small">
           Posted by <a href="{% url "profile" obj.primary_author.id %}">{% if request.user == obj.primary_author %} me {% else %} {{ obj.primary_author }} {% endif %}</a>
         | {{ obj.date_updated|date:"j M Y" }}<br />
-        {% autoescape off %}{% display_shared_with obj request.user %}{% endautoescape %}
+        {% display_shared_with obj request.user %}
       </p>
       <p class="more">{{ obj.description|urlize|linebreaksbr }}</p>
       <p class="tags">
