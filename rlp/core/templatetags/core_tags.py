@@ -1,6 +1,7 @@
 from django.contrib.sites.shortcuts import get_current_site
 from django import template
 from django.core.urlresolvers import reverse
+from django.utils.safestring import mark_safe
 
 from rlp.core.utils import CREATION_VERBS
 
@@ -102,11 +103,10 @@ def display_shared_with(item, user=None):
             vlist.insert(-1, ' and ')
 
         combined_viewers = "".join(vlist)
-        return 'Shared with {0}'.format(combined_viewers)
+        return mark_safe('Shared with {0}'.format(combined_viewers))
     else:
         return ''
 
-from django.utils.safestring import mark_safe
 @register.filter(needs_autoescape=True)
 def link(obj, extra='', autoescape=True):
     """ Emit an html anchor for the passed object.
