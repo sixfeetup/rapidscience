@@ -21,6 +21,7 @@ class ProjectAdmin(admin.ModelAdmin):
     list_filter = ['topic', 'institution']
     search_fields = ['title', 'topic__title', 'institution__name']
     prepopulated_fields = {'slug': ('title',)}
+    inlines = [ ProjectMembershipAdmin, ]
 
 
 admin.site.register(Topic, TopicAdmin)

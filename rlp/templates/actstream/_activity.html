@@ -99,6 +99,8 @@
                 <!-- SUPPRESSED BOOKMARK ICON for non-live {{action.verb }} CR -->
             {% elif action.verb|is_workflow_verb %}
                 <!-- SUPPRESSED BOOKMARK ICON for workflow verb:{{ action.verb }} -->
+            {% elif not obj.is_bookmarked_to %}
+                <!-- SUPPRESSED BOOKMARK ICON for non-bookmarkable obj -->
             {% else %}
                 {% if user != obj.get_poster %}
                     {% if project %}

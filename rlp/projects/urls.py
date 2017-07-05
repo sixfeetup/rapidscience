@@ -40,4 +40,14 @@ urlpatterns = [
         views.EditGroup.as_view(),
         name='projects_edit',
     ),
+     url(
+        r'^accept_membership/(?P<membership_id>\d+)/$',
+        views.AcceptMembershipRequest.as_view(),
+        name='accept_membership_request',
+    ),
+      url(
+        r'^reject_membership/(?P<membership_id>\d+)/$',
+        views.IgnoreMembershipRequest.as_view(),
+        name='ignore_membership_request',
+    ),
  ]

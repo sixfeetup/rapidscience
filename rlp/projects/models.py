@@ -5,10 +5,12 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
 from django.core.mail import send_mass_mail
 from django.db import models
+from django.utils.safestring import mark_safe
 from django_fsm import FSMField
 from django_fsm import transition
 from menus.menu_pool import menu_pool
 
+from casereport.middleware import CurrentUserMiddleware
 from rlp.accounts.models import Institution
 from rlp.core.email import send_transactional_mail
 from rlp.core.mixins import SharesContentMixin
@@ -23,6 +25,7 @@ MEMBER_STATES = (
     ('moderator', 'Moderator'),
     ('member', 'Member'),
     ('pending', 'Applicant'),
+    ('ignored', 'Ignored Applicant')
 )
 
 
@@ -44,6 +47,10 @@ class Project(SEOMixin, SharesContentMixin):
     users = models.ManyToManyField(settings.AUTH_USER_MODEL, through="ProjectMembership", related_name='projects')
     goal = models.CharField(max_length=450, blank=True)
     order = models.PositiveIntegerField(default=0, db_index=True)
+
+    @property
+    def display_type(self):
+        return mark_safe('<a href="{url}">{repr}</a>'.format(url=self.get_absolute_url(), repr=self.title))
 
     class Meta:
         ordering = ['order', 'title']
@@ -222,6 +229,10 @@ class ProjectMembership(models.Model):
         return "{user} is {state} of {project}".format(user=self.user.email, state=self.state,
                                                        project=self.project.title)
 
+    @property
+    def display_type(self):
+        return "{user}'s request to join {group}".format(user=self.user, group=self.project)
+
     @transition(field=state, source='*', target='moderator')
     def promote(self):
         pass
@@ -232,4 +243,26 @@ class ProjectMembership(models.Model):
 
     @transition(field=state, source='pending', target='member')
     def approve(self):
-        pass
+        # TODO: alert the user
+        # activity stream entries for the user, the group and moderator
+        approval_action = Action(actor=CurrentUserMiddleware.get_user(),
+                                 verb='approved',
+                                 action_object=self,
+                                 target=self.project)
+        approval_action.save()
+
+        user_action = Action(actor=self.user,
+                             verb='joined',
+                             action_object=self.project,
+                             target=self.project)
+        user_action.save()
+
+
+    @transition(field=state, source='pending', target='ignored')
+    def ignore(self):
+        # activity stream entries for the moderator
+        denial = Action(actor=CurrentUserMiddleware.get_user(),
+                                 verb='denied',
+                                 action_object=self,
+                                 target=self.project)
+        denial.save()

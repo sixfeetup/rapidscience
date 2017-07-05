@@ -5,6 +5,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
+from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
 from casereport.constants import WorkflowState
@@ -124,6 +125,10 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
 
     def __str__(self):
         return "{0} {1}".format(self.first_name, self.last_name)
+
+    @property
+    def display_type(self):
+        return mark_safe( '<a href="{url}">{repr}</a>'.format(url=self.get_absolute_url(), repr=str(self)))
 
     def get_absolute_url(self):
         from django.core.urlresolvers import reverse

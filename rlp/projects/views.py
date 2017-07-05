@@ -373,3 +373,28 @@ class EditGroup(LoginRequiredMixin, FormView):
         project.save()
 
         return redirect(project.get_absolute_url())
+
+class AcceptMembershipRequest(LoginRequiredMixin, View):
+    def get(self, request, membership_id):
+        membership = get_object_or_404(ProjectMembership, id=membership_id)
+        group = membership.project
+
+        if membership.state in ('pending', 'ignored'):
+            if request.user.is_staff or request.user in group.moderators():
+                membership.approve()
+                membership.save()
+        return redirect(group.get_absolute_url())
+
+
+class IgnoreMembershipRequest(LoginRequiredMixin, View):
+    def get(self, request, membership_id):
+        membership = get_object_or_404(ProjectMembership, id=membership_id)
+        group = membership.project
+
+        if membership.state in ('pending', 'ignored'):
+            if request.user.is_staff or request.user in group.moderators():
+                membership.ignore()
+                membership.save()
+        return redirect(group.get_absolute_url())
+
+
