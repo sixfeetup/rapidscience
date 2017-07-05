@@ -32,7 +32,7 @@
       | {% with edit_url=obj.get_edit_url %}
             {% if edit_url %}<a href="{{ edit_url }}">Edit</a>{% endif %}
         {% endwith %}<br />
-      {% autoescape off %}{% display_shared_with obj request.user %}{% endautoescape %}
+        {% display_shared_with obj request.user %}
     </p>
     <div class="more">{% autoescape off %}{{ obj.description }}{% endautoescape %}</div>
     {% if obj.tags.all %}

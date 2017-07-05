@@ -9,6 +9,6 @@
         Posted by
         <a href="{% url 'profile' action.actor_object_id  %}">{{ action.actor }}</a>
         | {{ obj.date_updated|date:"j M Y" }}<br />
-      {% autoescape off %}{% display_shared_with obj request.user %}{% endautoescape %}
+        {% display_shared_with obj request.user %}
     </p>
 {% endif %}

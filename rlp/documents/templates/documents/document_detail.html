@@ -1,4 +1,4 @@
-{% extends 'base.html' %}{% load comments embed_video_tags %}
+{% extends 'base.html' %}{% load comments embed_video_tags core_tags %}
 
 {% block body_class %}document-detail{% endblock %}
 
@@ -26,7 +26,7 @@
         | {{ obj.date_updated|date:"j M Y" }}
         {% if request.user == obj.owner %} | <a href="{% url 'documents:document_edit' obj.id %}">Edit</a>{% endif %}
         <br />
-        Shared with <b>{{ obj.get_viewers|join:"</b>, <b>" }}</b>
+        {% display_shared_with obj request.user %}
       </p>
 
       {% if obj.description %}<div class="initial">{% autoescape off %}{{ obj.description }}{% endautoescape %}</div>{% endif %}
