@@ -168,6 +168,8 @@ class Register(SessionWizardView):
                 "but you already have an account and are currently logged in."
             )
             return redirect(request.user.get_absolute_url())
+        if 'pk' not in kwargs:
+            return super().get(request, *args, **kwargs)
         try:
             user = User.objects.get(pk=kwargs['pk'])
             # only pass email address for non-active users
