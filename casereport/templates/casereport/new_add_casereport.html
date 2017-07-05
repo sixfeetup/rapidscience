@@ -160,16 +160,6 @@
         {% include "casereport/free-text.html" %}
         {% include "casereport/fileform.html" %}
 
-                <div id="consent-wrapper">
-                    <input class="agree-checkbox" type="checkbox" id="consent" name="consent"
-                        {% if casereport.consent %}checked{% endif %}>
-                    <label for="consent">By checking this box, you confirm that you have obtained signed, written consent from the patient or,
-                    if the patient is deceased, the patient’s authorized relative to post this report.</label>
-                    <div class="agree-message">
-                     <p>Please select the checkbox.</p>
-                    </div>
-                </div>
-
                 <!-- attachments -->
                 <h4>Attachments</h4>
                 <div class="attachments-div">
@@ -203,6 +193,24 @@
                 </div>
 
                 <a class="add_att_button" href="#"><i class="fa fa-plus"></i> <span class="add_att_button_text">Add another attachment</a></a>
+                    
+                <div id="consent-wrapper">
+                    <p>HIPAA limits how health care providers may use individually
+                        identifiable health information. The act does not restrict
+                        physicians, nurses, and other practitioners from sharing
+                        information needed to treat their patients. However,
+                        practitioners may use or share the minimum amount of
+                        protected information needed for a particular purpose.
+                        Should this case report be submitted for open access publication,
+                        patient permission will be required.</p>
+                    <input class="agree-checkbox" type="checkbox" id="consent" name="consent"
+                        {% if casereport.consent %}checked{% endif %}>
+                    <label for="consent">Check here to indicate that you have read and agree to the HIPAA Privacy Policy.</label>
+                    <div class="agree-message">
+                     <p>Please select the checkbox.</p>
+                    </div>
+                </div>
+                
                 <!-- sharing -->
                 <div class="sharing-wrapper">
                 {% for field in form %}

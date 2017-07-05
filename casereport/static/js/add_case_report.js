@@ -245,6 +245,7 @@ function validate(ev) {
         $(".choose-message").hide();
         if (!$('#consent').prop('checked')) {
             $(".agree-message").show();
+            window.location = '#consent-wrapper';
             $('#consent').focus();
             return false;
         } else {
