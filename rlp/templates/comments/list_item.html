@@ -21,7 +21,7 @@
             | {% with edit_url=comment.get_edit_url %}
                   {% if edit_url %}<a href="{{ edit_url }}">Edit</a>{% endif %}
               {% endwith %}<br />
-            {% autoescape off %}{% display_shared_with comment request.user %}{% endautoescape %}
+            {% display_shared_with comment request.user %}
           </p>
           <div class="more">{% autoescape off %}{{ comment.comment }}{% endautoescape %}</div>
           {% if comment.tags.all %}

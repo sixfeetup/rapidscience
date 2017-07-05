@@ -12,6 +12,6 @@
         Posted by
         <a href="{% url 'profile' action.actor_object_id  %}">{% if request.user == action.actor %} me {% else %} {{ action.actor }} {% endif %}</a>
         | {{ obj.submit_date|date:"j M Y" }}<br />
-      {% autoescape off %}{% display_shared_with obj request.user %}{% endautoescape %}
+        {% display_shared_with obj request.user %}
     </p>
 {% endif %}
