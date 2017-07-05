@@ -18,6 +18,6 @@
         Posted by
         <a href="{% url 'profile' action.actor_object_id  %}">{% if request.user == action.actor %} me {% else %} {{ action.actor }} {% endif %}</a>
         | {{ ref.date_updated|date:"j M Y" }}{% if not search %}<br />{% endif %}
-      {% autoescape off %}{% display_shared_with ref request.user %}{% endautoescape %}
+      {% display_shared_with ref request.user %}
     {% if not search %}</p>{% endif %}
 {% endif %}

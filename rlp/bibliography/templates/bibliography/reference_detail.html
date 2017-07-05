@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load comments %}
 {% load bootstrap3 %}
+{% load core_tags %}
 {% block body_class %}reference-detail{% endblock %}
 {% block content %}
 <div class="container">
@@ -32,9 +33,7 @@
                       {% if delete_url %}{% if user_reference.id %}| <a href="{{ delete_url }}">Delete</a>{% endif %}{% endif %}
                     {% endwith %}
                     <br />
-                    {% with viewers=obj.get_viewers %}
-                        {% if viewers %}Shared with <b>{{ viewers|join:"</b>, <b>" }}</b>{% else %}<!-- no viewers --?>{% endif %}
-                    {% endwith %}
+                    {%  display_shared_with obj request.user %}
                   </p>
 
                   {% if user_reference.description %}<div class="initial">{% autoescape off %}{{ user_reference.description }}{% endautoescape %}</div>{% endif %}

@@ -14,7 +14,7 @@
           {% with edit_url=obj.get_edit_url %}
             {% if edit_url %}<a href="{{ edit_url }}">Edit</a><br />{% endif %}
           {% endwith %}
-          {% autoescape off %}{% display_shared_with obj request.user %}{% endautoescape %}
+          {% display_shared_with obj request.user %}
         {% if not search %}</p>{% endif %}
       {% endif %}
     {% if obj.description %}

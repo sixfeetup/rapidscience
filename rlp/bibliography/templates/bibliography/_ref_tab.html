@@ -21,7 +21,7 @@
           {% if edit_url %}| <a href="{{ edit_url }}">Edit</a>{% endif %}
         {% endwith %}
         <br />
-      {% autoescape off %}{% display_shared_with ref request.user %}{% endautoescape %}
+      {% display_shared_with ref request.user %}
     </p>
     {% if obj.user_description %}
         <div class="more">
