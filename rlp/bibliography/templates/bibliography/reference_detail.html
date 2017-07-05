@@ -33,6 +33,7 @@
                       {% if delete_url %}{% if user_reference.id %}| <a href="{{ delete_url }}">Delete</a>{% endif %}{% endif %}
                     {% endwith %}
                     <br />
+
                     {%  display_shared_with obj request.user %}
                   </p>
 
