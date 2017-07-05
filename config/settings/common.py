@@ -373,6 +373,11 @@ HAYSTACK_CONNECTIONS = {
         'URL': 'http://127.0.0.1:8983/solr/collection1',
         'INCLUDE_SPELLING': True,
     },
+    'casescentral': {
+        'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
+        'URL': 'http://127.0.0.1:8983/solr/cases_collection',
+        'INCLUDE_SPELLING': True,
+    },
 }
 
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'

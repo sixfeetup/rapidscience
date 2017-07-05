@@ -339,7 +339,7 @@ class FormTypeView(TemplateView):
 
 class MyFacetedSearchView(FacetedSearchView):
     def __init__(self, *args, **kwargs):
-        sqs = SearchQuerySet().models(CaseReport).highlight(fragsize=200)
+        sqs = SearchQuerySet().using('casescentral').models(CaseReport).highlight(fragsize=200)
         kwargs.update({'form_class': MultiFacetedSearchForm, 'searchqueryset': sqs})
         super(MyFacetedSearchView, self).__init__(*args, **kwargs)
 

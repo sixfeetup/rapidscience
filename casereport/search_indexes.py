@@ -35,8 +35,11 @@ class CaseReportIndex(TaggableBaseIndex, indexes.Indexable):
         return prepared_data
 
     def index_queryset(self, using=None):
-        cases = CaseReport.objects.all()#.filter(workflow_state='live')
-        return cases
+        cases = CaseReport.objects.all()
+        if using == 'casescentral':
+            return cases
+        else:
+            return cases.filter(workflow_state='live')
 
     def prepare_text(self, obj):
         # synonyms = self.get_synonyms(obj)
