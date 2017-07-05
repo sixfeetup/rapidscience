@@ -8,6 +8,11 @@
   {{ ref.parsed_data.publisher }} {{ ref.parsed_data.journal_title }}
   {% if ref.parsed_data.doi %}DOI: {{ ref.parsed_data.doi }}{% endif %} {% if ref.parsed_data.pubmed_id %}PMID: {{ ref.parsed_data.pubmed_id }}{% endif %}
 {% if not search %}</h4>{% endif %}
+{% if ref.user_description %}
+  {% if not search %}<div class="more">{% endif %}
+    {% autoescape off %}{{ ref.user_description }}{{ ref.description }}{% endautoescape %}
+  {% if not search %}</div>{% endif %}
+{% endif %}
 {% if action.verb == 'shared' %}
     {% if not search %}<p class="small meta">{% endif %}
         Posted by
