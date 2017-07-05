@@ -33,7 +33,8 @@ from rlp.core.views import MESSAGES_DEFAULT_FORM_ERROR
 from rlp.discussions.models import ThreadedComment
 from rlp.documents.models import Document
 from rlp.projects.models import Project
-from rlp.search.forms import ProjectContentForm
+from rlp.search.forms import ProjectContentForm, \
+    get_action_object_content_types
 from .forms import RegistrationForm, UserProfileForm, AuthenticationForm, \
     ProjectMembershipForm, \
     RestrictedProjectMembershipForm
@@ -380,10 +381,18 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
         'edit': True,
         'tab': tab,
         'projects': active_projects,
+        'content_types': get_action_object_content_types()
     }
     request.session['last_viewed_path'] = request.get_full_path()
     # if user dashboard was viewed, prevent adding things to a group
     request.session['last_viewed_project'] = None
+
+    if 'project' in request.GET or 'content_type' in request.GET or 'user_activity_only' in request.GET:
+        project_ct = ContentType.objects.get_for_model(Project)
+        user_ct = ContentType.objects.get_for_model(User)
+        filter_form = ProjectContentForm(request.GET, user=request.user)
+    else:
+        filter_form = ProjectContentForm(user=request.user)
 
     if tab == 'activity':
         if request.user.can_access_all_projects:
@@ -396,54 +405,63 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
             # otherwise, use the user's own AF stream.
             activity_stream = request.user.get_activity_stream()
 
+        if filter_form.is_valid() and filter_form.cleaned_data.get(
+            'content_type'):
+            activity_stream = activity_stream.filter(
+                action_object_content_type=filter_form.cleaned_data[
+                    'content_type'])
 
-        if 'project' in request.GET or 'content_type' in request.GET or 'user_activity_only' in request.GET:
-            project_ct = ContentType.objects.get_for_model(Project)
-            user_ct = ContentType.objects.get_for_model(User)
-            filter_form = ProjectContentForm(request.GET, user=request.user)
+        if filter_form.is_valid() and filter_form.cleaned_data.get(
+            'project'):
+            project = filter_form.cleaned_data['project']
+            activity_stream = activity_stream.filter(
+                target_content_type=project_ct,
+                target_object_id=project.id
+            )
 
-            if filter_form.is_valid() and filter_form.cleaned_data.get(
-                'content_type'):
-                activity_stream = activity_stream.filter(
-                    action_object_content_type=filter_form.cleaned_data[
-                        'content_type'])
-
-            if filter_form.is_valid() and filter_form.cleaned_data.get(
-                'project'):
-                project = filter_form.cleaned_data['project']
-                activity_stream = activity_stream.filter(
-                    target_content_type=project_ct,
-                    target_object_id=project.id
-                )
-
-            if filter_form.is_valid() and filter_form.cleaned_data.get(
-                'user_activity_only'):
-                activity_stream = activity_stream.filter(
-                    actor_content_type=user_ct,
-                    actor_object_id=request.user.id
-                )
-        else:
-            filter_form = ProjectContentForm(user=request.user)
+        if filter_form.is_valid() and filter_form.cleaned_data.get(
+            'user_activity_only'):
+            activity_stream = activity_stream.filter(
+                actor_content_type=user_ct,
+                actor_object_id=request.user.id
+            )
 
         # roll up similar entries, and drop duplicate ones
         activity_stream = list(rollup(activity_stream, 'others'))
 
         context.update({
             'activity_stream': activity_stream,
-            'filter_form': filter_form,
         })
     elif tab == 'discussions':
-        context['comment_list'] = sorted(
+        comments = sorted(
             request.user.get_bookmarked_content(ThreadedComment),
             key=lambda c: c.submit_date,
             reverse=True,
         )
         if request.is_ajax():
             template_name = 'comments/list.html'
+        if filter_form.is_valid() and filter_form.cleaned_data.get(
+                'project'):
+            project = filter_form.cleaned_data['project']
+            comments = [comment for comment in comments
+                        if project in comment.get_viewers()]
+        if filter_form.is_valid() and filter_form.cleaned_data.get(
+                'user_activity_only'):
+            comments = [comment for comment in comments
+                        if comment.user.id == request.user.id]
+        context['comment_list'] = comments
     elif tab == 'casereports':
-        reports = [r for r in request.user.get_bookmarked_content(CaseReport)
-                   if r.workflow_state == WorkflowState.LIVE]
+        reports = []
+        if (filter_form.is_valid() and not filter_form.cleaned_data.get(
+                'user_activity_only')) or not filter_form.is_valid():
+            reports += [r for r in request.user.get_bookmarked_content(
+                        CaseReport) if r.workflow_state == WorkflowState.LIVE]
         reports += CaseReport.objects.filter(primary_author=request.user)
+        if filter_form.is_valid() and filter_form.cleaned_data.get(
+                'project'):
+            project = filter_form.cleaned_data['project']
+            reports = [report for report in reports
+                       if project in report.get_viewers()]
         reps = {r for r in reports}
         context['case_reports'] = sorted(
             reps,
@@ -453,6 +471,15 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
     elif tab == 'documents':
         docs = [doc for doc in request.user.get_bookmarked_content(Document)
                 if doc is not None]
+        if filter_form.is_valid() and filter_form.cleaned_data.get(
+                'project'):
+            project = filter_form.cleaned_data['project']
+            docs = [doc for doc in docs
+                    if project in doc.get_viewers()]
+        if filter_form.is_valid() and filter_form.cleaned_data.get(
+                'user_activity_only'):
+            docs = [doc for doc in docs
+                    if doc.owner.id == request.user.id]
         context['documents'] = sorted(
             docs,
             key=lambda c: c.date_added,
@@ -464,6 +491,10 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
             key=lambda c: c.date_updated,
             reverse=True,
         )
+
+    context.update({
+        'filter_form': filter_form,
+    })
 
     if extra_context is not None:
         context.update(extra_context)

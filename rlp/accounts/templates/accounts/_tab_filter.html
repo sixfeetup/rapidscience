@@ -1,0 +1,31 @@
+{% load bootstrap3 %}
+      <form class="form-inline filter-form" action="" method="get">
+        {% if tab == 'activity' %}
+        <div class="dropdown">
+          <a id="content-type-dropdown" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Type: <span id="selected-option">All</span>
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="dLabel">
+            {% for option in content_types %}
+            <li><a href="" data-ct-filter="{{ option.0 }}">{{ option.1 }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+        <div class="dropdown">
+          <a id="projects-dropdown" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Project: <span id="selected-option">All</span>
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="dLabel">
+            <li><a href="" data-project-filter="">All</a></li>
+            {% for option in projects %}
+            <li><a href="" data-project-filter="{{ option.id }}">{{ option.title }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+        <input type="hidden" id="id_content_type" name="content_type" value="" />
+        <input type="hidden" id="id_project" name="project" value="" />
+        {% bootstrap_field filter_form.user_activity_only %}
+      </form>

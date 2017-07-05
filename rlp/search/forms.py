@@ -26,7 +26,7 @@ def get_action_object_content_types():
     from rlp.documents.models import File, Image, Video, Link
     from casereport.models import CaseReport
     choices = [
-        ('', 'All Types'),
+        ('', 'All'),
         (get_model_ct(ThreadedComment), 'Discussions'),
         (get_model_ct(CaseReport), 'Case Reports'),
         (get_model_ct(File), 'Documents'),

@@ -115,7 +115,7 @@ h1.detail-view-heading {
 .tab-content {
 //    position: relative;
 //    z-index: 10; // place it over the tabs
-    padding: 30px 0;
+    padding: 15px 0;
     background-color: #fff;
 }
 
@@ -813,6 +813,49 @@ span.help-block {
     margin-top: 0;
 }
 
+/* tab filter form */
+
+.filter-form {
+    margin-bottom: 15px;
+    .dropdown {
+        display: inline-block;
+        margin-right: 15px;
+        cursor: pointer;
+        &.open .caret {
+            transform: rotateX(180deg);
+        }
+        .caret {
+              border-top: 6px dashed;
+              border-top: 6px solid \9;
+              border-right: 6px solid rgba(0, 0, 0, 0);
+              border-left: 6px solid rgba(0, 0, 0, 0);
+        }
+    }
+    .dropdown-menu {
+        background-color: #fff;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+        border-top: none;
+        border-color: #ddd;
+        box-shadow: none;
+        margin-top: 17px;
+        padding-top: 0;
+        li:first-of-type a {
+            padding-top: 0;
+        }
+        a {
+            color: #3792bf;
+            &:hover {
+                background-color: #fff;
+                color: #256180;
+            }
+        }
+    }
+    .checkbox {
+        position: relative;
+        top: -2px;
+    }
+}
 /* case reports tab */
 #casereports {
     .comment-item {

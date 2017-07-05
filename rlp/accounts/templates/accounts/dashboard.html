@@ -55,19 +55,16 @@
   <div role="tabpanel" class="tab-pane{% if tab == 'activity' %} active{% endif %}" id="activity">
     {% if tab == 'activity' %}
       {% bootstrap_messages %}
-      <form class="form-inline" action="" method="get">
-        {% bootstrap_field filter_form.content_type show_label=False %}
-        {% bootstrap_field filter_form.project show_label=False %}
-        {% bootstrap_field filter_form.user_activity_only %}
-        <input class="profile-update btn btn-primary" type="submit" value="Filter"/>
-      </form>
-      <hr>
+      {% include 'accounts/_tab_filter.html' %}
+      <hr style="margin-top: 0;">
       {% include page_template %}
     {% endif %}
   </div>
   <div role="tabpanel" class="tab-pane{% if tab == 'discussions' %} active{% endif %}" id="discussions">
     {% if tab == 'discussions' %}
       {% bootstrap_messages %}
+      {% include 'accounts/_tab_filter.html' %}
+      <hr style="margin-top: 0;">
       {% with view='tab-content' %}
           {% include 'comments/list.html' %}
       {% endwith %}
@@ -76,7 +73,8 @@
   <div role="tabpanel" class="tab-pane{% if tab == 'casereports' %} active{% endif %}" id="casereports">
     {% if tab == 'casereports' %}
       {% bootstrap_messages %}
-
+      {% include 'accounts/_tab_filter.html' %}
+      <hr style="margin-top: 0;">
       {% for obj in case_reports %}
           {% include "casereport/listing_preview.html" %}
       {% endfor %}
@@ -84,7 +82,9 @@
   </div>
   <div role="tabpanel" class="tab-pane{% if tab == 'documents' %} active{% endif %} tab-documents" id="dashboard">
     {% if tab == 'documents' %}
-
+      {% bootstrap_messages %}
+      {% include 'accounts/_tab_filter.html' %}
+      <hr style="margin-top: 0;">
       {% for obj in documents %}
           {% include "documents/listing_preview.html" %}
       {% endfor %}
@@ -93,6 +93,8 @@
   <div role="tabpanel" class="tab-pane{% if tab == 'bibliography' %} active{% endif %}" id="bibliography">
     {% if tab == 'bibliography' %}
       {% bootstrap_messages %}
+      {% include 'accounts/_tab_filter.html' %}
+      <hr style="margin-top: 0;">
       {% for ref in references %}
         {% include 'bibliography/_ref_tab.html' with obj=ref user=request.user %}
       {% endfor %}
@@ -103,4 +105,48 @@
 
 {% block js-footer %}{{ block.super }}
   <script src="{% static 'js/vendor/chosen/chosen.jquery.min.js' %}"></script>
+  <script>
+    $(function() {
+      var params = [], hash;
+          var q = document.URL.split('?')[1];
+          if(q != undefined){
+              q = q.split('&');
+              for(var i = 0; i < q.length; i++){
+                  hash = q[i].split('=');
+                  params.push(hash[1]);
+                  params[hash[0]] = hash[1];
+              }
+      }
+      if (typeof params.content_type != "undefined" && params.content_type !== "") {
+        var ct_element = $("#content-type-dropdown").siblings(".dropdown-menu").find("a[data-ct-filter='" + params.content_type + "']");
+        $("#content-type-dropdown #selected-option").text($(ct_element).text());
+        $("#id_content_type").val(params.content_type);
+      } else {
+        $("#content-type-dropdown").siblings(".dropdown-menu").find(".all").click();
+      }
+      if (typeof params.project != "undefined" && params.project !== "") {
+        var pr_element = $("#projects-dropdown").siblings(".dropdown-menu").find("a[data-project-filter='" + params.project + "']");
+        $("#projects-dropdown #selected-option").text($(pr_element).text());
+        $("#id_project").val(params.project);
+      } else {
+        $("#projects-dropdown").siblings(".dropdown-menu").find(".all").click();
+      }
+      $("#content-type-dropdown").siblings(".dropdown-menu").find("a").on("click", function(e) {
+        e.preventDefault();
+        $(this).parents(".dropdown").find("#selected-option").text($(this).text());
+        $("#id_content_type").val($(this).data("ct-filter"));
+        $(".tab-pane.active .filter-form").submit();
+      });
+      $("#projects-dropdown").siblings(".dropdown-menu").find("a").on("click", function(e) {
+        e.preventDefault();
+        $(this).parents(".dropdown").find("#selected-option").text($(this).text());
+        $("#id_project").val($(this).data("project-filter"));
+        $(".tab-pane.active .filter-form").submit();
+      });
+      $("#id_user_activity_only").change(function(){
+        $(".tab-pane.active .filter-form").submit();
+      });
+    });
+  </script>
+
 {% endblock js-footer %}
