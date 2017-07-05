@@ -303,7 +303,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
                 target=WorkflowState.AUTHOR_REVIEW,
                 )
     def send_back(self):
-        """ send the CR back to the author 
+        """ send the CR back to the author
         """
         self.admin_approved = False
         emails.send_back(self)
@@ -381,11 +381,15 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         res = "Retracted"
         return res
 
-    # TODO: think about moving these out of the model and into WorkflowState
+    # TODO: think hard about moving these out of the model and into WorkflowState
     def _get_displayname_for_fname(self, fname):
+        """ turn a Transition name into its associated method name.
+        """
         return fname.title().replace('_',' ')
 
     def _get_fname_for_displayname(self, displayname):
+        """ turn a transition method name into its assocated Display Name.
+        """
         return displayname.lower().replace(' ', '_')
 
     def _get_past_tense_for_action(self, action):
@@ -422,7 +426,8 @@ class CaseReport(CRDBBase, SharedObjectMixin):
 
         past_tense_verb = self._get_past_tense_for_action(action_name)
 
-        res = getattr(self, self._get_fname_for_displayname(action_name))()
+        transition_function = getattr(self, self._get_fname_for_displayname(action_name))
+        res = transition_function()
 
         # RETRACTED is a transitory state. If we have landed in that state,
         # then we must determine which fork in the workflow to take.

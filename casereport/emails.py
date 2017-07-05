@@ -11,7 +11,7 @@ def publish(casereport):
     message_body = render_to_string('{}.txt'.format(template), email_context)
     mail = EmailMessage(subject, message_body,
                         "Cases Central <edit@rapidscience.org>",
-                        [casereport.primary_author.get_full_name() + ", <" +
+                        [casereport.primary_author.get_full_name() + " <" +
                          casereport.primary_author.email + ">", ])
     mail.content_subtype = "html"
     mail.send()
