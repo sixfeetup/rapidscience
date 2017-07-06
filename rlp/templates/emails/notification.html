@@ -4,7 +4,7 @@
 <a href="https://{{ site.domain }}{{ action.actor.get_absolute_url }}">{{ action.actor.get_full_name }}</a>
 {% if action.action_object_content_type.model == 'threadedcomment' %}
   posted a new <a href="https://{{ site.domain }}{{ action.action_object.content_object.get_absolute_url }}">comment</a> on <a href="https://{{ site.domain }}{{ action.action_object.content_object.get_absolute_url }}">{{ action.action_object.content_object }}</a>:<br><br>
-  "{{ action.action_object.comment|truncatewords:30 }}"<br><br>
+  "{{ action.action_object.comment|striptags|truncatewords:30 }}"<br><br>
 {% else %}
   added '<a href="https://{{ site.domain }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.title }}</a>'
 {% endif %}<br><br>
