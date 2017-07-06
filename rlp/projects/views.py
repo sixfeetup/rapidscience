@@ -250,9 +250,8 @@ class JoinGroup(LoginRequiredMixin, View):
                     request.user.email,
                     project.get_contact_email_addresses(),
                 )
-                message = ('“{}” is a closed group. The moderators have been '
-                           'asked to review your request to '
-                           'join.'.format(project.title))
+                message = ('Your request has been sent to ' +
+                           'the moderator of this group.')
                 messages.success(request, message)
             else:
                 message = 'Welcome to the “{}” group'.format(
