@@ -381,6 +381,8 @@ HAYSTACK_CONNECTIONS = {
 }
 
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+HAYSTACK_ROUTERS = ['casereport.search_routers.CaseReportRouter',
+                    'haystack.routers.DefaultRouter']
 HAYSTACK_SEARCH_RESULTS_PER_PAGE = 12
 
 INDEXABLE_EXTENSIONS = (
