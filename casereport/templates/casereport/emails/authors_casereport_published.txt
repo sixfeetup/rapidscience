@@ -1,12 +1,15 @@
 Dear {{ casereport.primary_author.get_full_name }},<br><br>
 
-Congratulations – your case report, {{ casereport.title }}, is now live in the 
-Cases Central database and can be viewed by validated members of the community.
-To view it, <a href="http://sarcoma.rapidscience.org{{ casereport.get_absolute_url }}">click here</a>.<br><br>
+Congratulations – your case report, {{ casereport.title }}, is now live at Sarcoma Central. To view it,
+<a href="http://sarcoma.rapidscience.org{{ casereport.get_absolute_url }}">click here</a>.<br><br>
 
-We appreciate your contribution to this important project. If you would like to
-make revisions to this report, there is an Edit button at the bottom of the report
-for your convenience. Revisions will be reviewed by our editors before being posted.<br><br>
+Members of the community with whom it is shared have received notification that
+they can view and discuss the report. You can view a list of these authorized
+individuals and groups in the left column of the report, and there you can share further if you wish.<br><br>
+
+We appreciate your contribution to this important project. If you would like
+to make revisions, there is an Edit button at the bottom of the report for your
+convenience. Revisions will be reviewed by our editors before being posted.<br><br>
 
 Editorial Team
 <br><a href="https://sarcoma.rapidscience.org">Sarcoma Central</a>
