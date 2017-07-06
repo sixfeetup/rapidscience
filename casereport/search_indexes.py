@@ -52,6 +52,9 @@ class CaseReportIndex(TaggableBaseIndex, indexes.Indexable):
              'treatment_names': treatment_names})
         return searchstring
 
+    def prepare_primary_author(self, obj):
+        return obj.primary_author.pk
+    
     def prepare_country(self, obj):
         author = obj.primary_author
         if author.institution:
