@@ -176,7 +176,8 @@ class Project(SEOMixin, SharesContentMixin):
         super().save(*args, **kwargs)
 
     def active_members(self):
-        return self.users.exclude(projectmembership__state='pending')
+        return self.users.exclude(projectmembership__state__in=('pending',
+                                                                'ignored',))
 
     def pending_members(self):
         return self.users.filter(projectmembership__state='pending')
