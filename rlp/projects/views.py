@@ -375,6 +375,29 @@ class EditGroup(LoginRequiredMixin, FormView):
 
         return redirect(project.get_absolute_url())
 
+
+class PromoteToModerator(LoginRequiredMixin, View):
+    def get(self, request, membership_id):
+        membership = get_object_or_404(ProjectMembership, id=membership_id)
+        group = membership.project
+        if membership.state in ('member',):
+            if request.user.is_staff or request.user in group.moderators():
+                membership.promote()
+                membership.save()
+        return redirect(group.get_absolute_url())
+
+
+class DemoteToMember(LoginRequiredMixin, View):
+    def get(self, request, membership_id):
+        membership = get_object_or_404(ProjectMembership, id=membership_id)
+        group = membership.project
+        if membership.state in ('moderator',):
+            if request.user.is_staff or request.user in group.moderators():
+                membership.demote()
+                membership.save()
+        return redirect(group.get_absolute_url())
+
+
 class AcceptMembershipRequest(LoginRequiredMixin, View):
     def get(self, request, membership_id):
         membership = get_object_or_404(ProjectMembership, id=membership_id)

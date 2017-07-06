@@ -50,4 +50,14 @@ urlpatterns = [
         views.IgnoreMembershipRequest.as_view(),
         name='ignore_membership_request',
     ),
+    url(
+        r'^promote_to_moderator/(?P<membership_id>\d+)/$',
+        views.PromoteToModerator.as_view(),
+        name='promote_to_moderator',
+    ),
+    url(
+        r'^demote_to_user/(?P<membership_id>\d+)/$',
+        views.DemoteToMember.as_view(),
+        name='demote_to_user',
+    ),
  ]

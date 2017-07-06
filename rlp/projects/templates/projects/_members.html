@@ -31,8 +31,8 @@
                     <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu">
-                    <li><a href="#">Remove as moderator</a></li>
-                    <li><a href="{% url 'projects:projects_leave' pk=project.id user=user.id %}">Remove from group</a></li>
+                      <li><a href="{% url 'projects:demote_to_user' membership_id=membership.id %}">Remove as Moderator</a></li>
+                      <li><a href="{% url 'projects:projects_leave' pk=project.id user=user.id %}">Remove from group</a></li>
                   </ul>
                 </div>
             {% else %}
@@ -70,6 +70,7 @@
                     </div>
                     <div class="col-xs-1">
                         {% if request.user in project.moderators or request.user.is_staff %}
+                            <!-- moderator actions -->
                             <div class="btn-group">
                               <button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="caret"></span>
@@ -79,7 +80,10 @@
                                     <li><a href="{% url 'projects:accept_membership_request' membership_id=membership.id %}">Accept into group</a></li>
                                     <li><a href="{% url 'projects:ignore_membership_request' membership_id=membership.id %}">Ignore Request to join group</a></li>
                                 {% elif membership.state == 'member' %}
-                                    <li><a href="#">Make a moderator</a></li>
+                                    <li><a href="{% url 'projects:promote_to_moderator' membership_id=membership.id %}">Make a Moderator</a></li>
+                                    <li><a href="{% url 'projects:projects_leave' pk=project.id user=user.id %}">Remove from group</a></li>
+                                {% elif membership.state == 'moderator' %}
+                                    <li><a href="{% url 'projects:demote_to_user' membership_id=membership.id %}">Remove as Moderator</a></li>
                                     <li><a href="{% url 'projects:projects_leave' pk=project.id user=user.id %}">Remove from group</a></li>
                                 {% endif %}
                               </ul>
