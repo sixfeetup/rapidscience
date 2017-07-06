@@ -1,11 +1,9 @@
 You are invited by {{ user }} to join the {{ group }} group in the Sarcoma Central network.<br><br>
 
-You may click <a href="{{ join_link }}">Join</a> to be added to the group's membership, or <a href="{{ link }}">view the Group page</a> before joining.<br><br>
-
-If you're not already a Rapid Science member, you must first <a href="https://sarcoma.rapidscience.org/accounts/register/">register here</a>.<br><br>
+If you're not already a Rapid Science member, please register <a href="https://sarcoma.rapidscience.org/accounts/register/">here</a>.<br><br>
 
 Sincerely,<br><br>
 
-The Sarcoma Central Team<br><br>
+Sarcoma Central Team<br><br>
 
 <a href="https://twitter.com/RapidScience">@RapidScience</a>

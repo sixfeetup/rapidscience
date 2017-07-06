@@ -179,7 +179,8 @@ def invite_members(request, pk, slug):
                         (
                             subject,
                             form.cleaned_data['invitation_message'],
-                            request.user.email,
+                            request.user.get_full_name() +
+                            " <support@rapidscience.org>",
                             [rcp],
                         )
                         for rcp in recipients
