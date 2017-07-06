@@ -170,7 +170,7 @@
           {% if tab == 'bibliography' %}
             {% bootstrap_messages %}
             {% for ref in references %}
-              {% include 'bibliography/_ref_tab.html' with obj=ref user=ref.bookmarked_by %}
+              {% include 'bibliography/_ref_tab.html' with obj=ref user=ref.user %}
             {% endfor %}
           {% endif %}
         </div>
