@@ -1,5 +1,7 @@
 import logging
 import re
+
+from django.utils.safestring import mark_safe
 from simplejson import JSONDecodeError
 
 import requests
@@ -88,7 +90,7 @@ class Reference(SharedObjectMixin):
         )
 
     def get_absolute_url(self):
-        return reverse('bibliography:reference_detail', kwargs={
+        return reverse('bibliography:reference_add', kwargs={
             'reference_pk': self.pk,
         })
 
@@ -96,8 +98,8 @@ class Reference(SharedObjectMixin):
         # Don't provide an edit url for Pubmed/Crossref if there aren't any tags to add (there's nothing else to edit)
         if self.source != choices.MEMBER and not Tag.objects.count():
             return
-        return reverse('bibliography:reference_edit', kwargs={
-            'pk': self.pk,
+        return reverse('bibliography:reference_add', kwargs={
+            'reference_pk': self.pk,
         })
 
     def get_delete_url(self):
@@ -122,7 +124,7 @@ class ReferenceShare(models.Model):
         return 'Reference'
 
 
-class UserReference(models.Model):
+class UserReference(SharedObjectMixin, models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     reference = models.ForeignKey(Reference, on_delete=models.CASCADE)
     date_added = models.DateTimeField(auto_now_add=True, db_index=True)
@@ -132,19 +134,19 @@ class UserReference(models.Model):
         ThreadedComment,
         object_id_field='object_pk',
     )
-    tags = TaggableManager()
-    mtags = TaggableManager(through=TaggedByManagedTag,
-                            help_text="A Comma separated list of UNAPPROVED tags.")
 
-    class Meta:
-        unique_together = ('user', 'reference')
 
     def __str__(self):
         return "{u} reference to {r}".format(u=self.user, r=self.reference)
 
+    @property
+    def display_type(self):
+        return mark_safe('<!-- User -->Reference')
+
     def get_absolute_url(self):
         return reverse('bibliography:reference_detail', kwargs={
             'reference_pk': self.reference.pk,
+            'uref_id': self.id,
         })
 
 

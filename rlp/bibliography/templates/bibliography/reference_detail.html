@@ -26,12 +26,8 @@
                         <a href="{{ obj.owner.get_absolute_url }}">{% if request.user == obj.owner %} me {% else %} {{ obj.owner.get_full_name }}{% endif %}</a>
                     {% endif %}
                     | {{ obj.date_updated|date:"j M Y" }}
-                    {% with edit_url=obj.get_edit_url %}
-                      {% if edit_url %}| <a href="{{ edit_url }}">Edit</a>{% endif %}
-                    {% endwith %}
-                    {% with delete_url=obj.get_delete_url %}
-                      {% if delete_url %}{% if user_reference.id %}| <a href="{{ delete_url }}">Delete</a>{% endif %}{% endif %}
-                    {% endwith %}
+                    <a href="{% url "bibliography:reference_edit" reference_pk=obj.pk uref_id=user_reference.id %}">Edit</a>
+                    <a href="{% url "bibliography:reference_delete" reference_pk=obj.pk uref_id=user_reference.id %}">Delete</a>
                     <br />
 
                     {%  display_shared_with obj request.user %}
@@ -47,7 +43,7 @@
                   {% endfor %}
               </div>
               <div class="col-md-1">
-                <a class="share-link" href="/send/bibliography/reference/{{ obj.id }}"><i class="fa fa-share"></i></a>
+                <a class="share-link" href="/send/bibliography/userreference/{{ user_reference.id }}"><i class="fa fa-share"></i></a>
               </div>
             </div>
             <hr>

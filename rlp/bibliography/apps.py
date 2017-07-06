@@ -10,4 +10,5 @@ class BibliographyConfig(AppConfig):
         from actstream import registry
         registry.register(self.get_model('Reference'))
         registry.register(self.get_model('ReferenceShare'))
+        registry.register(self.get_model('UserReference'))
 

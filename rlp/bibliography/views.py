@@ -188,12 +188,15 @@ class ReferenceAttachView(LoginRequiredMixin, FormView):
 
     def get_context_data(self, **kwargs):
         context = super(ReferenceAttachView, self).get_context_data(**kwargs)
-        ref = Reference.objects.get(pk=self.kwargs['pk'])
         user = self.request.user
+        uref_id = self.kwargs.get('uref_id',None)
+        reference_id = self.kwargs['reference_pk']
 
-        try:
-            uref = UserReference.objects.get(reference=ref, user=user)
-        except UserReference.DoesNotExist as dne:
+        ref = Reference.objects.get(pk=reference_id)
+
+        if uref_id:
+            uref = UserReference.objects.get(id=uref_id)
+        else:
             uref = UserReference(reference=ref, user=user)
             uref.id = -1 # fake, so that the tag lookup in the templates doesnt fail.
 
@@ -211,11 +214,14 @@ class ReferenceAttachView(LoginRequiredMixin, FormView):
     def form_valid(self, form):
         data = form.cleaned_data
         user = self.request.user
-        ref = Reference.objects.get(pk=self.kwargs['pk'])
-        try:
-            uref = UserReference.objects.get(reference=ref, user=user)
-        except UserReference.DoesNotExist as dne:
+        ref = Reference.objects.get(pk=self.kwargs['reference_pk'])
+        uref_id = self.kwargs.get('uref_id',None)
+
+        if uref_id:
+            uref = UserReference.objects.get(id=uref_id, reference=ref, user=user)
+        else:
             uref = UserReference(reference=ref, user=user)
+            uref.id = None
 
         uref.description = data.get('description')
         uref.save()
@@ -225,14 +231,14 @@ class ReferenceAttachView(LoginRequiredMixin, FormView):
         tags['new'] = [data.pop('new_tags')] if data['new_tags'] else []
         add_tags(uref, tags)
         target = bookmark_and_notify(
-            ref, self, self.request, 'bibliography', 'reference',
+            uref, self, self.request, 'bibliography', 'reference',
         )
         if not target:
             target = user
         action.send(
             user,
             verb='added',
-            action_object=ref,
+            action_object=uref,
             target=target,
         )
         last_viewed_path = self.request.session.get('last_viewed_path', '/')
@@ -331,10 +337,10 @@ def reference_share(request, reference_pk):
 
 @never_cache
 @login_required
-def reference_delete(request, reference_pk, template_name='bibliography/reference_delete.html'):
+def reference_delete(request, reference_pk, uref_id, template_name='bibliography/reference_delete.html'):
     reference = get_object_or_404(Reference, pk=reference_pk)
     user = request.user
-    user_reference = UserReference.objects.get( user=user, reference=reference)
+    user_reference = UserReference.objects.get(id=uref_id, user=user, reference=reference)
 
     if request.POST:
         title = reference.title
@@ -365,10 +371,10 @@ def reference_delete(request, reference_pk, template_name='bibliography/referenc
 
 @never_cache
 @login_required
-def reference_detail(request, reference_pk, template_name='bibliography/reference_detail.html'):
+def reference_detail(request, reference_pk, uref_id, template_name='bibliography/reference_detail.html'):
     reference = get_object_or_404(Reference, pk=reference_pk)
     try:
-        user_reference = UserReference.objects.get(reference_id=reference_pk, user_id = request.user.id)
+        user_reference = UserReference.objects.get(id=uref_id, reference_id=reference_pk)
     except UserReference.DoesNotExist as dne:
         user_reference = UserReference()
         user_reference.id = 0

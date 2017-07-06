@@ -1,15 +1,16 @@
 {% load core_tags discussion_tags %}
+{# FYI: another template where ref is a UserReference#}
 <div class="row reference-item">
   <div class="col-md-11">
-    <h4>{% if obj.parsed_data.authors %}{{ obj.parsed_data.authors }}. {% endif %}{% if ref.get_source_url %}
-        <a href="{{ ref.get_source_url }}" {% if 'http' in ref.get_source_url and not email %}target="_blank"{% endif %}>{% endif %}
+    <h4>{% if obj.reference.parsed_data.authors %}{{ obj.reference.parsed_data.authors }}. {% endif %}{% if ref.reference.get_source_url %}
+        <a href="{{ ref.reference.get_source_url }}" {% if 'http' in ref.reference.get_source_url and not email %}target="_blank"{% endif %}>{% endif %}
         {% autoescape off %}{% if highlighted.title %}{{ highlighted.title.0 }}{% else %}{{ obj.parsed_data.title }}{% endif %}{% endautoescape %}
-        {% if ref.get_source_url %}</a>{% endif %},
-        {% if obj.parsed_data.container_title %}in <em>{{ obj.parsed_data.container_title }}</em>,{% endif %}
-        {% if obj.parsed_data.page %}pp {{ obj.parsed_data.page }}.{% endif %}
-        {% if obj.parsed_data.publication_date %}{{ obj.parsed_data.publication_date }};{% endif %}
-        {{ obj.parsed_data.publisher }} {{ obj.parsed_data.journal_title }}
-        {% if obj.parsed_data.doi %}DOI: {{ obj.parsed_data.doi }}{% endif %} {% if obj.parsed_data.pubmed_id %}PMID: {{ obj.parsed_data.pubmed_id }}{% endif %}
+        {% if ref.reference.get_source_url %}</a>{% endif %},
+        {% if obj.reference.parsed_data.container_title %}in <em>{{ obj.reference.parsed_data.container_title }}</em>,{% endif %}
+        {% if obj.reference.parsed_data.page %}pp {{ obj.reference.parsed_data.page }}.{% endif %}
+        {% if obj.reference.parsed_data.publication_date %}{{ obj.reference.parsed_data.publication_date }};{% endif %}
+        {{ obj.reference.parsed_data.publisher }} {{ obj.reference.parsed_data.journal_title }}
+        {% if obj.reference.parsed_data.doi %}DOI: {{ obj.reference.parsed_data.doi }}{% endif %} {% if obj.reference.parsed_data.pubmed_id %}PMID: {{ obj.parsed_data.pubmed_id }}{% endif %}
     </h4>
     <p class="small meta">
         {% if user.id %}
@@ -23,14 +24,14 @@
         <br />
       {% display_shared_with ref request.user %}
     </p>
-    {% if obj.user_description %}
+    {% if obj.description %}
         <div class="more">
-            {% autoescape off %}{{ obj.user_description }}{% endautoescape %}
+            {% autoescape off %}{{ obj.description }}{% endautoescape %}
         </div>
     {% endif %}
-    {% if obj.current_user_reference.tags.all %}
+    {% if obj.tags.all %}
         <p class="tags">
-            {% for tag in obj.current_user_reference.tags.all %}
+            {% for tag in obj.tags.all %}
                 <a role="button" class="btn btn-tag btn-xs" href="{% url 'haystack_search' %}?tags={{ tag.id }}">
                   {{ tag }}
                 </a>
@@ -40,11 +41,11 @@
   </div>
   <div class="col-md-1">
         {% get_threaded_comment_count for obj as comment_count %}
-        <a class="comment-count {% if comment_count < 1 %}empty{% endif %}" href="{% url 'bibliography:reference_detail' obj.id %}">
+        <a class="comment-count {% if comment_count < 1 %}empty{% endif %}" href="{% url 'bibliography:reference_detail' obj.reference.pk obj.id %}">
           <i class="fa fa-comment" aria-hidden="true"></i><br>
           {%  if comment_count > 0 %} <span class="comment-count-text">{{ comment_count }}</span> {% endif %}
         </a>
-        {% if user != obj.get_poster %}
+        {% if user != obj.reference.get_poster %}
           {% if project %}
           <form class="bookmark-form" method="POST" action="{% toggle_bookmark_url obj project %}">
           {% else %}
@@ -57,7 +58,7 @@
           <a href="#" class="bookmark-trigger" data-toggle="tooltip" title="Save Bookmark"><i class="fa fa-star" aria-hidden="true"></i></a>
           </form>
         {% endif %}
-        <a class="share-link" href="/send/bibliography/reference/{{ obj.id }}"><i class="fa fa-share"></i></a>
+        <a class="share-link" href="/send/bibliography/userreference/{{ obj.id }}"><i class="fa fa-share"></i></a>
   </div>
 </div>
 <hr>

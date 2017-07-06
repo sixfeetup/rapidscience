@@ -21,7 +21,7 @@ from casereport.constants import WorkflowState
 from casereport.models import CaseReport
 from rlp.accounts.models import User
 from rlp.core.utils import rollup
-from rlp.bibliography.models import Reference
+from rlp.bibliography.models import Reference, UserReference
 from rlp.discussions.models import ThreadedComment
 from rlp.documents.models import Document
 from rlp.search.forms import ActionObjectForm
@@ -112,7 +112,7 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
         )
     elif tab == 'bibliography':
         context['references'] = sorted(
-            project.get_bookmarked_content(Reference),
+            project.get_bookmarked_content(UserReference),
             key=lambda c: c.date_updated,
             reverse=True,
         )

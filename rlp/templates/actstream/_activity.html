@@ -25,7 +25,7 @@
               {% include 'documents/_video.html' %}
             {% elif model == 'threadedcomment' %}
               {% include 'comments/_comment.html' %}
-            {% elif model == 'referenceshare' %}
+            {% elif model == 'referenceshare' or model == 'userreference' %}
               {% if obj.comment %}
               <blockquote>
                 <p>{{ obj.comment }}</p>
