@@ -268,7 +268,8 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
             emails.invite_people(case, user.email)
         external = data.get('external').split(",")
         for address in external:
-            emails.invite_people(case, address.strip())
+            if address:
+                emails.invite_people(case, address.strip())
 
 
         # eventually we' want this:
@@ -586,7 +587,8 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
             emails.invite_people(case, user.email)
         external = data.get('external').split(",")
         for address in external:
-            emails.invite_people(case, address.strip())
+            if address:
+                emails.invite_people(case, address.strip())
 
         messages.success(request, "Edits saved!")
         return redirect(reverse('casereport_detail', args=(case.id, case.title)))
