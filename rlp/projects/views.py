@@ -25,6 +25,7 @@ from rlp.bibliography.models import Reference
 from rlp.discussions.models import ThreadedComment
 from rlp.documents.models import Document
 from rlp.search.forms import ActionObjectForm
+from rlp.projects import emails
 from .forms import InviteForm, NewGroupForm, ModifyGroupForm
 from .models import Project
 from .models import ProjectMembership
@@ -419,6 +420,5 @@ class IgnoreMembershipRequest(LoginRequiredMixin, View):
             if request.user.is_staff or request.user in group.moderators():
                 membership.ignore()
                 membership.save()
+                emails.reject_to_requester(request, membership, group)
         return redirect(group.get_absolute_url())
-
-
