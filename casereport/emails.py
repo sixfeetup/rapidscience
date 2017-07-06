@@ -51,7 +51,8 @@ def invite_coauthor(casereport, user):
         "casereport": casereport,
         "user": user
     }
-    subject = "You are invited to join Sarcoma Central"
+    author = casereport.primary_author.get_full_name()
+    subject = "{0} invites you to co-author a case report".format(author)
     template = 'casereport/emails/invite_coauthor'
     message_body = render_to_string('{}.txt'.format(template), email_context)
     recipient = user.email

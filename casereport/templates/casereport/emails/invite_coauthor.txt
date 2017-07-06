@@ -1,15 +1,10 @@
 Dear {{ user.get_full_name }},<br><br>
 
-We are pleased to inform you that your colleague,
-{{ casereport.primary_author.get_full_name }}, has submitted a case report
-to Cases Central and listed you as co-author. The data will initially be
-shared privately, only to validated members of Sarcoma Central as selected by the authors.<br><br>
+Your colleague, {{ casereport.primary_author.get_full_name }}, {{ casereport.primary_author.email }} has submitted patient data to Cases Central and listed you as co-author. The data will initially be shared privately, only to specific, validated members of Sarcoma Central as determined by the authors.<br><br>
 
-We invite you to <a href="https://sarcoma.rapidscience.org{% url 'register_user' user.id %}">register</a> to view the case report and to participate
-in member discussions of this and other postings of interest.<br><br>
+We invite you to <a href="https://sarcoma.rapidscience.org{% url 'register_user' user.id %}">register</a> to view the case report when it goes live and to participate in member discussions of this and other postings of interest.<br><br>
 
-Members of Sarcoma Central can join and form groups, invite new members,
-and post/discuss case reports, discussions, documents, and references.<br><br>
+Members of Sarcoma Central can join and form groups, invite new members, and post/discuss case reports, discussions, documents, and references. <br><br>
 
 Sincerely,<br>
 <a href="https://sarcoma.rapidscience.org">The Sarcoma Central Team</a><br>
