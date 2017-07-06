@@ -47,6 +47,8 @@ def invite_people(casereport, address):
 
 
 def invite_coauthor(casereport, user):
+    """Invite a co-author that is not currently a site member
+    """
     email_context = {
         "casereport": casereport,
         "user": user
@@ -54,6 +56,25 @@ def invite_coauthor(casereport, user):
     author = casereport.primary_author.get_full_name()
     subject = "{0} invites you to co-author a case report".format(author)
     template = 'casereport/emails/invite_coauthor'
+    message_body = render_to_string('{}.txt'.format(template), email_context)
+    recipient = user.email
+    mail = EmailMessage(subject, message_body,
+                        "Cases Central <edit@rapidscience.org>",
+                        [recipient])
+    mail.content_subtype = "html"
+    mail.send()
+
+
+def notify_coauthor(casereport, user):
+    """Notify a co-author that is a site member
+    """
+    email_context = {
+        "casereport": casereport,
+        "user": user
+    }
+    author = casereport.primary_author.get_full_name()
+    subject = "{0} invites you to co-author a case report".format(author)
+    template = 'casereport/emails/notify_coauthor'
     message_body = render_to_string('{}.txt'.format(template), email_context)
     recipient = user.email
     mail = EmailMessage(subject, message_body,

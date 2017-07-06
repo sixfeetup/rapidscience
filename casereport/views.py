@@ -244,6 +244,7 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
             try:
                 coauthor = User.objects.get(email=email[i])
                 coauthors.append(coauthor)
+                emails.notify_coauthor(case, coauthor)
             except User.DoesNotExist:
                 coauthor = User(email=email[i], last_name=name[i],
                                 is_active=False)
@@ -517,11 +518,14 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
         # co-authors
         email = data.getlist('coauthor_email')
         name = data.getlist('coauthor_name')
+        current_authors = set(case.co_author.all())
         case.co_author.clear()
         for i in range(0, len(name)):
             try:
                 coauthor = User.objects.get(email=email[i])
                 case.co_author.add(coauthor)
+                if coauthor not in current_authors:
+                    emails.notify_coauthor(case, coauthor)
             except User.DoesNotExist:
                 coauthor = User(email=email[i], last_name=name[i],
                                 is_active=False)
