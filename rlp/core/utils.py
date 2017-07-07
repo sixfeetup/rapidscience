@@ -224,11 +224,14 @@ def add_tags(obj, tags):
         new_tagwords = [tw for tw in map(str.strip, tags['new'][0].split(","))
                         if tw]
         for ntw in new_tagwords:
-            managed_tag, is_new = ManagedTag.objects.get_or_create(name=ntw,
-                                                                   slug=slugify(
-                                                                       ntw))
+            new_slug = slugify(ntw)
+            managed_tag, is_new = ManagedTag.objects.get_or_create(slug=new_slug,
+                                                                   defaults={
+                                                                       'name':ntw,
+                                                                   })
+            # potentially upgrade to an existing Tag
             if managed_tag.approved:
-                t = Tag.objects.get(slug=slugify(ntw))
+                t = Tag.objects.get(slug=new_slug)
                 obj.tags.add(t)
             else:
                 obj.mtags.add(managed_tag)
