@@ -67,7 +67,6 @@ class Reference(SharedObjectMixin):
         uref =  self.userreference_set.filter(user=user).first()
         if not uref:
             uref = self
-        print("uref:",uref)
         return uref
 
     def user_description(self, user=None):

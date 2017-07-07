@@ -21,9 +21,9 @@
                       {% if obj.parsed_data.doi %}DOI: {{ obj.parsed_data.doi }}{% endif %} {% if obj.parsed_data.pubmed_id %}PMID: {{ obj.parsed_data.pubmed_id }}{% endif %}
                   </h1>
                   <p class="small">
-                    {% if obj.owner %}
+                    {% if user_reference.user %}
                         Posted by
-                        <a href="{{ obj.owner.get_absolute_url }}">{% if request.user == obj.owner %} me {% else %} {{ obj.owner.get_full_name }}{% endif %}</a>
+                        <a href="{{ user_reference.user.get_absolute_url }}">{% if request.user == user_reference.user %} me {% else %} {{ user_reference.user.get_full_name }}{% endif %}</a>
                     {% endif %}
                     | {{ obj.date_updated|date:"j M Y" }}
                     <a href="{% url "bibliography:reference_edit" reference_pk=obj.pk uref_id=user_reference.id %}">Edit</a>
