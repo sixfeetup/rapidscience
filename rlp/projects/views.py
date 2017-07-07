@@ -407,6 +407,7 @@ class AcceptMembershipRequest(LoginRequiredMixin, View):
             if request.user.is_staff or request.user in group.moderators():
                 membership.approve()
                 membership.save()
+                emails.approve_to_requester(request, membership, group)
         return redirect(group.get_absolute_url())
 
 
