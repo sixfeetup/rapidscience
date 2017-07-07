@@ -231,7 +231,7 @@ class ReferenceAttachView(LoginRequiredMixin, FormView):
         tags['new'] = [data.pop('new_tags')] if data['new_tags'] else []
         add_tags(uref, tags)
         target = bookmark_and_notify(
-            uref, self, self.request, 'bibliography', 'reference',
+            uref, self, self.request, 'bibliography', 'userreference',
         )
         if not target:
             target = user
