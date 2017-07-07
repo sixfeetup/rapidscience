@@ -8,11 +8,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.shortcuts import get_current_site
 from django.core import signing
-from django.core.mail import EmailMultiAlternatives
 from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render, resolve_url
-from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
 from django.utils.http import is_safe_url
 from django.utils.translation import ugettext as _
@@ -25,6 +23,7 @@ from formtools.wizard.views import SessionWizardView
 
 from casereport.constants import WorkflowState
 from casereport.models import CaseReport
+from rlp.accounts import emails
 from rlp.accounts.models import Institution
 from rlp.bibliography.models import Reference
 from rlp.core.email import send_transactional_mail
@@ -44,7 +43,6 @@ from .signals import sync_user
 REGISTRATION_SALT = getattr(settings, 'REGISTRATION_SALT', 'registration')
 
 REGISTRATION_SUCCESS_SUBJECT = "Thank you for registering"
-PENDING_APPROVAL_SUBJECT = '{}: New registration pending approval'.format(settings.SITE_PREFIX.upper())
 PENDING_REGISTRATION_MESSAGE = "Thank you for your interest in joining the {} Research Network. " \
                                "Your registration is pending approval. You will receive an email when your " \
                                "registration is complete.".format(settings.SITE_PREFIX.upper())
@@ -223,19 +221,8 @@ class Register(SessionWizardView):
                 user.institution = new_inst
             user.save()
             messages.success(self.request, PENDING_REGISTRATION_MESSAGE)
-            # Email the contacts for this project
-            subject = PENDING_APPROVAL_SUBJECT
-            email_context = {
-                'user': user,
-                'site': get_current_site(self.request),
-                'activation_key': self.get_activation_key(user),
-            }
-            template = 'emails/pending_registration'
-            message = render_to_string('{}.txt'.format(template), email_context)
-            html_message = render_to_string('{}.html'.format(template), email_context)
-            mail = EmailMultiAlternatives(subject, message, settings.DEFAULT_FROM_EMAIL)
-            mail.attach_alternative(html_message, 'text/html')
-            mail.send()
+            emails.registration_to_admin(self.request, user,
+                                         self.get_activation_key(user))
             sync_user.send(sender=user.__class__, user=user)
         return redirect('/')
 
