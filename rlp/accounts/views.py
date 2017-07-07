@@ -205,7 +205,7 @@ class Register(SessionWizardView):
             salt=REGISTRATION_SALT
         )
 
-    def process_approval(self, form):
+    def process_approval(self, form, user):
         with transaction.atomic():
             data = self.request.POST.copy()
             if 'register-new_institution' in data:
@@ -217,15 +217,6 @@ class Register(SessionWizardView):
                 new_inst.website = data['register-institution_website']
                 new_inst.save()
             # Either save form or update existing unregistered user
-            try:
-                user = User.objects.get(email=form.data['register-email'])
-                user.first_name = form.data['register-first_name']
-                user.last_name = form.data['register-last_name']
-                user.title = form.data['register-title']
-                user.set_password(form.data['register-password1'])
-            except User.DoesNotExist:
-                user = form.save(commit=False)
-            user.is_active = False
             if 'register-new_institution' in data:
                 user.institution = new_inst
             user.save()
@@ -235,17 +226,8 @@ class Register(SessionWizardView):
             sync_user.send(sender=user.__class__, user=user)
         return redirect('/')
 
-    def process_registration(self, form):
+    def process_registration(self, form, user):
         with transaction.atomic():
-            # Either save form or update existing unregistered user
-            try:
-                user = User.objects.get(email=form.data['register-email'])
-                user.first_name = form.data['register-first_name']
-                user.last_name = form.data['register-last_name']
-                user.title = form.data['register-title']
-                user.set_password(form.data['register-password1'])
-            except User.DoesNotExist:
-                user = form.save(commit=False)
             user.is_active = True
             user.save()
             # This is not a proper view but a reusable function to remove duplication from views
@@ -276,10 +258,22 @@ class Register(SessionWizardView):
                     'form': form,
                 },
             )
-        if form.email_domain_matches():
-            return self.process_registration(form)
+        # Either save form or update existing unregistered user
+        skip_approval = False
+        try:
+            user = User.objects.get(email=form.data['register-email'])
+            user.first_name = form.data['register-first_name']
+            user.last_name = form.data['register-last_name']
+            user.title = form.data['register-title']
+            user.set_password(form.data['register-password1'])
+            user.save()
+            skip_approval = True
+        except User.DoesNotExist:
+            user = form.save(commit=False)
+        if form.email_domain_matches() or skip_approval:
+            return self.process_registration(form, user)
         else:
-            return self.process_approval(form)
+            return self.process_approval(form, user)
 
 
 class ActivationView(TemplateView):
