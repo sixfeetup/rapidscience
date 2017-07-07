@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.contrib.sites.models import Site
 from django.core.exceptions import PermissionDenied
+from django.core.mail import EmailMessage
 from django.core.mail import send_mail
 from django.core.mail import send_mass_mail
 from django.core.urlresolvers import reverse
@@ -177,6 +178,30 @@ def invite_members(request, pk, slug):
             external_addrs = form.cleaned_data['external']
             recipients = internal_addrs + external_addrs
             subject = 'Invitation to join {}'.format(group.title)
+
+            # Non-members - create user and send specific registration link
+            for ext in external_addrs:
+                try:
+                    member = User.objects.get(email=ext)
+                    internal_addrs.append(member)
+                except User.DoesNotExist:
+                    new_member = User(email=ext, is_active=False)
+                    new_member.save()
+                    message = form.cleaned_data['invitation_message']
+                    message = message.replace(
+                        "/register/",
+                        "/{0}/register/".format(new_member.pk))
+                    mail = EmailMessage(
+                        subject,
+                        message,
+                        request.user.get_full_name() +
+                        " <support@rapidscience.org>",
+                        [ext],
+                    )
+                    mail.content_subtype = "html"
+                    mail.send()
+
+            # site members
             message_data = (
                 (
                     subject,
@@ -185,9 +210,10 @@ def invite_members(request, pk, slug):
                     " <support@rapidscience.org>",
                     [rcp],
                 )
-                for rcp in recipients
+                for rcp in internal_addrs
             )
             send_mass_mail(message_data)
+
             messages.success(request, '{} members invited'.format(len(recipients)))
             return redirect(request.META['HTTP_REFERER'])
     messages.error(request, 'Invitation failed')
