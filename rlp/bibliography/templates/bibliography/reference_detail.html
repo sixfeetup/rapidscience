@@ -26,8 +26,10 @@
                         <a href="{{ user_reference.user.get_absolute_url }}">{% if request.user == user_reference.user %} me {% else %} {{ user_reference.user.get_full_name }}{% endif %}</a>
                     {% endif %}
                     | {{ obj.date_updated|date:"j M Y" }}
-                    <a href="{% url "bibliography:reference_edit" reference_pk=obj.pk uref_id=user_reference.id %}">Edit</a>
+                    {% if request.user == user_reference.user %} |
+                    <a href="{% url "bibliography:reference_edit" reference_pk=obj.pk uref_id=user_reference.id %}">Edit</a> | 
                     <a href="{% url "bibliography:reference_delete" reference_pk=obj.pk uref_id=user_reference.id %}">Delete</a>
+                    {% endif %}
                     <br />
 
                     {%  display_shared_with obj request.user %}
