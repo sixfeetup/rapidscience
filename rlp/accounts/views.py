@@ -42,7 +42,7 @@ from .signals import sync_user
 
 REGISTRATION_SALT = getattr(settings, 'REGISTRATION_SALT', 'registration')
 
-REGISTRATION_SUCCESS_SUBJECT = "Thank you for registering"
+REGISTRATION_SUCCESS_SUBJECT = "Membership in Sarcoma Central - welcome and a few tips"
 PENDING_REGISTRATION_MESSAGE = "Thank you for your interest in joining the {} Research Network. " \
                                "Your registration is pending approval. You will receive an email when your " \
                                "registration is complete.".format(settings.SITE_PREFIX.upper())

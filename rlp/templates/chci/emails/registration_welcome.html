@@ -1,24 +1,25 @@
 {% extends 'emails/base_email.html' %}{% load cms_tags %}
 
 {% block content %}
-<strong style="font-size: 21px;">Hi {{ user.get_full_name }},</strong><br><br>
+<strong style="font-size: 21px;">Hello {{ user.get_full_name }},</strong><br><br>
 
-Welcome to the community! You are now registered on the CHCI Medical Humanities Research Network web site.<br><br>
+Welcome to Sarcoma Central.<br><br>
 
-Our goal is to foster collaboration among scholars working in humanities departments and their colleagues in the health sciences.
-We encourage you to post questions to the group, and upload articles or documents that others might find interesting, inspiring, or relevant as they work to meet these goals.<br><br>
+Upon logging in, you will have landed on your personal dashboard -- a private space for your content and messages.<br><br>
 
-To get started, <a href="https://{{ site.domain }}{% url 'profile_edit' %}">log on and create your profile</a>.
-Posting your biographical information and photo will help to foster interaction and trust, attributes of successful communities.<br><br>
+Members can view your profile. Please take time to complete your profile (“edit profile” by clicking your name) -- i.e., post a brief bio, your research interests, and photo to foster interaction and trust.<br><br>
 
-Once you’re on the site, take a look around at what has been posted, and consider sharing your thoughts or uploading articles of your own.<br><br>
+All members of Sarcoma Central are registered to the <a href="https://{{ site.domain }}{% url 'projects:projects_list' %}1-community-commons">Community Commons</a> group. You will see the members list and the latest activity on that group page.<br><br>
 
-If you have questions or technical difficulties, or ideas regarding how the site can facilitate your work on CHCI,
-please contact us at <a href="mailto:info@rapidscience.org">info@rapidscience.org</a>.<br><br>
+Other groups to which you have been invited or otherwise joined will be listed on your dashboard for easy access. Visit the <a href="https://{{ site.domain }}{% url 'projects:projects_list' %}">All Groups</a> page and consider joining open groups or requesting access to closed groups. You can also start your own group and invite colleagues to join.<br><br>
+
+You can start discussions and post documents, case reports, and references from your personal dashboard (for sharing with multiple groups and members) or from a group dashboard (for interaction with that group).<br><br>
+
+If you have questions or technical difficulties, or ideas regarding how the site can facilitate your work, please contact us at <​support@rapidscience.org>.<br><br>
 
 Happy collaborating!<br><br>
 
-The Rapid Science Team<br><br>
-
-"In the long history of humankind: those who learned to collaborate and improvise most effectively have prevailed." - Charles Darwin
+Sincerely,<br>
+<a href="https://sarcoma.rapidscience.org">The Sarcoma Central Team</a><br>
+<a href="https://twitter.com/RapidScience">@RapidScience</a>
 {% endblock content %}
