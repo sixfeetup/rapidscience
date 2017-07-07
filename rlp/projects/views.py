@@ -163,32 +163,33 @@ def projects_members(request, pk, slug, template_name='projects/projects_members
 
 
 def invite_members(request, pk, slug):
-    if request.method == 'POST':
-        if request.user.is_authenticated():
-            group = Project.objects.get(id=pk)
-            if not group.approval_required or ( request.user.is_superuser or request.user in group.moderators() ):
-                form = InviteForm(request.POST)
-                form.fields['internal'].choices = group_invite_choices(group)
-                if form.is_valid():
-                    internal_addrs = [
-                        user.email for user in form.cleaned_data['internal']
-                        ]
-                    external_addrs = form.cleaned_data['external']
-                    recipients = internal_addrs + external_addrs
-                    subject = 'Invitation to join {}'.format(group.title)
-                    message_data = (
-                        (
-                            subject,
-                            form.cleaned_data['invitation_message'],
-                            request.user.get_full_name() +
-                            " <support@rapidscience.org>",
-                            [rcp],
-                        )
-                        for rcp in recipients
-                    )
-                    send_mass_mail(message_data)
-                    messages.success(request, '{} members invited'.format(len(recipients)))
-                    return redirect(request.META['HTTP_REFERER'])
+    if request.method != 'POST' or not request.user.is_authenticated():
+        messages.error(request, 'Invitation failed')
+        return redirect(request.META['HTTP_REFERER'])
+    group = Project.objects.get(id=pk)
+    if not group.approval_required or (request.user.is_superuser or request.user in group.moderators()):
+        form = InviteForm(request.POST)
+        form.fields['internal'].choices = group_invite_choices(group)
+        if form.is_valid():
+            internal_addrs = [
+                user.email for user in form.cleaned_data['internal']
+                ]
+            external_addrs = form.cleaned_data['external']
+            recipients = internal_addrs + external_addrs
+            subject = 'Invitation to join {}'.format(group.title)
+            message_data = (
+                (
+                    subject,
+                    form.cleaned_data['invitation_message'],
+                    request.user.get_full_name() +
+                    " <support@rapidscience.org>",
+                    [rcp],
+                )
+                for rcp in recipients
+            )
+            send_mass_mail(message_data)
+            messages.success(request, '{} members invited'.format(len(recipients)))
+            return redirect(request.META['HTTP_REFERER'])
     messages.error(request, 'Invitation failed')
     return redirect(request.META['HTTP_REFERER'])
 
