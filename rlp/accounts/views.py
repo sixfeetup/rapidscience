@@ -24,7 +24,7 @@ from formtools.wizard.views import SessionWizardView
 from casereport.constants import WorkflowState
 from casereport.models import CaseReport
 from rlp.accounts import emails
-from rlp.accounts.models import Institution
+from rlp.accounts.models import Institution, UserLogin
 from rlp.bibliography.models import Reference
 from rlp.core.email import send_transactional_mail
 from rlp.core.utils import rollup
@@ -47,6 +47,10 @@ PENDING_REGISTRATION_MESSAGE = "Thank you for your interest in joining the {} Re
                                "Your registration is pending approval. You will receive an email when your " \
                                "registration is complete.".format(settings.SITE_PREFIX.upper())
 
+WELCOME_MESSAGE="Welcome to Sarcoma Central! " \
+                "In your Activity Feed below, you will find a few brief " \
+                "notes on how to proceed -- e.g., complete your profile " \
+                "and join or form groups."
 
 @sensitive_post_parameters()
 @csrf_protect
@@ -84,6 +88,11 @@ def login(request, template_name='accounts/login.html',
 
             # Okay, security check complete. Log the user in.
             auth_login(request, form.get_user())
+
+            # welcome the user on their first login
+            if UserLogin.objects.filter(user=request.user).count() == 0:
+                messages.success(request, WELCOME_MESSAGE)
+
             if not redirect_to:
                 redirect_to = reverse('dashboard')
 
