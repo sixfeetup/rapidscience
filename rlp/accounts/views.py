@@ -25,7 +25,7 @@ from casereport.constants import WorkflowState
 from casereport.models import CaseReport
 from rlp.accounts import emails
 from rlp.accounts.models import Institution, UserLogin
-from rlp.bibliography.models import Reference
+from rlp.bibliography.models import Reference, UserReference
 from rlp.core.email import send_transactional_mail
 from rlp.core.utils import rollup
 from rlp.core.views import MESSAGES_DEFAULT_FORM_ERROR
@@ -476,8 +476,18 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
             reverse=True,
         )
     elif tab == 'bibliography':
+        refs = request.user.get_bookmarked_content(UserReference)
+        if filter_form.is_valid() and filter_form.cleaned_data.get(
+                'project'):
+            project = filter_form.cleaned_data['project']
+            refs = [ref for ref in refs
+                    if project in ref.get_viewers()]
+        if filter_form.is_valid() and filter_form.cleaned_data.get(
+                'user_activity_only'):
+            refs = [ref for ref in refs
+                    if ref.user.id == request.user.id]
         context['references'] = sorted(
-            request.user.get_bookmarked_content(Reference),
+            refs,
             key=lambda c: c.date_updated,
             reverse=True,
         )
