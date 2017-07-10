@@ -80,7 +80,8 @@ def display_shared_with(item, user=None):
     viewers = item.get_viewers()
     vlist = []
     for v in viewers:
-        if user == v:
+        # suppress shares by the author to themselves
+        if hasattr(item, "user") and v == item.user:
             continue
         if v._meta.model_name == "user":
             url = reverse('profile', args=[v.id])
