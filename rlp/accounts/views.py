@@ -221,8 +221,9 @@ class Register(SessionWizardView):
                 user.institution = new_inst
             user.save()
             messages.success(self.request, PENDING_REGISTRATION_MESSAGE)
-            emails.registration_to_admin(self.request, user,
-                                         self.get_activation_key(user))
+            # send email for member to verify account
+            emails.verify_email(self.request, user,
+                                self.get_activation_key(user))
             sync_user.send(sender=user.__class__, user=user)
         return redirect('/')
 
@@ -280,6 +281,8 @@ class Register(SessionWizardView):
 
 class ActivationView(TemplateView):
     """
+    If verifying email, send admin an email to activate the account.
+    If activating the account, send user a welcome email.
     Given a valid activation key, activate the user's
     account. Otherwise, show an error message stating the account
     couldn't be activated.
@@ -293,8 +296,35 @@ class ActivationView(TemplateView):
         method.
 
         """
-        self.activate(*args, **kwargs)
+        if 'confirm' in self.request.path:
+            self.confirm_email(*args, **kwargs)
+        else:
+            self.activate(*args, **kwargs)
         return redirect('/')
+
+    def confirm_email(self, *args, **kwargs):
+        # This is safe even if, somehow, there's no activation key,
+        # because unsign() will raise BadSignature rather than
+        # TypeError on a value of None.
+        email = self.validate_key(kwargs.get('activation_key'))
+        if email is None:
+            messages.warning(self.request, "The link you followed is invalid.")
+        return
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            messages.error(self.request, "No member was found with this email address: {}".format(email))
+        else:
+            # notify admin to verify the account
+            key = signing.dumps(
+                obj=getattr(user, user.USERNAME_FIELD),
+                salt=REGISTRATION_SALT
+            )
+            messages.success(
+                self.request,
+                "Your email address has been verified. You will be \
+                 notified once your account is approved.")
+            emails.registration_to_admin(self.request, user, key)
 
     def activate(self, *args, **kwargs):
         # This is safe even if, somehow, there's no activation key,
