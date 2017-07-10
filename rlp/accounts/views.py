@@ -270,6 +270,8 @@ class Register(SessionWizardView):
             skip_approval = True
         except User.DoesNotExist:
             user = form.save(commit=False)
+            user.is_active = False
+            user.save()
         if form.email_domain_matches() or skip_approval:
             return self.process_registration(form, user)
         else:
