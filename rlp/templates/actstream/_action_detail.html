@@ -22,11 +22,16 @@ by <a href="{{ action.actor.get_absolute_url }}">{% if request.user == action.ac
 {% endif %}
 {% if action.action_object_content_type.model == 'threadedcomment' and action.verb != 'started' and action.verb != 'shared' %}
     {%  with comment=action.action_object parent_user=action.action_object.get_parent.user %}
-        {% if comment.is_reply or 'casereport' in comment.discussion_root.content_object.get_content_type or 'document' in comment.discussion_root.content_object.get_content_type or 'reference' in comment.discussion_root.content_object.get_content_type or comment.is_editorial_note %}on{% endif %}
-        {% if 'casereport' in comment.discussion_root.content_object.get_content_type or 'document' in comment.discussion_root.content_object.get_content_type or 'reference' in comment.discussion_root.content_object.get_content_type %}
+        {% if comment.is_reply or 'casereport' in comment.discussion_root.content_object.get_content_type or 'document' in comment.discussion_root.content_object.get_content_type or 'userreference' in comment.discussion_root.content_object.get_content_type or comment.is_editorial_note %}on{% endif %}
+        {% if 'casereport' in comment.discussion_root.content_object.get_content_type or 'document' in comment.discussion_root.content_object.get_content_type %}
         <a href="{{ comment.discussion_root.content_object.get_absolute_url }}">
             {% if comment.is_reply %}{{ comment.discussion_root.user }}: {% endif %}
             {{ comment.discussion_root.content_object.title|truncatewords_html:10 }}
+        </a>
+        {% elif 'userreference' in comment.discussion_root.content_object.get_content_type %}
+        <a href="{{ comment.discussion_root.content_object.get_absolute_url }}">
+            {% if comment.is_reply %}{{ comment.discussion_root.user }}: {% endif %}
+            {{ comment.discussion_root.content_object.reference.title|truncatewords_html:10 }}
         </a>
         {% elif comment.is_editorial_note %}
         <a href="{{ comment.content_object.casereport.get_absolute_url }}">
