@@ -225,7 +225,7 @@ class Register(SessionWizardView):
             emails.verify_email(self.request, user,
                                 self.get_activation_key(user))
             sync_user.send(sender=user.__class__, user=user)
-        return redirect('/')
+        return redirect('projects:projects_list')
 
     def process_registration(self, form, user):
         with transaction.atomic():
@@ -300,7 +300,7 @@ class ActivationView(TemplateView):
             self.confirm_email(*args, **kwargs)
         else:
             self.activate(*args, **kwargs)
-        return redirect('/')
+        return redirect('projects:projects_list')
 
     def confirm_email(self, *args, **kwargs):
         # This is safe even if, somehow, there's no activation key,
@@ -309,7 +309,7 @@ class ActivationView(TemplateView):
         email = self.validate_key(kwargs.get('activation_key'))
         if email is None:
             messages.warning(self.request, "The link you followed is invalid.")
-        return
+            return
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
@@ -325,6 +325,7 @@ class ActivationView(TemplateView):
                 "Your email address has been verified. You will be \
                  notified once your account is approved.")
             emails.registration_to_admin(self.request, user, key)
+            return redirect('projects:projects_list')
 
     def activate(self, *args, **kwargs):
         # This is safe even if, somehow, there's no activation key,
