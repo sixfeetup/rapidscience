@@ -118,14 +118,22 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
             reverse=True,
         )
     # member invite form
-    site = Site.objects.get_current()
-    project_url = 'https://' + site.domain + project.get_absolute_url()
-    join_url = 'https://' + site.domain + "/groups/" + str(project.id) + '/join'
+    project_url = request.build_absolute_uri(
+        reverse('projects:projects_detail',
+                kwargs={'pk': project.pk, 'slug': project.slug}))
+    join_url = request.build_absolute_uri(
+        reverse('projects:projects_join',
+                kwargs={'pk': project.pk}))
+    user_url = request.build_absolute_uri(
+        reverse('profile',
+                kwargs={'pk': request.user.pk}))
     invite_data = {
         'user': request.user.get_full_name(),
+        'user_link': user_url,
         'group': project.title,
         'join_link': join_url,
-        'link': project_url,
+        'project_link': project_url,
+        'reg_link': request.build_absolute_uri(reverse('register'))
     }
     template = "projects/emails/moderator_invite_to_group"
     invite_msg = render_to_string('{}.txt'.format(template), invite_data)

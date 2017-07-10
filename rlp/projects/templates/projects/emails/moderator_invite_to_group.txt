@@ -1,6 +1,6 @@
-You are invited by {{ user }} to join the {{ group }} group in the Sarcoma Central network.<br><br>
+You are invited by <a href="{{ user_link }}">{{ user }}</a> to join the <a href="{{ project_link }}">{{ group }}</a> group in the Sarcoma Central network.<br><br>
 
-If you're not already a Rapid Science member, please register <a href="https://sarcoma.rapidscience.org/accounts/register/">here</a>.<br><br>
+If you're not already a Rapid Science member, please register <a href="{{ reg_link }}">here</a>.<br><br>
 
 Sincerely,<br><br>
 
