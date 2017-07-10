@@ -203,7 +203,7 @@ $(document).ready(function() {
                 '</div><div class="col-md-1"><a href="#" class="remove_coauthor">✕</a></div></div>'
             );
             if ($('.row.coauthor').length > 0) {
-                $(".add_coauthor_button_text").text('Add another co-author');
+                $(".add_coauthor_button_text").text('Add another non-member as a co-author');
             }
             if ($('.row.coauthor').length >= max_fields) {
                 add_button.hide();

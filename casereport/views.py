@@ -148,12 +148,14 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         heading = 'Submit Case'
         subtypes = SubtypeOption.objects.order_by('name')
         aberrations = MolecularAbberation.objects.all()
+        all_members = User.objects.all()
         form = self.get_form()
         return self.render_to_response(self.get_context_data(
             heading=heading,
             form=form,
             subtypes=subtypes,
-            aberrations=aberrations), )
+            aberrations=aberrations,
+            all_members=all_members), )
 
     def get_form(self, form_class):
         try:
@@ -181,6 +183,7 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
     def post(self, request, *args, **kwargs):
         data = request.POST.copy()
         title = data.get('casetitle')
+        coauthors = data.getlist('coauthors', None)
         email = data.getlist('coauthor_email')
         name = data.getlist('coauthor_name')
         alt_email = data.get('author', None)
@@ -239,20 +242,20 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         update_treatments_from_request(case, data)
         if aberrations:
             case.aberrations.add(*aberrations)
-        coauthors = []
+        if coauthors:
+            case.co_author.add(*coauthors)
         for i in range(0, len(name)):
             try:
                 coauthor = User.objects.get(email=email[i])
-                coauthors.append(coauthor)
+                case.co_author.add(coauthor)
                 emails.notify_coauthor(case, coauthor)
             except User.DoesNotExist:
                 coauthor = User(email=email[i], last_name=name[i],
                                 is_active=False)
                 coauthor.save()
-                coauthors.append(coauthor)
+                case.co_author.add(coauthor)
                 emails.invite_coauthor(case, coauthor)
-        for coauth in coauthors:
-            case.co_author.add(coauth)
+        case.save()
 
         bookmark_and_notify(
             case, self, self.request, 'casereport', 'casereport',
@@ -491,6 +494,7 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
         casereport = get_object_or_404(CaseReport, id=case_id)
         subtypes = SubtypeOption.objects.order_by('name')
         aberrations = MolecularAbberation.objects.all()
+        all_members = User.objects.all()
         form = self.form_class()
         form.fields['members'].choices = member_choices()
         form.fields['groups'].choices = group_choices(request.user)
@@ -501,7 +505,8 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
             form=form,
             casereport=casereport,
             subtypes=subtypes,
-            aberrations=aberrations), )
+            aberrations=aberrations,
+            all_members=all_members), )
 
     def post(self, request, case_id, *args, **kwargs):
         data = request.POST.copy()
@@ -516,16 +521,16 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
                 case.authorized_reps.add(author[0])
 
         # co-authors
+        case.co_author = data.getlist('coauthors')
         email = data.getlist('coauthor_email')
         name = data.getlist('coauthor_name')
         current_authors = set(case.co_author.all())
-        case.co_author.clear()
         for i in range(0, len(name)):
             try:
                 coauthor = User.objects.get(email=email[i])
-                case.co_author.add(coauthor)
                 if coauthor not in current_authors:
                     emails.notify_coauthor(case, coauthor)
+                    case.co_author.add(coauthor)
             except User.DoesNotExist:
                 coauthor = User(email=email[i], last_name=name[i],
                                 is_active=False)

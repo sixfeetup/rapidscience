@@ -72,28 +72,17 @@
               <h4>Co-Authors</h4>
               <div class="helpText">Only coauthors who are members of Sarcoma Central will be able edit or comment on this case report. You may invite colleagues to register from the Community Commons group page.</div>
               <div class="coauthor-div">
-                  {% for coauthor in casereport.co_author.all %}
-                  <div class="row coauthor">
-                      <div class="form-group col-md-6">
-                          <label for="coauthor_name{{forloop.counter}}">Name</label>
-                          <input name="coauthor_name" type="text" class="form-control"
-                                 id="coauthor_name{{forloop.counter}}" placeholder="First and Last Name"
-                                 value="{{ coauthor }}">
-                          <div class="helpText">ex: John Smith, MD, PhD</div>
-                      </div>
-                      <div class="form-group col-md-5">
-                          <label for="coauthor_email{{forloop.counter}}">Email Address</label>
-                          <input name="coauthor_email" type="EMAIL" class="form-control"
-                                 id="coauthor_email{{forloop.counter}}" placeholder="Email"
-                                 value="{{ coauthor.email }}">
-                          <div class="helpText">You must use an institutional email address</div>
-                      </div>
-                      <div class="col-md-1"><a href="#" class="remove_coauthor">✕</i></a></div>
-                  </div>
-                  {% endfor %}
+                  <select name="coauthors" class="form-control select2" id="coauthors" multiple="multiple" size="5">
+                      {% for item in all_members %}
+                          <option value="{{ item.id }}"
+                                  {% if item in casereport.co_author.all %}selected{% endif %}>
+                              {{ item.get_full_name }}
+                          </option>
+                      {% endfor %}
+                  </select>
               </div>
 
-              <a class="add_coauthor_button" href="#"><i class="fa fa-plus"></i> <span class="add_coauthor_button_text">Add co-author(s)</a></a>
+              <a class="add_coauthor_button" href="#"><i class="fa fa-plus"></i> <span class="add_coauthor_button_text">Add a non-members as a co-author(s)</a></a>
 
         <div class="form-group radio-box"{% if casereport.workflow_state != 'draft' and casereport.workflow_state != 'processing' and casereport.workflow_state != None %} style="display: none;"{% endif %}>
         <input checked="checked"  id="id_radio1" type="radio"  class="radiobut" name="entry-type" value="M" />
