@@ -284,6 +284,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         self.author_approved = True
         self.admin_approved = False
         self.notify_admin()
+        emails.submitted(self)
         return "Your Case Report has been submitted and will be reviewed by \
             our admin staff. \
             Please note case no. #%s for future reference." % self.id

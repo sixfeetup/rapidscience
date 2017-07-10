@@ -1,0 +1,9 @@
+Dear {{ casereport.primary_author.get_full_name }},<br><br>
+
+Thank you for submitting Case Report no. {{ casereport.pk }}, "{{ casereport.title }}", to the Cases Central database. Your report is now being edited and standardized. We will email you soon with a link to the edited report for review and approval or revision.
+
+If you have any questions or concerns, please contact us any time at <a href="mailto:edit@rapidscience.org">​edit@rapidscience.org</a>.
+
+Editorial Team
+<br><a href="https://sarcoma.rapidscience.org">Sarcoma Central</a>
+<br><a href="https://twitter.com/RapidScience">@RapidScience</a>
