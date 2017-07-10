@@ -1,8 +1,18 @@
 {% load static thumbnail %}
 <div class="box members-list">
-  <a href="#" class="invite-link" title="Invite members to group">
-      <i class="fa fa-plus"></i>
-  </a>
+  {% if project.approval_required %}
+      {% for mod in moderators %}
+          {% if request.user = mod.user %}
+          <a href="#" class="invite-link" title="Invite members to group">
+              <i class="fa fa-plus"></i>
+          </a>
+          {% endif %}
+      {% endfor %}
+  {% else %}
+      <a href="#" class="invite-link" title="Invite members to group">
+          <i class="fa fa-plus"></i>
+      </a>
+  {% endif %}
   <p class="section-label">Members</p>
   <ul class="list-unstyled item-list">
       {% for membership in moderators %}
