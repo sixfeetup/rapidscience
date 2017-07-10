@@ -4,7 +4,7 @@
   <div class="col-md-11">
     <h4>{% if obj.reference.parsed_data.authors %}{{ obj.reference.parsed_data.authors }}. {% endif %}{% if ref.reference.get_source_url %}
         <a href="{{ ref.reference.get_source_url }}" {% if 'http' in ref.reference.get_source_url and not email %}target="_blank"{% endif %}>{% endif %}
-        {% autoescape off %}{% if highlighted.title %}{{ highlighted.title.0 }}{% else %}{{ obj.parsed_data.title }}{% endif %}{% endautoescape %}
+        {% autoescape off %}{% if highlighted.title %}{{ highlighted.title.0 }}{% else %}{{ obj.reference.parsed_data.title }}{% endif %}{% endautoescape %}
         {% if ref.reference.get_source_url %}</a>{% endif %},
         {% if obj.reference.parsed_data.container_title %}in <em>{{ obj.reference.parsed_data.container_title }}</em>,{% endif %}
         {% if obj.reference.parsed_data.page %}pp {{ obj.reference.parsed_data.page }}.{% endif %}

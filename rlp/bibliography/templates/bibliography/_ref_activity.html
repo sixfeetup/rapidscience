@@ -1,7 +1,7 @@
 {% load core_tags %}
 {#  FYI: the ref on this page is a UserReference#}
 {% if not search %}<h4>{% endif %}
-  {% if ref.reference.parsed_data.authors %}{{ ref.reference.parsed_data.authors }}. {% endif %}{% if ref.get_source_url %}{% if not search %}<a href="{{ ref.get_source_url }}" {% if 'http' in ref.get_source_url and not email %}target="_blank"{% endif %}>{% endif %}{% endif %}
+  {% if ref.reference.parsed_data.authors %}{{ ref.reference.parsed_data.authors }}. {% endif %}{% if ref.reference.get_source_url %}{% if not search %}<a href="{{ ref.reference.get_source_url }}" {% if 'http' in ref.reference.get_source_url and not email %}target="_blank"{% endif %}>{% endif %}{% endif %}
   {{ ref.reference.parsed_data.title|striptags }}{% if ref.reference.get_source_url %}{% if not search %}</a>{% endif %}{% endif %},
   {% if ref.reference.parsed_data.container_title %}in <em>{{ ref.reference.parsed_data.container_title }}</em>,{% endif %}
   {% if ref.reference.parsed_data.page %}pp {{ ref.reference.parsed_data.page }}.{% endif %}
