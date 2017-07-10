@@ -242,8 +242,10 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         update_treatments_from_request(case, data)
         if aberrations:
             case.aberrations.add(*aberrations)
-        if coauthors:
-            case.co_author.add(*coauthors)
+        for auth in coauthors:
+            coauth_user = User.objects.get(pk=auth)
+            case.co_author.add(auth)
+            emails.notify_coauthor(case, coauth_user)
         for i in range(0, len(name)):
             try:
                 coauthor = User.objects.get(email=email[i])
@@ -521,10 +523,14 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
                 case.authorized_reps.add(author[0])
 
         # co-authors
+        current_authors = set(case.co_author.all())
         case.co_author = data.getlist('coauthors')
         email = data.getlist('coauthor_email')
         name = data.getlist('coauthor_name')
-        current_authors = set(case.co_author.all())
+        for auth in data.getlist('coauthors'):
+            coauth_user = User.objects.get(pk=auth)
+            if coauth_user not in current_authors:
+                emails.notify_coauthor(case, coauth_user)
         for i in range(0, len(name)):
             try:
                 coauthor = User.objects.get(email=email[i])
