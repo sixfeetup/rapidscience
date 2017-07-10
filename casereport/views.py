@@ -266,11 +266,11 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
             action.send(request.user, verb=past_tense_verb, action_object=case)
         for userid in data.getlist('members'):
             user = User.objects.get(id=userid)
-            emails.invite_people(case, user.email)
+            emails.invite_people(request, case, user.email)
         external = data.get('external').split(",")
         for address in external:
             if address:
-                emails.invite_people(case, address.strip())
+                emails.invite_people(request, case, address.strip())
 
 
         # eventually we' want this:
@@ -588,11 +588,11 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
 
         for userid in data.getlist('members'):
             user = User.objects.get(id=userid)
-            emails.invite_people(case, user.email)
+            emails.invite_people(request, case, user.email)
         external = data.get('external').split(",")
         for address in external:
             if address:
-                emails.invite_people(case, address.strip())
+                emails.invite_people(request, case, address.strip())
 
         messages.success(request, "Edits saved!")
         return redirect(reverse('casereport_detail', args=(case.id, case.title)))

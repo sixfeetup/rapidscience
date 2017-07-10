@@ -1,5 +1,7 @@
 from django.core.mail import EmailMessage
+from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
+from django.utils.text import slugify
 
 
 def publish(casereport):
@@ -32,11 +34,19 @@ def send_back(casereport):
     message.send()
 
 
-def invite_people(casereport, address):
+def invite_people(request, casereport, address):
+    slug = slugify(casereport.title)
     email_context = {
-        "casereport": casereport
+        "casereport": casereport,
+        "case_url": request.build_absolute_uri(reverse(
+            'casereport_detail',
+            kwargs={
+                'case_id': casereport.pk,
+                'title_slug': slug
+            })),
+        "reg_link": request.build_absolute_uri(reverse('register'))
     }
-    subject = "Invitation to view sarcoma case report"
+    subject = "{0} shared a case report with you".format(casereport.primary_author.get_full_name())
     template = 'casereport/emails/invite_people'
     message_body = render_to_string('{}.txt'.format(template), email_context)
     mail = EmailMessage(subject, message_body,
