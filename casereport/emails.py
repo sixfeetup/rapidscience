@@ -29,7 +29,8 @@ def submitted(casereport):
     mail = EmailMessage(subject, message_body,
                         "Cases Central <edit@rapidscience.org>",
                         [casereport.primary_author.get_full_name() + " <" +
-                         casereport.primary_author.email + ">", ])
+                         casereport.primary_author.email + ">", ],
+                        cc=('edit@rapidscience.org',), )
     mail.content_subtype = "html"
     mail.send()
 
