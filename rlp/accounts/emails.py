@@ -26,3 +26,29 @@ def registration_to_admin(request, user, key):
                         cc=('sg@rapidscience.org',))
     mail.content_subtype = "html"
     mail.send()
+
+
+def acceptance_to_newuser(request, user):
+    subject = "Membership in Sarcoma Central - welcome and a few tips"
+    email_context = {
+        'name': user.get_full_name(),
+        'commons_link': request.build_absolute_uri(reverse(
+                    'projects:projects_detail',
+                    kwargs={
+                        'pk': 1,
+                        'slug': 'community-commons',
+                    },
+                )),
+        'groups_link': request.build_absolute_uri(reverse(
+                    'projects:projects_list',
+                )),
+    }
+    template = 'registration/emails/acceptance_to_newuser'
+    message = render_to_string('{}.txt'.format(template), email_context)
+    to = (user.get_full_name() + "<" + user.email + ">",)
+    mail = EmailMessage(subject,
+                        message,
+                        "Rapid Science <support@rapidscience.org>",
+                        to,)
+    mail.content_subtype = "html"
+    mail.send()

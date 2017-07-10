@@ -316,29 +316,9 @@ class ActivationView(TemplateView):
                     for auto_group in Project.objects.filter(auto_opt_in=True):
                         auto_group.add_member(user)
                     # Notify the user they can now login and complete their profile
-                    subject = "Your account has been approved!"
-                    template = 'emails/registration_approved'
-                    context = {
-                        'user': user,
-                        'request': self.request,
-                    }
-                    send_transactional_mail(user.email, subject, template, context)
-                    project = user.projectmembership_set.first().project
-                    contact_email_addresses = project.get_contact_email_addresses()
-                    admin_context = {
-                        'site_prefix': settings.SITE_PREFIX.upper(),
-                        'user': user,
-                        'project': project,
-                    }
-                    for email in contact_email_addresses:
-                        send_transactional_mail(
-                            email,
-                            '{} is now approved'.format(user.email),
-                            'emails/registration_approved_admin',
-                            admin_context
-                        )
+                    emails.acceptance_to_newuser(self.request, user)
                     messages.success(self.request, "{} is now approved to complete their registration.".format(
-                        user.email))
+                        user.get_full_name()))
             # return so we don't accidentally pick up the following message.
             return
         messages.warning(self.request, "The link you followed is invalid.")
