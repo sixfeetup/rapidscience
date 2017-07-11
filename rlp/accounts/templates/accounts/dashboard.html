@@ -96,7 +96,7 @@
       {% include 'accounts/_tab_filter.html' %}
       <hr style="margin-top: 0;">
       {% for ref in references %}
-        {% include 'bibliography/_ref_tab.html' with obj=ref user=ref.user %}
+        {% include 'bibliography/_uref_tab.html' with obj=ref.reference ref=ref user=ref.user %}
       {% endfor %}
     {% endif %}
   </div>

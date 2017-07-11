@@ -1,9 +1,11 @@
 {% load core_tags discussion_tags %}
-{# FYI obj = Reference #}
-<!-- _ref_tab -->
+{# FYI: another template where ref is a UserReference #}
+{# and obj = Reference #}
+<!-- _uref_tab -->
 <div class="row reference-item">
   <div class="col-md-11">
-    <h4>{% if obj.parsed_data.authors %}{{ obj.parsed_data.authors }}. {% endif %}{% if obj.get_source_url %}
+    <h4>{% if obj.parsed_data.authors %}{{ obj.parsed_data.authors }}. {% endif %}
+        {% if obj.get_source_url %}
         <a href="{{ obj.get_source_url }}" {% if 'http' in obj.get_source_url and not email %}target="_blank"{% endif %}>{% endif %}
         {% autoescape off %}{% if highlighted.title %}{{ highlighted.title.0 }}{% else %}{{ obj.parsed_data.title }}{% endif %}{% endautoescape %}
         {% if obj.get_source_url %}</a>{% endif %},
@@ -18,12 +20,12 @@
             Posted by
             <a href="{% url 'profile' user.id  %}">{% if user == request.user %}me{% else %}{{ user.get_full_name }}{% endif %}</a>
         {% endif %}
-        | {{ obj.date_updated|date:"j M Y" }}
+        | {{ ref.date_updated|date:"j M Y" }}
         {% with edit_url=obj.get_edit_url %}
           {% if edit_url %}| <a href="{{ edit_url }}">Edit</a>{% endif %}
         {% endwith %}
         <br />
-      {% display_shared_with obj request.user %}
+      {% display_shared_with ref request.user %}
     </p>
     {% if obj.description %}
         <div class="more">
@@ -31,17 +33,18 @@
         </div>
     {% endif %}
         <p class="tags">
-            {% display_tag_links obj %}
+            {% display_tag_links ref %}
         </p>
   </div>
   <div class="col-md-1">
         {% get_threaded_comment_count for obj as comment_count %}
         <a class="comment-count {% if comment_count < 1 %}empty{% endif %}"
-           href="{{ reference.get_absolute_url }}"
+           href="{{ ref.get_absolute_url }}"
+           _href="{_% url 'bibliography:reference_detail' reference_pk=ref uref_id=ref %}">
           <i class="fa fa-comment" aria-hidden="true"></i><br>
           {%  if comment_count > 0 %} <span class="comment-count-text">{{ comment_count }}</span> {% endif %}
         </a>
-        {% if user != obj.get_poster %}
+        {% if user != obj.reference.get_poster %}
           {% if project %}
           <form class="bookmark-form" method="POST" action="{% toggle_bookmark_url obj project %}">
           {% else %}
