@@ -315,12 +315,12 @@ class AddGroup(LoginRequiredMixin, FormView):
     def post(self, request, *args, **kwargs):
         form = self.get_form()
         if form.is_valid():
-            return self.form_valid(form)
+            return self.form_valid(form, request)
         else:
             messages.error(request, "Please correct the errors below")
             return self.form_invalid(form)
 
-    def form_valid(self, form):
+    def form_valid(self, form, request):
         data = form.cleaned_data
         user = self.request.user
         new_group = Project(
@@ -337,8 +337,8 @@ class AddGroup(LoginRequiredMixin, FormView):
             project=new_group,
             state='moderator',
         )
-        new_group.invite_registered_users(form.cleaned_data['internal'])
-        new_group.invite_external_emails(form.cleaned_data['external'])
+        new_group.invite_registered_users(form.cleaned_data['internal'], request=request)
+        new_group.invite_external_emails(form.cleaned_data['external'], request=request)
         return redirect(new_group.get_absolute_url())
 
 

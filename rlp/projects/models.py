@@ -3,15 +3,17 @@ from collections import defaultdict
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
-from django.core.mail import send_mass_mail
+from django.core.mail import EmailMessage
+from django.core.urlresolvers import reverse
 from django.db import models
+from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 from django_fsm import FSMField
 from django_fsm import transition
 from menus.menu_pool import menu_pool
 
 from casereport.middleware import CurrentUserMiddleware
-from rlp.accounts.models import Institution
+from rlp.accounts.models import Institution, User
 from rlp.core.email import send_transactional_mail
 from rlp.core.mixins import SharesContentMixin
 from rlp.core.models import SEOMixin
@@ -134,40 +136,54 @@ class Project(SEOMixin, SharesContentMixin):
                 context
             )
 
-    def invite_registered_users(self, users, subject=None, message=None, inviter=None, extra_template_vars=None):
+    def invite_registered_users(self, users, subject=None, message=None, inviter=None, extra_template_vars=None, request=None):
         emails = [u.email for u in users if u.email]
-        return self.invite_external_emails(emails, subject, message, inviter, extra_template_vars)
+        return self.invite_external_emails(emails, subject, message, inviter, extra_template_vars, request)
 
-    def invite_external_emails(self, emails, subject=None, message=None, inviter=None, extra_template_vars=None):
+    def invite_external_emails(self, emails, subject=None, message=None, inviter=None, extra_template_vars=None, request=None):
         """Send an invitation by email to each of the emails given."""
         subject = subject or 'Invitation to join {}'.format(self.title)
-        message = message or settings.GROUP_INVITATION_TEMPLATE
-        inviter = inviter or self.moderators().first()
+        inviter = inviter or request.user or self.moderators().first()
+        project_link = request.build_absolute_uri(
+            reverse('projects:projects_detail',
+                    kwargs={'pk': self.pk, 'slug': self.slug}))
+        user_url = request.build_absolute_uri(
+            reverse('profile',
+                    kwargs={'pk': request.user.pk}))
 
-        # format the message
-        site = Site.objects.get_current()
-        project_url = 'https://' + site.domain + self.get_absolute_url()
-        context = defaultdict(
-            str,
-            user=inviter.email,
-            group=self.title,
-            link=project_url,
-        )
+        context = {
+            'user': inviter.get_full_name(),
+            'user_link': user_url,
+            'group': self.title,
+            'project_link': project_link,
+            'reg_link': request.build_absolute_uri(reverse('register'))
+        }
+
+        template = "projects/emails/moderator_invite_to_group"
+
         if extra_template_vars:
             context.update(extra_template_vars)
-        message = message.format(**context)
 
-        message_data = (
-            (
+        for address in emails:
+            try:
+                member = User.objects.get(email=address)
+            except User.DoesNotExist:
+                member = User(email=address, is_active=False)
+                member.save()
+            context.update({
+                'reg_link': request.build_absolute_uri(reverse('register_user',
+                            kwargs={'pk': member.pk}))
+            })
+
+            message = render_to_string('{}.txt'.format(template), context)
+
+            mail = EmailMessage(
                 subject,
                 message,
                 inviter.get_full_name() + " <info@rapidscience.org>",
-                [rcp],
+                [address],
             )
-            for rcp in emails
-        )
-        print("sending", message_data)
-        send_mass_mail(message_data)
+            mail.send()
 
     def save(self, *args, **kwargs):
         # Groups are in the top level navigation and need to clear the cache

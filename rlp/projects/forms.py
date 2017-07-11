@@ -72,13 +72,11 @@ class InviteForm(forms.Form):
 
 
 static_invite_text = 'You are invited by [First Name, Last Name of \
-moderator] to join the [Group Name] group in Sarcoma Central, a Rapid \
-Science channel.\
-\n\nAs a member of Sarcoma Central, you may view the Group \
-page and click the Join button if you wish to be added to the Group. \
-If you\'re not already a Rapid Science member, you must first register \
-here. You will then be subscribed to Sarcoma Central, and directed to \
-the [Group Name] page.'
+moderator] to join the [Group Name] group in Sarcoma Central network.\
+\n\nIf you’re not already a Rapid Science member, please register here. \
+\n\nSincerely, \
+\n\nThe Sarcoma Central Team \
+\n\n@RapidScience'
 
 GROUP_APPROVAL_CHOICES = (
     (0, ('Open - All validated Rapid Science members can'
