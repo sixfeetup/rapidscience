@@ -362,6 +362,12 @@ class EditGroup(LoginRequiredMixin, FormView):
                 approval=1 if project.approval_required else 0,
                 banner_image=project.cover_photo.url if project.cover_photo else None,
             ))
+        invite_choices = (
+            (user.id, user.get_full_name())
+            for user in User.objects.all()
+            if user != self.request.user and project not in user.projects.all()
+        )
+        form.fields['internal'].choices = invite_choices
         return self.render_to_response(self.get_context_data(form=form, project=project), )
 
     def post(self, request, *args, **kwargs):
@@ -377,11 +383,11 @@ class EditGroup(LoginRequiredMixin, FormView):
             # internal invites
             new_invitees = [invitee for invitee in form.cleaned_data['internal'] if
                             invitee not in project.active_members()]
-            project.invite_registered_users(new_invitees)
+            project.invite_registered_users(new_invitees, request=request)
 
             # external invites
             # TODO: if the email matches an internal user, upgrade the invite
-            project.invite_external_emails(form.cleaned_data['external'])
+            project.invite_external_emails(form.cleaned_data['external'], request=request)
 
             messages.info(request, "Invites Sent!")
 
