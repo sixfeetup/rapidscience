@@ -39,7 +39,7 @@ In some cases such as Youtube videos, we don't have local images so we can't mak
                     by <a href="{{ action.actor.get_absolute_url }}">{{ action.actor.get_full_name }}</a>
                     | {{ action.timestamp|naturaltime }}
                     <br />{% endif %}
-                    {% display_shared_with request.user %}
+                    {% display_shared_with result.object request.user %}
                 </p>
         {% endwith %}
 
