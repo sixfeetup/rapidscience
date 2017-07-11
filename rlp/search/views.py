@@ -6,6 +6,7 @@ from django.views.decorators.cache import never_cache
 
 from haystack.generic_views import SearchView as BaseSearchView
 
+from casereport.views import limit_casereport_results
 from .forms import ModelSearchForm
 
 
@@ -28,6 +29,7 @@ class SearchView(BaseSearchView):
         # MultipleObjectMixin
         queryset = kwargs.pop('object_list', self.object_list)
         context_object_name = self.get_context_object_name(queryset)
+        queryset = limit_casereport_results(queryset, self.request.user)
         context = {
             'object_list': queryset
         }

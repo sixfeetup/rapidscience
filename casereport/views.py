@@ -344,6 +344,39 @@ class FormTypeView(TemplateView):
         return self.render_to_response(dict(subtypes=subtypes, aberrations=aberrations))
 
 
+def limit_casereport_results(queryset, user):
+    """Limit the case results in a queryset so
+       users only see what they are supposed to see.
+       Admins should see all results. Any other users
+       only see what they created or is shared with them.
+    """
+    # admins see all results
+    if user.is_staff:
+        return queryset.order_by('-pub_or_mod_date')
+
+    # non-admins only see their own cases
+    # or cases shared with them
+    # or cases shared with group to which the user belongs
+    shared_pks = set()
+    for item in user.get_shared_content(CaseReport):
+        if item.workflow_state == WorkflowState.LIVE:
+            shared_pks.update([item.pk, ])
+    for group in user.active_projects():
+        for item in group.get_shared_content(CaseReport):
+            if item.workflow_state == WorkflowState.LIVE:
+                shared_pks.update([item.pk, ])
+    user = User.objects.get(email=user.email)
+    authored_pks = set({cr.pk for cr in CaseReport.objects.filter(primary_author=user)})
+    shared_pks.update(authored_pks)
+
+    for result in queryset:
+        if result.content_type() != 'casereport.casereport':
+            continue
+        if int(result.pk) not in shared_pks:
+            queryset = queryset.exclude(id=result.id)
+    return queryset
+
+
 class MyFacetedSearchView(FacetedSearchView):
     def __init__(self, *args, **kwargs):
         sqs = SearchQuerySet().using('casescentral').models(CaseReport).highlight(fragsize=200)
@@ -372,28 +405,7 @@ class MyFacetedSearchView(FacetedSearchView):
         if not results:
             return results
 
-        # admins see all results
-        if self.request.user.is_staff:
-            return results.order_by('-pub_or_mod_date')
-
-        # non-admins only see their own cases
-        # or cases shared with them
-        # or cases shared with group to which the user belongs
-        shared_pks = set()
-        for item in self.request.user.get_shared_content(CaseReport):
-            if item.workflow_state == WorkflowState.LIVE:
-                shared_pks.update([item.pk,])
-        for group in self.request.user.active_projects():
-            for item in group.get_shared_content(CaseReport):
-                if item.workflow_state == WorkflowState.LIVE:
-                    shared_pks.update([item.pk,])
-        user = User.objects.get(email=self.request.user.email)
-        authored_pks = set({cr.pk for cr in CaseReport.objects.filter(primary_author=user)})
-        shared_pks.update(authored_pks)
-
-        for case in results:
-            if case.pk not in shared_pks:
-                results = results.exclude(id=case.id)
+        results = limit_casereport_results(results, self.request.user)
         return results.order_by('-pub_or_mod_date')
 
     def create_response(self):
