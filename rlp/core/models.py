@@ -87,6 +87,8 @@ class SharedContent(models.Model):
 
 
 class SharedObjectMixin(models.Model):
+    """ Bookmarkable
+    """
     class Meta:
         abstract = True
 
@@ -99,6 +101,11 @@ class SharedObjectMixin(models.Model):
     mtags = TaggableManager(through=TaggedByManagedTag,
                             help_text="A Comma separated list of UNAPPROVED tags.",
                             blank=True)
+
+    @property
+    def is_bookmarkable(self):
+        return True
+
 
     def get_viewers(self):
         my_type = ContentType.objects.get_for_model(self)

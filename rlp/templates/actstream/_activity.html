@@ -109,16 +109,16 @@
                             <!-- SUPPRESSED BOOKMARK ICON for non-live {{action.verb }} CR -->
                         {% elif action.verb|is_workflow_verb %}
                             <!-- SUPPRESSED BOOKMARK ICON for workflow verb:{{ action.verb }} -->
-                        {% elif not obj.is_bookmarked_to %}
+                        {% elif not obj.is_bookmarkable %}
                             <!-- SUPPRESSED BOOKMARK ICON for non-bookmarkable obj -->
                         {% else %}
                             {% if user != obj.get_poster %}
                                 {% if project %}
                                     <form class="bookmark-form" method="POST"
-                                          action="{% toggle_bookmark_url obj project %}">
+                                          action="{% toggle_bookmark_url content=obj viewer=project %}">
                                 {% else %}
                                     <form class="bookmark-form" method="POST"
-                                          action="{% toggle_bookmark_url obj user %}">
+                                          action="{% toggle_bookmark_url content=obj viewer=user %}">
                                 {% endif %}
                             {% csrf_token %}
                             <input type="hidden"
