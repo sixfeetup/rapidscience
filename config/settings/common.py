@@ -377,6 +377,18 @@ HAYSTACK_CONNECTIONS = {
         'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
         'URL': 'http://127.0.0.1:8983/solr/cases_collection',
         'INCLUDE_SPELLING': True,
+        'EXCLUDED_INDEXES': [
+            'rlp.search.search_indexes.BaseIndex',
+            'rlp.accounts.search_indexes.UserIndex',
+            'rlp.projects.search_indexes.ProjectIndex',
+            'rlp.discussions.search_indexes.CommentIndex',
+            'rlp.bibliography.search_indexes.ReferenceIndex',
+            'rlp.documents.search_indexes.FileIndex',
+            'rlp.documents.search_indexes.LinkIndex',
+            'rlp.documents.search_indexes.ImageIndex',
+            'rlp.documents.search_indexes.VideoIndex',
+            'rlp.newsfeed.search_indexes.NewsItemIndex'
+        ],
     },
 }
 
