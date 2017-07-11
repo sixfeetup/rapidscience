@@ -10,7 +10,7 @@
         </a>
       </h4>
       {% endif %}
-      
+
       {% if view == 'tab-content' %}
           <p class="small">
               {% if crcomments != 'True' %}Posted by{% endif %}
@@ -24,17 +24,9 @@
             {% display_shared_with comment request.user %}
           </p>
           <div class="more">{% autoescape off %}{{ comment.comment }}{% endautoescape %}</div>
-          {% if comment.tags.all %}
-            <p class="tags">
-              {% for tag in comment.tags.all %}
-                {% if tag.slug != '' %}
-                <a role="button" class="btn btn-tag btn-xs" href="{% url 'haystack_search' %}?tags={{ tag.id }}">
-                  {{ tag }}
-                </a>
-                {% endif %}
-              {% endfor %}
-            </p>
-          {% endif %}
+          <p class="tags">
+            {% display_tag_links comment %}
+          </p>
       {% else %}
           <p class="small">
               <strong>
@@ -47,7 +39,7 @@
           </p>
           <div class="more">{% autoescape off %}{{ comment.comment }}{% endautoescape %}</div>
       {% endif %}
-      
+
     </div>
     <div class="col-md-1">
       {% if comment.is_discussion %}

@@ -35,17 +35,9 @@
         {% display_shared_with obj request.user %}
     </p>
     <div class="more">{% autoescape off %}{{ obj.description }}{% endautoescape %}</div>
-    {% if obj.tags.all %}
-        <p class="tags">
-                {% for tag in obj.tags.all %}
-                  {% if tag.slug != '' %}
-                  <a role="button" class="btn btn-tag btn-xs" href="{% url 'haystack_search' %}?tags={{ tag.id }}">
-                    {{ tag }}
-                  </a>
-                  {% endif %}
-                {% endfor %}
-        </p>
-    {% endif %}
+    <p class="tags">
+        {% display_tag_links obj %}
+    </p>
   </div>
   <div class="col-md-1">
     {% include 'discussions/discussion_count_widget.html' %}

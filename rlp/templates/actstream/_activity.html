@@ -75,27 +75,9 @@
                                         {% endif %}
                                     {% endif %}
                                     {% if model == 'reference' %}
-
-                                        {% for tag in action.action_object.current_user_reference.tags.all %}
-                                            {% if tag.slug != '' %}
-                                                <a role="button"
-                                                   class="btn btn-tag btn-xs"
-                                                   href="{% url 'haystack_search' %}?tags={{ tag.id }}">
-                                                    {{ tag }}
-                                                </a>
-                                            {% endif %}
-                                        {% endfor %}
+                                        {% display_tag_links action.action_object.current_user_reference %}
                                     {% else %}
-
-                                        {% for tag in action.action_object.tags.all %}
-                                            {% if tag.slug != '' %}
-                                                <a role="button"
-                                                   class="btn btn-tag btn-xs"
-                                                   href="{% url 'haystack_search' %}?tags={{ tag.id }}">
-                                                    {{ tag }}
-                                                </a>
-                                            {% endif %}
-                                        {% endfor %}
+                                        {% display_tag_links action.action_object %}
                                     {% endif %}
                                 </p>
                             {% endif %}

@@ -46,19 +46,9 @@
         {% video shared_video 'medium' %}
         {% endvideo %}
       {% endif %}
-      {% with tags=obj.tags.all %}
-        {% if tags %}
-          <p class="tags">
-          {% for tag in obj.tags.all %}
-            {% if tag.slug != '' %}
-            <a role="button" class="btn btn-tag btn-xs" href="{% url 'haystack_search' %}?tags={{ tag.id }}">
-              {{ tag }}
-            </a>
-            {% endif %}
-          {% endfor %}
-          </p>
-        {% endif %}
-      {% endwith %}
+      <p class="tags">
+        {% display_tag_links obj %}
+      </p>
     </div>
   </div>
   <hr>

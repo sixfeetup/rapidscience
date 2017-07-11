@@ -23,14 +23,10 @@
         {% if not search %}</p>{% endif %}
     {% endif %}
     {% if not search %}
-        {% if obj.tags.all %}
-        {% if not search %}<p class="tags">{% endif %}
-            {% for tag in obj.tags.all %}
-                {% if not search %}<a role="button" class="btn btn-tag btn-xs" href="{% url 'haystack_search' %}?tags={{ tag.id }}">{% endif %}
-                  {{ tag }}
-                {% if not search %}</a>{% endif %}
-            {% endfor %}
-        {% if not search %}</p>{% endif %}
+        {% if obj.tags.all.count or obj.mtags.all.count %}
+            {% if not search %}<p class="tags">{% endif %}
+                {% display_tag_links obj %}
+            {% if not search %}</p>{% endif %}
         {% endif %}
     {% endif %}
   {% if not search %}
