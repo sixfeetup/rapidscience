@@ -29,15 +29,9 @@
             {% autoescape off %}{{ obj.description }}{% endautoescape %}
         </div>
     {% endif %}
-    {% if obj.tags.all %}
         <p class="tags">
-            {% for tag in obj.tags.all %}
-                <a role="button" class="btn btn-tag btn-xs" href="{% url 'haystack_search' %}?tags={{ tag.id }}">
-                  {{ tag }}
-                </a>
-            {% endfor %}
+            {% display_tag_links obj %}
         </p>
-    {% endif %}
   </div>
   <div class="col-md-1">
         {% get_threaded_comment_count for obj as comment_count %}
