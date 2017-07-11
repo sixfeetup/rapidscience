@@ -1,6 +1,7 @@
 from django.contrib.sites.shortcuts import get_current_site
 from django import template
 from django.core.urlresolvers import reverse
+from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 
 from rlp.core.utils import CREATION_VERBS
@@ -75,9 +76,34 @@ def setvar(parser,token):
 
 
 @register.simple_tag
+def display_tag_links( tagged_item ):
+    """ collate all of the Taggit.Tag and managedtags.ManagedTag for the item
+        and display them as links to search
+    """
+    all_tags = {}
+    # mtags first, so that tags will replace them if present
+    if hasattr(tagged_item, "mtags"):
+        for tag in tagged_item.mtags.exclude(slug=''):
+            all_tags[tag.slug] = tag
+    if hasattr(tagged_item, "tags"):
+        for tag in tagged_item.tags.all():
+            all_tags[tag.slug] = tag
+
+    sorted_tags = sorted(all_tags.values(), key=lambda x:x.slug)
+    return mark_safe(
+        render_to_string("core/tag_links.html", {'tags':sorted_tags}))
+
+
+@register.simple_tag
 def display_shared_with(item, user=None):
     # Display 'Shared with...' text if shared with more than the current user
-    viewers = item.get_viewers()
+    try:
+        viewers = item.get_viewers()
+    except AttributeError as not_a_sharable:
+        viewers = []
+        print("item was not a viewable")
+
+
     vlist = []
     for v in viewers:
         # suppress shares by the author to themselves
