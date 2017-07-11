@@ -117,29 +117,7 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
             key=lambda c: c.date_updated,
             reverse=True,
         )
-    # member invite form
-    project_url = request.build_absolute_uri(
-        reverse('projects:projects_detail',
-                kwargs={'pk': project.pk, 'slug': project.slug}))
-    join_url = request.build_absolute_uri(
-        reverse('projects:projects_join',
-                kwargs={'pk': project.pk}))
-    user_url = request.build_absolute_uri(
-        reverse('profile',
-                kwargs={'pk': request.user.pk}))
-    invite_data = {
-        'user': request.user.get_full_name(),
-        'user_link': user_url,
-        'group': project.title,
-        'join_link': join_url,
-        'project_link': project_url,
-        'reg_link': request.build_absolute_uri(reverse('register'))
-    }
-    template = "projects/emails/moderator_invite_to_group"
-    invite_msg = render_to_string('{}.txt'.format(template), invite_data)
-    form = InviteForm(
-        initial={'invitation_message': invite_msg},
-    )
+    form = InviteForm()
     form.fields['internal'].choices = group_invite_choices(project)
     context['form'] = form
 
@@ -185,7 +163,7 @@ def invite_members(request, pk, slug):
                 ]
             external_addrs = form.cleaned_data['external']
             recipients = internal_addrs + external_addrs
-            subject = 'Invitation to join {}'.format(group.title)
+            message = form.cleaned_data['invitation_message']
 
             # Non-members - create user and send specific registration link
             for ext in external_addrs:
@@ -195,32 +173,11 @@ def invite_members(request, pk, slug):
                 except User.DoesNotExist:
                     new_member = User(email=ext, is_active=False)
                     new_member.save()
-                    message = form.cleaned_data['invitation_message']
-                    message = message.replace(
-                        "/register/",
-                        "/{0}/register/".format(new_member.pk))
-                    mail = EmailMessage(
-                        subject,
-                        message,
-                        request.user.get_full_name() +
-                        " <support@rapidscience.org>",
-                        [ext],
-                    )
-                    mail.content_subtype = "html"
-                    mail.send()
+                    emails.project_invite_nonmember(
+                        request, new_member, group, message)
 
             # site members
-            message_data = (
-                (
-                    subject,
-                    form.cleaned_data['invitation_message'],
-                    request.user.get_full_name() +
-                    " <support@rapidscience.org>",
-                    [rcp],
-                )
-                for rcp in internal_addrs
-            )
-            send_mass_mail(message_data)
+            emails.project_invite_member(request, internal_addrs, group, message)
 
             messages.success(request, '{} members invited'.format(len(recipients)))
             return redirect(request.META['HTTP_REFERER'])

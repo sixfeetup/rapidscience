@@ -68,6 +68,8 @@ class InviteForm(forms.Form):
     external = external_member_field
     invitation_message = forms.CharField(
         widget=CKEditorWidget(),
+        required=False,
+        help_text="Custom message that will be added to the invitation email"
     )
 
 
