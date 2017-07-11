@@ -36,7 +36,7 @@ if os.environ.get('USE_DOCKER') == 'yes':
 
 DEBUG_TOOLBAR_CONFIG = {
     'DISABLE_PANELS': [
-        'debug_toolbar.panels.redirects.RedirectsPanel',
+        #'debug_toolbar.panels.redirects.RedirectsPanel',
     ],
     'SHOW_TEMPLATE_CONTEXT': True,
     'JQUERY_URL': '',
@@ -55,7 +55,7 @@ DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.cache.CachePanel',
     'debug_toolbar.panels.signals.SignalsPanel',
     'debug_toolbar.panels.logging.LoggingPanel',
-    #'debug_toolbar.panels.redirects.RedirectsPanel',
+    'debug_toolbar.panels.redirects.RedirectsPanel',
     'template_profiler_panel.panels.template.TemplateProfilerPanel',
 ]
 
