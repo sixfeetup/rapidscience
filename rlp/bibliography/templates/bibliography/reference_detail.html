@@ -32,7 +32,7 @@
                     {% endif %}
                     <br />
 
-                    {%  display_shared_with obj request.user %}
+                    {%  display_shared_with user_reference request.user %}
                   </p>
 
                   {% if user_reference.description %}<div class="initial">{% autoescape off %}{{ user_reference.description }}{% endautoescape %}</div>{% endif %}
