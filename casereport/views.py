@@ -352,7 +352,7 @@ def limit_casereport_results(queryset, user):
     """
     # admins see all results
     if user.is_staff:
-        return queryset.order_by('-pub_or_mod_date')
+        return queryset
 
     # non-admins only see their own cases
     # or cases shared with them
