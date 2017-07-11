@@ -10,6 +10,7 @@ from haystack.utils import get_model_ct
 
 from taggit.models import Tag
 
+from rlp.managedtags.models import ManagedTag
 from rlp.projects.models import Project
 
 
@@ -109,6 +110,11 @@ class ModelSearchForm(BaseModelSearchForm):
         required=False,
         widget=forms.CheckboxSelectMultiple(),
     )
+    mtags = forms.ModelMultipleChoiceField(
+        queryset=ManagedTag.objects.order_by('slug'),
+        required=False,
+        widget=forms.CheckboxSelectMultiple(),
+    )
 
     def search(self):
         """
@@ -119,8 +125,9 @@ class ModelSearchForm(BaseModelSearchForm):
             return self.no_query_found()
         query = self.cleaned_data.get('q')
         tags = self.cleaned_data.get('tags')
+        mtags = self.cleaned_data.get('mtags')
         models = self.get_models()
-        if not any([query, models, tags]):
+        if not any([query, models, tags, mtags]):
             return self.no_query_found()
         sqs = self.searchqueryset
         if query:
@@ -137,4 +144,6 @@ class ModelSearchForm(BaseModelSearchForm):
             sqs = sqs.models(*self.get_models())
         if tags:
             sqs = sqs.filter(tags__in=[tag.id for tag in tags])
+        if mtags:
+            sqs = sqs.filter(mtags__in=[mtag.id for mtag in mtags])
         return sqs

@@ -15,7 +15,10 @@ class BaseIndex(indexes.SearchIndex):
 
 class TaggableBaseIndex(BaseIndex):
     tags = indexes.MultiValueField()
+    mtags = indexes.MultiValueField()
 
     def prepare_tags(self, obj):
         return [tag.id for tag in obj.tags.all()]
 
+    def prepare_mtags(self, obj):
+        return [mtag.id for mtag in obj.mtags.all()]
