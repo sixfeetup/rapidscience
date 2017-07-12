@@ -59,7 +59,7 @@ urlpatterns = [
         views.BookmarkRemoveView.as_view(),
         name='remove_bookmark',
     ),
-    url(r'^about/', RedirectView.as_view(url='http://rapidscience.org/sarcoma', permanent=True), name='about'),
+    url(r'^about/', views.about, name='about'),
     url(r'^', include('cms.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

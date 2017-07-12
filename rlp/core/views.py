@@ -25,6 +25,10 @@ def server_error(request, template='500.html'):
     return render(request, template)
 
 
+def about(request, template='core/about.html'):
+    return render(request, template)
+
+
 class SendToView(LoginRequiredMixin, View):
     def get(self, request, app_label, model_name, object_id):
         request.session['referrer'] = request.META['HTTP_REFERER']

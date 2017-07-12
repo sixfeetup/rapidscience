@@ -1385,3 +1385,30 @@ input#id_to_dashboard {
     text-align: center;
     width: 100%;
 }
+
+/* about page */
+body.about {
+    .bannerTitle {
+        padding-top: 45px;
+        height: 167px;
+        background-image: url('/static/img/about-bkgd.jpg');
+        background-size: auto cover;
+        h1 {
+            color: #fff;
+            font-weight: 600;
+        }
+    }
+    .content {
+        color: #444;
+        p {
+            margin-bottom: 22px;
+            line-height: 20px;
+        }
+        .section-label {
+            margin-top: 27px;
+        }
+        img {
+            width: 100%;
+        }
+    }
+}
