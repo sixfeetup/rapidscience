@@ -22,7 +22,7 @@ EXCLUDE_MODELS = (
 
 
 def get_action_object_content_types():
-    from rlp.bibliography.models import Reference
+    from rlp.bibliography.models import UserReference
     from rlp.discussions.models import ThreadedComment
     from rlp.documents.models import File, Image, Video, Link
     from casereport.models import CaseReport
@@ -34,7 +34,7 @@ def get_action_object_content_types():
         (get_model_ct(Image), 'Images'),
         (get_model_ct(Video), 'Videos'),
         (get_model_ct(Link), 'Links'),
-        (get_model_ct(Reference), 'References'),
+        (get_model_ct(UserReference), 'References'),
     ]
     return choices
 
@@ -81,6 +81,8 @@ def model_choices(using=DEFAULT_ALIAS):
         if sublist[1] == "Projects":
             choices[index][1] = "Groups"
         if sublist[1] == "Raw References":
+            choices[index][1] = "References"
+        if sublist[1] == "User References":
             choices[index][1] = "References"
     return sorted(choices, key=lambda x: x[1])
 
