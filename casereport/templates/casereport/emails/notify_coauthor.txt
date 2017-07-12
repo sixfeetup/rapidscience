@@ -1,9 +1,10 @@
 Dear {{ user.get_full_name }},<br><br>
 
-Your colleague, {{ casereport.primary_author.get_full_name }}, {{ casereport.primary_author.email }} has submitted patient data to Cases Central and listed you as co-author. The data will initially be shared privately, only to specific, validated members of Sarcoma Central as determined by the authors.<br><br>
+Your colleague, {{ casereport.primary_author.get_full_name }}, has submitted a case report to Sarcoma Central and named you as co-author:<br><br>
 
-We invite you to view the case report when it goes live and to participate in member discussions of this and other postings of interest.<br><br>
+<p style="margin-left: 20px; font-style: italic">{{ casereport.title }}</p>
 
+The case report is currently being edited. If you wish to review it prior to its live posting to members of Sarcoma Central, please contact your colleague.
 Sincerely,<br>
 <a href="https://sarcoma.rapidscience.org">The Sarcoma Central Team</a><br>
 <a href="https://twitter.com/RapidScience">@RapidScience</a>
