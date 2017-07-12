@@ -127,20 +127,16 @@
         <div role="tabpanel" class="tab-pane{% if tab == 'activity' %} active{% endif %}" id="activity">
           {% if tab == 'activity' %}
             {% bootstrap_messages %}
-            <form class="form-inline" action="" method="get">
-              {% bootstrap_field filter_form.content_type show_label=False %}
-              <button class="btn btn-primary" type="submit">
-                Filter
-              </button>
-            </form>
-            <hr>
+            {% include 'projects/_tab_filter.html' %}
+            <hr style="margin-top: 0;">
             {% include page_template %}
           {% endif %}
         </div>
         <div role="tabpanel" class="tab-pane{% if tab == 'documents' %} active{% endif %}" id="documents">
           {% if tab == 'documents' %}
             {% bootstrap_messages %}
-
+            {% include 'projects/_tab_filter.html' %}
+            <hr style="margin-top: 0;">
             {% for obj in documents %}
                 {% include "documents/listing_preview.html" %}
             {% endfor %}
@@ -150,6 +146,8 @@
         <div role="tabpanel" class="tab-pane{% if tab == 'discussions' %} active{% endif %}" id="discussions">
           {% if tab == 'discussions' %}
             {% bootstrap_messages %}
+            {% include 'projects/_tab_filter.html' %}
+            <hr style="margin-top: 0;">
             {% if user_interaction %}
             {% endif %}
             {% with view='tab-content' %}
@@ -160,7 +158,8 @@
         <div role="tabpanel" class="tab-pane{% if tab == 'casereports' %} active{% endif %}" id="casereports">
           {% if tab == 'casereports' %}
             {% bootstrap_messages %}
-
+            {% include 'projects/_tab_filter.html' %}
+            <hr style="margin-top: 0;">
             {% for obj in case_reports %}
                 {% include "casereport/listing_preview.html" %}
             {% endfor %}
@@ -169,6 +168,8 @@
         <div role="tabpanel" class="tab-pane{% if tab == 'bibliography' %} active{% endif %}" id="bibliography">
           {% if tab == 'bibliography' %}
             {% bootstrap_messages %}
+            {% include 'projects/_tab_filter.html' %}
+            <hr style="margin-top: 0;">
             {% for ref in references %}
               {% include 'bibliography/_uref_tab.html' with obj=ref.reference ref=ref user=ref.user %}
             {% endfor %}
@@ -179,4 +180,33 @@
 
 {% block js-footer %}{{ block.super }}
   <script src="{% static 'js/vendor/chosen/chosen.jquery.min.js' %}"></script>
-{% endblock js-footer %}
+  <script>
+    $(function() {
+      var params = [], hash;
+          var q = document.URL.split('?')[1];
+          if(q != undefined){
+              q = q.split('&');
+              for(var i = 0; i < q.length; i++){
+                  hash = q[i].split('=');
+                  params.push(hash[1]);
+                  params[hash[0]] = hash[1];
+              }
+      }
+      if (typeof params.content_type != "undefined" && params.content_type !== "") {
+        var ct_element = $("#content-type-dropdown").siblings(".dropdown-menu").find("a[data-ct-filter='" + params.content_type + "']");
+        $("#content-type-dropdown #selected-option").text($(ct_element).text());
+        $("#id_content_type").val(params.content_type);
+      } else {
+        $("#content-type-dropdown").siblings(".dropdown-menu").find(".all").click();
+      }
+      $("#content-type-dropdown").siblings(".dropdown-menu").find("a").on("click", function(e) {
+        e.preventDefault();
+        $(this).parents(".dropdown").find("#selected-option").text($(this).text());
+        $("#id_content_type").val($(this).data("ct-filter"));
+        $(".tab-pane.active .filter-form").submit();
+      });
+      $("#id_user_activity_only").change(function(){
+        $(".tab-pane.active .filter-form").submit();
+      });
+    });
+  </script>{% endblock js-footer %}

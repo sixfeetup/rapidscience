@@ -451,7 +451,7 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
         if filter_form.is_valid() and filter_form.cleaned_data.get(
                 'user_activity_only'):
             comments = [comment for comment in comments
-                        if comment.user.id == request.user.id]
+                        if comment.user and comment.user.id == request.user.id]
         context['comment_list'] = comments
     elif tab == 'casereports':
         reports = []

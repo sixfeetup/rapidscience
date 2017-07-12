@@ -1,0 +1,18 @@
+{% load bootstrap3 %}
+      <form class="form-inline filter-form" action="" method="get">
+        {% if tab == 'activity' %}
+        <div class="dropdown">
+          <a id="content-type-dropdown" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Type: <span id="selected-option">All</span>
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="dLabel">
+            {% for option in content_types %}
+            <li><a href="" data-ct-filter="{{ option.0 }}">{{ option.1 }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+        {% bootstrap_field filter_form.user_activity_only %}
+        <input type="hidden" id="id_content_type" name="content_type" value="" />
+      </form>

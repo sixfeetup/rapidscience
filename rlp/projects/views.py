@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
 from django.core.exceptions import PermissionDenied
 from django.core.mail import EmailMessage
@@ -25,7 +26,7 @@ from rlp.core.utils import rollup
 from rlp.bibliography.models import Reference, UserReference
 from rlp.discussions.models import ThreadedComment
 from rlp.documents.models import Document
-from rlp.search.forms import ActionObjectForm
+from rlp.search.forms import ProjectContentForm, get_action_object_content_types
 from rlp.projects import emails
 from .forms import InviteForm, NewGroupForm, ModifyGroupForm
 from .models import Project
@@ -52,6 +53,7 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
         'project': project,
         'projects': projects,
         'tab': tab,
+        'content_types': get_action_object_content_types()
     }
     # URL to redirect to after content is posted
     request.session['last_viewed_path'] = request.get_full_path()
@@ -70,54 +72,82 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
         hasattr(request.user, 'can_access_project') and
         request.user.can_access_project(project)
     )
+    if 'content_type' in request.GET or 'user_activity_only' in request.GET:
+        user_ct = ContentType.objects.get_for_model(User)
+        filter_form = ProjectContentForm(request.GET, user=request.user)
+    else:
+        filter_form = ProjectContentForm(user=request.user)
+    context['filter_form'] = filter_form
     if tab == 'activity':
         print("project activity")
         activity_stream = project.get_activity_stream(user=request.user)
-        if 'content_type' in request.GET:
-            filter_form = ActionObjectForm(request.GET)
-            if filter_form.is_valid() and filter_form.cleaned_data['content_type']:
-                activity_stream = activity_stream.filter(
-                    action_object_content_type=filter_form.cleaned_data['content_type'])
-        else:
-            filter_form = ActionObjectForm()
-
+        if filter_form.is_valid() and filter_form.cleaned_data['content_type']:
+            activity_stream = activity_stream.filter(
+                action_object_content_type=filter_form.cleaned_data[
+                    'content_type'])
+        if filter_form.is_valid() and filter_form.cleaned_data.get(
+            'user_activity_only'):
+            activity_stream = activity_stream.filter(
+                actor_content_type=user_ct,
+                actor_object_id=request.user.id
+            )
         print("consolidating")
         activity_stream = list(rollup(activity_stream, 'others'))
 
         context['activity_stream'] = activity_stream
-        context['filter_form'] = filter_form
     elif tab == 'documents':
         docs = [doc for doc in project.get_bookmarked_content(Document)
                 if doc is not None]
+        if filter_form.is_valid() and filter_form.cleaned_data.get(
+                'user_activity_only'):
+            docs = [doc for doc in docs
+                    if doc.owner.id == request.user.id]
         context['documents'] = sorted(
             docs,
             key=lambda c: c.date_added,
             reverse=True,
         )
     elif tab == 'discussions':
-        context['comment_list'] = sorted(
+        comments = sorted(
             project.get_bookmarked_content(ThreadedComment),
             key=lambda c: c.submit_date,
             reverse=True,
         )
+        if filter_form.is_valid() and filter_form.cleaned_data.get(
+                'user_activity_only'):
+            comments = [comment for comment in comments
+                        if comment.user and comment.user.id == request.user.id]
+        context['comment_list'] = comments
         if request.is_ajax():
             template_name = 'comments/list.html'
         context['page_template'] = 'comments/list.html'
     elif tab == 'casereports':
-        reports = project.get_bookmarked_content(CaseReport)
+        reports = []
+        if (filter_form.is_valid() and not filter_form.cleaned_data.get(
+                'user_activity_only')) or not filter_form.is_valid():
+            reports += [r for r in request.user.get_bookmarked_content(
+                        CaseReport) if r.workflow_state == WorkflowState.LIVE]
+        reports += CaseReport.objects.filter(primary_author=request.user)
+        reps = (r for r in reports)
         context['case_reports'] = sorted(
-            (r for r in reports if
+            (r for r in reps if
              r.workflow_state == WorkflowState.LIVE),
             key=lambda c: c.sort_date(),
             reverse=True,
         )
     elif tab == 'bibliography':
+        refs = project.get_bookmarked_content(UserReference)
+        if filter_form.is_valid() and filter_form.cleaned_data.get(
+                'user_activity_only'):
+            refs = [ref for ref in refs
+                    if ref.user.id == request.user.id]
         context['references'] = sorted(
-            project.get_bookmarked_content(UserReference),
+            refs,
             key=lambda c: c.date_updated,
             reverse=True,
         )
     form = InviteForm()
+
     form.fields['internal'].choices = group_invite_choices(project)
     context['form'] = form
 
