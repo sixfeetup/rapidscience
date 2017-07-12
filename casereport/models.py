@@ -271,6 +271,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         ''' send to admins with approval '''
         self.author_approved = True
         self.admin_approved = False
+        emails.approved(self)
 
         return "Thank you for approving your Case Report for posting in our \
             database! We will contact you when it goes live."

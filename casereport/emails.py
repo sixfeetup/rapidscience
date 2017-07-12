@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.mail import EmailMessage
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
@@ -46,6 +47,23 @@ def send_back(casereport):
                            message_body,
                            "Cases Central <edit@rapidscience.org>",
                            [recipient])
+    message.content_subtype = 'html'
+    message.send()
+
+
+def approved(casereport):
+    subject = "A case report has been updated and is ready for your review"
+    template = 'casereport/emails/approved_to_admin'
+    email_context = {
+        'title': casereport.title,
+        'link': casereport.get_absolute_url()
+    }
+    message_body = render_to_string('{}.txt'.format(template), email_context)
+    recipient = casereport.primary_author.email
+    message = EmailMessage(subject,
+                           message_body,
+                           "Cases Central <edit@rapidscience.org>",
+                           [settings.RSADMIN_EMAIL,])
     message.content_subtype = 'html'
     message.send()
 

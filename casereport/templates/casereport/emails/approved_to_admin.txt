@@ -1,0 +1,8 @@
+The case report "{{ title }}" has been updated by its author. Please review the <a href="https://{{ site.domain}}{{ link }}">report</a> and either submit your revisions, add an Editorial Note, or publish the case report.<br><br>
+
+Sincerely,<br><br>
+
+Editorial Team<br><br>
+
+<a href="https://sarcoma.rapidscience.org/">Sarcoma Central</a><br>
+<a href="https://twitter.com/RapidScience>@RapidScience</a>
