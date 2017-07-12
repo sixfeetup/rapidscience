@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.sites.models import Site
 from django.core.mail import EmailMessage
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
@@ -37,11 +38,14 @@ def submitted(casereport):
 
 
 def send_back(casereport):
-    subject = "Author Notification"
-    message_body = "CaseReport {id} {url} has moved to {state}.".format(
-        id=casereport.id, url=casereport.get_absolute_url(),
-        state=casereport.get_workflow_state_display())
-
+    site = Site.objects.all()[0]
+    email_context = {
+        "casereport": casereport,
+        "site": site
+    }
+    subject = "Your case report is ready for review"
+    template = 'casereport/emails/send_back_to_author'
+    message_body = render_to_string('{}.txt'.format(template), email_context)
     recipient = casereport.primary_author.email
     message = EmailMessage(subject,
                            message_body,
@@ -52,11 +56,13 @@ def send_back(casereport):
 
 
 def approved(casereport):
+    site = Site.objects.all()[0]
     subject = "A case report has been updated and is ready for your review"
     template = 'casereport/emails/approved_to_admin'
     email_context = {
         'title': casereport.title,
-        'link': casereport.get_absolute_url()
+        'link': casereport.get_absolute_url(),
+        'site': site
     }
     message_body = render_to_string('{}.txt'.format(template), email_context)
     recipient = casereport.primary_author.email
