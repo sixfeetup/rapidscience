@@ -74,3 +74,30 @@ def acceptance_to_newuser(request, user):
                         to,)
     mail.content_subtype = "html"
     mail.send()
+
+
+def send_welcome(request, user):
+    # for new users that did not need verification
+    subject = "Membership in Sarcoma Central - welcome and a few tips"
+    email_context = {
+        'name': user.get_full_name(),
+        'commons_link': request.build_absolute_uri(reverse(
+                    'projects:projects_detail',
+                    kwargs={
+                        'pk': 1,
+                        'slug': 'community-commons',
+                    },
+                )),
+        'groups_link': request.build_absolute_uri(reverse(
+                    'projects:projects_list',
+                )),
+    }
+    template = 'registration/emails/registration_welcome'
+    message = render_to_string('{}.txt'.format(template), email_context)
+    to = (user.get_full_name() + "<" + user.email + ">",)
+    mail = EmailMessage(subject,
+                        message,
+                        "Rapid Science <support@rapidscience.org>",
+                        to,)
+    mail.content_subtype = "html"
+    mail.send()
