@@ -271,11 +271,18 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
             action.send(request.user, verb=past_tense_verb, action_object=case)
         for userid in data.getlist('members'):
             user = User.objects.get(id=userid)
-            emails.invite_people(request, case, user.email)
+            emails.invite_people(request, case, user)
         external = data.get('external').split(",")
         for address in external:
-            if address:
-                emails.invite_people(request, case, address.strip())
+            if not address:
+                continue
+            try:
+                member = User.objects.get(email=address)
+                emails.invite_people(request, case, member)
+            except User.DoesNotExist:
+                new_user = User(email=address, is_active=False)
+                new_user.save()
+                emails.invite_people(request, case, new_user)
 
 
         # eventually we' want this:
@@ -611,11 +618,18 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
 
         for userid in data.getlist('members'):
             user = User.objects.get(id=userid)
-            emails.invite_people(request, case, user.email)
+            emails.invite_people(request, case, user)
         external = data.get('external').split(",")
         for address in external:
-            if address:
-                emails.invite_people(request, case, address.strip())
+            if not address:
+                continue
+            try:
+                member = User.objects.get(email=address)
+                emails.invite_people(request, case, member)
+            except User.DoesNotExist:
+                new_user = User(email=address, is_active=False)
+                new_user.save()
+                emails.invite_people(request, case, new_user)
 
         messages.success(request, "Edits saved!")
         return redirect(reverse('casereport_detail', args=(case.id, case.title)))

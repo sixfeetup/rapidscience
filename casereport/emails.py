@@ -50,24 +50,27 @@ def send_back(casereport):
     message.send()
 
 
-def invite_people(request, casereport, address):
+def invite_people(request, casereport, user):
     slug = slugify(casereport.title)
     email_context = {
         "casereport": casereport,
+        "casescentral": request.build_absolute_uri(reverse('haystac')),
         "case_url": request.build_absolute_uri(reverse(
             'casereport_detail',
             kwargs={
                 'case_id': casereport.pk,
                 'title_slug': slug
             })),
-        "reg_link": request.build_absolute_uri(reverse('register'))
+        "reg_link": request.build_absolute_uri(reverse(
+            'register_user',
+            kwargs={'pk': user.pk}))
     }
     subject = "{0} shared a case report with you".format(casereport.primary_author.get_full_name())
     template = 'casereport/emails/invite_people'
     message_body = render_to_string('{}.txt'.format(template), email_context)
     mail = EmailMessage(subject, message_body,
                         "Cases Central <edit@rapidscience.org>",
-                        [address, ])
+                        [user.email, ])
     mail.content_subtype = "html"
     mail.send()
 
