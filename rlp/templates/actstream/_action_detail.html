@@ -5,6 +5,8 @@
 {#verb#}
 {% if action.verb == 'reply' or action.verb == 'comment' %}
     <!-- verb suppressed to read like Comment by ... -->
+{% elif action.verb == 'sent back' %}
+    {{ action.verb|verb_alias }} to the author
 {% else %}
   {{ action.verb|verb_alias }}
 {% endif %}
