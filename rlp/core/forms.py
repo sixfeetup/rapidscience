@@ -56,10 +56,6 @@ group_choice_field = GroupListField(
 
 
 class SendToForm(forms.Form):
-    to_dashboard = forms.BooleanField(
-        label='My Dashboard',
-        required=False,
-    )
     groups = group_choice_field
     members = member_choice_field
     comment = forms.CharField(
@@ -67,7 +63,7 @@ class SendToForm(forms.Form):
         widget=forms.Textarea,
         required=False,
     )
-    field_order = ['to_dashboard', 'members', 'groups', 'comment']
+    field_order = ['members', 'groups', 'comment']
 
 
 def get_sendto_form(user, content, type_key, data=None):
@@ -77,11 +73,4 @@ def get_sendto_form(user, content, type_key, data=None):
     form.label_suffix = ''
     form.fields['groups'].choices = group_choices(user)
     form.fields['members'].choices = member_choices()
-    if user in content.get_viewers():
-        # don't show the checkbox if the user already has this content
-        form.fields['to_dashboard'].widget = forms.HiddenInput()
-    else:
-        # customize the text of the checkbox
-        dest = settings.TYPE_DISPLAY_NAMES.get(type_key, '')
-        form.fields['to_dashboard'].label = 'My Dashboard {}'.format(dest)
     return form
