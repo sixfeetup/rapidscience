@@ -58,6 +58,12 @@ def project_invite_member(request, invitees, project, message):
     user_url = request.build_absolute_uri(
         reverse('profile',
                 kwargs={'pk': request.user.pk}))
+    mods = project.users.filter(projectmembership__state='moderator')
+    if len(mods) == 1:
+        pre_mod_text = "moderator is "
+    else:
+        pre_mod_text = "moderators are "
+    mods = ' and '.join([x.get_full_name() for x in mods])
     data = {
         'user': request.user.get_full_name(),
         'user_link': user_url,
@@ -65,7 +71,8 @@ def project_invite_member(request, invitees, project, message):
         'project_join': join_url,
         'project_link': project_url,
         'projects_list': projects_list,
-        'message': message
+        'message': message,
+        'mods': pre_mod_text + mods
     }
     subject = "{0} invites you to join {1}".format(
         request.user.get_full_name(),
