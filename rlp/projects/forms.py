@@ -105,13 +105,7 @@ class NewGroupForm(BaseGroupForm):
         max_length=600,
         widget=forms.Textarea,
         required=False,
-        disabled=True,
-        initial=initial_text,
-    )
-    custom_invite_message = forms.CharField(
-        max_length=600,
-        widget=forms.Textarea,
-        required=False,
+        help_text="Custom message that will be added to the invitation email",
     )
 
     field_order = ['group_name', 'about', 'banner_image', 'approval',

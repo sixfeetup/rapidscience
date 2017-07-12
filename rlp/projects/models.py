@@ -136,55 +136,6 @@ class Project(SEOMixin, SharesContentMixin):
                 context
             )
 
-    def invite_registered_users(self, users, subject=None, message=None, inviter=None, extra_template_vars=None, request=None):
-        emails = [u.email for u in users if u.email]
-        return self.invite_external_emails(emails, subject, message, inviter, extra_template_vars, request)
-
-    def invite_external_emails(self, emails, subject=None, message=None, inviter=None, extra_template_vars=None, request=None):
-        """Send an invitation by email to each of the emails given."""
-        subject = subject or 'Invitation to join {}'.format(self.title)
-        inviter = inviter or request.user or self.moderators().first()
-        project_link = request.build_absolute_uri(
-            reverse('projects:projects_detail',
-                    kwargs={'pk': self.pk, 'slug': self.slug}))
-        user_url = request.build_absolute_uri(
-            reverse('profile',
-                    kwargs={'pk': request.user.pk}))
-
-        context = {
-            'user': inviter.get_full_name(),
-            'user_link': user_url,
-            'group': self.title,
-            'project_link': project_link,
-            'reg_link': request.build_absolute_uri(reverse('register'))
-        }
-
-        template = "projects/emails/moderator_invite_to_group"
-
-        if extra_template_vars:
-            context.update(extra_template_vars)
-
-        for address in emails:
-            try:
-                member = User.objects.get(email=address)
-            except User.DoesNotExist:
-                member = User(email=address, is_active=False)
-                member.save()
-            context.update({
-                'reg_link': request.build_absolute_uri(reverse('register_user',
-                            kwargs={'pk': member.pk}))
-            })
-
-            message = render_to_string('{}.txt'.format(template), context)
-
-            mail = EmailMessage(
-                subject,
-                message,
-                inviter.get_full_name() + " <info@rapidscience.org>",
-                [address],
-            )
-            mail.send()
-
     def save(self, *args, **kwargs):
         # Groups are in the top level navigation and need to clear the cache
         # on save.

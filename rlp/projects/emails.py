@@ -3,6 +3,8 @@ from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 from django.utils.text import slugify
 
+from rlp.accounts.models import User
+
 
 def reject_to_requester(request, membership, group):
     data = {
@@ -44,6 +46,7 @@ def approve_to_requester(request, membership, group):
 
 
 def project_invite_member(request, invitees, project, message):
+    # invitees should be a list of email addresses
     project_url = request.build_absolute_uri(
         reverse('projects:projects_detail',
                 kwargs={'pk': project.pk, 'slug': project.slug}))
@@ -76,31 +79,45 @@ def project_invite_member(request, invitees, project, message):
     mail.send()
 
 
-def project_invite_nonmember(request, invitee, project, message):
-    project_url = request.build_absolute_uri(
-        reverse('projects:projects_detail',
-                kwargs={'pk': project.pk, 'slug': project.slug}))
-    join_url = request.build_absolute_uri(
-        reverse('projects:projects_join',
-                kwargs={'pk': project.pk}))
-    user_url = request.build_absolute_uri(
-        reverse('profile', kwargs={'pk': request.user.pk}))
-    register_url = request.build_absolute_uri(
-        reverse('register_user', kwargs={'pk': invitee.pk}))
-    data = {
-        'user': request.user.get_full_name(),
-        'user_link': user_url,
-        'project_title': project.title,
-        'join_link': join_url,
-        'project_link': project_url,
-        'reg_link': register_url,
-        'message': message
-    }
-    subject = "Invitation to join {}".format(project.title)
-    template = "projects/emails/nonmember_group_invite"
-    body = render_to_string('{}.txt'.format(template), data)
-    mail = EmailMessage(subject, body,
-                        "Rapid Science <support@rapidscience.org>",
-                        [invitee.email, ])
-    mail.content_subtype = "html"
-    mail.send()
+def project_invite_nonmember(request, invitees, project, message):
+    # invitees is a list of email addresses.
+    # Create an inactive account for each
+    for ext in invitees:
+        try:
+            # check if member already exists, send the member email
+            member = User.objects.get(email=ext)
+            if member.is_active:
+                project_invite_member(request, [member.email], project, message)
+                return
+            # else send the nonmember email
+        except User.DoesNotExist:
+            member = User(email=ext, is_active=False)
+            member.save()
+
+        project_url = request.build_absolute_uri(
+            reverse('projects:projects_detail',
+                    kwargs={'pk': project.pk, 'slug': project.slug}))
+        join_url = request.build_absolute_uri(
+            reverse('projects:projects_join',
+                    kwargs={'pk': project.pk}))
+        user_url = request.build_absolute_uri(
+            reverse('profile', kwargs={'pk': request.user.pk}))
+        register_url = request.build_absolute_uri(
+            reverse('register_user', kwargs={'pk': member.pk}))
+        data = {
+            'user': request.user.get_full_name(),
+            'user_link': user_url,
+            'project_title': project.title,
+            'join_link': join_url,
+            'project_link': project_url,
+            'reg_link': register_url,
+            'message': message
+        }
+        subject = "Invitation to join {}".format(project.title)
+        template = "projects/emails/nonmember_group_invite"
+        body = render_to_string('{}.txt'.format(template), data)
+        mail = EmailMessage(subject, body,
+                            "Rapid Science <support@rapidscience.org>",
+                            [member.email, ])
+        mail.content_subtype = "html"
+        mail.send()

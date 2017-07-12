@@ -196,15 +196,7 @@ def invite_members(request, pk, slug):
             message = form.cleaned_data['invitation_message']
 
             # Non-members - create user and send specific registration link
-            for ext in external_addrs:
-                try:
-                    member = User.objects.get(email=ext)
-                    internal_addrs.append(member)
-                except User.DoesNotExist:
-                    new_member = User(email=ext, is_active=False)
-                    new_member.save()
-                    emails.project_invite_nonmember(
-                        request, new_member, group, message)
+            emails.project_invite_nonmember(request, external_addrs, group, message)
 
             # site members
             emails.project_invite_member(request, internal_addrs, group, message)
@@ -324,8 +316,12 @@ class AddGroup(LoginRequiredMixin, FormView):
             project=new_group,
             state='moderator',
         )
-        new_group.invite_registered_users(form.cleaned_data['internal'], request=request)
-        new_group.invite_external_emails(form.cleaned_data['external'], request=request)
+        internal_addrs = [member.email for member in form.cleaned_data['internal']]
+        message = form.cleaned_data['invitation_message']
+        emails.project_invite_member(request, internal_addrs, new_group, message)
+
+        external_addrs = form.cleaned_data['external']
+        emails.project_invite_nonmember(request, external_addrs, new_group, message)
         return redirect(new_group.get_absolute_url())
 
 
@@ -367,14 +363,13 @@ class EditGroup(LoginRequiredMixin, FormView):
             res = self.form_valid(form)
             messages.info(request, "Edits saved!")
 
-            # internal invites
-            new_invitees = [invitee for invitee in form.cleaned_data['internal'] if
-                            invitee not in project.active_members()]
-            project.invite_registered_users(new_invitees, request=request)
+            internal_addrs = [member.email for member in form.cleaned_data['internal'] if
+                              member not in project.active_members()]
+            message = form.cleaned_data['invitation_message']
+            emails.project_invite_member(request, internal_addrs, project, message)
 
-            # external invites
-            # TODO: if the email matches an internal user, upgrade the invite
-            project.invite_external_emails(form.cleaned_data['external'], request=request)
+            external_addrs = form.cleaned_data['external']
+            emails.project_invite_nonmember(request, external_addrs, project, message)
 
             messages.info(request, "Invites Sent!")
 
