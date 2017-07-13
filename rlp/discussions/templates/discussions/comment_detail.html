@@ -21,9 +21,11 @@
               {% if comment.user = request.user %}me{% else %}{{ comment.user.get_full_name }}{% endif %}
               </a>
               | {{ comment.submit_date|date:"j M Y" }}
+              {% if request.user.id == comment.user_id or request.user.is_staff %}
               | {% with edit_url=comment.get_edit_url %}
                     {% if edit_url %}<a href="{{ edit_url }}">Edit</a>{% endif %}
                 {% endwith %}
+              {% endif %}
               <br />
               {%  display_shared_with comment request.user %}
             </p>

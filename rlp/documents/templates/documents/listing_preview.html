@@ -29,9 +29,11 @@
         {% if request.user == obj.owner %} me {% else %} {{ obj.owner.get_full_name }} {% endif %}
       </a>
       | {{ obj.date_added|date:"j M Y" }}
+      {% if request.user == obj.owner or request.user.is_staff %}
       | {% with edit_url=obj.get_edit_url %}
             {% if edit_url %}<a href="{{ edit_url }}">Edit</a>{% endif %}
-        {% endwith %}<br />
+        {% endwith %}
+      {% endif %}<br />
         {% display_shared_with obj request.user %}
     </p>
     <div class="more">{% autoescape off %}{{ obj.description }}{% endautoescape %}</div>
