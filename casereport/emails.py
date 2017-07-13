@@ -69,7 +69,7 @@ def approved(casereport):
     message = EmailMessage(subject,
                            message_body,
                            "Cases Central <edit@rapidscience.org>",
-                           [settings.RSADMIN_EMAIL,])
+                           ["Editorial team <edit@rapidscience.org>",])
     message.content_subtype = 'html'
     message.send()
 
