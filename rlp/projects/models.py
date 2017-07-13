@@ -157,29 +157,28 @@ class Project(SEOMixin, SharesContentMixin):
         return ' | '.join([x.get_full_name() for x in mods])
 
     def add_member(self, user):
-        ''' add user to the project(group)
+        """ add user to the project(group)
             if the user was already a member, no action is taken
             if the project requires membership approval, the user will be pending.
             otherwise a normal membership is made.
 
             Returns the ProjectMemebership  ( pending, member, moderator )
-        '''
-
-        initial_state = 'member'
-        if self.approval_required:
-            initial_state = 'pending'
+        """
 
         membership, is_new = ProjectMembership.objects.get_or_create(
             project=self,
             user=user,
-            defaults={'state': initial_state},
         )
+
+        # if moderator approval isn't needed, approve the member now
+        if not self.approval_required:
+            membership.approve()
 
         return membership
 
     def remove_member(self, user):
-        ''' remove user from the project.
-        '''
+        """ remove user from the project.
+        """
         membership = self.projectmembership_set.get_or_create(user=user)
         membership.delete()
 
@@ -187,7 +186,7 @@ class Project(SEOMixin, SharesContentMixin):
 class ProjectMembership(models.Model):
     project = models.ForeignKey(Project)
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
-    state = FSMField(choices=MEMBER_STATES, default='member')
+    state = FSMField(choices=MEMBER_STATES, default='pending')
 
     class Meta:
         unique_together = ['project', 'user']
@@ -213,12 +212,18 @@ class ProjectMembership(models.Model):
     def approve(self):
         # TODO: alert the user
         # activity stream entries for the user, the group and moderator
-        approval_action = Action(actor=CurrentUserMiddleware.get_user(),
-                                 verb='approved',
-                                 action_object=self,
-                                 target=self.project)
-        approval_action.save()
+        # only log the approval if it wasn't automatic because the group was
+        # open
+        approver = CurrentUserMiddleware.get_user()
+        if approver != self.user:
+            approval_action = Action(actor=approver,
+                                     verb='approved',
+                                     action_object=self,
+                                     target=self.project,
+                                     public=False)
+            approval_action.save()
 
+        # this should show in the user's and project's activity feeds
         user_action = Action(actor=self.user,
                              verb='joined',
                              action_object=self.project,
