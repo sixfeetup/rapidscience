@@ -1,4 +1,4 @@
-<!- tags = iterable taggit.Tag or managedtags.ManagedTag -->
+<!-- tags = iterable taggit.Tag or managedtags.ManagedTag -->
 {% for tag in tags %}
     {% if tag.slug != '' %}
         <a role="button"
@@ -8,7 +8,7 @@
            {% else %}
            href="{% url 'haystack_search' %}?tags={{ tag.id }}"
            {% endif %}
-        >{{ tag }}
+        >{{ tag.name }}
         </a>
     {% endif %}
 {% endfor %}

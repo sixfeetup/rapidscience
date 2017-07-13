@@ -30,7 +30,7 @@
           {% for tag in obj.tags.all %}
             {% if tag.slug != '' %}
             <a role="button" class="btn btn-tag btn-xs" href="{% url 'haystack_search' %}?tags={{ tag.id }}">
-              {{ tag }}
+              {{ tag.name }}
             </a>
             {% endif %}
           {% endfor %}
