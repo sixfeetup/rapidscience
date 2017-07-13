@@ -1,25 +1,30 @@
 {% load core_tags %}
 {#object#}
-{{ action.action_object.display_type }}
-
-{#verb#}
-{% if action.verb == 'reply' or action.verb == 'comment' %}
-    <!-- verb suppressed to read like Comment by ... -->
-{% elif action.verb == 'sent back' %}
-    {{ action.verb|verb_alias }} to the author
+{% if action.verb == 'joined' %}
+    Welcome {{ action.actor|link }} to {{ action.target|link }}
 {% else %}
-  {{ action.verb|verb_alias }}
-{% endif %}
 
-{# actor #}
-by <a href="{{ action.actor.get_absolute_url }}">{% if request.user == action.actor %} me {% else %} {{ action.actor.get_full_name }}{% endif %}</a>
+    {{ action.action_object.display_type }}
 
-{# target #}
-{% if action.verb == 'shared' %} to {{ action.target|link }}
-    {% if action.others %}{% for other in action.others %}{% if forloop.last %} and {%  else %}, {% endif %}{{ other.target|link }}{%  endfor %}{% endif %}
-{% elif action.verb == 'added' or action.verb == 'uploaded' or action.verb == 'started' or action.verb == 'replied' or action.verb == 'created' or action.verb = 'posted'%}
-    {% if action.others %} to {{ action.others.0.target|link }}
-        {% for other in action.others|slice:"1:" %}{% if forloop.last %} and {%  else %}, {% endif %}{{ other.target|link }}{%  endfor %}
+    {#verb#}
+    {% if action.verb == 'reply' or action.verb == 'comment' %}
+        <!-- verb suppressed to read like Comment by ... -->
+    {% elif action.verb == 'sent back' %}
+        {{ action.verb|verb_alias }} to the author
+    {% else %}
+      {{ action.verb|verb_alias }}
+    {% endif %}
+
+    {# actor #}
+    by <a href="{{ action.actor.get_absolute_url }}">{% if request.user == action.actor %} me {% else %} {{ action.actor.get_full_name }}{% endif %}</a>
+
+    {# target #}
+    {% if action.verb == 'shared' %} to {{ action.target|link }}
+        {% if action.others %}{% for other in action.others %}{% if forloop.last %} and {%  else %}, {% endif %}{{ other.target|link }}{%  endfor %}{% endif %}
+    {% elif action.verb == 'added' or action.verb == 'uploaded' or action.verb == 'started' or action.verb == 'replied' or action.verb == 'created' or action.verb = 'posted'%}
+        {% if action.others %} to {{ action.others.0.target|link }}
+            {% for other in action.others|slice:"1:" %}{% if forloop.last %} and {%  else %}, {% endif %}{{ other.target|link }}{%  endfor %}
+        {% endif %}
     {% endif %}
 {% endif %}
 {% if action.action_object_content_type.model == 'threadedcomment' and action.verb != 'started' and action.verb != 'shared' %}
