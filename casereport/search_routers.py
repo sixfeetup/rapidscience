@@ -27,7 +27,7 @@ class GeneralSearchRouter(routers.DefaultRouter):
         obj = hints['instance']
 
         if isinstance(obj, CaseReport):
-            if not obj.workflow_state == WorkflowState.LIVE:
+            if obj.workflow_state != WorkflowState.LIVE:
                 return
 
         return 'default'
