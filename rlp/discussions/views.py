@@ -17,7 +17,7 @@ from taggit.models import Tag
 from casereport.models import CaseReport
 from rlp.accounts.models import User
 from rlp.core.forms import group_choices
-from rlp.core.utils import bookmark_and_notify, add_tags
+from rlp.core.utils import bookmark_and_notify, add_tags, fill_tags
 from rlp.discussions import emails
 from rlp.projects.models import Project
 from .forms import (
