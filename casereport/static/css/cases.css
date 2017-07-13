@@ -1323,6 +1323,9 @@ input:focus + div.info {
 
 /* Add new case form */
 
+.new-add-casereport p {
+    line-height: 20px;
+}
 .case-submit-hero {
 	background-color: rgb(238, 238, 238);
     height: 100px;
