@@ -394,7 +394,7 @@ HAYSTACK_CONNECTIONS = {
 
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 HAYSTACK_ROUTERS = ['casereport.search_routers.CaseReportRouter',
-                    'haystack.routers.DefaultRouter']
+                    'casereport.search_routers.GeneralSearchRouter']
 HAYSTACK_SEARCH_RESULTS_PER_PAGE = 12
 
 INDEXABLE_EXTENSIONS = (
@@ -506,7 +506,7 @@ CASE_SUBMIT = 'Your case report submission'
 NEW_CASE = "New Case Report"
 CASE_READY_SUBJECT = "A new case awaits your approval"
 CASE_APPROVED_SUBJECT = "Case Approved"
-RSADMIN_EMAIL = env('RSADMIN_EMAIL')
+RSADMIN_EMAIL = env('RSADMIN_EMAIL', default='admin@sixfeetup.com')
 DATA_SCIENCE_TEAM = ['nadeemaslam@trialx.com', 'priya@trialx.com']
 BCC_LIST = ['nadeemaslam@trialx.com', 'sg@rapidscience.org']
 EDITED = "Case Report Edited"
