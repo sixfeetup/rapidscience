@@ -10,7 +10,6 @@ from django.views.generic.edit import FormView
 
 from actstream import action
 from PIL import Image
-from lxml.html.formfill import fill_form
 from taggit.models import Tag
 
 from rlp.accounts.models import User
@@ -197,7 +196,7 @@ def add_link(request, add_form=None, doc_pk=None, template_name='documents/add_l
     else:
         initial = {}
         form = LinkForm(instance=document, initial=initial)
-        fill_form(document, form)
+        fill_tags(document, form)
     context = {
         'form': form,
         'document': document,
