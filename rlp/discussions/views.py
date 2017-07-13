@@ -9,13 +9,16 @@ from django.core.urlresolvers import reverse
 from django import http
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import FormView
+from django_comments.views.comments import post_comment
 
 from actstream import action
 from taggit.models import Tag
 
+from casereport.models import CaseReport
 from rlp.accounts.models import User
 from rlp.core.forms import group_choices
 from rlp.core.utils import bookmark_and_notify, add_tags
+from rlp.discussions import emails
 from rlp.projects.models import Project
 from .forms import (
     ThreadedCommentEditForm,
@@ -128,6 +131,15 @@ def comment_done(request, *args, **kwargs):
     else:
         url = top_comment.content_object.get_absolute_url()
     return redirect(url)
+
+
+def comment_post(request):
+    if 'casereportreview' in request.POST['content_type']:
+        casereport = CaseReport.objects.get(review_id=request.POST['object_pk'])
+        if casereport.primary_author.id == request.user.id:
+            emails.author_note_to_admin(request, casereport)
+    response = post_comment(request)
+    return response
 
 
 class CreateDiscussion(LoginRequiredMixin, FormView):
