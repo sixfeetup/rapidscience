@@ -317,11 +317,17 @@ body.search .box.main-content {
     font-style: italic;
 }
 
-.search-page h4 {
-    font-size: 20px;
-    font-weight: normal;
-    line-height: 27px;
-    margin-bottom: 10px;
+.search-page {
+    h4 {
+        font-size: 20px;
+        font-weight: normal;
+        line-height: 27px;
+        margin-bottom: 10px;
+    }
+    .reference-item h4 {
+        font-size: 16px;
+        line-height: 21px;
+    }
 }
 
 .search-page .relevance {

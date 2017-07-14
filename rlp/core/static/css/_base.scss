@@ -502,6 +502,10 @@ small {
       left: auto;
     }
   }
+  &.activity-userreference h4,
+  &.activity-reference h4 {
+    font-size: 16px;
+  }
 }
 
 .bookmark-widget {
