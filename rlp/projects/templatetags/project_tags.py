@@ -26,7 +26,7 @@ def show_project_members(context, project):
                                                        state__in=('member',
                                                                   'moderator'))
     # members list differs by viewer
-    if user.is_staff or user in project.moderators.all():
+    if user.is_staff or user in project.moderators().all():
         memberships = project.projectmembership_set.filter(
             user__is_active=True).exclude(state='ignored')
 
