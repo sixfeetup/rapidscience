@@ -2,7 +2,7 @@ With apologies, the {{ group }} group is currently closed to new members.<br><br
 
 You may, however, create a new group (from the <a href="{{ link }}">All Groups</a> page) related to this topic and invite members from within or outside the Rapid Science network.<br><br>
 
-If you have questions please contact us at <​support@rapidscience.org>.<br><br>
+If you have questions please contact us at <support@rapidscience.org>.<br><br>
 
 Sincerely,<br><br>
 
