@@ -169,6 +169,14 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
 def projects_members(request, pk, slug, template_name='projects/projects_members.html', extra_context=None):
     projects = Project.objects.select_related('institution', 'topic')
     project = get_object_or_404(projects, pk=pk, slug=slug)
+    # members list differs by viewer
+    if request.user.is_staff or request.user in project.moderators.all():
+        memberships = project.projectmembership_set.filter(user__is_active=True).exclude(state='ignored')
+    else:
+        memberships = project.projectmembership_set.filter(user__is_active=True,
+                                                           state__in=('member', 'moderator'))
+
+    memberships = memberships.order_by('state', 'user__last_name')
     context = {
         'project': project,
         'projects': projects,

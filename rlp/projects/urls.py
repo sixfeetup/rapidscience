@@ -14,7 +14,7 @@ urlpatterns = [
         name='projects_tab'),
     url(r'^(?P<pk>\d+)-(?P<slug>[\w\d-]+)/members/$',
         views.projects_members,
-        name='projects_members'),
+        name='projects_members'),   # I think this is dead code
     url(
         r'^(?P<pk>\d+)-(?P<slug>[\w\d-]+)/invite$',
         views.invite_members,
