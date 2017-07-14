@@ -25,8 +25,7 @@ from casereport.constants import WorkflowState
 from casereport.models import CaseReport
 from rlp.accounts import emails
 from rlp.accounts.models import Institution, UserLogin
-from rlp.bibliography.models import Reference, UserReference
-from rlp.core.email import send_transactional_mail
+from rlp.bibliography.models import UserReference
 from rlp.core.utils import rollup
 from rlp.core.views import MESSAGES_DEFAULT_FORM_ERROR
 from rlp.discussions.models import ThreadedComment
@@ -34,9 +33,7 @@ from rlp.documents.models import Document
 from rlp.projects.models import Project
 from rlp.search.forms import ProjectContentForm, \
     get_action_object_content_types
-from .forms import RegistrationForm, UserProfileForm, AuthenticationForm, \
-    ProjectMembershipForm, \
-    RestrictedProjectMembershipForm
+from .forms import RegistrationForm, UserProfileForm, AuthenticationForm
 from .models import User
 from .signals import sync_user
 
@@ -46,10 +43,11 @@ PENDING_REGISTRATION_MESSAGE = "Thank you for your interest in joining the {} Re
                                "Your registration is pending approval. You will receive an email when your " \
                                "registration is complete.".format(settings.SITE_PREFIX.upper())
 
-WELCOME_MESSAGE="Welcome to Sarcoma Central! " \
+WELCOME_MESSAGE = "Welcome to Sarcoma Central! " \
                 "In your Activity Feed below, you will find a few brief " \
                 "notes on how to proceed -- e.g., complete your profile " \
                 "and join or form groups."
+
 
 @sensitive_post_parameters()
 @csrf_protect
@@ -527,10 +525,6 @@ def profile(request, pk, template_name='accounts/profile.html', extra_context=No
 @login_required
 @never_cache
 def profile_edit(request, template_name='accounts/profile_edit.html'):
-    if not request.user.can_access_all_projects:
-        project_form = RestrictedProjectMembershipForm
-    else:
-        project_form = ProjectMembershipForm
     if request.method == 'POST':
         form = UserProfileForm(request.POST, request.FILES, instance=request.user)
         data = request.POST.copy()
@@ -559,4 +553,3 @@ def profile_edit(request, template_name='accounts/profile_edit.html'):
         'form': form,
     }
     return render(request, template_name, context)
-
