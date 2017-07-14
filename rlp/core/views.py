@@ -56,6 +56,11 @@ class SendToView(LoginRequiredMixin, View):
         if form.is_valid():
             members = list(form.cleaned_data['members'])
             groups = list(form.cleaned_data['groups'])
+            last_proj = request.session.get('last_viewed_project')
+            if not last_proj:
+                # if not coming from a project, remove and self-to-self shares
+                if request.user in members:
+                    members = [m for m in members if m.id != request.user.id]
             shared_content.share_with(
                 members + groups,
                 shared_by=request.user,
