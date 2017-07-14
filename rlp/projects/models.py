@@ -219,16 +219,16 @@ class ProjectMembership(models.Model):
             approval_action = Action(actor=approver,
                                      verb='approved',
                                      action_object=self,
-                                     target=self.project,
-                                     public=False)
+                                     target=self,)
             approval_action.save()
 
-        # this should show in the user's and project's activity feeds
-        user_action = Action(actor=self.user,
-                             verb='joined',
-                             action_object=self.project,
-                             target=self.project)
-        user_action.save()
+        # # this should show in the user's and project's activity feeds
+        # user_action = Action(actor=self.user,
+        #                      verb='joined',
+        #                      action_object=self,
+        #                      target=self.project,
+        #                      public=False)
+        # user_action.save()
 
 
     @transition(field=state, source='pending', target='ignored')
