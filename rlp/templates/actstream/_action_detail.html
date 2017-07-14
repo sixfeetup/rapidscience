@@ -3,13 +3,18 @@
 {% if action.verb == 'joined' %}
     <!-- SUPPRESSED in favor of approved item which holds more context -->
 {% elif action.verb == 'approved' %}
-    Moderator {{ action.actor|link }} has approved {% if action.action_object.user == request.user %} your {% else %} {{ action.action_object.user|link }}'s {% endif %}request to join the {{ action.action_object.project|link }} group.
-    {% if action.action_object.user == request.user %}
-        <p>You may post discussions, files, case reports, and references to this group, and participate in member discussions.
-        If you wish to invite others to join the group, please contact the moderator(s).
-        </p>
-        If you have questions please contact us at &lt;<a href="mailto:support@rapidscience.org">support@rapidscience.org</a>&gt;
-    {% endif %}
+    {# 3 versions of this 1) the new member, 2) the moderator, 3) other members #}
+    {% if action.actor == request.user or action.action_object.user == request.user %}
+        Moderator {{ action.actor|link }} has approved {% if action.action_object.user == request.user %} your {% else %} {{ action.action_object.user|link }}'s {% endif %}request to join the {{ action.action_object.project|link }} group.
+        {% if action.action_object.user == request.user %}
+            <p>You may post discussions, files, case reports, and references to this group, and participate in member discussions.
+            If you wish to invite others to join the group, please contact the moderator(s).
+            </p>
+            If you have questions please contact us at &lt;<a href="mailto:support@rapidscience.org">support@rapidscience.org</a>&gt;
+        {% endif %}
+        {% else %}
+        Welcome to {{ action.action_object.user|link }} who has joined {{ action.action_object.project|link }}.
+        {% endif %}
 {% elif action.verb == 'declined' %}
     With apologies, the {{ action.action_object.project }} group is currently closed to new members.
     <p>You may, however, create a new group (from the <a href="{% url "projects:projects_list" %}">All Groups</a> page) related to this topic and invite members from within or outside the Rapid Science network.
