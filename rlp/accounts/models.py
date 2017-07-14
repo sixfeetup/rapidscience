@@ -204,7 +204,7 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
                 | self._get_activity_involving_me_query()
                 | self._get_activity_in_my_projects_query()
             )
-            & self._get_activity_excluding_self_shares()
+            #& self._get_activity_excluding_self_shares()
         )
 
         # exclude shares to me of casereports that arent mine and live,
