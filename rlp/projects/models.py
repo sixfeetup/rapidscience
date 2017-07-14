@@ -233,9 +233,16 @@ class ProjectMembership(models.Model):
 
     @transition(field=state, source='pending', target='ignored')
     def ignore(self):
+        approver = CurrentUserMiddleware.get_user()
         # activity stream entries for the moderator
-        denial = Action(actor=CurrentUserMiddleware.get_user(),
-                                 verb='denied',
-                                 action_object=self,
-                                 target=self.project)
+        denial = Action(actor=approver,
+                        verb='denied',
+                        action_object=self)
         denial.save()
+
+        # this is to inform the user
+        request_declined = Action(actor=approver,
+                                  verb='declined',
+                                  action_object=self,
+                                  target=self.user)
+        request_declined.save()
