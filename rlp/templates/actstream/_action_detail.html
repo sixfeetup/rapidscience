@@ -1,6 +1,6 @@
 {% load core_tags %}
 {#object#}
-{% if action.verb == 'joined' %}
+{% if action.verb == 'joined' and action.actor == request.user %}
     Welcome {{ action.actor|link }} to {{ action.target|link }}
 {% elif action.verb == 'declined' %}
     With apologies, the {{ action.action_object.project }} group is currently closed to new members.
@@ -17,16 +17,19 @@
     {% elif action.verb == 'sent back' %}
         {{ action.verb|verb_alias }} to the author
     {% else %}
-      {{ action.verb|verb_alias }}
+      {{ action.verb|verb_alias }}<!-- (aliased from {{ action.verb }}) -->
     {% endif %}
 
     {# actor #}
     by <a href="{{ action.actor.get_absolute_url }}">{% if request.user == action.actor %} me {% else %} {{ action.actor.get_full_name }}{% endif %}</a>
 
     {# target #}
-    {% if action.verb == 'shared' %} to {{ action.target|link }}
-        {% if action.others %}{% for other in action.others %}{% if forloop.last %} and {%  else %}, {% endif %}{{ other.target|link }}{%  endfor %}{% endif %}
+    {% if action.verb == 'shared' %} with {% if action.target = request.user %} me {% else %}{{ action.target|link }}{% endif %}
+        {% if action.others %}
+            {% for other in action.others %}{% if forloop.last %} and {%  else %}, {% endif %}{% if other.target == request.user %} me {% else %}{{ other.target|link }}{% endif %}{%  endfor %}
+        {% endif %}
     {% elif action.verb == 'added' or action.verb == 'uploaded' or action.verb == 'started' or action.verb == 'replied' or action.verb == 'created' or action.verb = 'posted'%}
+        to {{ action.target|link }}
         {% if action.others %} to {{ action.others.0.target|link }}
             {% for other in action.others|slice:"1:" %}{% if forloop.last %} and {%  else %}, {% endif %}{{ other.target|link }}{%  endfor %}
         {% endif %}
