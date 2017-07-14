@@ -172,7 +172,8 @@ class Project(SEOMixin, SharesContentMixin):
 
         # if moderator approval isn't needed, approve the member now
         if not self.approval_required:
-            membership.approve()
+            membership.state = 'member'
+            membership.save()
 
         return membership
 
