@@ -83,14 +83,17 @@ def login(request, template_name='accounts/login.html',
 
                 redirect_to = resolve_url(settings.LOGIN_REDIRECT_URL)
 
-            # Okay, security check complete. Log the user in.
-            auth_login(request, form.get_user())
-
             # check for first login
-            if UserLogin.objects.filter(user=request.user).count() == 0:
+            user = form.get_user()
+            first_login = (UserLogin.objects.filter(user=user).count() == 0)
+
+            # Okay, security check complete. Log the user in.
+            auth_login(request, user)
+
+            if first_login:
                 # add the user to any auto opt-in groups
                 for auto_group in Project.objects.filter(auto_opt_in=True):
-                    auto_group.add_member(request.user)
+                    auto_group.add_member(user)
                 # display a welcome message
                 messages.success(request, WELCOME_MESSAGE)
 
