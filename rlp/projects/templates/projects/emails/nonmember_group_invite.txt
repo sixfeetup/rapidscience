@@ -1,7 +1,7 @@
 You are invited by <a href="{{ user_link }}">{{ user }}</a> to join the <a href="{{ project_link }}">{{ project_title }}</a> group in the Sarcoma Central network.<br><br>
 
 {% if message %}
-<div style="margin-left: 20px;">{{ message|safe }}</div>
+<div style="margin-left: 20px;">{{ message|linebreaks }}</div><br>
 {% endif %}
 
 If you're not already a Rapid Science member, please register <a href="{{ reg_link }}">here</a>.<br><br>
