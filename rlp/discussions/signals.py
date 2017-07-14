@@ -105,7 +105,8 @@ def review_notification(**kwargs):
     }
     send_transactional_mail(
         author.email,
-        'Your case report submission',
+        'Editorial comment regarding your case report',
         'emails/review',
         mail_data,
+        "Cases Central <edit@rapidscience.org>"
     )

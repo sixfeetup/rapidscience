@@ -1,6 +1,6 @@
 Dear {{ user }},
 
-An editorial comment has been posted on this case report posted in Sarcoma Central:
+An editorial comment has been posted on this case report at Sarcoma Central:
 
   {{ casereport }}
 
@@ -8,9 +8,7 @@ An editorial comment has been posted on this case report posted in Sarcoma Centr
 {{ comment|striptags }}
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-You are invited to review and make any necessary edits to the case report.
-
-If you have any questions or concerns, please contact us at edit@rapidscience.org.
+You can respond to this message by replying to this email or preferably  in the Editorial Notes dialog box at the top right of your case report.
 
 Sincerely,
 

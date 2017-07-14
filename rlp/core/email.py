@@ -8,7 +8,7 @@ from django.template.loader import render_to_string
 from .models import EmailLog
 
 
-def send_transactional_mail(to_email, subject, template, context):
+def send_transactional_mail(to_email, subject, template, context, from_email=settings.DEFAULT_FROM_EMAIL):
     """Shortcut for sending transactional emails (both html and plain text) to a
     single recipient.
     ``template`` should be the file name without the file extension e.g. 'emails/test'
@@ -22,6 +22,6 @@ def send_transactional_mail(to_email, subject, template, context):
     # WARNING: SMTP headers cannot be longer than 72 characters. We should be ok for now with just the pk of EmailLog
     # but should switch to using their official library so it is line wrapped automatically.
     headers = {'X-SMTPAPI': json.dumps({'EmailLogId': str(email_log.id)})}
-    mail = EmailMultiAlternatives(subject, message, settings.DEFAULT_FROM_EMAIL, [to_email], headers=headers)
+    mail = EmailMultiAlternatives(subject, message, from_email, [to_email], headers=headers)
     mail.attach_alternative(html_message, 'text/html')
     return mail.send()
