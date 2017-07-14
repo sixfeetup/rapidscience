@@ -188,7 +188,7 @@ def add_link(request, add_form=None, doc_pk=None, template_name='documents/add_l
                 if add_form:
                     bookmark_and_notify(
                         link, add_form, request,
-                        'documents', 'document',
+                        'documents', 'link',
                     )
             return redirect(link.get_absolute_url())
         else:
@@ -244,7 +244,7 @@ def add_video(request, add_form=None, doc_pk=None, template_name='documents/add_
                 if add_form:
                     bookmark_and_notify(
                         video, add_form, request,
-                        'documents', 'document',
+                        'documents', 'video',
                     )
             return redirect(video.get_absolute_url())
         else:
