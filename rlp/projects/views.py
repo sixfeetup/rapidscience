@@ -215,14 +215,6 @@ def invite_members(request, pk, slug):
     return redirect(request.META['HTTP_REFERER'])
 
 
-approval_tmpl = '''{} ({}) has requested access to the closed group “{}”.
-
-A moderator for the group must approve this access. You can view and approve pending members on the group’s langing page:
-
-{}
-'''
-
-
 class LeaveGroup(LoginRequiredMixin, View):
     def get(self, request, pk, user):
         project = get_object_or_404(Project, id=pk)
@@ -255,23 +247,7 @@ class JoinGroup(LoginRequiredMixin, View):
         else:
             membership = project.add_member(request.user)
             if membership.state == 'pending':
-                send_mail(
-                    'Request to join group “{}”'.format(project.title),
-                    approval_tmpl.format(
-                        request.user.get_full_name(),
-                        request.user.email,
-                        project.title,
-                        request.build_absolute_uri(reverse(
-                            'projects:projects_detail',
-                            kwargs={
-                                'pk': project.id,
-                                'slug': slugify(project.title),
-                            },
-                        )),
-                    ),
-                    request.user.email,
-                    project.get_contact_email_addresses(),
-                )
+                emails.join_request_to_mods(request, project)
                 message = ('Your request has been sent to ' +
                            'the moderator of this group.')
                 messages.success(request, message)

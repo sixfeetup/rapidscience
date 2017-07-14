@@ -4,6 +4,7 @@ from django.template.loader import render_to_string
 from django.utils.text import slugify
 
 from rlp.accounts.models import User
+from rlp.projects.models import ProjectMembership
 
 
 def reject_to_requester(request, membership, group):
@@ -128,3 +129,27 @@ def project_invite_nonmember(request, invitees, project, message):
                             [member.email, ])
         mail.content_subtype = "html"
         mail.send()
+
+
+def join_request_to_mods(request, project):
+    subject = "Request to join your closed group"
+    mods = [mod.get_full_name() + " <" + mod.email + ">" for mod
+            in project.users.filter(projectmembership__state='moderator')]
+    cc = ["support@rapidscience.org",]
+    membership = ProjectMembership.objects.get(project_id=project.id,
+                                                  user_id=request.user.id)
+    link = request.build_absolute_uri(
+            reverse('projects:accept_membership_request',
+                    kwargs={'membership_id': membership.id}))
+    data = {
+        'user': request.user,
+        'project': project,
+        'link': link
+    }
+    template = "projects/emails/join_request_to_mods"
+    body = render_to_string('{}.txt'.format(template), data)
+    mail = EmailMessage(subject, body,
+                        "Rapid Science <support@rapidscience.org>",
+                        mods, cc=cc)
+    mail.content_subtype = "html"
+    mail.send()
