@@ -1,0 +1,13 @@
+You are invited by {{ casereport.primary_author.get_full_name }} to view and discuss this case report, posted at Sarcoma Central:<br><br>
+
+<div style="margin-left: 20px;">
+<a href="https://{{ site.domain }}{{ casereport.get_absolute_url }}">{{ casereport.title }}</a><br>
+</div>
+
+You can view the case report in the <a href="https://{{ site.domain }}{{ casescentral }}">Cases Central database</a>.<br><br>
+
+If you're not already a Rapid Science member, you must first <a href="https://{{ site.domain }}{{ reg_link }}">register</a>.<br><br>
+
+Editorial Team
+<br><a href="https://sarcoma.rapidscience.org">Sarcoma Central</a>
+<br><a href="https://twitter.com/RapidScience">@RapidScience</a>

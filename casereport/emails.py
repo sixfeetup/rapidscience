@@ -6,7 +6,7 @@ from django.template.loader import render_to_string
 from django.utils.text import slugify
 
 
-def publish(casereport):
+def publish_to_author(casereport):
     email_context = {
         "casereport": casereport
     }
@@ -19,6 +19,38 @@ def publish(casereport):
                          casereport.primary_author.email + ">", ])
     mail.content_subtype = "html"
     mail.send()
+
+
+def publish_to_group(casereport):
+    site = Site.objects.all()[0]
+    viewers = casereport.get_viewers()
+    groups = [viewer for viewer in viewers if viewer.active_members()]
+    recipients = []
+    if not groups:
+        return
+    for group in groups:
+        recipients += group.active_members()
+    recipients = set(recipients)
+    recipients = [member.get_full_name() + "<" + member.email + ">"
+                  for member in recipients]
+    email_context = {
+        "casereport": casereport,
+        "casescentral": reverse('haystac'),
+        "site": site,
+        "reg_link": reverse('register')
+    }
+    name = casereport.primary_author.get_full_name()
+    subject = "{} shared a case report with you".format(name)
+    template = 'casereport/emails/group_casereport_published'
+    message_body = render_to_string('{}.txt'.format(template),
+                                    email_context)
+    for member in recipients:
+        mail = EmailMessage(subject,
+                            message_body,
+                            "Cases Central <edit@rapidscience.org>",
+                            [member,])
+        mail.content_subtype = "html"
+        mail.send()
 
 
 def submitted(casereport):

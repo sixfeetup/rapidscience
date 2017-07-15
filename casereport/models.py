@@ -327,8 +327,8 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     def publish(self):
         self.admin_approved = True
         self.date_published = datetime.now()
-        self.notify_viewers("CaseReport has been published", {})
-        emails.publish(self)
+        emails.publish_to_author(self)
+        emails.publish_to_group(self)
         user = CurrentUserMiddleware.get_user()
         author = User.objects.get(email__exact=self.primary_author.email)
         action.send(user, verb='published', action_object=self, target=author)
