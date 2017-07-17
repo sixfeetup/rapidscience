@@ -1,4 +1,8 @@
 from .common import *
+import socket
+
+if 'tst0' in socket.gethostname():
+    EMAIL_PORT = 1025 # for locally run maildump
 
 SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_HTTPONLY = True
