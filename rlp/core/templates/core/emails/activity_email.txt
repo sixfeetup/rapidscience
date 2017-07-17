@@ -1,0 +1,19 @@
+{{ user.get_full_name }} shared this {{ type }} with you:<br><br>
+
+<div style="margin-left: 20px;">
+{{ title }}<br><br>
+</div>
+
+{% if comment %}
+Comment: {{ comment|striptags }}<br><br>
+{% endif %}
+
+You are invited to view and discuss it <a href="{{ link }}">here</a>.<br><br>
+
+This notification also appears on your Dashboard Activity Feed where you can bookmark it in your personal or group folder(s).<br><br>
+
+Sincerely,<br><br>
+
+Sarcoma Central Team<br><br>
+
+<a href="https://twitter.com/RapidScience">@RapidScience</a>

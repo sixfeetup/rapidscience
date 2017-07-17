@@ -2,7 +2,8 @@ import json
 
 from django.conf import settings
 from django.contrib.sites.models import Site
-from django.core.mail import EmailMultiAlternatives
+from django.core.mail import EmailMultiAlternatives, EmailMessage
+from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 
 from .models import EmailLog
@@ -25,3 +26,46 @@ def send_transactional_mail(to_email, subject, template, context, from_email=set
     mail = EmailMultiAlternatives(subject, message, from_email, [to_email], headers=headers)
     mail.attach_alternative(html_message, 'text/html')
     return mail.send()
+
+
+def activity_mail(user, obj, target, request=None):
+    if target == user:
+        return
+    comment = None
+    link = None
+    recipients = target.active_members()
+    recipients = [member.get_full_name() + " <" + member.email + ">"
+                  for member in recipients if member != user]
+    type = obj.__class__.__name__
+    try:
+        title = obj.title
+    except AttributeError:
+        title = ''
+    if type == 'UserReference':
+        from rlp.bibliography.models import Reference
+        type = 'Reference'
+        ref = Reference.objects.get(pk=obj.reference_id)
+        title = ref.title
+        comment = obj.description
+        link = request.build_absolute_uri(
+                   reverse('bibliography:reference_detail',
+                           kwargs={'reference_pk': obj.reference_id,
+                                   'uref_id': obj.id}))
+    context = {
+        "user": user,
+        "type": type,
+        "title": title,
+        "comment": comment,
+        "link": link
+    }
+    subject = "{} shared a {} with you at Sarcoma Central"
+    subject = subject.format(user.get_full_name(), type)
+    template = 'core/emails/activity_email'
+    message_body = render_to_string('{}.txt'.format(template), context)
+    for member in recipients:
+        mail = EmailMessage(subject,
+                            message_body,
+                            "support@rapidscience.org",
+                            [member,])
+        mail.content_subtype = "html"
+        mail.send()
