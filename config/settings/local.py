@@ -71,3 +71,4 @@ COMPRESS_OFFLINE = False
 # Edit to add ID
 ZOTERO_URL = "https://api.zotero.org/groups/INSERT-ID-HERE/items/top?start=%%START%%&limit=%%NUM_PER_PAGE%%&sort=dateAdded&format=json"
 
+DOMAIN = 'localhost:8000'

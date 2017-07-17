@@ -21,10 +21,7 @@ def publish_to_author(casereport):
     mail.send()
 
 
-def publish_to_group(casereport):
-    site = Site.objects.all()[0]
-    viewers = casereport.get_viewers()
-    groups = [viewer for viewer in viewers if viewer.active_members()]
+def publish_to_group(casereport, groups):
     recipients = []
     if not groups:
         return
@@ -36,7 +33,7 @@ def publish_to_group(casereport):
     email_context = {
         "casereport": casereport,
         "casescentral": reverse('haystac'),
-        "site": site,
+        "site": settings.DOMAIN,
         "reg_link": reverse('register')
     }
     name = casereport.primary_author.get_full_name()
@@ -106,20 +103,21 @@ def approved(casereport):
     message.send()
 
 
-def invite_people(request, casereport, user):
+def invite_people(casereport, user):
     slug = slugify(casereport.title)
     email_context = {
+        'site': settings.DOMAIN,
         "casereport": casereport,
-        "casescentral": request.build_absolute_uri(reverse('haystac')),
-        "case_url": request.build_absolute_uri(reverse(
+        "casescentral": reverse('haystac'),
+        "case_url": reverse(
             'casereport_detail',
             kwargs={
                 'case_id': casereport.pk,
                 'title_slug': slug
-            })),
-        "reg_link": request.build_absolute_uri(reverse(
+            }),
+        "reg_link": reverse(
             'register_user',
-            kwargs={'pk': user.pk}))
+            kwargs={'pk': user.pk})
     }
     subject = "{0} shared a case report with you".format(casereport.primary_author.get_full_name())
     template = 'casereport/emails/invite_people'
@@ -167,3 +165,15 @@ def notify_coauthor(casereport, user):
                         [recipient])
     mail.content_subtype = "html"
     mail.send()
+
+
+def cr_published_notifications(casereport):
+    """When a case report has been published, send out
+       the emails to those it has been shared with
+    """
+    shared_with = casereport.get_viewers()
+    for viewer in shared_with:
+        if hasattr(viewer, 'active_members'):
+            publish_to_group(casereport, [viewer])
+        else:
+            invite_people(casereport, viewer)
