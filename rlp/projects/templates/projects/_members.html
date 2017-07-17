@@ -88,7 +88,7 @@
                               <ul class="dropdown-menu">
                                 {% if membership.state == 'pending' %}
                                     <li><a href="{% url 'projects:accept_membership_request' membership_id=membership.id %}">Accept into group</a></li>
-                                    <li><a href="{% url 'projects:ignore_membership_request' membership_id=membership.id %}">Ignore Request to join group</a></li>
+                                    <li><a href="{% url 'projects:ignore_membership_request' membership_id=membership.id %}">Decline request to join group</a></li>
                                 {% elif membership.state == 'member' %}
                                     <li><a href="{% url 'projects:promote_to_moderator' membership_id=membership.id %}">Make a Moderator</a></li>
                                     <li><a href="{% url 'projects:projects_leave' pk=project.id user=user.id %}">Remove from group</a></li>
