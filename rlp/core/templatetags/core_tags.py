@@ -1,3 +1,4 @@
+from django.contrib.sites.models import Site
 from django.contrib.sites.shortcuts import get_current_site
 from django import template
 from django.core.urlresolvers import reverse
@@ -73,6 +74,29 @@ def setvar(parser,token):
     #    raise template.TemplateSyntaxError( "%r tag's argument should be in quotes" % tag_name )
     #return SetVarNode(new_val[1:-1], var_name)
     return SetVarNode(new_val, var_name)
+
+
+class SiteNode(template.Node):
+    def __init__(self, var_name, site):
+        self.var_name = var_name
+        self.site = site
+
+    def render(self, context):
+        context[self.var_name] = self.site
+        return ""
+
+
+@register.tag
+def get_current_site_as(parser, token):
+    """ load the current site, as defined by settings.SITE_ID into the context.
+        useful for templates that don't have access to a request, like for email.
+
+        Use like:
+            {% get_current_site_as thesite %}
+            {{ thesite }}
+    """
+    current_site = Site.objects.get_current()
+    return SiteNode(token.contents.split()[1], current_site)
 
 
 @register.simple_tag
