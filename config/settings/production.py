@@ -1,7 +1,8 @@
 from .common import *
 import socket
 
-if 'tst0' in socket.gethostname():
+hostname = socket.gethostbyname()
+if any(pat in hostname for pat in ('tst0', 'stg0')):
     EMAIL_PORT = 1025 # for locally run maildump
 
 SESSION_COOKIE_SECURE = True
