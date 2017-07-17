@@ -97,7 +97,7 @@
                             {% elif not obj.is_bookmarkable %}
                                 <!-- SUPPRESSED BOOKMARK ICON for non-bookmarkable obj -->
                             {% else %}
-                                {% if user != obj.get_poster %}
+                                {% if request.user != obj.get_poster %}
                                     {% if project %}
                                         <form class="bookmark-form" method="POST"
                                               action="{% toggle_bookmark_url content=obj viewer=project %}">
@@ -105,18 +105,20 @@
                                         <form class="bookmark-form" method="POST"
                                               action="{% toggle_bookmark_url content=obj viewer=user %}">
                                     {% endif %}
-                                {% csrf_token %}
-                                <input type="hidden"
-                                       name="{% if project %}group{% else %}dashboard{% endif %}"
-                                       value="on"/>
-                                <input type="hidden" name="content_type"
-                                       value="{{ content_type }}"/>
-                                <input type="hidden" name="content_id"
-                                       value="{{ obj.id }}"/>
-                                <a href="#" class="bookmark-trigger"
-                                   data-toggle="tooltip"><i class="fa fa-star"
-                                                            aria-hidden="true"></i></a>
-                                </form>
+                                    {% csrf_token %}
+                                    <input type="hidden"
+                                           name="{% if project %}group{% else %}dashboard{% endif %}"
+                                           value="on"/>
+                                    <input type="hidden" name="content_type"
+                                           value="{{ content_type }}"/>
+                                    <input type="hidden" name="content_id"
+                                           value="{{ obj.id }}"/>
+                                    <a href="#" class="bookmark-trigger"
+                                       data-toggle="tooltip"><i class="fa fa-star"
+                                                                aria-hidden="true"></i></a>
+                                    </form>
+                                {% else %}
+                                    <!-- SUPPRESSED BOOKMARK ICON because the user already the creator/poster -->
                                 {% endif %}
                             {% endif %}
                             {% if model == 'file' or model == 'image' or model == 'link' or model == 'video' or model == 'document' %}
