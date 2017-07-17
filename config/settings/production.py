@@ -1,7 +1,7 @@
 from .common import *
 import socket
 
-hostname = socket.gethostbyname()
+hostname = socket.gethostname()
 if any(pat in hostname for pat in ('tst0', 'stg0')):
     EMAIL_PORT = 1025 # for locally run maildump
 
