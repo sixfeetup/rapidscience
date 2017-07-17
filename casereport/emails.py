@@ -31,7 +31,7 @@ def publish_to_group(casereport):
     for group in groups:
         recipients += group.active_members()
     recipients = set(recipients)
-    recipients = [member.get_full_name() + "<" + member.email + ">"
+    recipients = [member.get_full_name() + " <" + member.email + ">"
                   for member in recipients]
     email_context = {
         "casereport": casereport,
