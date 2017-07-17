@@ -31,8 +31,8 @@ def send_transactional_mail(to_email, subject, template, context, from_email=set
 def activity_mail(user, obj, target, request=None):
     if target == user:
         return
-    comment = None
-    link = None
+    comment = ""
+    link = ""
     recipients = target.active_members()
     recipients = [member.get_full_name() + " <" + member.email + ">"
                   for member in recipients if member != user]
@@ -51,6 +51,11 @@ def activity_mail(user, obj, target, request=None):
                    reverse('bibliography:reference_detail',
                            kwargs={'reference_pk': obj.reference_id,
                                    'uref_id': obj.id}))
+    if type in ('Document', 'Image', 'Link', 'Video'):
+        comment = obj.description
+        link = request.build_absolute_uri(
+                   reverse('documents:document_detail',
+                           kwargs={'doc_pk': obj.id}))
     context = {
         "user": user,
         "type": type,

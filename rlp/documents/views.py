@@ -13,6 +13,7 @@ from PIL import Image
 from taggit.models import Tag
 
 from rlp.accounts.models import User
+from rlp.core.email import activity_mail
 from rlp.core.forms import group_choices
 from rlp.core.utils import bookmark_and_notify, add_tags, fill_tags
 from rlp.discussions.models import ThreadedComment
@@ -123,10 +124,10 @@ def add_document(request, add_form=None, doc_pk=None, template_name='documents/a
                     )
                     message = "Your upload was successful!"
                     # Send email notification
-                    document.notify_viewers(
-                        '{}: A new document was added'.format(settings.SITE_PREFIX.upper()),
-                        {'action': new_action[0][1]}
-                    )
+                    initial_proj = request.session.get('last_viewed_project')
+                    target = Project.objects.get(pk=initial_proj)
+                    if initial_proj:
+                        activity_mail(request.user, document, target, request)
                 messages.success(request, message)
                 if add_form:
                     bookmark_and_notify(
@@ -180,10 +181,10 @@ def add_link(request, add_form=None, doc_pk=None, template_name='documents/add_l
                     )
                     message = "Your link was successfully added!"
                     # Send email notification
-                    link.notify_viewers(
-                        '{}: A new link was added'.format(settings.SITE_PREFIX.upper()),
-                        {'action': new_action[0][1]}
-                    )
+                    initial_proj = request.session.get('last_viewed_project')
+                    target = Project.objects.get(pk=initial_proj)
+                    if initial_proj:
+                        activity_mail(request.user, link, target, request)
                 messages.success(request, message)
                 if add_form:
                     bookmark_and_notify(
@@ -236,10 +237,10 @@ def add_video(request, add_form=None, doc_pk=None, template_name='documents/add_
                     )
                     message = "Your video was successfully added!"
                     # Send email notification
-                    video.notify_viewers(
-                        '{}: A new video was added'.format(settings.SITE_PREFIX.upper()),
-                        {'action': new_action[0][1]}
-                    )
+                    initial_proj = request.session.get('last_viewed_project')
+                    target = Project.objects.get(pk=initial_proj)
+                    if initial_proj:
+                        activity_mail(request.user, video, target, request)
                 messages.success(request, message)
                 if add_form:
                     bookmark_and_notify(
