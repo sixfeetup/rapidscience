@@ -334,6 +334,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         user = CurrentUserMiddleware.get_user()
         author = User.objects.get(email__exact=self.primary_author.email)
         action.send(user, verb='published', action_object=self, target=author)
+        self.share_with(self.co_author.all(), shared_by=author)
         # TODO: put pushed into each shared with group activity feed?
         return "This case report has been published!"
 
