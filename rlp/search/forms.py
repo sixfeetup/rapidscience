@@ -131,7 +131,7 @@ class ModelSearchForm(BaseModelSearchForm):
         models = self.get_models()
         if not any([query, models, tags, mtags]):
             return self.no_query_found()
-        sqs = self.searchqueryset
+        sqs = self.searchqueryset.using('default')
         if query:
             kwargs = {
                 'fl': ['title','text'],

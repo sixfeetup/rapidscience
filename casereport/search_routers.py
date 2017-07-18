@@ -11,31 +11,37 @@ class CaseReportRouter(routers.BaseRouter):
     def for_write(self, **hints):
         try:
             obj = hints['instance']
-            if check_connection('casescentral'):
-                if isinstance(obj, CaseReport):
-                    return 'casescentral'
+            if not check_connection('casescentral'):
+                return 'default'
+            if isinstance(obj, CaseReport):
+                if obj.workflow_state == WorkflowState.LIVE:
+                    return ['default', 'casescentral']
+                return 'casescentral'
         except KeyError as no_instance:
             index = hints['index']
             if isinstance(index, casereport.search_indexes.CaseReportIndex):
                 return 'casescentral'
-        return
+        return 'default'
 
     def for_read(self, **hints):
         if check_connection('casescentral'):
             return 'casescentral'
         return 'default'
 
+
 class GeneralSearchRouter(routers.DefaultRouter):
 
     def for_write(self, **hints):
         """ Only LIVE casereports in the general search.
         """
+        if check_connection('casescentral'):
+            return
         try:
             obj = hints['instance']
 
             if isinstance(obj, CaseReport):
                 if obj.workflow_state != WorkflowState.LIVE:
-                    return
+                    return 'default'
         except KeyError as no_instance:
             pass
             # not sure how to exclude non-live casereports here.
@@ -44,6 +50,7 @@ class GeneralSearchRouter(routers.DefaultRouter):
 
 def check_connection(type):
     url = settings.HAYSTACK_CONNECTIONS[type]['URL']
+    url = url.replace("solr/c", "solr/#/c")
     try:
         urllib.request.urlopen(url, timeout=1)
         return True
