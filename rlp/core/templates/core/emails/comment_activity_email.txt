@@ -1,0 +1,15 @@
+<a href="{{ user_link }}">{{ user.get_full_name }}</a> commented on <a href="{{ link }}">{{ root_obj.title }}</a>, the {{ type }} posted by <a href="{{ author_link }}">{{ author.get_full_name }}</a> on Sarcoma Central:<br><br>
+
+<div style="margin-left: 20px;">
+{{ comment }}<br><br>
+</div>
+
+You are invited to view and join the discussion <a href="{{ link }}">here</a>.<br><br>
+
+This notification also appears on your <a href="{{ dash_link }}">Dashboard Activity Feed</a> where you can save it or delete it to prevent further alerts on this discussion.<br><br>
+
+Sincerely,<br><br>
+
+Sarcoma Central Team<br><br>
+
+<a href="https://twitter.com/rapidscience">@RapidScience</a>

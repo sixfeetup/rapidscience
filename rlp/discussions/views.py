@@ -16,6 +16,7 @@ from taggit.models import Tag
 
 from casereport.models import CaseReport
 from rlp.accounts.models import User
+from rlp.core.email import activity_mail
 from rlp.core.forms import group_choices
 from rlp.core.utils import bookmark_and_notify, add_tags, fill_tags
 from rlp.discussions import emails
@@ -218,5 +219,6 @@ class CreateDiscussion(LoginRequiredMixin, FormView):
             target=target,
             public=is_public,
         )
+        activity_mail(user, new_discussion, target, self.request)
         discussion_url = new_discussion.get_absolute_url()
         return redirect(discussion_url)

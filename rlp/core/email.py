@@ -6,6 +6,7 @@ from django.core.mail import EmailMultiAlternatives, EmailMessage
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 
+from rlp.accounts.models import User
 from .models import EmailLog
 
 
@@ -31,8 +32,10 @@ def send_transactional_mail(to_email, subject, template, context, from_email=set
 def activity_mail(user, obj, target, request=None):
     if target == user:
         return
+    context = {}
     comment = ""
     link = ""
+    template = 'core/emails/activity_email'
     recipients = target.active_members()
     recipients = [member.get_full_name() + " <" + member.email + ">"
                   for member in recipients if member != user]
@@ -47,25 +50,64 @@ def activity_mail(user, obj, target, request=None):
         ref = Reference.objects.get(pk=obj.reference_id)
         title = ref.title
         comment = obj.description
-        link = request.build_absolute_uri(
+        link = request and request.build_absolute_uri(
                    reverse('bibliography:reference_detail',
                            kwargs={'reference_pk': obj.reference_id,
-                                   'uref_id': obj.id}))
+                                   'uref_id': obj.id})) \
+               or "https://" + settings.DOMAIN + obj.get_absolute_url()
     if type in ('Document', 'Image', 'Link', 'Video'):
         comment = obj.description
-        link = request.build_absolute_uri(
+        link = request and request.build_absolute_uri(
                    reverse('documents:document_detail',
-                           kwargs={'doc_pk': obj.id}))
-    context = {
+                           kwargs={'doc_pk': obj.id})) \
+               or "https://" + settings.DOMAIN + obj.get_absolute_url()
+    if type == 'ThreadedComment':
+        if obj.is_editorial_note:
+            return
+        author = ''
+        user_link = request and request.build_absolute_uri(
+                    reverse('profile',
+                           kwargs={'pk': user.id})) \
+                    or "https://" + settings.DOMAIN + user.get_absolute_url()
+        root_obj = obj.discussion_root
+        type = root_obj.__class__.__name__
+        if type == 'ThreadedComment':
+            type = 'Comment'
+            author = User.objects.get(pk=root_obj.user_id)
+        if type == 'UserReference':
+            author = User.objects.get(pk=root_obj.user_id)
+        if type == 'CaseReport':
+            author = root_obj.primary_author
+        if type in ('Document', 'Image', 'Link', 'Video'):
+            author = User.objects.get(pk=root_obj.owner_id)
+        author_link = request and request.build_absolute_uri(
+                      reverse('profile',
+                           kwargs={'pk': author.id})) \
+                      or "https://" + settings.DOMAIN + \
+                         author.get_absolute_url()
+        dash_link = request and \
+                    request.build_absolute_uri(reverse('dashboard')) \
+                    or "https://" + settings.DOMAIN
+
+        template = 'core/emails/comment_activity_email'
+        context.update({
+            "user_link": user_link,
+            "root_obj": root_obj,
+            "author_link": author_link,
+            "author": author,
+            "dash_link": dash_link,
+        })
+        link = "https://" + settings.DOMAIN + obj.get_absolute_url()
+        comment = obj.comment
+    context.update({
         "user": user,
         "type": type,
         "title": title,
         "comment": comment,
         "link": link
-    }
+    })
     subject = "{} shared a {} with you at Sarcoma Central"
     subject = subject.format(user.get_full_name(), type)
-    template = 'core/emails/activity_email'
     message_body = render_to_string('{}.txt'.format(template), context)
     for member in recipients:
         mail = EmailMessage(subject,
