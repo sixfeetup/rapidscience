@@ -81,16 +81,20 @@ def activity_mail(user, obj, target, request=None):
                     or "https://" + settings.DOMAIN + user.get_absolute_url()
         disc_root = obj.discussion_root
         root_obj = disc_root.content_object
-        title = root_obj.title
         type = root_obj.__class__.__name__
         if type == 'ThreadedComment':
             type = 'Comment'
+            title = root_obj.title
             author = User.objects.get(pk=root_obj.user_id)
         elif type == 'UserReference':
+            ref = Reference.objects.get(pk=root_obj.reference_id)
+            title = ref.title
             author = User.objects.get(pk=root_obj.user_id)
         elif type == 'CaseReport':
+            title = root_obj.title
             author = root_obj.primary_author
         elif type in ('Document', 'File', 'Image', 'Link', 'Video'):
+            title = root_obj.title
             author = User.objects.get(pk=root_obj.owner_id)
         author_link = request and request.build_absolute_uri(
                       reverse('profile',
