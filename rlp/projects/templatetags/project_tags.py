@@ -31,7 +31,7 @@ def show_project_members(context, project):
             user__is_active=True).exclude(state='ignored')
 
     memberships = memberships.exclude(state='moderator')
-    memberships = memberships.order_by('state', 'user__first_name')
+    memberships = memberships.order_by('-state', 'user__first_name')
 
     return {
         'project': project,
