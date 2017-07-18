@@ -380,10 +380,13 @@ def reference_detail(request, reference_pk, uref_id, template_name='bibliography
     except UserReference.DoesNotExist as dne:
         user_reference = UserReference()
         user_reference.id = 0
+    user_can_comment = user_reference.is_shared_with_user(request.user)
     context = {
         'obj': reference,
         'user_reference': user_reference,
         'tab': 'bibliography',
         'comment_list': user_reference.discussions.all(),
+        'user_interaction': user_can_comment,
+        'expand_comments': True,
     }
     return render(request, template_name, context)
