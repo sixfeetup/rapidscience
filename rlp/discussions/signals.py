@@ -6,7 +6,7 @@ from actstream import action
 from django_comments.signals import comment_was_posted
 
 from rlp.accounts.models import User
-from rlp.core.email import send_transactional_mail
+from rlp.core.email import send_transactional_mail, activity_mail
 from rlp.projects.models import Project
 
 
@@ -73,19 +73,14 @@ def create_comment_activity(**kwargs):
 
 
     if send_to_viewers and hasattr(content, 'share_with'):
-        content.notify_viewers(
-            '{}: A new comment was posted'.format(
-                settings.SITE_PREFIX.upper(),
-            ),
-            {'action': new_action[0][1]},
-        )
-
         # add it to the AF of the others
         for interested_party in content.get_viewers() - {request.user}:
             action.send( comment.user,
                          verb=verb,
                          action_object=comment,
                          target=interested_party)
+
+        activity_mail(comment.user, comment, content.get_viewers(), request)
 
 
 @receiver(comment_was_posted)

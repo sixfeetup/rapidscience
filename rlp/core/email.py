@@ -36,7 +36,17 @@ def activity_mail(user, obj, target, request=None):
     comment = ""
     link = ""
     template = 'core/emails/activity_email'
-    recipients = target.active_members()
+    recipients = []
+    # is target a project
+    if hasattr(target, 'users'):
+        recipients = target.active_members()
+    else:
+    # else it is a list of members/groups
+        for item in target:
+            if hasattr(item, 'users'):
+                recipients += item.active_members()
+            else:
+                recipients.append(item)
     recipients = [member.get_full_name() + " <" + member.email + ">"
                   for member in recipients if member != user]
     type = obj.__class__.__name__
@@ -55,7 +65,7 @@ def activity_mail(user, obj, target, request=None):
                            kwargs={'reference_pk': obj.reference_id,
                                    'uref_id': obj.id})) \
                or "https://" + settings.DOMAIN + obj.get_absolute_url()
-    if type in ('Document', 'Image', 'Link', 'Video'):
+    if type in ('Document', 'File', 'Image', 'Link', 'Video'):
         comment = obj.description
         link = request and request.build_absolute_uri(
                    reverse('documents:document_detail',
@@ -69,16 +79,18 @@ def activity_mail(user, obj, target, request=None):
                     reverse('profile',
                            kwargs={'pk': user.id})) \
                     or "https://" + settings.DOMAIN + user.get_absolute_url()
-        root_obj = obj.discussion_root
+        disc_root = obj.discussion_root
+        root_obj = disc_root.content_object
+        title = root_obj.title
         type = root_obj.__class__.__name__
         if type == 'ThreadedComment':
             type = 'Comment'
             author = User.objects.get(pk=root_obj.user_id)
-        if type == 'UserReference':
+        elif type == 'UserReference':
             author = User.objects.get(pk=root_obj.user_id)
-        if type == 'CaseReport':
+        elif type == 'CaseReport':
             author = root_obj.primary_author
-        if type in ('Document', 'Image', 'Link', 'Video'):
+        elif type in ('Document', 'File', 'Image', 'Link', 'Video'):
             author = User.objects.get(pk=root_obj.owner_id)
         author_link = request and request.build_absolute_uri(
                       reverse('profile',

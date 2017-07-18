@@ -8,6 +8,7 @@ from django.views.decorators.cache import never_cache
 from django.views.generic import View
 
 from casereport.models import CaseReport
+from rlp.core.email import activity_mail
 from rlp.core.forms import get_sendto_form
 
 
@@ -66,6 +67,8 @@ class SendToView(LoginRequiredMixin, View):
                 shared_by=request.user,
                 comment=form.cleaned_data['comment'],
             )
+            target = members + groups
+            activity_mail(request.user, shared_content, target, request)
 
             # automatically bookmark for user when sharing
             if not shared_content.is_bookmarked_to(request.user):
