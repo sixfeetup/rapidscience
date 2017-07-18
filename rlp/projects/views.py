@@ -208,8 +208,9 @@ def invite_members(request, pk, slug):
 
             # site members
             emails.project_invite_member(request, internal_addrs, group, message)
-
-            messages.success(request, '{} members invited'.format(len(recipients)))
+            count = len(recipients)
+            messages.success(request, '{} member{} invited'.format(
+                count, count > 1 and 's' or ''))
             return redirect(request.META['HTTP_REFERER'])
     messages.error(request, 'Invitation failed')
     return redirect(request.META['HTTP_REFERER'])
