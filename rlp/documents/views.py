@@ -125,8 +125,8 @@ def add_document(request, add_form=None, doc_pk=None, template_name='documents/a
                     message = "Your upload was successful!"
                     # Send email notification
                     initial_proj = request.session.get('last_viewed_project')
-                    target = Project.objects.get(pk=initial_proj)
                     if initial_proj:
+                        target = Project.objects.get(pk=initial_proj)
                         activity_mail(request.user, document, target, request)
                 messages.success(request, message)
                 if add_form:
@@ -182,8 +182,8 @@ def add_link(request, add_form=None, doc_pk=None, template_name='documents/add_l
                     message = "Your link was successfully added!"
                     # Send email notification
                     initial_proj = request.session.get('last_viewed_project')
-                    target = Project.objects.get(pk=initial_proj)
                     if initial_proj:
+                        target = Project.objects.get(pk=initial_proj)
                         activity_mail(request.user, link, target, request)
                 messages.success(request, message)
                 if add_form:
@@ -238,8 +238,8 @@ def add_video(request, add_form=None, doc_pk=None, template_name='documents/add_
                     message = "Your video was successfully added!"
                     # Send email notification
                     initial_proj = request.session.get('last_viewed_project')
-                    target = Project.objects.get(pk=initial_proj)
                     if initial_proj:
+                        target = Project.objects.get(pk=initial_proj)
                         activity_mail(request.user, video, target, request)
                 messages.success(request, message)
                 if add_form:
