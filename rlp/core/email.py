@@ -91,6 +91,7 @@ def activity_mail(user, obj, target, request=None):
             title = root_obj.title
             author = User.objects.get(pk=root_obj.user_id)
         elif type == 'UserReference':
+            from rlp.bibliography.models import Reference
             ref = Reference.objects.get(pk=root_obj.reference_id)
             title = ref.title
             author = User.objects.get(pk=root_obj.user_id)
