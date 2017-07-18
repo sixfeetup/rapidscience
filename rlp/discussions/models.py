@@ -54,7 +54,7 @@ class ThreadedComment(Comment, SharedObjectMixin):
     objects = ThreadedCommentManager()
 
     class Meta:
-        ordering = ('-thread_id', 'order')
+        ordering = ('thread_id', 'order')
         verbose_name = 'comment'
 
     def save(self, *args, **kwargs):
