@@ -82,7 +82,11 @@ def activity_mail(user, obj, target, request=None):
         disc_root = obj.discussion_root
         root_obj = disc_root.content_object
         type = root_obj.__class__.__name__
-        if type == 'ThreadedComment':
+        if type == 'Site':
+            type = 'Discussion'
+            title = disc_root.title
+            author = User.objects.get(pk=disc_root.user_id)
+        elif type == 'ThreadedComment':
             type = 'Comment'
             title = root_obj.title
             author = User.objects.get(pk=root_obj.user_id)
