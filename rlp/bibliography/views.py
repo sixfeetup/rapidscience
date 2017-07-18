@@ -201,6 +201,7 @@ class ReferenceAttachView(LoginRequiredMixin, FormView):
             uref.id = -1 # fake, so that the tag lookup in the templates doesnt fail.
 
         context['reference'] = ref
+        context['user_reference'] = uref
         if self.request.method == 'GET':
             # populate initial data
             form = AttachReferenceForm()

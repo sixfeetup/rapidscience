@@ -1,4 +1,4 @@
-{% extends 'base.html' %}{% load bootstrap3 %}
+{% extends 'base.html' %}{% load bootstrap3 %}{% load core_tags %}
 
 {% block body_class %}edit-reference{% endblock %}
 
@@ -7,7 +7,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-6 col-md-push-3">
-                <h1>Edit Reference</h1>
+                <h1>{% if user_reference.id == -1 %}Add New{% else %}Edit{% endif %} Reference</h1>
             </div>
         </div>
     </div>
@@ -17,12 +17,29 @@
         <div class="col-md-6 col-xs-12 col-md-push-3">
 
         <h2>{{ reference }}</h2>
+
+        <p>{% if reference.parsed_data.authors %}{{ reference.parsed_data.authors }}. {% endif %}
+        {% if reference.parsed_data.container_title %}in <em>{{ reference.parsed_data.container_title }}</em>,{% endif %}
+        {% if reference.parsed_data.page %}pp {{ reference.parsed_data.page }}.{% endif %}
+        {% if reference.parsed_data.publication_date %}{{ reference.parsed_data.publication_date }};{% endif %}
+        {{ reference.parsed_data.publisher }} {{ reference.parsed_data.journal_title }}
+        </p>
         {% if reference.parsed_data.doi %}
         <p>DOI: {{ reference.parsed_data.doi }}</p>
         {% endif %}
         {% if reference.parsed_data.pubmed_id %}
         <p>PMID: {{ reference.parsed_data.pubmed_id }}</p>
         {% endif %}
+
+
+        <p>
+            {% if user_reference.user %}
+            Posted by
+            <a href="{{ user_reference.user.get_absolute_url }}">{% if request.user == user_reference.user %} me {% else %} {{ user_reference.user.get_full_name }}{% endif %}</a>
+        {% endif %}
+        | {% if user_reference.date_updated %}{{ user_reference.date_updated|date:"j M Y" }}{% else %}{{ reference.date_updated|date:"j M Y" }}{% endif %}
+        </p>
+        {%  display_shared_with user_reference request.user %}
 
         {% if form %}
         <form method="post" action="" class="edit-reference-form">
