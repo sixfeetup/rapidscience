@@ -93,7 +93,7 @@ def get_current_site_as(parser, token):
 
         Use like:
             {% get_current_site_as thesite %}
-            {{ thesite }}
+            {{ thesite.domain }}
     """
     current_site = Site.objects.get_current()
     return SiteNode(token.contents.split()[1], current_site)
