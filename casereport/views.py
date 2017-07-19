@@ -276,6 +276,7 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
             if not User.objects.filter(email=address):
                 new_user = User(email=address, is_active=False)
                 new_user.save()
+                case.share_with([new_user], shared_by=primary_author)
 
 
         # eventually we' want this:
@@ -616,6 +617,7 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
             if not User.objects.filter(email=address):
                 new_user = User(email=address, is_active=False)
                 new_user.save()
+                case.share_with([new_user], shared_by=case.primary_author)
 
         messages.success(request, "Edits saved!")
         return redirect(reverse('casereport_detail', args=(case.id, case.title)))
