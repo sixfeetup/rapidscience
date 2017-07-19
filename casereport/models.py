@@ -326,15 +326,15 @@ class CaseReport(CRDBBase, SharedObjectMixin):
                 target=WorkflowState.LIVE)
     def publish(self):
         self.admin_approved = True
+        author = User.objects.get(email__exact=self.primary_author.email)
+        self.share_with(self.co_author.all(), shared_by=author)
         if not self.date_published:
             # only send these emails on first publish
             emails.cr_published_notifications(self)
         self.date_published = datetime.now()
         emails.publish_to_author(self)
         user = CurrentUserMiddleware.get_user()
-        author = User.objects.get(email__exact=self.primary_author.email)
         action.send(user, verb='published', action_object=self, target=author)
-        self.share_with(self.co_author.all(), shared_by=author)
         # TODO: put pushed into each shared with group activity feed?
         return "This case report has been published!"
 
