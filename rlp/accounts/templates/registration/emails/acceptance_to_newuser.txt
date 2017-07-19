@@ -4,7 +4,7 @@ Welcome to Sarcoma Central.<br><br>
 
 To get started, log in using your email address and password.<br><br>
 
-You will land on your personal dashboard -- a private space for your content and messages.<br><br>
+You will land on your personal dashboard -- a <em>private space</em> for your content and messages.<br><br>
 
 Members can view your profile. Please take time to complete your profile (“edit profile” by clicking your name) -- i.e., post a brief bio, your research interests, and photo to foster interaction and trust.<br><br>
 

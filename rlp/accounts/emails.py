@@ -51,7 +51,7 @@ def registration_to_admin(request, user, key):
 
 
 def acceptance_to_newuser(request, user):
-    subject = "Membership in Sarcoma Central - welcome and a few tips"
+    subject = "Membership in Sarcoma Central - joining groups and other tips"
     email_context = {
         'name': user.get_full_name(),
         'commons_link': request.build_absolute_uri(reverse(
