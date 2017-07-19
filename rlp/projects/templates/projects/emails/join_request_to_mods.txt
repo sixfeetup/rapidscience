@@ -2,7 +2,7 @@
 
 If this individual has permission to register under this project, please click <a href="{{ link }}">Approve</a>. Note that immediately upon clicking "Approve", the individual will have access to your group.<br><br>
 
-If you clicked "Approve" in error, please email <a href="mailto:support@rapidscience.org>support@rapidscience.org</a> as soon as possible.<br><br>
+If you clicked "Approve" in error, please email <a href="mailto:support@rapidscience.org">support@rapidscience.org</a> as soon as possible.<br><br>
 
 Sincerely,<br><br>
 
