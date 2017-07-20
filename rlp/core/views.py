@@ -68,7 +68,9 @@ class SendToView(LoginRequiredMixin, View):
                 comment=form.cleaned_data['comment'],
             )
             target = members + groups
-            activity_mail(request.user, shared_content, target, request)
+            if ctype.name != "case report":
+                # case report emails are handled separately
+                activity_mail(request.user, shared_content, target, request)
 
             # automatically bookmark for user when sharing
             if not shared_content.is_bookmarked_to(request.user):
