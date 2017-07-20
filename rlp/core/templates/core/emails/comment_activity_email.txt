@@ -1,7 +1,7 @@
-<a href="{{ user_link }}">{{ user.get_full_name }}</a> commented on <a href="{{ link }}">{{ title }}</a>, the {{ type }} posted by <a href="{{ author_link }}">{{ author.get_full_name }}</a> on Sarcoma Central:<br><br>
+<a href="{{ user_link }}">{{ user.get_full_name }}</a> commented on <a href="{{ link }}">{{ title }}</a>, the {{ type }} posted by <a href="{{ author_link }}">{{ author.get_full_name }}</a> on Sarcoma Central:<br>
 
 <div style="margin-left: 20px;">
-{{ comment|safe }}<br><br>
+{{ comment|safe }}<br>
 </div>
 
 You are invited to view and join the discussion <a href="{{ link }}">here</a>.<br><br>
