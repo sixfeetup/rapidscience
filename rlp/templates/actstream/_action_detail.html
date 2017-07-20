@@ -43,8 +43,8 @@
         {% endif %}
     {% elif action.verb == 'added' or action.verb == 'uploaded' or action.verb == 'started' or action.verb == 'replied' or action.verb == 'created' or action.verb = 'posted'%}
         to {{ action.target|link }}
-        {% if action.others %} to {{ action.others.0.target|link }}
-            {% for other in action.others|slice:"1:" %}{% if forloop.last %} and {%  else %}, {% endif %}{{ other.target|link }}{%  endfor %}
+        {% if action.others %}
+            {% for other in action.others %}{% if forloop.last %} and {%  else %}, {% endif %}{{ other.target|link }}{%  endfor %}
         {% endif %}
     {% endif %}
 {% endif %}
