@@ -97,6 +97,7 @@ def review_notification(**kwargs):
         'user': author,
         'casereport': review.casereport,
         'comment': comment.comment,
+        'site': settings.DOMAIN
     }
     send_transactional_mail(
         author.email,

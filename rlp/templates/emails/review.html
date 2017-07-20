@@ -3,11 +3,13 @@ Dear {{ user }},<br><br>
 An editorial comment has been posted on this case report at Sarcoma Central:<br><br>
 
 <div style="margin-left: 2em;">
-<em>{{ casereport }}</em><br><br>
-{{ comment|safe }}
+<em>{{ casereport }}</em><br>
+    <div style="margin-left: 2em;">
+    {{ comment|safe }}
+    </div>
 </div>
 
-You can respond to this message by replying to this email or preferably  in the Editorial Notes dialog box at the top right of your case report.<br><br>
+You can respond to this message by replying to this email or preferably  in the Editorial Notes dialog box at the top right of your <a href="https://{{ site }}{{ casereport.get_absolute_url }}"case report</a>.<br><br>
 
 Sincerely,<br><br>
 
