@@ -10,6 +10,7 @@ from rlp.projects.models import ProjectMembership
 class ProjectMembershipAdmin(admin.TabularInline):
     model = ProjectMembership
     extra = 1
+    fk_name = 'user'
 
 
 class CustomUserAdmin(UserAdmin):

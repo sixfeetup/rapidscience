@@ -46,7 +46,10 @@ class Project(SEOMixin, SharesContentMixin):
                                             help_text='If checked, registrants must be approved before joining.')
     auto_opt_in = models.BooleanField('Automatically opt-in members', default=False,
                                       help_text='If checked, all members will be automatically added to this project.')
-    users = models.ManyToManyField(settings.AUTH_USER_MODEL, through="ProjectMembership", related_name='projects')
+    users = models.ManyToManyField(settings.AUTH_USER_MODEL,
+                                   through="ProjectMembership",
+                                   through_fields=['project','user'],
+                                   related_name='projects')
     goal = models.CharField(max_length=450, blank=True)
     order = models.PositiveIntegerField(default=0, db_index=True)
 
@@ -186,8 +189,11 @@ class Project(SEOMixin, SharesContentMixin):
 
 class ProjectMembership(models.Model):
     project = models.ForeignKey(Project)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             related_name='projectmembership')
     state = FSMField(choices=MEMBER_STATES, default='pending')
+    approver = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                 related_name='approvals', null=True)
 
     class Meta:
         unique_together = ['project', 'user']
@@ -216,34 +222,25 @@ class ProjectMembership(models.Model):
         # only log the approval if it wasn't automatic because the group was
         # open
         approver = CurrentUserMiddleware.get_user()
-        if approver != self.user:
-            approval_action = Action(actor=approver,
-                                     verb='approved',
-                                     action_object=self,
-                                     target=self,)
-            approval_action.save()
+        self.approver = approver
 
-        # # this should show in the user's and project's activity feeds
-        # user_action = Action(actor=self.user,
-        #                      verb='joined',
-        #                      action_object=self,
-        #                      target=self.project,
-        #                      public=False)
-        # user_action.save()
+        approval_action = Action(
+            actor= self.user,
+            verb='joined',
+            action_object=self,
+            target=self.project,
+        )
+        approval_action.save()
 
 
     @transition(field=state, source='pending', target='ignored')
     def ignore(self):
         approver = CurrentUserMiddleware.get_user()
-        # activity stream entries for the moderator
-        denial = Action(actor=approver,
-                        verb='denied',
-                        action_object=self)
-        denial.save()
+        self.approver = approver
 
         # this is to inform the user
-        request_declined = Action(actor=approver,
+        request_declined = Action(actor=self.user,
                                   verb='declined',
                                   action_object=self,
-                                  target=self.user)
+                                  target=None)
         request_declined.save()

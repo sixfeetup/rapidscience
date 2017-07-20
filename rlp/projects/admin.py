@@ -9,19 +9,19 @@ class TopicAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
 
 
-class ProjectMembershipAdmin(admin.TabularInline):
+class ProjectMembershipInlineAdmin(admin.TabularInline):
     model = ProjectMembership
     extra = 1
 
 
 class ProjectAdmin(admin.ModelAdmin):
-    inlines = [ProjectMembershipAdmin]
+    inlines = [ProjectMembershipInlineAdmin]
     list_display = ['title', 'order', 'topic', 'institution']
     list_editable = ['order']
     list_filter = ['topic', 'institution']
     search_fields = ['title', 'topic__title', 'institution__name']
     prepopulated_fields = {'slug': ('title',)}
-    inlines = [ ProjectMembershipAdmin, ]
+    #inlines = [ ProjectMembershipInlineAdmin, ]
 
 
 admin.site.register(Topic, TopicAdmin)
