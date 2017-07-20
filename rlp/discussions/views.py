@@ -202,7 +202,7 @@ class CreateDiscussion(LoginRequiredMixin, FormView):
             'discussions', 'threadedcomment',
         )
         if not target:
-            target = user
+            # target = user   #removed for #830
             is_public = False
         else:
             is_public = True  # because this should be in the group's public feed
@@ -219,6 +219,7 @@ class CreateDiscussion(LoginRequiredMixin, FormView):
             target=target,
             public=is_public,
         )
-        activity_mail(user, new_discussion, target, self.request)
+        if target:
+            activity_mail(user, new_discussion, target, self.request)
         discussion_url = new_discussion.get_absolute_url()
         return redirect(discussion_url)
