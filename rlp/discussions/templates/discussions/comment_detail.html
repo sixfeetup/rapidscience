@@ -13,6 +13,9 @@
         </div>
     </div>
     <div class="row">
+        <div class="col-md-8 col-xs-10 col-md-push-2">
+            {% bootstrap_messages %}
+        </div>
         <div class="col-md-7 col-xs-10 col-md-push-2">
             {% if comment.title %}<h1>{{ comment.title }}</h1>{% endif %}
             <p class="small">
