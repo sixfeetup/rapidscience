@@ -155,7 +155,7 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
         return self.is_staff or self in project.active_members()
 
     def active_projects(self):
-        return self.projects.exclude(projectmembership__state='pending')
+        return self.projects.filter(projectmembership__state__in=('member','moderator'))
 
     def _get_my_activity_query(self):
         my_ct = ContentType.objects.get_for_model(self)
