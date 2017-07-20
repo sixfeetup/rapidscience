@@ -1,7 +1,7 @@
-You are invited by {{ casereport.primary_author.get_full_name }} to view and discuss this case report, posted at Sarcoma Central:<br><br>
+You are invited by <a href="https://{{ site }}{{ casereport.primary_author.get_absolute_url }}">{{ casereport.primary_author.get_full_name }}</a> to view and discuss this case report, posted at Sarcoma Central:<br><br>
 
 <div style="margin-left: 20px;">
-<a href="https://{{ site }}{{ casereport.get_absolute_url }}">{{ casereport.title }}</a><br>
+<a href="https://{{ site }}{{ casereport.get_absolute_url }}">{{ casereport.title }}</a><br><br>
 </div>
 
 You can view the case report in the <a href="https://{{ site }}{{ casescentral }}">Cases Central database</a>.<br><br>
