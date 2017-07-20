@@ -1,4 +1,4 @@
-{{ user.get_full_name }} shared this {{ type }} with you:<br><br>
+<a href="https://{{ site }}{{ user.get_absolute_url }}">{{ user.get_full_name }}</a> shared this {{ type }} with you:<br><br>
 
 <div style="margin-left: 20px;">
 {{ title }}<br><br>

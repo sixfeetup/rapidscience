@@ -125,7 +125,8 @@ def activity_mail(user, obj, target, request=None):
         "type": type,
         "title": title,
         "comment": comment,
-        "link": link
+        "link": link,
+        "site": settings.DOMAIN,
     })
     subject = "{} shared a {} with you at Sarcoma Central"
     subject = subject.format(user.get_full_name(), type)
