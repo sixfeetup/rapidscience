@@ -1,10 +1,12 @@
 Dear {{ user.get_full_name }},<br><br>
 
-Your colleague, {{ casereport.primary_author.get_full_name }}, has submitted a case report to Sarcoma Central and named you as co-author:<br><br>
+Your colleague, {{ casereport.primary_author.get_full_name }}, has submitted a case report to Sarcoma Central and named you as co-author:<br>
 
 <p style="margin-left: 20px; font-style: italic">{{ casereport.title }}</p>
 
-The case report is currently being edited. If you wish to review it prior to its live posting to members of Sarcoma Central, please contact your colleague.
-Sincerely,<br>
+The case report is currently being edited. If you wish to review it prior to its live posting to members of Sarcoma Central, please contact your colleague.<br><br>
+
+Sincerely,<br><br>
+
 <a href="https://sarcoma.rapidscience.org">The Sarcoma Central Team</a><br>
 <a href="https://twitter.com/RapidScience">@RapidScience</a>
