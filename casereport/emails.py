@@ -67,10 +67,9 @@ def submitted(casereport):
 
 
 def send_back(casereport):
-    site = Site.objects.all()[0]
     email_context = {
         "casereport": casereport,
-        "site": site
+        "site": settings.DOMAIN,
     }
     subject = "Your case report is ready for review"
     template = 'casereport/emails/send_back_to_author'
@@ -85,13 +84,12 @@ def send_back(casereport):
 
 
 def approved(casereport):
-    site = Site.objects.all()[0]
     subject = "A case report has been updated and is ready for your review"
     template = 'casereport/emails/approved_to_admin'
     email_context = {
         'title': casereport.title,
         'link': casereport.get_absolute_url(),
-        'site': site
+        'site': settings.DOMAIN
     }
     message_body = render_to_string('{}.txt'.format(template), email_context)
     recipient = casereport.primary_author.email
