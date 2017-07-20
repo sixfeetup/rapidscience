@@ -29,9 +29,9 @@
         <br />
       {% display_shared_with ref request.user %}
     </p>
-    {% if obj.description %}
+    {% if ref.description %}
         <div class="more">
-            {% autoescape off %}{{ obj.description }}{% endautoescape %}
+            {% autoescape off %}{{ ref.description }}{% endautoescape %}
         </div>
     {% endif %}
         <p class="tags">
