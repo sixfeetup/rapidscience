@@ -1,4 +1,4 @@
-{% extends 'base.html' %}{% load comments embed_video_tags core_tags %}
+{% extends 'base.html' %}{% load bootstrap3 comments embed_video_tags core_tags %}
 
 {% block body_class %}document-detail{% endblock %}
 
@@ -12,6 +12,7 @@
       {% if last_viewed_path %}
       <p class="backlink"><a href="{{ last_viewed_path }}">&larr; Back</a></p>
       {% endif %}
+      {% bootstrap_messages %}
       <a class="share-link pull-right" href="/send/documents/document/{{ obj.id }}"><i class="fa fa-share"></i></a>
       {% if document.polymorphic_ctype.model == 'link' %}
         <a href="{{ obj.url }}" target="_blank">
