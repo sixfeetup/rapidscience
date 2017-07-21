@@ -50,9 +50,9 @@
             {% for target in action.all_targets|slice:"1:" %}{% if forloop.last %} and {%  else %}, {% endif %}{% if target == request.user %} me {% else %}{{ target|link }}{% endif %}{%  endfor %}
         {% endif %}
     {% elif action.verb == 'added' or action.verb == 'uploaded' or action.verb == 'started' or action.verb == 'replied' or action.verb == 'created' or action.verb == 'posted' %}
-        to {{ action.all_targets.0|link }}
-        {% if action.all_targets %}
-            {% for target in all_targets.others|slice:"1:" %}{% if forloop.last %} and {%  else %}, {% endif %}{{ target|link }}{%  endfor %}
+        {% if action.all_targets %} to
+            {{ action.all_targets.0|link }}
+            {% for target in action.all_targets|slice:"1:" %}{% if forloop.last %} and {%  else %}, {% endif %}{{ target|link }}{%  endfor %}
         {% endif %}
     {% endif %}
 {% endif %}
