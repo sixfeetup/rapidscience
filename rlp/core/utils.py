@@ -111,7 +111,7 @@ CREATION_VERBS = (
 COMBINABLE_VERBS = ('shared',) + CREATION_VERBS
 
 
-def rollup(input, rollup_name):
+def rollup(input, rollup_name, rollup_attr='target'):
     """ Rolls similar items in a list up under an array on the first i
         similar item.
         Adjacent, equivalent items are dropped entirely.
@@ -182,7 +182,12 @@ def rollup(input, rollup_name):
                     (i, n) = (n, i)
                 if not hasattr(i, rollup_name):
                     setattr(i, rollup_name, [])
-                getattr(i, rollup_name).append(n)
+                    if hasattr(i, rollup_attr) and getattr(i, rollup_attr):
+                        getattr(i, rollup_name).append( getattr(i, rollup_attr) )
+                #getattr(i, rollup_name).append(n)
+                val = getattr(n, rollup_attr)
+                if val:
+                    getattr(i, rollup_name).append(val)
                 # and move any previous rollups into the new ia
                 if hasattr(n, rollup_name):
                     getattr(i, rollup_name).extend(getattr(n, rollup_name))

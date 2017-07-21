@@ -426,7 +426,8 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
             )
 
         # roll up similar entries, and drop duplicate ones
-        activity_stream = list(rollup(activity_stream, 'others'))
+        activity_stream = list(rollup(activity_stream, 'all_targets',
+                                      rollup_attr='target'))
 
         context.update({
             'activity_stream': activity_stream,

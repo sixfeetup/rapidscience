@@ -92,7 +92,8 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
                 actor_object_id=request.user.id
             )
         print("consolidating")
-        activity_stream = list(rollup(activity_stream, 'others'))
+        activity_stream = list(rollup(activity_stream, 'all_targets',
+                                      rollup_attr='target'))
 
         context['activity_stream'] = activity_stream
     elif tab == 'documents':
