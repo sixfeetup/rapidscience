@@ -193,7 +193,8 @@ class ProjectMembership(models.Model):
                              related_name='projectmembership')
     state = FSMField(choices=MEMBER_STATES, default='pending')
     approver = models.ForeignKey(settings.AUTH_USER_MODEL,
-                                 related_name='approvals', null=True)
+                                 related_name='approvals',
+                                 null=True, blank=True)
 
     class Meta:
         unique_together = ['project', 'user']
