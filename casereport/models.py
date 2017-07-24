@@ -312,7 +312,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         user = CurrentUserMiddleware.get_user()
         author = User.objects.get(email__exact=self.primary_author.email)
         action.send(user, verb='sent back', action_object=self, target=author)
-        return "TBD: The case report has been sent back to its author."
+        return "The case report has been sent back to its author."
 
     def can_publish(self, user=None):
         # ensure admin
