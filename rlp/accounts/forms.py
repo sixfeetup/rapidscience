@@ -129,6 +129,7 @@ class RegistrationForm(UserCreationForm):
                   "<br />12 characters"+
                   "<br />1 uppercase letter, A-Z."+
                   "<br />1 lowercase letter, a-z."+
+                  "<br />1 digit, 0-9."+
                   "<br />1 symbol: ()[]{}|\`~!@#$%&*_-+=;:'\",<>./?"
     )
     password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
