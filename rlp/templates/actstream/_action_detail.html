@@ -67,7 +67,7 @@
         {% elif 'userreference' in comment.discussion_root.content_object.get_content_type %}
         <a href="{{ comment.discussion_root.content_object.get_absolute_url }}">
             {% if comment.is_reply %}{{ comment.discussion_root.user }}: {% endif %}
-            {{ comment.discussion_root.content_object.reference.title|truncatewords_html:10 }}
+            {{ comment.discussion_root.content_object.reference.title|truncatewords_html:10|striptags }}
         </a>
         {% elif comment.is_editorial_note %}
         <a href="{{ comment.content_object.casereport.get_absolute_url }}">
