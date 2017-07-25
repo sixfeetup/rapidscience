@@ -389,6 +389,8 @@ class MyFacetedSearchView(FacetedSearchView):
             self.template = 'casereport/search/results.html'
         else:
             self.template = 'casereport/search/search.html'
+        # if Cases Central was viewed, prevent adding things to a group
+        request.session['last_viewed_project'] = None
         return super(MyFacetedSearchView, self).__call__(request)
 
     def get_results(self):
