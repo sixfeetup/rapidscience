@@ -8,7 +8,7 @@ Here's your weekly summary of activity on the {{ site.name }} web site, all of w
   <strong>{{ comments.count }} Comment{{ comments.count|pluralize }}</strong>
   <ul>
   {% for action in comments|slice:":2" %}{# TODO: change to use the comment title once we have comment.title #}
-    <li>{{ action.actor.get_full_name }} said "<a href="https://{{ site.domain }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.comment|truncatewords:30 }}</a>"</li>
+    <li>{{ action.actor.get_full_name }} said: <a href="https://{{ site.domain }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.comment|safe|truncatewords:30 }}</a></li>
   {% endfor %}
     <li><a href="https://{{ site.domain }}{% url 'dashboard' %}">View more on your dashboard.</a></li>
   </ul>
