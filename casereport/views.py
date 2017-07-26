@@ -284,7 +284,7 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         # return redirect(reverse('casereport_detail', args=(case.id, case.title)))
         if case.workflow_state == WorkflowState.DRAFT:
             messages.success(self.request, "Your case report has been " +
-                             "successfully saved. To submit to the editorial" +
+                             "successfully saved. To send to the editorial" +
                              " team, please click the “submit” button below.")
             return redirect(case.get_absolute_url())
         else:
