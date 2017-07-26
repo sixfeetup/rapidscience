@@ -166,7 +166,7 @@ def rollup(input, rollup_name, rollup_attr='target'):
     input_iter = iter(input)
     i = next(input_iter)
     i_sim = similar_action(i)
-    equivalent_ids = {}
+    equivalent_ids = set()
 
     for n in input_iter:
         n_sim = similar_action(n)
