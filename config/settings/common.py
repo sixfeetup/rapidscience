@@ -507,7 +507,7 @@ NEW_CASE = "New Case Report"
 CASE_READY_SUBJECT = "A new case awaits your approval"
 CASE_APPROVED_SUBJECT = "Case Approved"
 RSADMIN_EMAIL = env('RSADMIN_EMAIL', default='admin@sixfeetup.com')
-DATA_SCIENCE_TEAM = ['nadeemaslam@trialx.com', 'priya@trialx.com']
+DATA_SCIENCE_TEAM = ['edit@rapidscience.org',]
 BCC_LIST = ['nadeemaslam@trialx.com', 'sg@rapidscience.org']
 EDITED = "Case Report Edited"
 
