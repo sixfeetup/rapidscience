@@ -46,6 +46,9 @@
 
     </div>
     <div class="col-md-1">
+    {%  if project and request.user not in project.active_members %}
+      <!-- social tools suppressed because user is not an active member -->
+    {% else %}
       {% if comment.is_discussion %}
         {% if expand_comments %} <!-- count ommited because we're expanding the whole discussion -->
         {%  else %}
@@ -66,6 +69,7 @@
         {% endif %}
       <a class="share-link" href="/send/discussions/threadedcomment/{{ comment.id }}"><i class="fa fa-share"></i></a>
       {% endif %}
+    {% endif %}
     </div>
   </div>
 

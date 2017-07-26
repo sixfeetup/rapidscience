@@ -37,6 +37,9 @@
       </p>
     </div>
     <div class="col-md-1">
+    {%  if project and request.user not in obj.active_members %}
+        <!-- social tools suppressed because user is not an active member -->
+    {% else %}
       {% include 'discussions/discussion_count_widget.html' %}
       {% if user != obj.get_poster %}
         <form class="bookmark-form" method="POST" action="{% toggle_bookmark_url obj user %}">
@@ -48,6 +51,7 @@
         </form>
       {% endif %}
       <a class="share-link" href="/send/casereport/casereport/{{ obj.id }}"><i class="fa fa-share"></i></a>
+    {%  endif %}
     </div>
 </div>
 <hr>

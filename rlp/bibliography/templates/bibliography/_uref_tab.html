@@ -39,6 +39,9 @@
         </p>
   </div>
   <div class="col-md-1">
+      {%  if project and request.user not in project.active_members %}
+      <!-- social tools suppressed because user is not an active member -->
+      {% else %}
         {% get_threaded_comment_count for obj as comment_count %}
         <a class="comment-count {% if comment_count < 1 %}empty{% endif %}"
            href="{{ ref.get_absolute_url }}"
@@ -60,6 +63,7 @@
           </form>
         {% endif %}
         <a class="share-link" href="/send/bibliography/userreference/{{ ref.id }}"><i class="fa fa-share"></i></a>
+      {% endif %}
   </div>
 </div>
 <hr>
