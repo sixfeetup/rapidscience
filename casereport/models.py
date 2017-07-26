@@ -367,6 +367,9 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         """ unpublish """
         self.admin_approved = False
         self.notify_datascience_team()
+        user = CurrentUserMiddleware.get_user()
+        author = User.objects.get(email__exact=self.primary_author.email)
+        action.send(user, verb='unpublished', action_object=self, target=author)
         return '''moved to "Admin Review"'''
 
     def can_retract(self, user=None):
