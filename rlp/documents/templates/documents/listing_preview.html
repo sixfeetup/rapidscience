@@ -4,9 +4,13 @@
     {% if 'Image' in obj.display_type %}
         {% load thumbnail %}
         {% thumbnail obj.upload 700x160 crop upscale HIGH_RESOLUTION as thumbnail %}
+        {% if project and request.user in project.active_members %}
         <a href="{{ obj.upload.url }}" target="_blank">
+        {% endif %}
           <img class="thumbnail-image" alt="{{ obj.title }}" src="{{ thumbnail.url }}" width="100%">
+        {% if project and request.user in project.active_members %}
         </a>
+        {% endif %}
     {% endif %}
     {% if obj.display_type == "Video" %}
         {% load embed_video_tags %}
@@ -15,13 +19,25 @@
         {% endvideo %}
     {% endif %}
     {% if 'Link' in obj.display_type %}
-        <h4><a href="{{ obj.url }}" target="_blank">
+        <h4>
+            {%  if project and request.user in project.active_members %}
+            <a href="{{ obj.url }}" target="_blank">
+            {% endif %}
         {% autoescape off %}{% if highlighted.title %}{{ highlighted.title.0 }}{% else %}{{ obj.title }}{% endif %}{% endautoescape %}
-        </a></h4>
+            {%  if project and request.user in project.active_members %}
+            </a>
+            {% endif %}
+        </h4>
     {% else %}
-        <h4><a href="{{ obj.get_absolute_url }}">
+        <h4>
+            {% if project and request.user in project.active_members %}
+            <a href="{{ obj.get_absolute_url }}">
+            {% endif %}
         {% autoescape off %}{% if highlighted.title %}{{ highlighted.title.0 }}{% else %}{{ obj.title }}{% endif %}{% endautoescape %}
-        </a></h4>
+            {% if project and request.user in project.active_members %}
+            </a>
+            {% endif %}
+        </h4>
     {% endif %}
     <p class="small">
         Posted by

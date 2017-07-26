@@ -5,9 +5,13 @@
     <div class="col-md-11">
       {% if comment.title %}
       <h4>
+        {%  if project and request.user in project.active_members %}
         <a href="{{ comment.get_absolute_url }}">
+        {% endif %}
         {% autoescape off %}{% if highlighted.title %}{{ highlighted.title.0 }}{% else %}{{ comment.title }}{% endif %}{% endautoescape %}
+        {%  if project and request.user in project.active_members %}
         </a>
+        {% endif %}
       </h4>
       {% endif %}
 
