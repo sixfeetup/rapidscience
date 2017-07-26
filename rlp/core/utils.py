@@ -108,7 +108,7 @@ CREATION_VERBS = (
 # the order of these matter.    That further down the list, the more important
 # the verb is considered by the score_action function.
 # This is mostly so that 'shared' can be beaten by just about anything else
-COMBINABLE_VERBS = ('shared',) + CREATION_VERBS
+COMBINABLE_VERBS = ('created', 'shared',) + CREATION_VERBS
 
 
 def rollup(input, rollup_name, rollup_attr='target'):
@@ -166,7 +166,7 @@ def rollup(input, rollup_name, rollup_attr='target'):
     input_iter = iter(input)
     i = next(input_iter)
     i_sim = similar_action(i)
-    equivalent_ids = {same_action(i)}
+    equivalent_ids = {}
 
     for n in input_iter:
         n_sim = similar_action(n)
@@ -186,16 +186,16 @@ def rollup(input, rollup_name, rollup_attr='target'):
                         getattr(i, rollup_name).append( getattr(i, rollup_attr) )
                 #getattr(i, rollup_name).append(n)
                 val = getattr(n, rollup_attr)
-                if val:
+                if val and val not in getattr(i, rollup_name):
                     getattr(i, rollup_name).append(val)
                 # and move any previous rollups into the new ia
                 if hasattr(n, rollup_name):
                     getattr(i, rollup_name).extend(getattr(n, rollup_name))
         else:
             yield i
+            equivalent_ids = {same_action(i)}
             i = n
             i_sim = similar_action(i)
-            equivalent_ids = {same_action(i)}
 
     yield i
 
