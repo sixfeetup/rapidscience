@@ -37,7 +37,7 @@
       </p>
     </div>
     <div class="col-md-1">
-    {%  if project and request.user not in obj.active_members %}
+    {%  if project and request.user not in project.active_members %}
         <!-- social tools suppressed because user is not an active member -->
     {% else %}
       {% include 'discussions/discussion_count_widget.html' %}
