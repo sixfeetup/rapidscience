@@ -284,7 +284,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         ''' send to admin without approval '''
         self.author_approved = True
         self.admin_approved = False
-        self.notify_admin()
+        self.notify_datascience_team()
         emails.submitted(self)
         return "Your Case Report has been submitted and will be reviewed by \
             our admin staff. \
@@ -356,7 +356,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
                 target=WorkflowState.AUTHOR_REVIEW)
     def _retract_by_author(self):  # starts with _ to hide from users
         self.author_approved = False
-        self.notify_admin()
+        self.notify_datascience_team()
         return '''moved to "Author Review"'''
 
     @transition(field=workflow_state,
@@ -366,7 +366,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     def _retract_by_admin(self):  # starts with _ to hide from users
         """ unpublish """
         self.admin_approved = False
-        self.notify_admin()
+        self.notify_datascience_team()
         return '''moved to "Admin Review"'''
 
     def can_retract(self, user=None):
@@ -465,7 +465,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
             self.review = CaseReportReview.objects.create()
         super(CaseReport, self).save(*args, **kwargs)
 
-    def notify_admin(self):
+    def notify_datascience_team(self):
         subject = settings.NEW_CASE
         if self.workflow_state != WorkflowState.DRAFT:
             subject = settings.EDITED
