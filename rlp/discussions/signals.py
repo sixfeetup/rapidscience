@@ -79,7 +79,7 @@ def create_comment_activity(**kwargs):
                 top_comment.user not in content.get_viewers():
             interested_parties.add( top_comment.user)
 
-        for interested_party in content.get_viewers() - {request.user}:
+        for interested_party in interested_parties:
             action.send( comment.user,
                          verb=verb,
                          action_object=comment,
