@@ -54,7 +54,7 @@ def comment_detail(request, comment_pk, template_name='discussions/comment_detai
     """
     comment = get_object_or_404(ThreadedComment, pk=comment_pk)
 
-    user_can_comment = comment.is_shared_with_user(request.user)
+    user_can_comment = comment.is_shared_with_user(request.user) or request.user == comment.user
 
     last_viewed_path = request.session.get('last_viewed_path')
     context = {
