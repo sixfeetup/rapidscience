@@ -74,6 +74,11 @@ def create_comment_activity(**kwargs):
 
     if send_to_viewers and hasattr(content, 'share_with'):
         # add it to the AF of the others
+        interested_parties = content.get_viewers() - {request.user}
+        if top_comment.user != request.user and \
+                top_comment.user not in content.get_viewers():
+            interested_parties.add( top_comment.user)
+
         for interested_party in content.get_viewers() - {request.user}:
             action.send( comment.user,
                          verb=verb,
