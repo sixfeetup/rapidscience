@@ -69,7 +69,7 @@ class CaseReportDetailView(LoginRequiredMixin, TemplateView):
         treatments = Treatment.objects.filter(casereport_f_id=case_id)
         testevents = casereport.event_set.select_related('testevent')
         last_viewed_path = request.session.get('last_viewed_path')
-        user_can_comment = casereport.is_shared_with_user(request.user)
+        user_can_comment = casereport.is_shared_with_user(request.user) or request.user == casereport.primary_author
         comment_list = casereport.discussions.all()
         review_allowed = is_review_allowed(self.request.user, casereport)
         return self.render_to_response(

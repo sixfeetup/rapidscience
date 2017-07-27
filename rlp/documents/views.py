@@ -267,7 +267,7 @@ def add_video(request, add_form=None, doc_pk=None, template_name='documents/add_
 def document_detail(request, doc_pk, template_name='documents/document_detail.html'):
     document = get_object_or_404(Document, pk=doc_pk)
     last_viewed_path = request.session.get('last_viewed_path')
-    user_can_comment = document.is_shared_with_user(request.user)
+    user_can_comment = document.is_shared_with_user(request.user) or request.user == document.owner
     context = {
         'document': document,
         'tab': 'documents',
