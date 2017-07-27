@@ -1,13 +1,30 @@
 {% load core_tags %}
+{% user_can_link ref.reference as can_link %}
 {#  FYI: the ref on this page is a UserReference#}
 {% if not search %}<h4>{% endif %}
-  {% if ref.reference.parsed_data.authors %}{{ ref.reference.parsed_data.authors }}. {% endif %}{% if ref.reference.get_source_url %}{% if not search %}<a href="{{ ref.reference.get_source_url }}" {% if 'http' in ref.reference.get_source_url and not email %}target="_blank"{% endif %}>{% endif %}{% endif %}
-  {{ ref.reference.parsed_data.title|striptags }}{% if ref.reference.get_source_url %}{% if not search %}</a>{% endif %}{% endif %},
-  {% if ref.reference.parsed_data.container_title %}in <em>{{ ref.reference.parsed_data.container_title }}</em>,{% endif %}
-  {% if ref.reference.parsed_data.page %}pp {{ ref.reference.parsed_data.page }}.{% endif %}
-  {% if ref.reference.parsed_data.publication_date %}{{ ref.reference.parsed_data.publication_date }};{% endif %}
-  {{ ref.reference.parsed_data.publisher }} {{ ref.reference.parsed_data.journal_title }}
-  {% if ref.reference.parsed_data.doi %}DOI: {{ ref.reference.parsed_data.doi }}{% endif %} {% if ref.reference.parsed_data.pubmed_id %}PMID: {{ ref.reference.parsed_data.pubmed_id }}{% endif %}
+{% if ref.reference.parsed_data.authors %}
+    {{ ref.reference.parsed_data.authors }}. {% endif %}
+{% if ref.reference.get_source_url %}{% if not search %}
+    {% if can_link %}
+        <a href="{{ ref.reference.get_source_url }}"
+       {% if 'http' in ref.reference.get_source_url and not email %}target="_blank"{% endif %}>
+    {% endif %}
+{% endif %}{% endif %}
+{{ ref.reference.parsed_data.title|striptags }}
+        {% if ref.reference.get_source_url %}{% if not search %}
+            {% if can_link %}</a>{% endif %}
+        {% endif %}{% endif %},
+{% if ref.reference.parsed_data.container_title %}in
+    <em>{{ ref.reference.parsed_data.container_title }}</em>,{% endif %}
+{% if ref.reference.parsed_data.page %}pp {{ ref.reference.parsed_data.page }}
+    .{% endif %}
+{% if ref.reference.parsed_data.publication_date %}
+    {{ ref.reference.parsed_data.publication_date }};{% endif %}
+{{ ref.reference.parsed_data.publisher }} {{ ref.reference.parsed_data.journal_title }}
+{% if ref.reference.parsed_data.doi %}DOI:
+    {{ ref.reference.parsed_data.doi }}{% endif %}
+{% if ref.reference.parsed_data.pubmed_id %}PMID:
+    {{ ref.reference.parsed_data.pubmed_id }}{% endif %}
 {% if not search %}</h4>{% endif %}
 {% if ref.description %}
   {% if not search %}<div class="more">{% endif %}

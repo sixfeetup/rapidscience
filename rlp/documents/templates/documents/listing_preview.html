@@ -1,4 +1,5 @@
 {% load core_tags %}
+{% user_can_link obj as can_link %}
 <div class="row">
   <div class="col-md-11">
     {% if 'Image' in obj.display_type %}
@@ -20,21 +21,21 @@
     {% endif %}
     {% if 'Link' in obj.display_type %}
         <h4>
-            {%  if project and request.user in project.active_members %}
+            {% if can_link %}
             <a href="{{ obj.url }}" target="_blank">
             {% endif %}
         {% autoescape off %}{% if highlighted.title %}{{ highlighted.title.0 }}{% else %}{{ obj.title }}{% endif %}{% endautoescape %}
-            {%  if project and request.user in project.active_members %}
+            {% if can_link %}
             </a>
             {% endif %}
         </h4>
     {% else %}
         <h4>
-            {% if project and request.user in project.active_members %}
+            {% if can_link %}
             <a href="{{ obj.get_absolute_url }}">
             {% endif %}
         {% autoescape off %}{% if highlighted.title %}{{ highlighted.title.0 }}{% else %}{{ obj.title }}{% endif %}{% endautoescape %}
-            {% if project and request.user in project.active_members %}
+            {% if can_link %}
             </a>
             {% endif %}
         </h4>
@@ -58,7 +59,7 @@
     </p>
   </div>
   <div class="col-md-1">
-    {%  if project and request.user not in project.active_members %}
+    {% if not can_link %}
         <!-- social tools suppressed because user is not an active member -->
     {% else %}
         {% include 'discussions/discussion_count_widget.html' %}

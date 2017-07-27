@@ -1,16 +1,17 @@
 {% load comments discussion_tags core_tags %}
+{% user_can_link comment.discussion_root as can_link %}
 <div class="replies">
 <div id="{{ comment.id }}" class="comment-item">
   <div class="row">
     <div class="col-md-11">
       {% if comment.title %}
       <h4>
-        {%  if project and request.user in project.active_members %}
-        <a href="{{ comment.get_absolute_url }}">
+        {% if can_link %}
+                <a href="{{ comment.get_absolute_url }}">
         {% endif %}
         {% autoescape off %}{% if highlighted.title %}{{ highlighted.title.0 }}{% else %}{{ comment.title }}{% endif %}{% endautoescape %}
-        {%  if project and request.user in project.active_members %}
-        </a>
+        {% if can_link %}
+                </a>
         {% endif %}
       </h4>
       {% endif %}
@@ -50,7 +51,7 @@
 
     </div>
     <div class="col-md-1">
-    {%  if project and request.user not in project.active_members %}
+    {%  if not can_link %}
       <!-- social tools suppressed because user is not an active member -->
     {% else %}
       {% if comment.is_discussion %}

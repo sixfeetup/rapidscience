@@ -187,3 +187,14 @@ def verb_alias(verb):
     if verb in CREATION_VERBS:
         return 'posted'
     return verb
+
+@register.simple_tag(takes_context=True)
+def user_can_link(context, shared_object ):
+    user = context['request'].user
+    project = context.get('project', False)
+    if project:
+        if user in project.active_members():
+            return True
+    else:
+        return True
+    return False

@@ -1,7 +1,12 @@
 {% load core_tags %}
+{% user_can_link casereport as can_link %}
 <!-- casereport/casereport_activity -->
 {% with casereport=obj %}
-    <h4><a href="{{ casereport.get_absolute_url }}">{{ casereport.title }}</a></h4>
+    <h4>
+        {% if can_link %}<a href="{{ casereport.get_absolute_url }}">{% endif %}
+            {{ casereport.title }}
+        {% if can_link %}</a>{% endif %}
+    </h4>
     {% if action.verb == 'shared' %}
         <p class="small meta">
             Posted by

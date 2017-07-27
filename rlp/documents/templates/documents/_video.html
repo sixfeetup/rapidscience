@@ -1,8 +1,13 @@
 {% load core_tags embed_video_tags %}
+{% user_can_link obj as can_link %}
 {% video obj.share_link as shared_video %}
 {% video shared_video 'small' %}
 {% endvideo %}
-<h4><a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a></h4>
+<h4>
+    {% if can_link %}<a href="{{ obj.get_absolute_url }}">{% endif %}
+        {{ obj.title }}
+    {% if can_link %}</a>{% endif %}
+</h4>
 <div class="more">{% autoescape off %}{{ obj.description }}{% endautoescape %}</div>
 {% if action.verb == 'shared' %}
     <p class="small meta">

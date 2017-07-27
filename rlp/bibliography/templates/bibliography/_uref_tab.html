@@ -1,4 +1,5 @@
 {% load core_tags discussion_tags %}
+{% user_can_link obj as can_link %}
 {# FYI: another template where ref is a UserReference #}
 {# and obj = Reference #}
 <!-- _uref_tab -->
@@ -6,12 +7,14 @@
   <div class="col-md-11">
     <h4>{% if obj.parsed_data.authors %}{{ obj.parsed_data.authors }}. {% endif %}
         {% if obj.get_source_url %}
-            {%  if project and request.user in project.active_members %}
-        <a href="{{ obj.get_source_url }}" {% if 'http' in obj.get_source_url and not email %}target="_blank"{% endif %}>{% endif %}
+            {%  if can_link %}
+                <a href="{{ obj.get_source_url }}" {% if 'http' in obj.get_source_url and not email %}target="_blank"{% endif %}>{% endif %}
             {% endif %}
         {% autoescape off %}{% if highlighted.title %}{{ highlighted.title.0 }}{% else %}{{ obj.parsed_data.title }}{% endif %}{% endautoescape %}
-            {% if project and request.user in project.active_members %}
-        {% if obj.get_source_url %}</a>{% endif %}
+        {% if obj.get_source_url %}
+            {% if can_link %}
+                </a>
+            {% endif %}
         {%  endif %},
         {% if obj.parsed_data.container_title %}in <em>{{ obj.parsed_data.container_title }}</em>,{% endif %}
         {% if obj.parsed_data.page %}pp {{ obj.parsed_data.page }}.{% endif %}
@@ -43,7 +46,7 @@
         </p>
   </div>
   <div class="col-md-1">
-      {%  if project and request.user not in project.active_members %}
+      {%  if not can_link %}
       <!-- social tools suppressed because user is not an active member -->
       {% else %}
         {% get_threaded_comment_count for obj as comment_count %}

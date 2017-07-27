@@ -1,6 +1,10 @@
 {% load core_tags %}
-
-<h4><a href="{{ obj.url }}" target="_blank">{{ obj.title }}</a></h4>
+{% user_can_link obj as can_link %}
+<h4>
+    {% if can_link %}<a href="{{ obj.url }}" target="_blank">{% endif %}
+        {{ obj.title }}
+    {% if can_link %}</a>{% endif %}
+</h4>
 <div class="more">{% autoescape off %}{{ obj.description }}{% endautoescape %}</div>
 
 {% if action.verb == 'shared' %}
