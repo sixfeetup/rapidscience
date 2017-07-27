@@ -284,7 +284,6 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         ''' send to admin without approval '''
         self.author_approved = True
         self.admin_approved = False
-        self.notify_datascience_team()
         emails.submitted(self)
         return "Your Case Report has been submitted and will be reviewed by \
             our admin staff. \
