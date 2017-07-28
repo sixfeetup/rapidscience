@@ -198,3 +198,7 @@ def user_can_link(context, shared_object ):
     else:
         return True
     return False
+
+@register.filter
+def omit(iterable, omittable):
+    return [v for v in filter( lambda x: x != omittable,iterable)]
