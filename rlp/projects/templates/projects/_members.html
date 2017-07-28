@@ -9,9 +9,11 @@
           {% endif %}
       {% endfor %}
   {% else %}
+      {% if request.user in project.active_members %}
       <a href="#" class="invite-link" title="Invite members to group">
           <i class="fa fa-plus"></i>
       </a>
+      {% endif %}
   {% endif %}
   <p class="section-label">Members</p>
   <ul class="list-unstyled item-list">
