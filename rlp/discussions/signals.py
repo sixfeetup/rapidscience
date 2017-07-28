@@ -79,6 +79,18 @@ def create_comment_activity(**kwargs):
                 top_comment.user not in content.get_viewers():
             interested_parties.add( top_comment.user)
 
+        # and add the authors of the content object
+        if hasattr(content, "primary_author"):
+            interested_parties.add( content.primary_author)
+        if hasattr(content, "co_author"):
+            # it should have been plural?
+            for ca in content.co_author.all():
+                interested_parties.add(ca)
+        if hasattr(content, "user"):
+            interested_parties.add( content.user)
+        if hasattr(content,"owner"):
+            interested_parties.add( content.owner)
+
         for interested_party in interested_parties:
             action.send( comment.user,
                          verb=verb,
