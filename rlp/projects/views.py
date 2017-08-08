@@ -5,9 +5,6 @@ from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
 from django.core.exceptions import PermissionDenied
-from django.core.mail import EmailMessage
-from django.core.mail import send_mail
-from django.core.mail import send_mass_mail
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect

@@ -112,6 +112,7 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
     photo = models.ImageField(upload_to="profile_photos", blank=True)
     banner = models.ImageField(upload_to="banner_photos", blank=True)
     institution = models.ForeignKey(Institution, blank=True, null=True)
+    opt_out_of_email = models.BooleanField(default=False)
 
     objects = UserManager()
 
