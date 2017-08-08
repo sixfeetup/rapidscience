@@ -39,14 +39,22 @@ def activity_mail(user, obj, target, request=None):
     recipients = set()
     # is target a project
     if hasattr(target, 'users'):
-        map(recipients.add, target.active_members())
+        #list(map(recipients.add, target.active_members()))
+        for m in target.active_members():
+            recipients.add(m)
     else:
     # else it is a list of members/groups
         for item in target:
             if hasattr(item, 'users'):
-                map(recipients.add, item.active_members())
+                #list(map(recipients.add, item.active_members()))
+                for m in item.active_members():
+                    recipients.add(m)
             else:
                 recipients.add(item)
+
+    # exclude anyone who has opted out
+    recipients = {r for r in recipients if not r.opt_out_of_email}
+
     recipients = [member.get_full_name() + " <" + member.email + ">"
                   for member in recipients if member != user]
     type = obj.__class__.__name__
