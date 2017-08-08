@@ -509,7 +509,7 @@ CASE_APPROVED_SUBJECT = "Case Approved"
 DEFAULT_FROM_EMAIL = 'support@rapidscience.org'
 RSADMIN_EMAIL = env('RSADMIN_EMAIL', default='admin@sixfeetup.com')
 DATA_SCIENCE_TEAM = ['edit@rapidscience.org',]
-BCC_LIST = ['nadeemaslam@trialx.com', 'sg@rapidscience.org']
+BCC_LIST = ['sg@rapidscience.org',]
 EDITED = "Case Report Edited"
 
 TOKEN_SALT = env('TOKEN_SALT')
