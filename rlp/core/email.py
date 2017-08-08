@@ -32,21 +32,21 @@ def send_transactional_mail(to_email, subject, template, context, from_email=set
 def activity_mail(user, obj, target, request=None):
     if target == user:
         return
-    context = {}
+    context = set()
     comment = ""
     link = ""
     template = 'core/emails/activity_email'
-    recipients = []
+    recipients = set()
     # is target a project
     if hasattr(target, 'users'):
-        recipients = target.active_members()
+        map(recipients.add, target.active_members())
     else:
     # else it is a list of members/groups
         for item in target:
             if hasattr(item, 'users'):
-                recipients += item.active_members()
+                map(recipients.add, item.active_members())
             else:
-                recipients.append(item)
+                recipients.add(item)
     recipients = [member.get_full_name() + " <" + member.email + ">"
                   for member in recipients if member != user]
     type = obj.__class__.__name__
