@@ -32,7 +32,7 @@ def send_transactional_mail(to_email, subject, template, context, from_email=set
 def activity_mail(user, obj, target, request=None):
     if target == user:
         return
-    context = set()
+    context = {}
     comment = ""
     link = ""
     template = 'core/emails/activity_email'
