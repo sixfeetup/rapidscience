@@ -134,7 +134,7 @@ def activity_mail(user, obj, target, request=None):
     for member in recipients:
         mail = EmailMessage(subject,
                             message_body,
-                            "support@rapidscience.org",
+                            settings.DEFAULT_FROM_EMAIL,
                             [member,])
         mail.content_subtype = "html"
         mail.send()

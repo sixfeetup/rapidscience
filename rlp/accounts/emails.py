@@ -2,6 +2,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
+from django.conf import settings
 
 
 def verify_email(request, user, key):
@@ -20,7 +21,7 @@ def verify_email(request, user, key):
     message = render_to_string('{}.txt'.format(template), email_context)
     mail = EmailMessage(subject,
                         message,
-                        "Rapid Science <support@rapidscience.org>",
+                        settings.DEFAULT_FROM_EMAIL,
                         [user.email])
     mail.content_subtype = "html"
     mail.send()
@@ -40,12 +41,12 @@ def registration_to_admin(request, user, key):
     }
     template = 'registration/emails/registration_to_admin'
     message = render_to_string('{}.txt'.format(template), email_context)
-    to = ("Sarcoma Central admin <support@rapidscience.org>",)
+    to = (settings.DEFAULT_FROM_EMAIL,)
     mail = EmailMessage(subject,
                         message,
-                        "Rapid Science <support@rapidscience.org>",
+                        settings.DEFAULT_FROM_EMAIL,
                         to,
-                        cc=('sg@rapidscience.org',))
+                        cc=settings.BCC_LIST)
     mail.content_subtype = "html"
     mail.send()
 
@@ -70,7 +71,7 @@ def acceptance_to_newuser(request, user):
     to = (user.get_full_name() + "<" + user.email + ">",)
     mail = EmailMessage(subject,
                         message,
-                        "Rapid Science <support@rapidscience.org>",
+                        settings.DEFAULT_FROM_EMAIL,
                         to,)
     mail.content_subtype = "html"
     mail.send()
@@ -97,7 +98,7 @@ def send_welcome(request, user):
     to = (user.get_full_name() + "<" + user.email + ">",)
     mail = EmailMessage(subject,
                         message,
-                        "Rapid Science <support@rapidscience.org>",
+                        settings.DEFAULT_FROM_EMAIL,
                         to,)
     mail.content_subtype = "html"
     mail.send()

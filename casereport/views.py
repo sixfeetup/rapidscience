@@ -297,7 +297,7 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         recipient = author
         copied = []
         copied.append(author_alt)
-        copied = copied + [i.email for i in coauthors] + ['support@rapidscience.org ']
+        copied = copied + [i.email for i in coauthors] + [settings.DEFAULT_FROM_EMAIL]
         message = render_to_string('casereport/case_submit_email.html', {'name': recipient.get_name(),
                                                               'DOMAIN': settings.CRDB_DOMAIN})
         msg = EmailMessage(settings.CASE_SUBMIT, message, settings.CRDB_SERVER_EMAIL, [recipient.email],
