@@ -305,13 +305,14 @@ def reference_share(request, reference_pk):
                 action.send(request.user, verb='shared', action_object=share, target=share.group)
             # Only email individuals who were specifically selected
             for user in recipients:
-                send_transactional_mail(
-                    user.email,
-                    'A reference has been shared with you',
-                    'emails/shared_reference_notification', {
-                        'share': share,
-                    }
-                )
+                if not user.opt_out_of_email:
+                    send_transactional_mail(
+                        user.email,
+                        'A reference has been shared with you',
+                        'emails/shared_reference_notification', {
+                            'share': share,
+                        }
+                    )
 
             messages.success(request, 'This reference was successfully shared!')
             context = {
