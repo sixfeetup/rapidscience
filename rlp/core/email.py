@@ -53,7 +53,12 @@ def activity_mail(user, obj, target, request=None):
                 recipients.add(item)
 
     # exclude anyone who has opted out
-    recipients = {r for r in recipients if not r.opt_out_of_email}
+    #recipients = {r for r in recipients if not r.opt_out_of_email}
+    # wouldn't it be cool to add opt_of_of_email to groups so moderators could
+    # silence them? ( and we' wouldnt need to do this like this?
+    for r in recipients:
+        if hasattr(r, 'opt_out_of_email') and r.opt_out_of_email:
+            recipients.remove(r)
 
     recipients = [member.get_full_name() + " <" + member.email + ">"
                   for member in recipients if member != user]
