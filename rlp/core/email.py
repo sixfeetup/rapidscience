@@ -7,6 +7,7 @@ from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 
 from rlp.accounts.models import User
+from rlp.core.utils import resolve_email_targets
 from .models import EmailLog
 
 
@@ -44,33 +45,9 @@ def activity_mail(user, obj, target, request=None):
     comment = ""
     link = ""
     template = 'core/emails/activity_email'
-    recipients = set()
-    # is target a project
-    if hasattr(target, 'users'):
-        #list(map(recipients.add, target.active_members()))
-        for m in target.active_members():
-            recipients.add(m)
-    else:
-    # else it is a list of members/groups
-        for item in target:
-            if hasattr(item, 'users'):
-                #list(map(recipients.add, item.active_members()))
-                for m in item.active_members():
-                    recipients.add(m)
-            else:
-                recipients.add(item)
 
-    # exclude anyone who has opted out
-    #recipients = {r for r in recipients if not r.opt_out_of_email}
-    allowed_recipients = set()
-    for r in recipients:
-        if hasattr(r, 'opt_out_of_email') and r.opt_out_of_email:
-            pass
-        else:
-            allowed_recipients.add(r)
+    recipients = resolve_email_targets(target, exclude=user)
 
-    recipients = [member.get_full_name() + " <" + member.email + ">"
-                  for member in allowed_recipients if member != user]
     type = obj.__class__.__name__
     try:
         title = obj.title
