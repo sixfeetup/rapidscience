@@ -246,11 +246,25 @@ def add_tags(obj, tags):
     obj.save()
 
 
-def resolve_email_targets(target):
+FORMAT_NAMED = 'NAMED'
+FORMAT_SIMPLE = 'SIMPLE'
+
+def resolve_email_targets(target, exclude=None, fmt=FORMAT_NAMED):
     """ Take a target comprised of users, projects, strings and return a set
         of email addresses in either x@domain.tld or Name <x@domain.tld> format
         with duplicates removed and known opt-out's honored.
     """
+    if exclude:
+        print("exclude:", exclude)
+        if isinstance(exclude, str):
+            excludables = resolve_email_targets({exclude}, fmt=FORMAT_SIMPLE)
+        else:
+            excludables = resolve_email_targets(exclude, fmt=FORMAT_SIMPLE)
+    else:
+        excludables = {}
+
+    print( "will exclude:", excludables)
+
     if isinstance(target, str):
         return set(target)
     else:
@@ -287,9 +301,14 @@ def resolve_email_targets(target):
                 naas.add(naa)
         # now we can result it down to a list of strings
         for naa in naas:
+            if naa.address in excludables:
+                continue
             if naa.name:
-                emails.add("{name} <{email}>".format(name=naa.name,
-                                                     email=naa.address))
+                if fmt == FORMAT_NAMED:
+                    emails.add('"{name}" <{email}>'.format(name=naa.name,
+                                                           email=naa.address))
+                else:
+                    emails.add(naa.address)
             else:
                 emails.add(naa.address)
         return emails
@@ -328,8 +347,16 @@ def test_resolve_email_targets():
     pprint(resolve_email_targets((u1, u1, p1, p1, s1, s1)))
     print(u1, "opting out")
     u1.opt_out_of_email = True
-    res = resolve_email_targets((u1, u1, p1, p1, s1, s1))
+    res = resolve_email_targets((u1, u1, p1, p1, s1, s1), exclude=["christine@sixfeetup.com", 'glenn@sixfeetup.com'])
     pprint(res)
     assert u1 not in res, "opt-out failed"
     assert s1 in res
+
+    res = resolve_email_targets((u1, u2, p1, p1, s1, s1), exclude="christine@sixfeetup.com")
+    pprint(res)
+    assert "christine@sixfeetup.com" not in res, "exclude string failed"
+
+    res = resolve_email_targets((u1, u2, p1, p1, s1, s1), exclude=u2) #"christine@sixfeetup.com")
+    pprint(res)
+    assert u2 not in res, "exclude failed"
 
