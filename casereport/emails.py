@@ -139,10 +139,10 @@ def invite_coauthor(casereport, user):
     subject = "{0} invites you to co-author a case report".format(author)
     template = 'casereport/emails/invite_coauthor'
     message_body = render_to_string('{}.txt'.format(template), email_context)
-    recipient = user.email
+    recipients = resolve_email_targets(user, exclude=casereport.primary_author)
     mail = EmailMessage(subject, message_body,
                         "Cases Central <edit@rapidscience.org>",
-                        [recipient])
+                        recipients)
     mail.content_subtype = "html"
     mail.send()
 
@@ -158,7 +158,7 @@ def notify_coauthor(casereport, user):
     subject = "{0} invites you to co-author a case report".format(author)
     template = 'casereport/emails/notify_coauthor'
     message_body = render_to_string('{}.txt'.format(template), email_context)
-    recipients = resolve_email_targets(user)
+    recipients = resolve_email_targets(user, exclude=casereport.primary_author)
     mail = EmailMessage(subject, message_body,
                         "Cases Central <edit@rapidscience.org>",
                         recipients)
@@ -171,8 +171,6 @@ def cr_published_notifications(casereport):
        the emails to those it has been shared with
     """
     shared_with = casereport.get_viewers()
-    for viewer in shared_with:
-        if hasattr(viewer, 'active_members'):
-            publish_to_group(casereport, [viewer])
-        else:
-            invite_people(casereport, viewer)
+    for viewer in resolve_email_targets(shared_with,
+                                        exclude=casereport.primary_author):
+        invite_people(casereport,viewer)

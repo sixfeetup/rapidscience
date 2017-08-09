@@ -479,7 +479,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         for member in recipient_members:
             message = EmailMessage(subject,
                                    message_body,
-                                   settings.SERVER_EMAIL,
+                                   settings.DEFAULT_FROM_EMAIL,
                                    [member])
             message.content_subtype = 'html'
             message.send()

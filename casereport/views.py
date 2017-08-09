@@ -243,27 +243,36 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         update_treatments_from_request(case, data)
         if aberrations:
             case.aberrations.add(*aberrations)
+
+        coauthors_to_notify = set()
+
         for auth in coauthors:
             coauth_user = User.objects.get(pk=auth)
             case.co_author.add(auth)
-            emails.notify_coauthor(case, coauth_user)
+            coauthors_to_notify.add(coauth_user)
         for i in range(0, len(name)):
             try:
                 coauthor = User.objects.get(email=email[i])
                 case.co_author.add(coauthor)
-                emails.notify_coauthor(case, coauthor)
+                coauthors_to_notify.add(coauthor)
             except User.DoesNotExist:
                 coauthor = User(email=email[i], last_name=name[i],
                                 is_active=False)
                 coauthor.save()
                 case.co_author.add(coauthor)
-                emails.invite_coauthor(case, coauthor)
+                coauthors_to_notify.add(coauthor)
+
+        for coauthor in resolve_email_targets(coauthors_to_notify,
+                                              exclude=case.primary_author):
+            emails.notify_coauthor(case, coauthor)
+
         case.save()
 
         bookmark_and_notify(
             case, self, self.request, 'casereport', 'casereport',
             comment=data.get('comment') or None,
         )
+
         past_tense_verb = 'created'
         for group_id in data.getlist('groups'):
             group = Project.objects.get(id=group_id)
