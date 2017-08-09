@@ -45,7 +45,8 @@ from .models import (
 from rlp.accounts.models import User
 from rlp.core.forms import member_choices
 from rlp.core.forms import group_choices
-from rlp.core.utils import bookmark_and_notify, add_tags, fill_tags
+from rlp.core.utils import bookmark_and_notify, add_tags, fill_tags, \
+    resolve_email_targets
 from rlp.core.utils import enforce_sharedobject_permissions
 from rlp.projects.models import Project
 from functools import partial
@@ -542,15 +543,20 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
         case.co_author = data.getlist('coauthors')
         email = data.getlist('coauthor_email')
         name = data.getlist('coauthor_name')
+
+        # find new coauthors that need to be notified or invited
+        new_coauthors = set()
         for auth in data.getlist('coauthors'):
             coauth_user = User.objects.get(pk=auth)
             if coauth_user not in current_authors:
-                emails.notify_coauthor(case, coauth_user)
+                #emails.notify_coauthor(case, coauth_user)
+                new_coauthors.add(coauth_user)
         for i in range(0, len(name)):
             try:
                 coauthor = User.objects.get(email=email[i])
                 if coauthor not in current_authors:
-                    emails.notify_coauthor(case, coauthor)
+                    #emails.notify_coauthor(case, coauthor)
+                    new_coauthors.add(coauthor)
                     case.co_author.add(coauthor)
             except User.DoesNotExist:
                 coauthor = User(email=email[i], last_name=name[i],
@@ -558,6 +564,11 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
                 coauthor.save()
                 case.co_author.add(coauthor)
                 emails.invite_coauthor(case, coauthor)
+
+        new_coauthor_emails = resolve_email_targets(new_coauthors)
+        for recipient in new_coauthor_emails:
+            emails.notify_coauthor(case, recipient)
+
         case.age = data['age']
         case.gender = data['gender']
         if subtype:
@@ -589,11 +600,6 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
             case.attachment3_description = data['attachment3_description']
         if 'uploadfile' in request.FILES:
             case.casefile_f = request.FILES.get('uploadfile') or case.casefile_f
-
-        # if the user is moving this along in the workflow
-        #action = data.get('action', None)
-        #if action:
-        #    case.take_action_for_user(action)
 
         # any edit by an admin needs to clear the author approved.
         if request.user.is_staff and request.user.email != case.primary_author.email:

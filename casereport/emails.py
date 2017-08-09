@@ -93,6 +93,7 @@ def approved(casereport):
     }
     message_body = render_to_string('{}.txt'.format(template), email_context)
     recipient = casereport.primary_author.email
+    # never used?
     message = EmailMessage(subject,
                            message_body,
                            "Cases Central <edit@rapidscience.org>",
