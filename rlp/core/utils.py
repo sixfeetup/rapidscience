@@ -6,6 +6,8 @@ from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect
 from django.utils.text import slugify
+from django.utils.functional import SimpleLazyObject
+
 from taggit.models import Tag
 
 from rlp.managedtags.models import ManagedTag
@@ -258,6 +260,9 @@ def resolve_email_targets(target, exclude=None, fmt=FORMAT_NAMED, debug=False):
         print("exclude:", exclude)
         if isinstance(exclude, str):
             excludables = resolve_email_targets({exclude}, fmt=FORMAT_SIMPLE)
+        elif isinstance(exclude, SimpleLazyObject):
+            # wrapped user
+            excludables = resolve_email_targets({exclude}, fmt=FORMAT_SIMPLE)
         else:
             excludables = resolve_email_targets(exclude, fmt=FORMAT_SIMPLE)
     else:
@@ -321,6 +326,7 @@ def resolve_email_targets(target, exclude=None, fmt=FORMAT_NAMED, debug=False):
 def test_resolve_email_targets():
     from rlp.accounts.models import User
     from rlp.projects.models import Project
+
     from pprint import pprint
 
     u1 = User.objects.first()
@@ -370,3 +376,8 @@ def test_resolve_email_targets():
     for u in p2.active_members():
         assert u not in res, "exclude by group failed"
 
+    lazy_user = SimpleLazyObject( lambda: u2)
+    print( "\nExclude lazy_user(", u2.email, ") from ",(u1.email,u2.email) )
+    res = resolve_email_targets((u1, u2,), exclude=lazy_user, debug=True)
+    pprint(res)
+    assert u2 not in res
