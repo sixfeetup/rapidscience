@@ -5,8 +5,12 @@ from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 from django.utils.text import slugify
 
+from rlp.core.utils import resolve_email_targets
 
 def publish_to_author(casereport):
+    targets = resolve_email_targets(casereport.primary_author)
+    if not targets:
+        return
     email_context = {
         "casereport": casereport
     }
@@ -15,21 +19,15 @@ def publish_to_author(casereport):
     message_body = render_to_string('{}.txt'.format(template), email_context)
     mail = EmailMessage(subject, message_body,
                         "Cases Central <edit@rapidscience.org>",
-                        [casereport.primary_author.get_full_name() + " <" +
-                         casereport.primary_author.email + ">", ])
+                        targets)
     mail.content_subtype = "html"
     mail.send()
 
 
 def publish_to_group(casereport, groups):
-    recipients = []
-    if not groups:
-        return
-    for group in groups:
-        recipients += group.active_members()
-    recipients = set(recipients)
-    recipients = [member.get_full_name() + " <" + member.email + ">"
-                  for member in recipients]
+    recipients = resolve_email_targets(groups,
+                                       exclude=casereport.primary_author)
+
     email_context = {
         "casereport": casereport,
         "casescentral": reverse('haystac'),
@@ -54,13 +52,15 @@ def submitted(casereport):
     email_context = {
         "casereport": casereport
     }
+    author_email_addresses = resolve_email_targets(casereport.primary_author)
+    if not author_email_addresses:
+        return
     subject = "Your case report submission"
     template = 'casereport/emails/authors_casereport_submitted'
     message_body = render_to_string('{}.txt'.format(template), email_context)
     mail = EmailMessage(subject, message_body,
                         "Cases Central <edit@rapidscience.org>",
-                        [casereport.primary_author.get_full_name() + " <" +
-                         casereport.primary_author.email + ">", ],
+                        author_email_addresses,
                         cc=('edit@rapidscience.org',), )
     mail.content_subtype = "html"
     mail.send()
@@ -157,10 +157,10 @@ def notify_coauthor(casereport, user):
     subject = "{0} invites you to co-author a case report".format(author)
     template = 'casereport/emails/notify_coauthor'
     message_body = render_to_string('{}.txt'.format(template), email_context)
-    recipient = user.email
+    recipients = resolve_email_targets(user)
     mail = EmailMessage(subject, message_body,
                         "Cases Central <edit@rapidscience.org>",
-                        [recipient])
+                        recipients)
     mail.content_subtype = "html"
     mail.send()
 
