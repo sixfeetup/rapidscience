@@ -30,6 +30,14 @@ def send_transactional_mail(to_email, subject, template, context, from_email=set
 
 
 def activity_mail(user, obj, target, request=None):
+    """ send an activity style email ( shared, commented, etc ) relating
+        user to obj, to everyone in target.
+        Target can a user, a email address string, a group, or a list
+        comprised of all three types.
+        Groups(projects) are broken down into users.
+        Users who have opted out of receiving emails are removed from the
+        set.
+    """
     if target == user:
         return
     context = {}
