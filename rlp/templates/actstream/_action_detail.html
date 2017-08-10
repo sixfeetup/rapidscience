@@ -45,10 +45,10 @@
     by <a href="{{ action.actor.get_absolute_url }}">{% if request.user == action.actor %} me {% else %} {{ action.actor.get_full_name }}{% endif %}</a>
 
     {# target #}
-    {% if action.verb == 'shared' %} with {% if action.target == request.user %} me {% else %}{{ action.target|link }}{% endif %}
+    {% if action.verb == 'shared' %} with {% if action.target == request.user %} me {% else %}{{ action.target|link }}{% endif %}{% spaceless %}
         {% if action.all_targets %}
             {% for target in action.all_targets|slice:"1:" %}{% if forloop.last %} and {%  else %}, {% endif %}{% if target == request.user %} me {% else %}{{ target|link }}{% endif %}{%  endfor %}
-        {% endif %}
+        {% endif %}{% endspaceless %}
     {% elif action.verb == 'added' or action.verb == 'uploaded' or action.verb == 'started' or action.verb == 'replied' or action.verb == 'created' or action.verb == 'posted' %}
         {% with all_targets=action.all_targets|omit:action.actor %}
             {% if all_targets %} to
