@@ -9,6 +9,8 @@ from rlp.projects.models import ProjectMembership
 
 
 def reject_to_requester(request, membership, group):
+    if membership.user.opt_out_of_email:
+        return
     data = {
         'group': group.title,
         'link': request.build_absolute_uri(reverse(
@@ -26,6 +28,8 @@ def reject_to_requester(request, membership, group):
 
 
 def approve_to_requester(request, membership, group):
+    if membership.user.opt_out_of_email:
+        return
     data = {
         'user': request.user.get_full_name(),
         'group': group.title,
