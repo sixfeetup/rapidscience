@@ -269,7 +269,7 @@ def resolve_email_targets(target, exclude=None, fmt=FORMAT_NAMED, debug=False):
         excludables = {}
 
     if debug:
-        print( "will exclude:", excludables)
+        print("will exclude:", excludables)
 
     if isinstance(target, str):
         return set(target)
@@ -280,7 +280,7 @@ def resolve_email_targets(target, exclude=None, fmt=FORMAT_NAMED, debug=False):
         else:
             starting_set = {target}
 
-        # expand any Projects into  Users
+        # expand any Projects into Users
         users_and_strings = set()
         for item in starting_set:
             if hasattr(item, 'users'):
