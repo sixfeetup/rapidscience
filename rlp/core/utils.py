@@ -272,7 +272,7 @@ def resolve_email_targets(target, exclude=None, fmt=FORMAT_NAMED, debug=False):
         print("will exclude:", excludables)
 
     if isinstance(target, str):
-        return set(target)
+        return set([target])
     else:
         # start with a set of items to resolve
         if isinstance( target, Iterable):
