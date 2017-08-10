@@ -102,7 +102,7 @@ def approved(casereport):
     message.send()
 
 
-def invite_people(casereport, user):
+def invite_people(casereport, email_addr):
     slug = slugify(casereport.title)
     email_context = {
         'site': settings.DOMAIN,
@@ -114,16 +114,14 @@ def invite_people(casereport, user):
                 'case_id': casereport.pk,
                 'title_slug': slug
             }),
-        "reg_link": reverse(
-            'register_user',
-            kwargs={'pk': user.pk})
+        "reg_link": reverse('register'),
     }
     subject = "{0} shared a case report with you".format(casereport.primary_author.get_full_name())
     template = 'casereport/emails/invite_people'
     message_body = render_to_string('{}.txt'.format(template), email_context)
     mail = EmailMessage(subject, message_body,
                         "Cases Central <edit@rapidscience.org>",
-                        [user.email, ])
+                        [email_addr, ])
     mail.content_subtype = "html"
     mail.send()
 
