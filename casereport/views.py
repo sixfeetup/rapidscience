@@ -560,7 +560,7 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
             if coauth_user not in current_authors:
                 #emails.notify_coauthor(case, coauth_user)
                 new_coauthors.add(coauth_user)
-        for i in range(0, len(name)):
+        for i in range(0, len(email)):
             try:
                 coauthor = User.objects.get(email=email[i])
                 if coauthor not in current_authors:
