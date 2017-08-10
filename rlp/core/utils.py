@@ -335,25 +335,28 @@ def test_resolve_email_targets():
     p2 = Project.objects.last()
     s1 = "glenn@gmail.com"
     s2 = "glenn franxman <glenn@sixfeetup.com>"
-    resolve_email_targets(u1)
+    assert len(resolve_email_targets(u1)) == 1
     #Out[11]: {'Sixies Up <email>'}
 
-    resolve_email_targets(u2)
+    assert len(resolve_email_targets(u2)) == 1
     #Out[12]: {'Glenn OtherUser <email>'}
 
-    resolve_email_targets(p1)
+    assert len(resolve_email_targets(p1)) >= 1
     #Out[13]: {'Christine Veenstra-VanderSháw <email>',
     #          'Glenn Superuser <email>'}
 
-    resolve_email_targets(p2)
+    assert len(resolve_email_targets(p2)) >= 1
     #Out[14]: {'Sarah Greene <email>'}
 
-    resolve_email_targets([u2])
-    resolve_email_targets([p2])
-    resolve_email_targets([s2])
+    assert len(resolve_email_targets([u2])) == 1
+    assert len(resolve_email_targets([p2])) >= 1
+    assert len(resolve_email_targets([s2])) == 1
 
     pprint(resolve_email_targets((u1, u2, p1, p2, s1, s2)))
+    assert len(resolve_email_targets((u1, u2, p1, p2, s1, s2))) >= 6
     pprint(resolve_email_targets((u1, u1, p1, p1, s1, s1)))
+    assert len(resolve_email_targets((u1, u1, p1, p1, s1, s1))) == len(resolve_email_targets((u1,p1,s1)))
+
     print(u1, "opting out")
     u1.opt_out_of_email = True
     res = resolve_email_targets((u1, u1, p1, p1, s1, s1), exclude=["christine@sixfeetup.com", 'glenn@sixfeetup.com'], debug=True)
