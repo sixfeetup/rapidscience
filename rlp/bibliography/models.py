@@ -349,7 +349,8 @@ def parse_pubmed_data(raw_data):
 def parse_crossref_data(raw_data):
     parsed_data = get_parsed_data_container()
     parsed_data['doi'] = raw_data['DOI']
-    parsed_data['title'] = ' '.join(raw_data['title'])
+    parsed_data['title'] = ' '.join(raw_data.get('title', ['Untitled'])
+
     # Apparently some items don't have authors. Causa sui FTW!!!
     try:
         parsed_data['authors'] = ', '.join(' '.join([a['family'], a['given'][0]]) for a in raw_data['author'])
