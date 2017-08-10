@@ -131,6 +131,7 @@ class Project(SEOMixin, SharesContentMixin):
         return emails
 
     def notify_members(self, subject, context, template='emails/notification'):
+        # dead code?
         for membership in self.projectmembership_set.filter(user__is_active=True):
             send_transactional_mail(
                 membership.user.email,
