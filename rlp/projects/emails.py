@@ -2,12 +2,15 @@ from django.core.mail import EmailMessage
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 from django.utils.text import slugify
+from django.conf import settings
 
 from rlp.accounts.models import User
 from rlp.projects.models import ProjectMembership
 
 
 def reject_to_requester(request, membership, group):
+    if membership.user.opt_out_of_email:
+        return
     data = {
         'group': group.title,
         'link': request.build_absolute_uri(reverse(
@@ -18,13 +21,15 @@ def reject_to_requester(request, membership, group):
     template = "projects/emails/reject_to_requester"
     body = render_to_string('{}.txt'.format(template), data)
     mail = EmailMessage(subject, body,
-                        "Rapid Science <support@rapidscience.org>",
+                        settings.DEFAULT_FROM_EMAIL,
                         [membership.user.email, ])
     mail.content_subtype = "html"
     mail.send()
 
 
 def approve_to_requester(request, membership, group):
+    if membership.user.opt_out_of_email:
+        return
     data = {
         'user': request.user.get_full_name(),
         'group': group.title,
@@ -40,7 +45,7 @@ def approve_to_requester(request, membership, group):
     template = "projects/emails/approve_to_requester"
     body = render_to_string('{}.txt'.format(template), data)
     mail = EmailMessage(subject, body,
-                        "Rapid Science <support@rapidscience.org>",
+                        settings.DEFAULT_FROM_EMAIL,
                         [membership.user.email, ])
     mail.content_subtype = "html"
     mail.send()
@@ -81,7 +86,7 @@ def project_invite_member(request, invitees, project, message):
     template = "projects/emails/member_group_invite"
     body = render_to_string('{}.txt'.format(template), data)
     mail = EmailMessage(subject, body,
-                        "Rapid Science <support@rapidscience.org>",
+                        settings.DEFAULT_FROM_EMAIL,
                         [member for member in invitees])
     mail.content_subtype = "html"
     mail.send()
@@ -125,7 +130,7 @@ def project_invite_nonmember(request, invitees, project, message):
         template = "projects/emails/nonmember_group_invite"
         body = render_to_string('{}.txt'.format(template), data)
         mail = EmailMessage(subject, body,
-                            "Rapid Science <support@rapidscience.org>",
+                            settings.DEFAULT_FROM_EMAIL,
                             [member.email, ])
         mail.content_subtype = "html"
         mail.send()
@@ -135,7 +140,7 @@ def join_request_to_mods(request, project):
     subject = "Request to join your closed group"
     mods = [mod.get_full_name() + " <" + mod.email + ">" for mod
             in project.users.filter(projectmembership__state='moderator')]
-    cc = ["support@rapidscience.org",]
+    cc = [settings.DEFAULT_FROM_EMAIL,]
     membership = ProjectMembership.objects.get(project_id=project.id,
                                                   user_id=request.user.id)
     link = request.build_absolute_uri(
@@ -149,7 +154,7 @@ def join_request_to_mods(request, project):
     template = "projects/emails/join_request_to_mods"
     body = render_to_string('{}.txt'.format(template), data)
     mail = EmailMessage(subject, body,
-                        "Rapid Science <support@rapidscience.org>",
+                        settings.DEFAULT_FROM_EMAIL,
                         mods, cc=cc)
     mail.content_subtype = "html"
     mail.send()

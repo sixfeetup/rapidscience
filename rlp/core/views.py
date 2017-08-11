@@ -7,6 +7,7 @@ from django.shortcuts import render
 from django.views.decorators.cache import never_cache
 from django.views.generic import View
 
+from casereport.constants import WorkflowState
 from casereport.models import CaseReport
 from rlp.core.email import activity_mail
 from rlp.core.forms import get_sendto_form
@@ -68,7 +69,9 @@ class SendToView(LoginRequiredMixin, View):
                 comment=form.cleaned_data['comment'],
             )
             target = members + groups
-            if ctype.name != "case report":
+            if ctype.name != "case report" or \
+                (hasattr(shared_content, "workflow_state") and
+                         shared_content.workflow_state == WorkflowState.LIVE):
                 # case report emails are handled separately
                 activity_mail(request.user, shared_content, target, request)
 

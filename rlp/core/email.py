@@ -7,6 +7,7 @@ from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 
 from rlp.accounts.models import User
+from rlp.core.utils import resolve_email_targets
 from .models import EmailLog
 
 
@@ -30,25 +31,23 @@ def send_transactional_mail(to_email, subject, template, context, from_email=set
 
 
 def activity_mail(user, obj, target, request=None):
+    """ send an activity style email ( shared, commented, etc ) relating
+        user to obj, to everyone in target.
+        Target can a user, a email address string, a group, or a list
+        comprised of all three types.
+        Groups(projects) are broken down into users.
+        Users who have opted out of receiving emails are removed from the
+        set.
+    """
     if target == user:
         return
     context = {}
     comment = ""
     link = ""
     template = 'core/emails/activity_email'
-    recipients = []
-    # is target a project
-    if hasattr(target, 'users'):
-        recipients = target.active_members()
-    else:
-    # else it is a list of members/groups
-        for item in target:
-            if hasattr(item, 'users'):
-                recipients += item.active_members()
-            else:
-                recipients.append(item)
-    recipients = [member.get_full_name() + " <" + member.email + ">"
-                  for member in recipients if member != user]
+
+    recipients = resolve_email_targets(target, exclude=user)
+
     type = obj.__class__.__name__
     try:
         title = obj.title
@@ -134,7 +133,7 @@ def activity_mail(user, obj, target, request=None):
     for member in recipients:
         mail = EmailMessage(subject,
                             message_body,
-                            "support@rapidscience.org",
+                            settings.DEFAULT_FROM_EMAIL,
                             [member,])
         mail.content_subtype = "html"
         mail.send()

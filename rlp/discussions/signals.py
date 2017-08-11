@@ -110,6 +110,11 @@ def review_notification(**kwargs):
         return
     review = comment.content_object
     author = review.casereport.primary_author
+
+    # # short circuit if the author has opted out of receiving emails
+    # if author.opt_out_of_email:
+    #     return
+
     mail_data = {
         'user': author,
         'casereport': review.casereport,

@@ -1,10 +1,13 @@
 import sys
+from collections import Iterable, namedtuple
 
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect
 from django.utils.text import slugify
+from django.utils.functional import SimpleLazyObject
+
 from taggit.models import Tag
 
 from rlp.managedtags.models import ManagedTag
@@ -243,3 +246,141 @@ def add_tags(obj, tags):
 
     # Trigger any post-save signals (e.g. Haystack's real-time indexing)
     obj.save()
+
+
+FORMAT_NAMED = 'NAMED'
+FORMAT_SIMPLE = 'SIMPLE'
+
+def resolve_email_targets(target, exclude=None, fmt=FORMAT_NAMED, debug=False):
+    """ Take a target comprised of users, projects, strings and return a set
+        of email addresses in either x@domain.tld or Name <x@domain.tld> format
+        with duplicates removed and known opt-out's honored.
+    """
+    if exclude:
+        print("exclude:", exclude)
+        if isinstance(exclude, str):
+            excludables = resolve_email_targets({exclude}, fmt=FORMAT_SIMPLE)
+        elif isinstance(exclude, SimpleLazyObject):
+            # wrapped user
+            excludables = resolve_email_targets({exclude}, fmt=FORMAT_SIMPLE)
+        else:
+            excludables = resolve_email_targets(exclude, fmt=FORMAT_SIMPLE)
+    else:
+        excludables = {}
+
+    if debug:
+        print("will exclude:", excludables)
+
+    if isinstance(target, str):
+        return set([target])
+    else:
+        # start with a set of items to resolve
+        if isinstance( target, Iterable):
+            starting_set = set(target)
+        else:
+            starting_set = {target}
+
+        # expand any Projects into Users
+        users_and_strings = set()
+        for item in starting_set:
+            if hasattr(item, 'users'):
+                for m in item.active_members():
+                    users_and_strings.add(m)
+            else:
+                users_and_strings.add(item)
+
+        # email_addresses
+        naas = set()
+        emails = set()
+        NameAndAddress = namedtuple('NameAndAddress', "name address")
+        for recipient in users_and_strings:
+            if hasattr(recipient, "opt_out_of_email"):
+                if recipient.opt_out_of_email:
+                    pass # skip the opted-out target
+                else:
+                    naa = NameAndAddress(recipient.get_full_name(),
+                                         recipient.email)
+                    naas.add(naa)
+            else:
+                naa = NameAndAddress( None, recipient)
+                # that assumes it was a plain email addr
+                naas.add(naa)
+        # now we can result it down to a list of strings
+        for naa in naas:
+            if naa.address in excludables:
+                if debug:
+                    print("excluding", naa.address)
+                continue
+            if naa.name:
+                if fmt == FORMAT_NAMED:
+                    emails.add('"{name}" <{email}>'.format(name=naa.name,
+                                                           email=naa.address))
+                else:
+                    emails.add(naa.address)
+            else:
+                emails.add(naa.address)
+        return emails
+
+
+
+def test_resolve_email_targets():
+    from rlp.accounts.models import User
+    from rlp.projects.models import Project
+
+    from pprint import pprint
+
+    u1 = User.objects.first()
+    u2 = User.objects.last()
+    p1 = Project.objects.first()
+    p2 = Project.objects.last()
+    s1 = "glenn@gmail.com"
+    s2 = "glenn franxman <glenn@sixfeetup.com>"
+    assert len(resolve_email_targets(u1)) == 1
+    #Out[11]: {'Sixies Up <email>'}
+
+    assert len(resolve_email_targets(u2)) == 1
+    #Out[12]: {'Glenn OtherUser <email>'}
+
+    assert len(resolve_email_targets(p1)) >= 1
+    #Out[13]: {'Christine Veenstra-VanderSháw <email>',
+    #          'Glenn Superuser <email>'}
+
+    assert len(resolve_email_targets(p2)) >= 1
+    #Out[14]: {'Sarah Greene <email>'}
+
+    assert len(resolve_email_targets([u2])) == 1
+    assert len(resolve_email_targets([p2])) >= 1
+    assert len(resolve_email_targets([s2])) == 1
+
+    pprint(resolve_email_targets((u1, u2, p1, p2, s1, s2)))
+    assert len(resolve_email_targets((u1, u2, p1, p2, s1, s2))) >= 6
+    pprint(resolve_email_targets((u1, u1, p1, p1, s1, s1)))
+    assert len(resolve_email_targets((u1, u1, p1, p1, s1, s1))) == len(resolve_email_targets((u1,p1,s1)))
+
+    print(u1, "opting out")
+    u1.opt_out_of_email = True
+    res = resolve_email_targets((u1, u1, p1, p1, s1, s1), exclude=["christine@sixfeetup.com", 'glenn@sixfeetup.com'], debug=True)
+    pprint(res)
+    assert u1 not in res, "opt-out failed"
+    assert s1 in res
+
+    res = resolve_email_targets((u1, u2, p1, p1, s1, s1), exclude="christine@sixfeetup.com", debug=True)
+    pprint(res)
+    assert "christine@sixfeetup.com" not in res, "exclude string failed"
+
+    res = resolve_email_targets((u1, u2, p1, p1, s1, s1), exclude=u2, debug=True)
+    pprint(res)
+    assert u2 not in res, "exclude failed"
+
+    res = resolve_email_targets((u1, u2, p1, p1, s1, s1), exclude=[p1,p2], debug=True)
+    pprint(res)
+    for u in p1.active_members():
+        assert u not in res, "exclude by group failed"
+    for u in p2.active_members():
+        assert u not in res, "exclude by group failed"
+
+    lazy_user = SimpleLazyObject( lambda: u2)
+    print( "\nExclude lazy_user(", u2.email, ") from ",(u1.email,u2.email) )
+    res = resolve_email_targets((u1, u2,), exclude=lazy_user, debug=True)
+    pprint(res)
+    assert u2 not in res

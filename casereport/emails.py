@@ -5,8 +5,13 @@ from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 from django.utils.text import slugify
 
+from rlp.core.utils import resolve_email_targets
 
 def publish_to_author(casereport):
+    targets = [casereport.primary_author.email, ]
+    #resolve_email_targets(casereport.primary_author)
+    if not targets:
+        return
     email_context = {
         "casereport": casereport
     }
@@ -15,21 +20,15 @@ def publish_to_author(casereport):
     message_body = render_to_string('{}.txt'.format(template), email_context)
     mail = EmailMessage(subject, message_body,
                         "Cases Central <edit@rapidscience.org>",
-                        [casereport.primary_author.get_full_name() + " <" +
-                         casereport.primary_author.email + ">", ])
+                        targets)
     mail.content_subtype = "html"
     mail.send()
 
 
 def publish_to_group(casereport, groups):
-    recipients = []
-    if not groups:
-        return
-    for group in groups:
-        recipients += group.active_members()
-    recipients = set(recipients)
-    recipients = [member.get_full_name() + " <" + member.email + ">"
-                  for member in recipients]
+    recipients = resolve_email_targets(groups,
+                                       exclude=casereport.primary_author)
+
     email_context = {
         "casereport": casereport,
         "casescentral": reverse('haystac'),
@@ -54,13 +53,16 @@ def submitted(casereport):
     email_context = {
         "casereport": casereport
     }
+    author_email_addresses = [casereport.primary_author.email,]
+    #resolve_email_targets(casereport.primary_author)
+    if not author_email_addresses:
+        return
     subject = "Your case report submission"
     template = 'casereport/emails/authors_casereport_submitted'
     message_body = render_to_string('{}.txt'.format(template), email_context)
     mail = EmailMessage(subject, message_body,
                         "Cases Central <edit@rapidscience.org>",
-                        [casereport.primary_author.get_full_name() + " <" +
-                         casereport.primary_author.email + ">", ],
+                        author_email_addresses,
                         cc=('edit@rapidscience.org',), )
     mail.content_subtype = "html"
     mail.send()
@@ -93,6 +95,7 @@ def approved(casereport):
     }
     message_body = render_to_string('{}.txt'.format(template), email_context)
     recipient = casereport.primary_author.email
+    # never used?
     message = EmailMessage(subject,
                            message_body,
                            "Cases Central <edit@rapidscience.org>",
@@ -101,7 +104,7 @@ def approved(casereport):
     message.send()
 
 
-def invite_people(casereport, user):
+def invite_people(casereport, email_addr):
     slug = slugify(casereport.title)
     email_context = {
         'site': settings.DOMAIN,
@@ -113,16 +116,14 @@ def invite_people(casereport, user):
                 'case_id': casereport.pk,
                 'title_slug': slug
             }),
-        "reg_link": reverse(
-            'register_user',
-            kwargs={'pk': user.pk})
+        "reg_link": reverse('register'),
     }
     subject = "{0} shared a case report with you".format(casereport.primary_author.get_full_name())
     template = 'casereport/emails/invite_people'
     message_body = render_to_string('{}.txt'.format(template), email_context)
     mail = EmailMessage(subject, message_body,
                         "Cases Central <edit@rapidscience.org>",
-                        [user.email, ])
+                        [email_addr, ])
     mail.content_subtype = "html"
     mail.send()
 
@@ -138,10 +139,10 @@ def invite_coauthor(casereport, user):
     subject = "{0} invites you to co-author a case report".format(author)
     template = 'casereport/emails/invite_coauthor'
     message_body = render_to_string('{}.txt'.format(template), email_context)
-    recipient = user.email
+    recipients = resolve_email_targets(user, exclude=casereport.primary_author)
     mail = EmailMessage(subject, message_body,
                         "Cases Central <edit@rapidscience.org>",
-                        [recipient])
+                        recipients)
     mail.content_subtype = "html"
     mail.send()
 
@@ -157,10 +158,10 @@ def notify_coauthor(casereport, user):
     subject = "{0} invites you to co-author a case report".format(author)
     template = 'casereport/emails/notify_coauthor'
     message_body = render_to_string('{}.txt'.format(template), email_context)
-    recipient = user.email
+    recipients = resolve_email_targets(user, exclude=casereport.primary_author)
     mail = EmailMessage(subject, message_body,
                         "Cases Central <edit@rapidscience.org>",
-                        [recipient])
+                        recipients)
     mail.content_subtype = "html"
     mail.send()
 
@@ -170,8 +171,6 @@ def cr_published_notifications(casereport):
        the emails to those it has been shared with
     """
     shared_with = casereport.get_viewers()
-    for viewer in shared_with:
-        if hasattr(viewer, 'active_members'):
-            publish_to_group(casereport, [viewer])
-        else:
-            invite_people(casereport, viewer)
+    for viewer in resolve_email_targets(shared_with,
+                                        exclude=casereport.primary_author):
+        invite_people(casereport,viewer)

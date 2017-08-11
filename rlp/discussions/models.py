@@ -92,6 +92,13 @@ class ThreadedComment(Comment, SharedObjectMixin):
         super(ThreadedComment, self).delete(*args, **kwargs)
 
     def get_absolute_url(self):
+        if not self.content_object:
+            print("discussion has no content_object for get_absolute_url:",
+                  self)
+            return reverse('comments-detail', kwargs={
+                'comment_pk': self.discussion_root.pk
+            })
+
         if self.content_object == Site.objects.get_current():
             # discussion - link to its root
             return reverse('comments-detail', kwargs={

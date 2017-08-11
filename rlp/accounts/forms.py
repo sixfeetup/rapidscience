@@ -220,6 +220,7 @@ class UserProfileForm(forms.ModelForm):
             'institution_name', 'institution_city', 'institution_state',
             'institution_country', 'institution_website', 'email', 'website',
             'linkedin', 'twitter', 'bio', 'research_interests',
+            'opt_out_of_email',
         ]
         widgets = {
             'bio': forms.Textarea(attrs={'class': 'remaining-characters'}),
