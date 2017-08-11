@@ -8,7 +8,8 @@ from django.utils.text import slugify
 from rlp.core.utils import resolve_email_targets
 
 def publish_to_author(casereport):
-    targets = resolve_email_targets(casereport.primary_author)
+    targets = [casereport.primary_author.email, ]
+    #resolve_email_targets(casereport.primary_author)
     if not targets:
         return
     email_context = {
@@ -52,7 +53,8 @@ def submitted(casereport):
     email_context = {
         "casereport": casereport
     }
-    author_email_addresses = resolve_email_targets(casereport.primary_author)
+    author_email_addresses = [casereport.primary_author.email,]
+    #resolve_email_targets(casereport.primary_author)
     if not author_email_addresses:
         return
     subject = "Your case report submission"
