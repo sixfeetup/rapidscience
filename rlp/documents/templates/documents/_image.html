@@ -1,19 +1,26 @@
-{% load thumbnail %}
+{% load core_tags thumbnail %}
+{% user_can_link obj as can_link %}
+{% thumbnail obj.upload 700x160 crop upscale HIGH_RESOLUTION as thumbnail %}
+<a href="{{ obj.upload.url }}" target="_blank">
+  <img class="thumbnail-image" alt="{{ obj.title }}" src="{{ thumbnail.url }}" width="100%">
+</a>
 
-<h4><a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a></h4>
+<h4>
+    {% if can_link %}<a href="{{ obj.get_absolute_url }}">{% endif %}
+        {{ obj.title }}
+    {% if can_link %}</a>{% endif %}
+</h4>
 
 {% if obj.description %}
-<div class="row">
-  <p class="more col-md-12">{{ obj.description|urlize }}</p>
-</div>
+  <div class="more">{% autoescape off %}{{ obj.description }}{% endautoescape %}</div>
 {% endif %}
 
-<div class="row">
-  <div class="col-md-12">
-    {% thumbnail obj.upload 700x160 crop upscale HIGH_RESOLUTION as thumbnail %}
-    <a href="{{ obj.upload.url }}" target="_blank">
-      <img class="thumbnail-image" alt="{{ obj.title }}" src="{{ thumbnail.url }}" width="100%">
-    </a>
-  </div>
-</div>
+{% if action.verb == 'shared' %}
+    <p class="small meta">
+        Posted by
+        <a href="{% url 'profile' action.actor_object_id  %}">{{ action.actor }}</a>
+        | {{ obj.date_updated|date:"j M Y" }}<br />
+      {% display_shared_with obj request.user %}
+    </p>
+{% endif %}
 

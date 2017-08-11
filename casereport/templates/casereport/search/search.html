@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load inplace_edit casereport_tags core_tags staticfiles %}
+
+{% block canonical %}
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+        <link rel="stylesheet" href="{{STATIC_URL}}css/jquery-ui.css" />
+        <link href='https://fonts.googleapis.com/css?family=News+Cycle' rel='stylesheet' type='text/css'>
+
+        {{ block.super }}
+        <link rel="stylesheet" href="{{STATIC_URL}}css/cases.css">
+        <link rel="stylesheet" href="{{STATIC_URL}}css/print_cases.css" media="print">
+{% endblock canonical %}
+{% block js-footer %}
+    {{ block.super }}
+        {% inplace_static %}
+        <script src="{{STATIC_URL}}js/bootstrap.min.js"></script>
+        <script src="{{STATIC_URL}}js/jquery-ui.min.js"></script>
+        <script src="{{STATIC_URL}}js/search.js"></script>
+        <script src="{{STATIC_URL}}js/manual_form.js" ></script>
+{% endblock js-footer %}
+
+{% block content %}
+         <div class="cases-central-header">
+              <div class="container">
+
+                <div class="row">
+                    <div class=" col-md-8 main-content">
+                       <div class="search-div">
+
+                           <h1><img src="{% static "images/logo-CC.png" %}" height="38" alt="Cases Central" /><a href="{% url 'crdb:add_casereport' %}" class="btn btn-primary">Submit Case</a></h1>
+
+
+                                <form class="search-cases" method="get" action=".">
+
+
+                                    <div class="input-group">
+                                      <input type="text" class="form-control search" placeholder="Authors, institutions, drugs..."  onfocus="this.placeholder = ''" onblur="this.placeholder = 'Authors, institutions, drugs...'"  name="q" id="" value="{% if query %}{{ query }}{% else %}{% endif %}" >
+                                 <span class="input-group-btn">
+                                   <button type="submit" class="btn btn-primary search-button" type="button"><i class="fa fa-search"></i></button>
+                                 </span>
+                               </div><!-- /input-group -->
+                             </div><!-- /.col-lg-12 -->
+
+
+
+                        </form>
+                    </div>
+                </div>
+              </div>
+         </div>
+        <div class="container">
+            {% block container %}
+
+            <div class="search-page-tab-content row">
+                <div id="search" class="tab-pane fade in active">
+
+                            <div class="result_block col-md-8">
+                                {% include 'casereport/search/results.html' %}
+                            </div>
+
+
+                          <div class="col-md-4 filter-section">
+                             <h2>Filter Cases</h2>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                     <div class="category-section">
+                                         <h5>Categories</h5>
+                                         <div class="checkbox">
+                                             <label for="category1">
+                                                 <input class="filter-checkbox" type="checkbox" id="category1" value="0" name="category"
+                                                        data-url="selected_facets=authornot:{{ request.user.pk }}"
+                                                        {% check_value_is_active "authornot" request.user.pk request.get_full_path %}/>
+                                                Cases shared with me
+                                             </label>
+                                         </div>
+                                         <div class="checkbox">
+                                             <label for="category2">
+                                                <input class="filter-checkbox" type="checkbox" id="category2" value="1" name="category"
+                                                       data-url="selected_facets=primary_author:{{ request.user.pk }}"
+                                                       {% check_value_is_active "primary_author" request.user.pk request.get_full_path %}/>
+                                                My cases
+                                             </label>
+                                         </div>
+                                         <div class="checkbox">
+                                             <label for="category3">
+                                                <input class="filter-checkbox" type="checkbox" id="category3" value="2" name="category" data-url="selected_facets=workflow_state_exact:draft" {% check_value_is_active "workflow_state_exact" "draft" request.get_full_path %} />
+                                                My draft cases
+                                             </label>
+                                         </div>
+                                     </div>
+                                </div>
+                                <div class="col-sm-6">
+                                   <div class="gender-section">
+                                        <h5>Gender</h5>
+                                        {% for status in facets.fields.gender %}
+                                            <div class="checkbox">
+                                                <label class="checkbox-inline">
+                                                    <input type="checkbox" class="filter-checkbox" value="{{ status.0|urlencode }}"
+                                                       name="gender" data-url="selected_facets=gender:{{ status.0|urlencode }}"
+                                                       {% check_value_is_active "gender" status.0|urlencode request.get_full_path %} />
+                                                    {% pretty_title status.0 %}
+                                                </label>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+
+                        <p>
+                          <label class="age" for="amount">Age range</label>
+                          <input type="hidden" id="amount" value="{% age_range request.get_full_path facets.fields.age %}">
+                        </p>
+                         <div id="slider-range">
+                             <div id="custom-min-handle" class="ui-slider-handle"></div>
+                             <div id="custom-max-handle" class="ui-slider-handle"></div>
+                         </div>
+
+                                    </br>
+                                    <div class="country-section">
+                                        <h5>Country</h5>
+                                        <select class="form-control select2" name="country" multiple="multiple">
+                                            <option value=""></option>
+                                            {% for cnt in facets.fields.country %}
+                                                <option value="selected_facets=country:{{ cnt.0|urlencode }}"
+                                                        {% check_value_is_active "country" cnt.0|title request.get_full_path %}>
+                                                    {{ cnt.0|title }} ({{ cnt.1 }})
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                  </br>
+
+                                    <div class="treatment_type-section">
+                                        <h5>Treatment Type</h5>
+                                        <select class="form-control select2"  name="treatment_type" multiple="multiple">
+                                            <option value=""></option>
+                                            {% for cnt in facets.fields.treatment_type %}
+                                                <option value="selected_facets=treatment_type:{{ cnt.0|urlencode }}"
+                                                        {% check_value_is_active "treatment_type" cnt.0|title request.get_full_path %}>
+                                                    {{ cnt.0|title }} ({{ cnt.1 }})
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+
+                                </div>
+
+                        </div>
+       {% endblock %}
+        </div>
+    <div class="overlay hide"></div>
+{% endblock content %}

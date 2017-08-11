@@ -1,0 +1,14 @@
+<p>Dear{% for name in recipient %}
+        {{ name  }},
+        {% endfor %}
+</p>
+
+<p>Congratulations -- your case report, “{{ title }}”,
+    is now live in the Cases Central database and can be viewed by validated members of the community.
+    To view it, <a href="http{% if request.is_secure %}s{% endif %}://{{ DOMAIN }}/casereport/{{ id }}/{{title}}">   Click Here.</a></p>
+<p>We appreciate your contribution to this important project. If you would like to make revisions to this report at any time,
+    please contact us at support@rapidscience.org.</p>
+<p>
+Data Science Team<br/>
+Sarcoma Inquiry Network<br/>
+Rapid Science</p>

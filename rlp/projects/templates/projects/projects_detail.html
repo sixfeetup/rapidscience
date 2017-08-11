@@ -1,35 +1,106 @@
 {% extends "left_col.html" %}{% load bootstrap3 cms_tags comments discussion_tags project_tags %}{% load static from staticfiles %}
 
+{% block body_class %}project_detail{% endblock %}
+
 {% block css %}{{ block.super }}
 <link rel="stylesheet" type="text/css" href="{% static 'js/vendor/chosen/chosen.min.css' %}" media="screen">
 {% endblock css %}
 
 {% block hero %}
-    <div class="hero">
-        <div class="image-container">
-            {% if project.institution and project.institution.banner_image %}
-                <img src="{{ project.institution.banner_image.url }}">
-            {% else %}
-                {% include 'projects/_institution_hero_image.html' %}
-            {% endif %}
-        </div>
+    {% if project.cover_photo %}
+    <div class="hero" style="background-image: url('{{ project.cover_photo.url }}')">
+    {% elif project.approval_required %}
+    <div class="hero" style="background-image: url('{% static "img/bg-cc-med.jpg" %}')">
+    {% else %}
+    <div class="hero" style="background-image: url('{% static "img/bg-group1-med.jpg" %}')">
+    {% endif %}
         <div class="container">
-            <div class="col-md-8">
-                <h1><a href="{{ project.get_absolute_url }}">{{ project.title }}</a></h1>
-                {% if project.institution %}<p>{{ project.institution }}</p>{% endif %}
+            <div class="row">
+                <div class="col-md-8">
+                    <h1 class="group-header"><a href="{{ project.get_absolute_url }}">{{ project.title }}</a></h1>
+                </div>
+                <div class="col-md-3 col-md-push-1">
+                    <ul class="fa-ul add-links">
+                        {% if request.user in project.active_members %}
+                            <li><a href="{% url 'discussion-create' %}">
+                                <i class="fa-li fa fa-plus-circle" aria-hidden="true"></i> Discussion
+                            </a></li>
+                            <li><a href="{% url 'crdb:add_casereport' %}">
+                                <i class="fa-li fa fa-plus-circle" aria-hidden="true"></i> Case Report
+                            </a></li>
+                            <li><a href="{% url 'documents:add_media' %}">
+                                <i class="fa-li fa fa-plus-circle" aria-hidden="true"></i> Document / Media
+                            </a></li>
+                            <li><a href="{% url 'bibliography:reference_search' %}">
+                                <i class="fa-li fa fa-plus-circle" aria-hidden="true"></i> Reference
+                            </a></li>
+                        {%  else %}
+                            {%  comment %} TODO: make this a component:  join_botton {% endcomment %}
+                            {% if request.user.is_anonymous %}
+                                <a class="join-button" href="{% url 'register'  %}"> <i class="fa fa-plus"></i> Register to Join </a>
+                            {%  elif request.user in project.pending_members %}
+                                <span class="join-button"> Membership Pending </span>
+                            {% else %}
+                                <a class="join-button" href="{% url 'projects:projects_join' project.id %}"> <i class="fa fa-plus"></i> Join </a>
+                            {% endif %}
+                        {%  endif %}
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
 {% endblock hero %}
 
 {% block left_column %}
+  <div class="box about-box">
+    <p class="section-label">About<span style="float:right">{%  if request.user in project.moderators %} <a href="{%  url 'projects:projects_edit' project.pk project.slug %}#" class="edit-group-link" title="Edit group">
+      <i class="fa fa-cog"></i>
+    </a>{%  endif %}</span></p>
+    <p class="group-approval">{% if project.approval_required %}Closed{% else %}Open{% endif %} Group</p>
   {% if project.goal %}
-  <div class="box">
-    <p class="section-label">Goal</p>
-    <p>{{ project.goal }}</p>
-  </div>
+    <p class="group-goal">{{ project.goal }}</p>
   {% endif %}
+  </div>
   {% show_project_members project %}
+
+  <div class="cc-box">
+      <img src="{% static "images/logo-CC.png" %}" class="img-responsive"/>
+      <p>Submit and search the database of case reports, N of 1 studies, and clinical trial summaries.</p>
+      <div class="row">
+          <div class="col-xs-6">
+              <a href="{%  url 'haystac' %}" class="btn btn-primary btn-block">Search</a>
+          </div>
+          <div class="col-xs-6">
+           <a href="{%  url 'add_casereport' %}" class="btn btn-primary btn-block">Submit</a>
+          </div>
+      </div>
+  </div>
+
+  <div class="overlay-form" id="project-invite">
+    <form method="post" action="{% url 'projects:projects_invite' project.pk project.slug %}">
+        <i class="fa fa-times-circle-o close-overlay"></i>
+        {{ form.media }}
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Done" class="btn btn-primary">
+        <input type="submit" value="Cancel" class="btn close-overlay">
+    </form>
+  </div>
+
+
+  <div class="overlay-form" id="edit-group">
+    <form method="post" action="{% url 'projects:projects_edit' project.pk project.slug %}">
+        <i class="fa fa-times-circle-o close-overlay"></i>
+        {% csrf_token %}
+        {{ edit_group_form.as_p }}
+        <input type="submit" value="Done" class="btn btn-primary">
+        <input type="submit" value="Cancel" class="btn close-overlay">
+    </form>
+  </div>
+
+
+
+
 {% endblock left_column %}
 
 {% block main_content %}
@@ -38,14 +109,17 @@
             <li role="presentation"{% if tab == 'activity' %} class="active"{% endif %}>
                 <a href="{{ project.get_absolute_url }}">Activity</a>
             </li>
-            <li role="presentation"{% if tab == 'documents' %} class="active"{% endif %}>
-                <a href="{% url 'projects:projects_documents' pk=project.pk slug=project.slug %}">Documents &amp; Media</a>
-            </li>
             <li role="presentation"{% if tab == 'discussions' %} class="active"{% endif %}>
-                <a href="{% url 'projects:projects_discussions' pk=project.pk slug=project.slug %}">Discussions</a>
+                <a href="{% url 'projects:projects_tab' pk=project.pk slug=project.slug tab='discussions' %}">Discussions</a>
+            </li>
+            <li role="presentation"{% if tab == 'casereports' %} class="active"{% endif %}>
+                <a href="{% url 'projects:projects_tab' pk=project.pk slug=project.slug tab='casereports' %}">Case Reports</a>
+            </li>
+            <li role="presentation"{% if tab == 'documents' %} class="active"{% endif %}>
+                <a href="{% url 'projects:projects_tab' pk=project.pk slug=project.slug tab='documents' %}">Docs/Media</a>
             </li>
             <li role="presentation"{% if tab == 'bibliography' %} class="active"{% endif %}>
-                <a href="{% url 'projects:projects_bibliography' pk=project.pk slug=project.slug %}">Bibliography</a>
+                <a href="{% url 'projects:projects_tab' pk=project.pk slug=project.slug tab='bibliography' %}">Bibliography</a>
             </li>
         </ul>
     </div>
@@ -53,91 +127,52 @@
         <div role="tabpanel" class="tab-pane{% if tab == 'activity' %} active{% endif %}" id="activity">
           {% if tab == 'activity' %}
             {% bootstrap_messages %}
-            <form class="form-inline" action="" method="get">
-              {% bootstrap_field filter_form.content_type show_label=False %}
-              <button class="btn btn-primary" type="submit">
-                Filter
-              </button>
-            </form>
-            <hr>
+            {% include 'projects/_tab_filter.html' %}
+            <hr style="margin-top: 0;">
             {% include page_template %}
           {% endif %}
         </div>
         <div role="tabpanel" class="tab-pane{% if tab == 'documents' %} active{% endif %}" id="documents">
           {% if tab == 'documents' %}
             {% bootstrap_messages %}
-            {% block project_documents %}
-            <div>
-              <a href="{% url 'projects:add_document' pk=project.pk slug=project.slug %}" class="btn btn-primary">
-                Add File
-              </a>
-              <a href="{% url 'projects:add_link' pk=project.pk slug=project.slug %}" class="btn btn-primary">
-                Add Link
-              </a>
-              <a href="{% url 'projects:add_video' pk=project.pk slug=project.slug %}" class="btn btn-primary">
-                Add Video
-              </a>
-            </div>
-
-            <hr>
-
-            {% for working_document in working_documents %}
-            <div class="row">
-              <div class="col-md-11">
-                <h3><a href="{{ working_document.get_absolute_url }}">{{ working_document.title }}</a></h3>
-                <p>{{ working_document.description|urlize }}</p>
-              </div>
-              <div class="col-md-1">
-                {% with obj=working_document %}
-                  {% if obj.owner == request.user %}
-                    {% include 'forms/_edit_dropdown.html' with edit_url=obj.get_edit_url delete_url=obj.get_delete_url %}
-                    {% include 'bookmarks/_form.html' with action=obj.action_object_actions.first %}
-                  {% endif %}
-                {% endwith %}
-              </div>
-            </div>
-            <hr>
+            {% include 'projects/_tab_filter.html' %}
+            <hr style="margin-top: 0;">
+            {% for obj in documents %}
+                {% include "documents/listing_preview.html" %}
             {% endfor %}
 
-            {% include page_template %}
-            {% endblock project_documents %}
           {% endif %}
         </div>
         <div role="tabpanel" class="tab-pane{% if tab == 'discussions' %} active{% endif %}" id="discussions">
           {% if tab == 'discussions' %}
             {% bootstrap_messages %}
-            {% block project_discussion %}
-            {% with object=project %}
-              <div class="clearfix">
-                <button class="btn btn-primary pull-right" data-toggle="collapse" href="#topic-form">
-                  New Comment
-                </button>
-              </div>
-              <div id="topic-form" class="collapse">
-                <p>Start a discussion or post your ideas</p>
-                {% with button_label='Post' %}
-                {% render_comment_form for object %}
-                {% endwith %}
-              </div>
-
+            {% include 'projects/_tab_filter.html' %}
+            <hr style="margin-top: 0;">
+            {% if user_interaction %}
+            {% endif %}
+            {% with view='tab-content' %}
+                {% include page_template %}
             {% endwith %}
-            <hr>
-            {% include page_template %}
-            {% endblock project_discussion %}
+          {% endif %}
+        </div>
+        <div role="tabpanel" class="tab-pane{% if tab == 'casereports' %} active{% endif %}" id="casereports">
+          {% if tab == 'casereports' %}
+            {% bootstrap_messages %}
+            {% include 'projects/_tab_filter.html' %}
+            <hr style="margin-top: 0;">
+            {% for obj in case_reports %}
+                {% include "casereport/listing_preview.html" %}
+            {% endfor %}
           {% endif %}
         </div>
         <div role="tabpanel" class="tab-pane{% if tab == 'bibliography' %} active{% endif %}" id="bibliography">
           {% if tab == 'bibliography' %}
             {% bootstrap_messages %}
-            {% block project_bibliography %}
-            <div>
-              <a role="button" href="{% url 'projects:reference_search' pk=project.pk slug=project.slug %}" class="btn btn-primary">
-                Add Reference
-              </a>
-            </div>
-              <hr>
-            {% include page_template %}
-            {% endblock project_bibliography %}
+            {% include 'projects/_tab_filter.html' %}
+            <hr style="margin-top: 0;">
+            {% for ref in references %}
+              {% include 'bibliography/_uref_tab.html' with obj=ref.reference ref=ref user=ref.user %}
+            {% endfor %}
           {% endif %}
         </div>
     </div>
@@ -145,4 +180,33 @@
 
 {% block js-footer %}{{ block.super }}
   <script src="{% static 'js/vendor/chosen/chosen.jquery.min.js' %}"></script>
-{% endblock js-footer %}
+  <script>
+    $(function() {
+      var params = [], hash;
+          var q = document.URL.split('?')[1];
+          if(q != undefined){
+              q = q.split('&');
+              for(var i = 0; i < q.length; i++){
+                  hash = q[i].split('=');
+                  params.push(hash[1]);
+                  params[hash[0]] = hash[1];
+              }
+      }
+      if (typeof params.content_type != "undefined" && params.content_type !== "") {
+        var ct_element = $("#content-type-dropdown").siblings(".dropdown-menu").find("a[data-ct-filter='" + params.content_type + "']");
+        $("#content-type-dropdown #selected-option").text($(ct_element).text());
+        $("#id_content_type").val(params.content_type);
+      } else {
+        $("#content-type-dropdown").siblings(".dropdown-menu").find(".all").click();
+      }
+      $("#content-type-dropdown").siblings(".dropdown-menu").find("a").on("click", function(e) {
+        e.preventDefault();
+        $(this).parents(".dropdown").find("#selected-option").text($(this).text());
+        $("#id_content_type").val($(this).data("ct-filter"));
+        $(".tab-pane.active .filter-form").submit();
+      });
+      $("#id_user_activity_only").change(function(){
+        $(".tab-pane.active .filter-form").submit();
+      });
+    });
+  </script>{% endblock js-footer %}

@@ -1,11 +1,16 @@
+from actstream.models import Action
 from django.conf import settings
+from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import F, Max, Min
 from django.db.transaction import atomic
 from django.contrib.contenttypes.models import ContentType
-
 from django_comments.models import Comment
+
+from rlp.accounts.models import User
+from rlp.core.models import SharedObjectMixin
+from rlp.projects.models import Project
 
 
 def max_thread_level_for_content_type(content_type):
@@ -39,7 +44,7 @@ class ThreadedCommentManager(models.Manager):
         return qs
 
 
-class ThreadedComment(Comment):
+class ThreadedComment(Comment, SharedObjectMixin):
     title = models.CharField(max_length=255, blank=True)
     thread_id = models.IntegerField(default=0, db_index=True)
     parent_id = models.IntegerField(default=0)
@@ -49,7 +54,7 @@ class ThreadedComment(Comment):
     objects = ThreadedCommentManager()
 
     class Meta:
-        ordering = ('-thread_id', 'order')
+        ordering = ('thread_id', 'order')
         verbose_name = 'comment'
 
     def save(self, *args, **kwargs):
@@ -66,17 +71,35 @@ class ThreadedComment(Comment):
                 else:
                     raise MaxThreadLevelExceededException(self.content_type)
             kwargs["force_insert"] = False
-            super().save(*args, **kwargs)
+            with atomic():
+                if (
+                    self.id == self.parent_id and
+                    (isinstance(self.content_object, Project) or
+                     isinstance(self.content_object, User))
+                ):
+                    # attach to the site instead of a member or group
+                    site_type = ContentType.objects.get_for_model(Site)
+                    self.content_type = site_type
+                    self.content_object = Site.objects.get_current()
+                super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        # delete children
+        for comment in self.children():
+            # delete each individually
+            # mass deletion using to_delete skips this custom method
+            comment.delete()
+        super(ThreadedComment, self).delete(*args, **kwargs)
 
     def get_absolute_url(self):
-        if self.content_type.name == 'project':
-            project = ThreadedComment.get_project_for_comment(self)
-            return reverse('projects:comments-detail', kwargs={
-                'pk': project.pk,
-                'slug': project.slug,
-                'comment_pk': self.pk
+        if self.content_object == Site.objects.get_current():
+            # discussion - link to its root
+            return reverse('comments-detail', kwargs={
+                'comment_pk': self.discussion_root.pk
             })
-        return super().get_absolute_url()
+        else:
+            # another type - link to the object being commented on
+            return self.content_object.get_absolute_url()
 
     def _calculate_thread_data(self):
         # Implements the following approach:
@@ -104,41 +127,77 @@ class ThreadedComment(Comment):
         else:
             return False
 
-    @classmethod
-    def get_project_for_comment(cls, instance):
-        content_type = instance.content_type
-        # Comment on a project
-        if content_type.model == 'project':
-            return instance.content_object
-        # Comment on a document/biblio
-        if hasattr(instance.content_object, 'project'):
-            return instance.content_object.project
-        # Replies
-        return ThreadedComment.get_project_for_comment(instance.content_object)
-
     def get_edit_url(self):
-        project = ThreadedComment.get_project_for_comment(self)
-        return reverse('projects:comments-edit', kwargs={
-            'pk': project.pk,
-            'slug': project.slug,
+        return reverse('comments-edit', kwargs={
             'comment_pk': self.pk
         })
 
     def get_delete_url(self):
-        project = ThreadedComment.get_project_for_comment(self)
-        return reverse('projects:comments-delete', kwargs={
-            'pk': project.pk,
-            'slug': project.slug,
+        return reverse('comments-delete', kwargs={
             'comment_pk': self.pk
         })
 
     @property
     def display_type(self):
-        if self.is_reply():
+        if self.is_editorial_note:
+            return 'Editorial Note'
+        elif self.is_discussion:
+            return 'Discussion'
+        elif self.is_reply:
             return 'Reply'
         return 'Comment'
 
+    @property
     def is_reply(self):
         if self.content_type.name.lower() == 'comment':
             return True
         return False
+
+    @property
+    def is_discussion(self):
+        '''stand-alone discussion, or comments on other content?'''
+        # stand-alone discussions are attached to the site
+        return (
+            self.id == self.thread_id and
+            self.content_object == Site.objects.get_current()
+        )
+
+    @property
+    def is_editorial_note(self):
+        from casereport.models import CaseReportReview
+        return isinstance(self.content_object, CaseReportReview)
+
+    def children(self):
+        children = ThreadedComment.objects.filter(
+            parent_id=self.id
+        ).exclude(id=self.id)
+        return children
+
+    def has_parent(self):
+        return self.parent_id and self.parent_id != self.id
+
+    def is_reply(self):
+        return self.has_parent()
+
+    def get_parent(self):
+        try:
+            return ThreadedComment.objects.get(id=self.parent_id)
+        except ThreadedComment.DoesNotExist:
+            return self
+
+    @property
+    def discussion_root(self):
+        if self.thread_id == 0:
+            return self
+        return ThreadedComment.objects.get(id=self.thread_id)
+
+    def get_viewers(self):
+        '''override to get the viewers for the discussion'''
+        top_comment = self.discussion_root
+        my_type = ContentType.objects.get_for_model(top_comment)
+        shares = Action.objects.filter(
+            action_object_object_id=top_comment.id,
+            action_object_content_type=my_type,
+            verb__exact='shared',
+        )
+        return {s.target for s in shares if s.target}

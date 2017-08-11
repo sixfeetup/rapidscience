@@ -10,7 +10,7 @@
   {% bootstrap_messages %}
   <h1 class="activity-header">Publications</h1>
   {% for publication in publications %}
-    {% include 'bibliography/_reference.html' with obj=publication.reference %}
+    {% include 'bibliography/_reference.html' with obj=publication %}
   {% empty %}
     <p>Coming soon!</p>
   {% endfor %}

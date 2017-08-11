@@ -1,0 +1,32 @@
+{% load staticfiles thumbnail %}
+{% if user.banner %}
+<div class="hero" style="background-image: url({{ user.banner.url }})">
+{% else %}
+<div class="hero" style="background-image: url('{% static "img/bg-profile1.jpg" %}')">
+{% endif %}
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3 profile-image">
+        {% if user.photo %}
+            {% thumbnail user.photo 100x100 crop upscale as thumbnail %}
+            <img src="{{ thumbnail.url }}" height="100px" width="100px">
+        {% else %}
+          <img class="img-circle" height="100px" width="100px" src="{% static 'img/user.jpg' %}">
+        {% endif %}
+      </div>
+      <div class="col-md-9">
+        <h1>{{ user.get_full_name }}{% if user.degrees %}, {{ user.degrees }}{% endif %} {% if edit %}{% include "accounts/_edit_pencil.html" %}{% endif %}</h1>
+
+        <p class="profile-meta">
+            {% if user.website %}<a href="{{ user.website }}" target="_blank">WEBSITE</a>
+                {% if user.linkedin or user.twitter %}
+                    &nbsp;|&nbsp;
+                {% endif %}
+            {% endif %}
+            {% if user.linkedin %}<a href="{{ user.linkedin }}" target="_blank"><i class="fa fa-linkedin-square" aria-hidden="true"></i></a>{% endif %}
+            {% if user.twitter %}<a href="{{ user.twitter }}" target="_blank"><i class="fa fa-twitter-square" aria-hidden="true"></i></a>{% endif %}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,81 @@
+{% load cms_tags sekizai_tags staticfiles compress menu_tags %}<!doctype html>
+<html class="no-js" lang="{{ LANGUAGE_CODE|default:'en-us' }}">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block page_title %}{% page_attribute 'page_title' as page_title %}{% if page_title %}{{ page_title }}{% else %}{% include '_meta_title.txt' %}{% endif %}{% endblock page_title %}{% block page_title_postfix %} | {% include '_meta_title.txt' %}{% endblock page_title_postfix %}</title>
+    <meta name="description"
+          content="{% block meta_description %}{% endblock meta_description %}">
+
+    {% include '_favicon.html' %}
+
+    {# Use the following block to place canonical urls in <head> #}
+    {% block canonical %}{% endblock canonical %}
+
+    {% block css %}
+        <link rel="stylesheet" href="{{STATIC_URL}}font-awesome/css/font-awesome.css">
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" />
+        {% compress css %}
+            <link rel="stylesheet" type="text/x-scss" href="{% static 'css/styles.scss' %}" media="screen">
+        {% endcompress %}
+    {% endblock css %}
+
+    {% render_block 'css' %}
+
+    {% block js-header %}
+        <script src="{% static 'js/vendor/modernizr-2.8.3.min.js' %}"></script>
+    {% endblock js-header %}
+    <!--[if lt IE 9]>
+          <script src="{% static 'js/vendor/html5shiv.min.js' %}"></script>
+          <script src="{% static 'js/vendor/respond.min.js' %}"></script>
+          <link href="{% static 'respond-proxy.html' %}" id="respond-proxy" rel="respond-proxy" />
+          <link href="/static/js/vendor/respond.proxy.gif" id="respond-redirect" rel="respond-redirect" />
+          <script src="/static/js/vendor/respond.proxy.js"></script>
+        <![endif]-->
+</head>
+<body class="wrapperless">
+{% block js-body %}{% endblock js-body %}
+
+<div class="main">
+    {% block content %}{% endblock content %}
+</div>
+
+<script src="{% static 'js/vendor/jquery-3.1.1.min.js' %}"></script>
+<script src="{% static 'js/vendor/jquery.transit.min.js' %}"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+<script src="{{STATIC_URL}}js/vendor/django_select2.js"></script>
+<script type="text/javascript">
+(function($) { $(function() {
+    $(".select2").select2()
+}); })(jQuery);
+</script>
+
+{% block js-footer %}
+{% endblock js-footer %}
+
+{% if not request.user.is_staff %}
+    <script>
+        var MEDIA_URL = "{{ MEDIA_URL }}";
+        var STATIC_URL = "{{ STATIC_URL }}";
+    </script>
+{% endif %}
+{% compress js %}
+    <script src="{% static 'js/vendor/image-scale.min.js' %}"></script>
+    <script src="{% static 'js/plugins.js' %}"></script>
+    <script src="{% static 'js/analytics.js' %}"></script>
+    <script src="{% static 'js/vendor/bootstrap.js' %}"></script>
+    <script src="{% static 'js/vendor/jasny-bootstrap.js' %}"></script>
+    <script src="{% static 'el-pagination/js/el-pagination.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script>$.endlessPaginate({paginateOnScroll: true, onCompleted: function(context, fragment) {show_more();remaining_characters();}});</script>
+    {% block js-compress-inline %}
+    {% endblock %}
+{% endcompress %}
+
+{% render_block 'js' %}
+
+
+</body>
+</html>

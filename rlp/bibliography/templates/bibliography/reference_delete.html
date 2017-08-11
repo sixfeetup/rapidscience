@@ -1,7 +1,7 @@
-{% extends 'projects/projects_detail.html' %}
+{% extends 'home.html' %}
 
-{% block project_bibliography %}
-<h4>{{ obj.reference.title }}</h4>
+{% block main_content %}
+<h4>{{ obj.title }}</h4>
 <form method="post" action="">
   {% csrf_token %}
 
@@ -13,8 +13,8 @@
   <button class="btn btn-primary" type="submit">
     Delete
   </button>
-  <a role="button" class="btn btn-default" href="{{ obj.get_absolute_url }}">
+  <a role="button" class="btn btn-default" href="{{ user_reference.get_absolute_url }}">
     Cancel
   </a>
 </form>
-{% endblock project_bibliography %}
+{% endblock main_content %}

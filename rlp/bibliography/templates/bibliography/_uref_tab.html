@@ -1,0 +1,76 @@
+{% load core_tags discussion_tags %}
+{% user_can_link obj as can_link %}
+{# FYI: another template where ref is a UserReference #}
+{# and obj = Reference #}
+<!-- _uref_tab -->
+<div class="row reference-item">
+  <div class="col-md-11">
+    <h4>{% if obj.parsed_data.authors %}{{ obj.parsed_data.authors }}. {% endif %}
+        {% if obj.get_source_url %}
+            {%  if can_link %}
+                <a href="{{ obj.get_source_url }}" {% if 'http' in obj.get_source_url and not email %}target="_blank"{% endif %}>{% endif %}
+            {% endif %}
+        {% autoescape off %}{% if highlighted.title %}{{ highlighted.title.0 }}{% else %}{{ obj.parsed_data.title }}{% endif %}{% endautoescape %}
+        {% if obj.get_source_url %}
+            {% if can_link %}
+                </a>
+            {% endif %}
+        {%  endif %},
+        {% if obj.parsed_data.container_title %}in <em>{{ obj.parsed_data.container_title }}</em>,{% endif %}
+        {% if obj.parsed_data.page %}pp {{ obj.parsed_data.page }}.{% endif %}
+        {% if obj.parsed_data.publication_date %}{{ obj.parsed_data.publication_date }};{% endif %}
+        {{ obj.parsed_data.publisher }} {{ obj.parsed_data.journal_title }}
+        {% if obj.parsed_data.doi %}DOI: {{ obj.parsed_data.doi }}{% endif %} {% if obj.parsed_data.pubmed_id %}PMID: {{ obj.parsed_data.pubmed_id }}{% endif %}
+    </h4>
+    <p class="small meta">
+        {% if user.id %}
+            Posted by
+            <a href="{% url 'profile' user.id  %}">{% if user == request.user %}me{% else %}{{ user.get_full_name }}{% endif %}</a>
+        {% endif %}
+        | {{ ref.date_updated|date:"j M Y" }}
+        {% if request.user == user or request.user.is_staff %}
+            {% with edit_url=obj.get_edit_url %}
+              {% if edit_url %}| <a href="{{ edit_url }}">Edit</a>{% endif %}
+            {% endwith %}
+        {% endif %}
+        <br />
+      {% display_shared_with ref request.user %}
+    </p>
+    {% if ref.description %}
+        <div class="more">
+            {% autoescape off %}{{ ref.description }}{% endautoescape %}
+        </div>
+    {% endif %}
+        <p class="tags">
+            {% display_tag_links ref %}
+        </p>
+  </div>
+  <div class="col-md-1">
+      {%  if not can_link %}
+      <!-- social tools suppressed because user is not an active member -->
+      {% else %}
+        {% get_threaded_comment_count for obj as comment_count %}
+        <a class="comment-count {% if comment_count < 1 %}empty{% endif %}"
+           href="{{ ref.get_absolute_url }}"
+           _href="{_% url 'bibliography:reference_detail' reference_pk=ref uref_id=ref %}">
+          <i class="fa fa-comment" aria-hidden="true"></i><br>
+          {%  if comment_count > 0 %} <span class="comment-count-text">{{ comment_count }}</span> {% endif %}
+        </a>
+        {% if user != obj.reference.get_poster %}
+          {% if project %}
+          <form class="bookmark-form" method="POST" action="{% toggle_bookmark_url obj project %}">
+          {% else %}
+          <form class="bookmark-form" method="POST" action="{% toggle_bookmark_url obj user %}">
+          {% endif %}
+          {% csrf_token %}
+          <input type="hidden" name="{% if project %}group{% else %}dashboard{% endif %}" value="on" />
+          <input type="hidden" name="content_type" value="{{ obj.get_content_type_id }}" />
+          <input type="hidden" name="content_id" value="{{ obj.id }}" />
+          <a href="#" class="bookmark-trigger" data-toggle="tooltip" title="Save Bookmark"><i class="fa fa-star" aria-hidden="true"></i></a>
+          </form>
+        {% endif %}
+        <a class="share-link" href="/send/bibliography/userreference/{{ ref.id }}"><i class="fa fa-share"></i></a>
+      {% endif %}
+  </div>
+</div>
+<hr>

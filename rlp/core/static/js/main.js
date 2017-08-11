@@ -1,61 +1,65 @@
 var selectedBookmarksFolderName; // will contain ID of selected bookmarks folder
 
-function remaining_characters(){
+(function($) { $(function() {
     // Magical spell to count characters
-    $('.remaining-characters').one('focus', function() {
+    $('.remaining-characters').each(function() {
         var maxLength = $(this).attr('maxlength');
         var length = $(this).val().length;
         var length = maxLength-length;
-        var paragraph = '<p class="character-count">You have ' + length + ' characters remaining</p>';
-        $(this).after(paragraph);
+        var paragraph = '<p class="character-count">'+ length + '/' + maxLength + '</p>';
+        if (!$(this).hasClass('comment-field')) {
+            $(this).after(paragraph);
+        }
     });
     $('.remaining-characters').keyup(function() {
         var maxLength = $(this).attr('maxlength');
         var length = $(this).val().length;
         var length = maxLength-length;
-        $(this).next('.character-count').text('You have ' + length + ' characters remaining');
-    });
-}
-
-$(document).on('ready', remaining_characters);
-
-var showChar = 170;
-var ellipsestext = '...';
-var moretext = 'more';
-var lesstext = '<br><br>less';
-
-// More or less
-function show_more() {
-    $('.more').each(function() {
-        var content = $(this).html();
-
-        if(content.length > showChar) {
-
-            var c = content.substr(0, showChar);
-            var h = content.substr(showChar, content.length - showChar);
-
-            var html = c + '<span class="moreellipses">' + ellipsestext+ '&nbsp;</span><span class="morecontent"><span>' + h + '</span>&nbsp;<a href="" class="morelink">' + moretext + '</a></span>';
-
-            $(this).html(html);
+        if ($(this).hasClass('comment-field')) {
+            $(this).parent().find('.character-count').text(length + '/' + maxLength + " characters");
+        } else {
+            $(this).next('.character-count').text(length + '/' + maxLength);
         }
-
     });
-}
 
-$(document).on('ready', show_more);
+    // var showChar = 170;
+    // var ellipsestext = '&hellip;';
+    // var moretext = '+';
+    // var lesstext = '-';
 
-$('.container').on('click', '.morelink', function(event){
-    if($(this).hasClass('less')) {
-        $(this).removeClass('less');
-        $(this).html(moretext);
-    } else {
-        $(this).addClass('less');
-        $(this).html(lesstext);
-    }
-    $(this).parent().prev().toggle();
-    $(this).prev().toggle();
-    return false;
-});
+    // More or less
+    // $('.more').each(function() {
+    //     var content = $(this).html();
+
+    //     if(content.length > showChar) {
+
+    //         var c = content.substr(0, showChar);
+    //         var h = content.substr(showChar, content.length - showChar);
+
+    //         var html = c + '<span class="moreellipses">' + ellipsestext+ '&nbsp;</span><span class="morecontent"><span>' + h + '</span>&nbsp;<a href="" class="morelink">' + moretext + '</a></span>';
+
+    //         $(this).html(html);
+    //     }
+
+    // });
+
+    // $('.container').on('click', '.morelink', function(event){
+    //     if($(this).hasClass('less')) {
+    //         $(this).removeClass('less');
+    //         $(this).html(moretext);
+    //     } else {
+    //         $(this).addClass('less');
+    //         $(this).html(lesstext);
+    //     }
+    //     $(this).parent().prev().toggle();
+    //     $(this).prev().toggle();
+    //     return false;
+    // });
+
+    // hide hiddenField wrappers
+    $(".hiddenField").parent(".fieldWrapper").hide();
+
+}); })(jQuery);
 
 // Collapse forms on cancel
 $('.cancel-button-collapse').on('click', function(event) {
@@ -271,3 +275,56 @@ $('.action-edit').click(function(event){
     event.preventDefault();
     $(this).parents('.bookmarks-single-item').find('.bookmark-edit-form-wrapper').toggle('100');
 });
+
+// Group invite overlay
+$(".invite-link").click(function(){
+    $("#project-invite").fadeIn();
+    $("body").addClass("overlay-active");
+});
+$(".close-overlay").click(function(){
+    $(".overlay-form").fadeOut();
+    $("body").removeClass("overlay-active");
+});
+
+// Edit Group overlay
+/* disabled in favor of page-based forms
+$(".edit-group-link").click(function(){
+    $("#edit-group").fadeIn();
+    $("body").addClass("overlay-active");
+});
+$(".close-overlay").click(function(){
+    $(".overlay-form").fadeOut();
+    $("body").removeClass("overlay-active");
+});
+*/
+
+
+// Open Discussion form if #topic-form in path
+(function($) { $(function() {
+    if (window.location.hash == '#topic-form') {
+        $("#topic-form").removeClass("collapse");
+    }
+    $("#topic-form .cancel-button-collapse").click(function(){
+        $("#topic-form").addClass("collapse");
+    });
+}); })(jQuery);
+
+// check for content in a field
+$(".clear-input").on('input, keyup', function() {
+    if ($(this).val() == '') {
+        $(this).siblings('.glyphicon-remove').css('display', 'none');
+    } else {
+        $(this).siblings('.glyphicon-remove').css('display', 'block');
+    }
+});
+
+// clear content of a field
+$(".clear-input+.glyphicon-remove").on('click', function(){
+    $(this).siblings('.clear-input').val('');
+    $(".clear-input").keyup();
+});
+
+// on submit of refine, copy potentially changed keywords from search input
+$(".sub-menu").on('submit', function(e) {
+    $("#id_q_hidden").val($("#id_q").val());
+})

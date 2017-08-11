@@ -1,2 +1,0 @@
-{% include 'bibliography/_reference.html' with obj=object.reference search=True %}
-{{ object.reference.parsed_data.abstract }}

@@ -1,0 +1,11 @@
+{{ user.get_full_name }} at <a href="mailto:{{ user.email }}">{{ user.email }}</a>, a validated member of Sarcoma Central, has requested permission to join your closed group, {{ project.title }}.<br><br>
+
+If this individual has permission to register under this project, please click <a href="{{ link }}">Approve</a>. Note that immediately upon clicking "Approve", the individual will have access to your group.<br><br>
+
+If you clicked "Approve" in error, please email <a href="mailto:support@rapidscience.org">support@rapidscience.org</a> as soon as possible.<br><br>
+
+Sincerely,<br><br>
+
+Sarcoma Central Team<br><br>
+
+<a href="https://twitter.com/rapidscience">@RapidScience</a>

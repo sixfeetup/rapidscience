@@ -1,0 +1,279 @@
+{% extends "casereport/search/search.html" %}
+{% load casereport_tags %}
+{% load static %}
+{% load comments %}
+
+
+
+{% block title %}
+   {{ casereport.title }}
+{% endblock %}
+
+{% block body_class %}casereport-view{% endblock %}
+
+{% block content %}
+<div class="case-hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="headingBanner">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            {% if last_viewed_path %}
+                            <p class="back"><a href="{{ last_viewed_path }}">&larr; Back</a></p>
+                            {% elif request.META.HTTP_REFERER %}
+                            <a href="{{request.META.HTTP_REFERER}}">&laquo; Return To Search Results</a>
+                                {% else %}
+                                <a href="{% url 'haystac' %}">&laquo; All Cases</a>
+                            {% endif %}
+                        </div>
+                        <div class="col-xs-6">
+                            {% if review_allowed %}
+                            <p class="pull-right notes-trigger">
+                                <a href="{% url 'review' casereport.id %}">Editorial Notes</a>
+                                <i class="fa fa-caret-down" aria-hidden="true"></i>
+
+                                <div id="editorial-notes">
+                                    <iframe src="{% url 'review' casereport.id %}"></iframe>
+                                </div>
+                            </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <h1>{{ casereport.title }}</h1>
+                    <p class="case-meta">
+                        Case ID: {{ casereport.id }} |
+                        Submitted: {{ casereport.created_on|date:"M d, Y" }} |
+                        Last revision: {{ casereport.modified_on|date:"M d, Y" }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+ <div class="case-detail-view">
+
+     <div id="structured" class="tab-pane fade in active"><!--first-tab-->
+         <div class="col-md-3 col-xs-3 menu">
+           <div class="sticky">
+             <ul class="jumpMenu nav nav-pills nav-stacked">
+                 <li><a href="#section-primary">Primary Author/Contact</a></li>
+                 {% if casereport.get_coauthors %}
+                     <li><a href="#section-coauthors">Co-Authors</a></li>
+                 {% endif %}
+                 {% if casereport.age or casereport.gender or casereport.subtype %}
+                 <li><a href="#section-diagnosis">Diagnosis/Presentation</a></li>
+                 {% endif %}
+                 {% if casereport.aberrations.all|length > 0 or casereport.aberrations_other %}
+                     <li><a href="#section-aberrations">Genetic Aberrations</a></li>
+                 {% endif %}
+                 {% if casereport.biomarkers %}
+                     <li><a href="#section-biomarkers">Biomarkers</a></li>
+                 {% endif %}
+                 {% if casereport.pathology %}
+                     <li><a href="#section-pathology">Pathology/Tests</a></li>
+                 {% endif %}
+                 {% if casereport.get_treatments %}
+                     <li><a href="#section-treatment">Treatment/Outcome</a></li>
+                 {% endif %}
+                 {% if casereport.additional_comment %}
+                     <li><a href="#section-comments">Additional Comments</a></li>
+                 {% endif %}
+                 {% if casereport.free_text %}
+                    <li><a href="#section-freetext">Free Text</a></li>
+                 {% endif %}
+                 {% if casereport.casefile_f %}
+                    <li><a href="#section-uploadedfile">Uploaded File</a></li>
+                 {% endif %}
+             </ul>
+             <hr />
+             <a class="share-link pull-right" href="/send/casereport/casereport/{{ casereport.id }}"><i class="fa fa-share"></i></a>
+             <h4>Sharing</h4>
+             {% if casereport.get_viewers %}
+             <ul class="jumpMenu">
+                 {% for viewer in casereport.get_viewers %}
+                    {% if viewer != request.user %}
+                     <li>
+                        {% if not viewer.users %}<a href="{% url 'profile' viewer.id %}">{{ viewer.get_full_name }}</a>{% endif %}
+                        {% if viewer.users %}<a href="{% url 'projects:projects_detail' viewer.id viewer.slug %}">{{ viewer }}</a>{% endif %}
+                     </li>
+                    {% endif %}
+                 {% endfor %}
+             </ul>
+             {% endif %}
+           </div>
+         </div>
+         <div class="col-md-9 col-xs-12 content">
+
+             {% for message in messages %}
+                 <div class="alert alert-{{ message.tags }} alert-dismissible">
+                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                 {{ message }}
+                 </div>
+             {% endfor %}
+
+      <div class="author-list" id="section-primary">
+          <h4>Primary Author/Contact</h4>
+          <p><strong>{{ casereport.primary_author }}
+             {% if casereport.primary_author.institution or casereport.primary_author.institution.city or casereport.primary_author.institution.country %} | {% endif %}
+             {% if casereport.primary_author.institution %} {{ casereport.primary_author.institution }}, {% endif %}
+             {% if casereport.primary_author.institution.city %}{{ casereport.primary_author.institution.city }} | {% endif %}
+             {{ casereport.primary_author.institution.country }}</strong></p>
+      </div>
+
+      {% if casereport.get_coauthors %}
+      <div class="author-list" id="section-coauthors">
+          <h4>Co-Authors</h4>
+          <ol class="authors-list">
+          {% for author in casereport.get_coauthors %}
+              <li>{{ author }}{% if not forloop.last %}; {% endif %}
+              </li>
+          {% endfor %}
+          </ol>
+      </div>
+      {% endif %}
+
+     {% if casereport.age or casereport.gender or casereport.subtype %}
+      <div id="section-diagnosis">
+          <h4>Diagnosis/Presentation</h4>
+          <p class="section-details">
+              {{ casereport.age }} yr |
+              {{ casereport.gender|capfirst }} |
+              {% if casereport.subtype_other %}
+                  {{ casereport.subtype_other }}
+              {% else %}
+                {{ casereport.subtype }}
+              {% endif %}
+          </p>
+          {{ casereport.presentation|linebreaks }}
+      </div>
+     {% endif %}
+
+      {% if casereport.aberrations.all|length > 0 or casereport.aberrations_other %}
+         <div class="molecule-abberation" id="section-aberrations">
+              <h4>Genetic Aberrations</h4>
+              <p>{% for aberration in casereport.aberrations.all %}{{ aberration.name }}<br />{% endfor %}
+              {{ casereport.aberrations_other }}
+              </p>
+          </div>
+      {% endif %}
+
+      {% if casereport.biomarkers %}
+         <div id="section-biomarkers">
+              <h4>Biomarkers</h4>
+              <p>{{ casereport.biomarkers|linebreaks }}</p>
+          </div>
+      {% endif %}
+
+      {% if casereport.pathology %}
+      <div id="section-pathology">
+          <h4>Pathology/Tests</h4>
+          {{ casereport.pathology }}
+      </div>
+      {% endif %}
+
+      {% if casereport.get_treatments %}
+      <div id="section-treatment">
+          <h4>Treatment/Outcome</h4>
+          {% for treatment in casereport.get_treatments %}
+              <div class="row treatment-list-inner">
+                  <div class="treatment-name">
+                      {{ forloop.counter }}.
+                      {{ treatment.name }}
+                  </div>
+                  <p class="section-details">
+                      {% if treatment.duration %}
+                        <span class="treatment-stat">{{ treatment.duration }}</span>
+                      {% endif %}
+                      {% if treatment.treatment_type %}
+                        <span class="treatment-stat">{{ treatment.treatment_type }}</span>
+                      {% endif %}
+                      {% if treatment.treatment_intent %}
+                        <span class="treatment-stat">{{ treatment.treatment_intent }}</span>
+                      {% endif %}
+                      {% if treatment.objective_response %}
+                        <span class="treatment-stat">{{ treatment.objective_response }}</span>
+                      {% endif %}
+                      {% if treatment.status %}
+                        <span class="treatment-stat">PS: {{ treatment.status }}</span>
+                      {% endif %}
+                  </p>
+                  <p>{{ treatment.notes|linebreaks }}</p>
+              </div>
+          {% endfor %}
+      </div>
+      {% endif %}
+
+      {% if casereport.additional_comment %}
+      <div id="section-comments">
+          <h4>Additional Comments</h4>
+          <p>{{ casereport.additional_comment|linebreaks }}</p>
+      </div>
+      {% endif %}
+
+      {% if casereport.free_text %}
+      <div id="section-freetext">
+          <h4>Free Text</h4>
+          <p>{{ casereport.free_text }}</p>
+      </div>
+      {% endif %}
+
+      {% if casereport.casefile_f %}
+      <div id="section-uploadedfile">
+          <h4>Uploaded File</h4>
+          <p>{{ casereport.casefile_f.name }} ({{ casereport.casefile_f.size|filesizeformat }})<br />
+              <a href="{{ casereport.casefile_f.url }}" target="_blank" class="btn btn-primary download">Download file</a>
+          </p>
+      </div>
+      {% endif %}
+
+      {% if casereport.attachment1 or casereport.attachment2 or casereport.attachment3 %}
+      <div id="section-attachments">
+          <h4>Attachments</h4>
+          {% for attachment in casereport.get_attachments %}
+          {% if attachment.file %}
+              <img src="{{ attachment.file.url }}" alt="{{ attachment.title }}"/>
+              <div class="caption">
+                  <p><strong>{{ forloop.counter }}. {% if attachment.title %}{{ attachment.title }}{% endif %}</strong></p>
+                  {% if attachment.description %}{{ attachment.description|linebreaks }}{% endif %}
+                  <p><a href="{{ attachment.file.url }}" target="_blank" class="download">Download full image</a></p>
+              </div>
+          {% endif %}
+          {% endfor %}
+      </div>
+      {% endif %}
+      <!-- comments -->
+      <div class="add-comment">
+          {% if user_interaction %}
+            {% render_comment_form for casereport %}
+          {% endif %}
+      </div>
+      {% with expand_comments='True' %}
+        {% include 'discussions/threadedcomment/list.html' %}
+      {% endwith %}
+         <div class="visualClear"><!-- --></div>
+    </div>
+
+ </div><!--tab content-end-->
+
+ <div class="col-xs-12 action-buttons">
+     {% if casereport.get_next_actions_for_user %}
+         <!-- current casereport workflow_state: {{ casereport.workflow_state }} -->
+         {% for action in casereport.get_next_actions_for_user %}
+             {%  if "Edit" in action %}
+                 <a class="btn btn-primary" href="{% url action casereport.id %}?action={{ action }}">Edit</a>
+             {% else %}
+                 <a class="btn btn-primary" href="{% url action casereport.id %}?action={{ action }}">{{ action }}</a>
+             {% endif %}
+         {% endfor %}
+     {% else %}
+         <!-- This case is in {{ casereport.workflow_state }} state and cannot be edited. -->
+     {% endif %}
+ </div>
+
+
+</div><!--container-detail-end-->
+</div>
+{% endblock %}

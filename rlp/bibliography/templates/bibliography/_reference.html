@@ -1,8 +1,46 @@
-{% if not search %}<p>{% endif %}
-  {% if obj.parsed_data.authors %}{{ obj.parsed_data.authors }}. {% endif %}<strong>{% if obj.get_source_url %}<a href="{{ obj.get_source_url }}" {% if 'http' in obj.get_source_url and not email %}target="_blank"{% endif %}>{% endif %}{{ obj.parsed_data.title|striptags }}{% if obj.get_source_url %}</a>{% endif %}</strong>,
-  {% if obj.parsed_data.container_title %}in <em>{{ obj.parsed_data.container_title }}</em>,{% endif %}
-  {% if obj.parsed_data.page %}pp {{ obj.parsed_data.page }}.{% endif %}
-  {% if obj.parsed_data.publication_date %}{{ obj.parsed_data.publication_date }};{% endif %}
-  {{ obj.parsed_data.publisher }} {{ obj.parsed_data.journal_title }}
-  {% if obj.parsed_data.doi %}DOI: {{ obj.parsed_data.doi }}{% endif %} {% if obj.parsed_data.pubmed_id %}PMID: {{ obj.parsed_data.pubmed_id }}{% endif %}
-{% if not search %}</p>{% endif %}
+{% load core_tags %}
+{% if not search %}<div class="row reference-item">
+  <div class="col-md-11">
+      <p>{% endif %}
+        {% if obj.parsed_data.authors %}{{ obj.parsed_data.authors }}. {% endif %}<strong>{% if obj.get_source_url %}<a href="{{ obj.get_source_url }}" {% if 'http' in obj.get_source_url and not email %}target="_blank"{% endif %}>{% endif %}{{ obj.parsed_data.title|striptags }}{% if obj.get_source_url %}</a>{% endif %}</strong>,
+        {% if obj.parsed_data.container_title %}in <em>{{ obj.parsed_data.container_title }}</em>,{% endif %}
+        {% if obj.parsed_data.page %}pp {{ obj.parsed_data.page }}.{% endif %}
+        {% if obj.parsed_data.publication_date %}{{ obj.parsed_data.publication_date }};{% endif %}
+        {{ obj.parsed_data.publisher }} {{ obj.parsed_data.journal_title }}
+        {% if obj.parsed_data.doi %}DOI: {{ obj.parsed_data.doi }}{% endif %} {% if obj.parsed_data.pubmed_id %}PMID: {{ obj.parsed_data.pubmed_id }}{% endif %}
+      {% if not search %}</p>{% endif %}
+      {% if not add_reference %}
+        {% if not search %}<p class="small edit-link">{% endif %}
+          {% with edit_url=obj.get_edit_url %}
+            {% if edit_url %}<a href="{{ edit_url }}">Edit</a><br />{% endif %}
+          {% endwith %}
+          {% display_shared_with obj request.user %}
+        {% if not search %}</p>{% endif %}
+      {% endif %}
+    {% if obj.description %}
+        {% if not search %}<p class="more">{% endif %}
+            {% autoescape off %}{{ obj.description }}{% endautoescape %}
+        {% if not search %}</p>{% endif %}
+    {% endif %}
+    {% if not search %}
+        {% if obj.tags.all.count or obj.mtags.all.count %}
+            {% if not search %}<p class="tags">{% endif %}
+                {% display_tag_links obj %}
+            {% if not search %}</p>{% endif %}
+        {% endif %}
+    {% endif %}
+  {% if not search %}
+  </div>
+  <div class="col-md-1">
+  {% endif %}
+      {% if add_reference %}
+           <a href="{% url 'bibliography:reference_add' reference.id %}" title="Add" data-refid="{{ reference.id }}" class="add-reference-button"><i class="fa fa-plus-circle" aria-hidden="true"></i><a>
+      {% else %}
+        <a class="comment-count" href="{% url 'bibliography:reference_add' obj.pk %}"><i class="fa fa-comment" aria-hidden="true"></i></a>
+        <a class="share-link" href="/send/bibliography/reference/{{ obj.id }}"><i class="fa fa-share"></i></a>
+      {% endif %}
+  {% if not search %}
+  </div>
+</div>
+{% endif %}
+{% if not add_reference %}<hr>{% endif %}

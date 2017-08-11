@@ -1,0 +1,98 @@
+{% extends 'base.html' %}{% load bootstrap3 %}
+
+{% block content %}
+<div class="bannerTitle">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-md-push-3">
+                <h1>New Document / Media</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-md-push-3">
+
+{% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    {{ message }}
+    </div>
+{% endfor %}
+
+<form class="rpds-form" method="post" enctype="multipart/form-data" action="">
+  {{ form.media }}
+  {% csrf_token %}
+  
+  <div class="type-choices">
+      <input name="filetype" id="file" type="radio" value="file" checked>
+      <label for="file">Upload file</label>
+
+      <input name="filetype" id="link" type="radio" value="link">
+      <label for="link">Add link</label>
+      
+      <input name="filetype" id="video" type="radio" value="video">
+      <label for="video">Embed video</label>
+  </div>
+  
+  {% for field in form %}
+      <div class="fieldWrapper" id="wrapper-{{ field.auto_id }}">
+          {{ field.errors }}
+          {% if field.auto_id == 'id_members' %}
+            <h4>Sharing</h4>
+          {% endif %}
+          
+          {% if field.auto_id != 'id_copyright' and field.label %}
+              <h4>
+                  <label for="{{ field.id_for_label }}">
+                      {{ field.label }}{% if field.field.required %} <span class="required">*</span>{% endif %}
+                  </label>
+              </h4>
+              {{ field }}
+          {% else %}
+          {{ field }}
+              <label for="{{ field.id_for_label }}">
+                  {{ field.label }}{% if field.field.required %} <span class="required">*</span>{% endif %}
+              </label>
+          {% endif %}
+          {% if field.help_text %}
+              <p class="helptext">{{ field.help_text|safe }}</p>
+          {% endif %}
+      </div>
+  {% endfor %}
+
+  <button class="btn btn-primary" type="submit">
+    Save
+  </button>
+  <a role="button" class="btn btn-default" href="{% url 'dashboard' %}">
+    Cancel
+  </a>
+</form>
+
+</div>
+</div>
+</div>
+{% endblock content %}
+
+{% block js-footer %}
+    <script type="text/javascript">
+        (function($) { $(function() {
+            $(".type-choices input").click(function(){
+                type = $(this).attr('value');
+                $("#wrapper-id_upload").hide();
+                $("#wrapper-id_url").hide();
+                $("#wrapper-id_share_link").hide();
+                if (type == 'file') {
+                    $("#wrapper-id_upload").show();
+                } else if (type == 'link') {
+                    $("#wrapper-id_url").show();
+                } else if (type == 'video') {
+                    $("#wrapper-id_share_link").show();
+                }
+                
+            })
+        }); })(jQuery);
+    </script>
+{% endblock js-footer %}

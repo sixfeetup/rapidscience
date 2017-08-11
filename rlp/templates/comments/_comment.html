@@ -1,8 +1,22 @@
+{% load core_tags %}
+{% user_can_link obj as can_link %}
 {% if obj.title %}
-  <h4><a href="{{ obj.get_absolute_url }}">{{ obj.title }}</a></h4>
+  <h4>
+      {% if can_link %}<a href="{{ obj.get_absolute_url }}">{% endif %}
+          {{ obj.title }}
+      {% if can_link %}</a>{% endif %}
+  </h4>
 {% endif %}
 {% with truncated_comment=obj.comment|truncatewords:20 %}
-<p id="c{{ obj.id }}" class="more">
-  {{ obj.comment }}
-</p>
+<div id="c{{ obj.id }}" class="{% if action.verb != 'reply' %}more {% endif %}{% if action.verb == 'reply' %}reply {% endif %}small">
+  {% autoescape off %}{{ obj.comment }}{% endautoescape %}
+</div>
 {% endwith %}
+{% if action.verb == 'shared' %}
+    <p class="small meta">
+        Posted by
+        <a href="{% url 'profile' action.actor_object_id  %}">{% if request.user == action.actor %} me {% else %} {{ action.actor }} {% endif %}</a>
+        | {{ obj.submit_date|date:"j M Y" }}<br />
+        {% display_shared_with obj request.user %}
+    </p>
+{% endif %}

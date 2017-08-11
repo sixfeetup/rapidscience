@@ -18,3 +18,5 @@ class UserIndex(BaseIndex, indexes.Indexable):
             title += ', {}'.format(obj.degrees)
         return title
 
+    def prepare_text(self, obj):
+        return obj.title

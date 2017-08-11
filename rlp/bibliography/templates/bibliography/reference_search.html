@@ -1,60 +1,108 @@
-{% extends 'projects/projects_detail.html' %}{% load bootstrap3 %}
+{% extends 'base.html' %}{% load bootstrap3 %}
 
-{% block project_bibliography %}
-<h2>Add Reference</h2>
+{% block body_class %}add-reference{% endblock %}
 
-  <form method="get" action="">
-    <label for="id_q">Search</label>
+{% block content %}
+<div class="bannerTitle">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-md-push-3">
+                <h1>New Reference</h1>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-xs-12 col-md-push-3">
+
+  <form method="get" action="" class="add-reference-form">
+    <label for="id_q" class="section-label">Search *</label>
     <div class="input-group">
       <input class="form-control" id="id_q" name="q" title="Enter a PMID or DOI" type="text" placeholder="Author name, keyword, DOI, PMID..." value="{{ query }}">
       <span class="input-group-btn">
-        <button class="btn btn-default" type="submit">
+        <button class="btn btn-default searchBtn" type="submit">
           <i class="fa fa-search"></i>
+        </button>
+        <button class="btn btn-default clearSearch" style="display: none">
+          <i class="fa fa-times-circle-o"></i>
         </button>
       </span>
     </div>
   </form>
-  <h3>Or upload</h3>
-  <!-- Single button -->
-  <div class="btn-group">
-    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      Upload <span class="caret"></span>
-    </button>
-    <ul class="dropdown-menu">
-      <li><a href="{% url 'projects:add_book' pk=project.pk slug=project.slug %}">Book</a></li>
-      <li><a href="{% url 'projects:add_book_chapter' pk=project.pk slug=project.slug %}">Book chapter</a></li>
-      <li><a href="{% url 'projects:add_article' pk=project.pk slug=project.slug %}">Journal article</a></li>
-    </ul>
-  </div>
   {% if results %}
-    <hr>
     {% for reference in results %}
-      {% include 'bibliography/_reference.html' with obj=reference %}
-      <form id="{{ reference.id }}" class="form-reference-add" action="{% url 'projects:reference_add' project.id project.slug reference.id %}" method="post">{% csrf_token %}
-        <input class="profile-update btn btn-primary" type="submit" value="Add"/>
-      </form>
-      {% if not forloop.last %}<hr>{% endif %}
+      {% include 'bibliography/_reference.html' with obj=reference add_reference=True %}
     {% endfor %}
   {% else %}
     {% if query %}
-    <hr>
     <p>No results found.</p>
     {% endif %}
   {% endif %}
-{% endblock project_bibliography %}
+</div>
+</div>
+</div>
+{% endblock content %}
 
 {% block js-footer %}{{ block.super }}
   <script>
-    $('.form-reference-add').submit(function(event) {
-      var form = $(this);
-      event.preventDefault();
-      // Clear out any old messages
-      $('.alert-dismissable').remove();
-      $.post($(this).attr('action'), $(this).serialize(), function(data) {
-        if (data.messages) {
-          $(form).replaceWith(data.messages);
+    function buttonDisplay(){
+        searchterm = '{{ query }}';
+        searchval = $("#id_q").val();
+        if (!searchterm) {
+            $(".clearSearch").hide();
+            $(".searchBtn").show();
+        } else if (searchterm == searchval) {
+            $(".clearSearch").show();
+            $(".searchBtn").hide();
+        } else {
+            $(".clearSearch").hide();
+            $(".searchBtn").show();
         }
-      });
-    });
+    }
+    (function($) { $(function() {
+        buttonDisplay();
+        $("#id_q").keyup(function() {
+            buttonDisplay();
+        });
+        $(".clearSearch").click(function(e){
+            $("#id_q").val("");
+            buttonDisplay();
+            $(".row.reference-item").remove();
+            e.preventDefault();
+        });
+        $(".add-reference-button").on("click", function(e) {
+            e.preventDefault();
+            reference = $(this).parents(".reference-item");
+            refid = $(this).data('refid');
+            formUrl = "/bibliography/" + refid + "/add/";
+            results = $(".reference-item");
+            others = $(reference).siblings();
+            if ($(reference).find('.fa-plus-circle').length > 0) {
+              $('html, body').animate({scrollTop: 0});
+              $(others).slideUp();
+              $.ajax({
+                url: formUrl,
+                success: function(data) {
+                  form = $(data).find('.edit-reference-form');
+                  $(form).attr('action', formUrl);
+                  $(reference).after(form);
+                  $(".select2").select2()
+                },
+                error: function() {
+                  console.log('Error occurred.');
+                }
+              });
+            } else {
+              $(".edit-reference-form").slideUp(function() {
+                $(".edit-reference-form").remove();
+              });
+              $(others).slideDown();
+            }
+            $(reference).find('.fa').toggleClass('fa-plus-circle');
+            $(reference).find('.fa').toggleClass('fa-times-circle-o');
+        });
+
+    }); })(jQuery);
   </script>
 {% endblock js-footer %}

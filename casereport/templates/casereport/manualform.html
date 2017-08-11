@@ -1,0 +1,242 @@
+{% load static %}
+
+
+<div class="manual-form">
+
+     <div class="form-group">
+         <label for="presentation">Presentation</label>
+         <textarea name="presentation" class="form-control editor"
+                   rows="2" cols="73" id="presentation">{{ casereport.presentation }}</textarea>
+         <div class="helpText">
+             Tumor location, observed condition, previous treatments, co-morbidities, etc.<br />
+             Separate with line breaks
+         </div>
+     </div>
+
+    <div class="molecular-abberations">
+        <h4><label for="aberrations">Genetic Aberrations</label></h4>
+            <select name="aberrations" class="form-control select2" id="aberrations" multiple="multiple" size="5">
+                {% for item in aberrations %}
+                    <option value="{{ item.id }}"
+                            {% if item in casereport.aberrations.all %}selected{% endif %}>
+                        {{ item.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        <div class="form-group">
+            <label for="aberrations">Other</label>
+            <input type="text" name="aberrations_other" id="aberrations_other" class="form-control"
+                   value="{{ casereport.aberrations_other }}">
+        </div>
+    </div>
+
+   <div>
+       <h4><label for="biomarkers">Biomarkers</label></h4>
+       <textarea name="biomarkers" id="biomarkers" rows="4" cols="73"
+                 class="form-control editor">{{ casereport.biomarkers }}</textarea>
+       <div class="helpText">
+           Separate with commas
+       </div>
+   </div>
+   
+   <div class="form-group">
+       <h4><label for="pathology">Pathology/Tests</label></h4>
+       <textarea name="pathology" class="form-control editor" rows="4" cols="73"
+                 id="pathology">{{ casereport.pathology }}</textarea>
+       <div class="helpText">
+           Test results (e.g., biopsy, scans, immunohistochemistry): tumor size, location, physical description, stage<br />
+           Separate with line breaks
+       </div>
+   </div>
+
+     <div class="treatment-section-form"><!--treatment-section start -->
+        <h4>Treatment/Outcome</h4>
+        {% for treatment in casereport.get_treatments %}
+        <div class="row treatment">
+          <div class="col-md-6 col-xs-12">
+
+              <div class="form-group">
+              <input type="hidden" id="treatment_pk" name="treatment_pk" value="{{ treatment.pk }}" />
+              <label for="treatment_name_{{forloop.counter}}" class="required">Treatment Name</label>
+              <input id="treatment_name_{{forloop.counter}}" name="treatment_name" class="form-control treatment_name"
+                     type="text" value="{{ treatment.name }}">
+               <div class="treatment-name-message">
+                 <p>This field is required.</p>
+               </div>
+              </div>
+
+              <div class="form-group">
+              <label for="treatment_duration_{{forloop.counter}}" class="required">Dates/Duration</label>
+              <input id="treatment_duration_{{forloop.counter}}" name="treatment_duration" class="form-control treatment_name"
+                     type="text" value="{{ treatment.duration }}">
+               <div class="treatment-duration-message">
+                 <p>This field is required.</p>
+               </div>
+              </div>
+
+              <div class="form-group">
+              <label for="treatment_type_{{forloop.counter}}" class="required">Treatment Type</label>
+              <select id="treatment_type_{{forloop.counter}}" name="treatment_type" class="form-control treatment_type">
+                  <option value="" selected></option>
+                  <option value="Chemoradiotherapy" {% if 'Chemoradiotherapy' == treatment.treatment_type %}selected{% endif %}>
+                      Chemoradiotherapy</option>
+                  <option value="Chemotherapy" {% if 'Chemotherapy' == treatment.treatment_type %}selected{% endif %}>
+                      Chemotherapy</option>
+                  <option value="Immunotherapy" {% if 'Immunotherapy' == treatment.treatment_type %}selected{% endif %}>
+                      Immunotherapy</option>
+                  <option value="Radiotherapy" {% if 'Radiotherapy' == treatment.treatment_type %}selected{% endif %}>
+                      Radiotherapy</option>
+                  <option value="Surgery" {% if 'Surgery' == treatment.treatment_type %}selected{% endif %}>
+                      Surgery</option>
+                  <option value="Systemic Therapy" {% if 'Systemic Therapy' == treatment.treatment_type %}selected{% endif %}>
+                      Systemic Therapy</option>
+                  <option value="Targeted Therapy" {% if 'Targeted Therapy' == treatment.treatment_type %}selected{% endif %}>
+                      Targeted Therapy</option>
+              </select>
+               <div class="treatment-type-message">
+                 <p>Select a treatment type.</p>
+               </div>
+              </div>
+
+              <label for="treatment_intent_{{forloop.counter}}">Treatment Intent</label>
+              <select id="treatment_intent_{{forloop.counter}}" name="treatment_intent" class="form-control">
+                  <option value="" selected></option>
+                  <option value="Neoadjuvant" {% if 'Neoadjuvant' == treatment.treatment_intent %}selected{% endif %}>Neoadjuvant</option>
+                  <option value="Adjuvant" {% if 'Adjuvant' == treatment.treatment_intent %}selected{% endif %}>Adjuvant</option>
+                  <option value="Metastatic/Advanced" {% if 'Metastatic/Advanced' == treatment.treatment_intent %}selected{% endif %}>Metastatic/Advanced</option>
+                  <option value="Palliative" {% if 'Palliative' == treatment.treatment_intent %}selected{% endif %}>Palliative</option>
+              </select>
+              
+              <label for="treatment_response_{{forloop.counter}}">Objective Response</label>
+              <select id="treatment_response_{{forloop.counter}}" name="treatment_response" class="form-control">
+                  <option value="" selected></option>
+                  <option value="Complete Response" {% if 'Complete Response' == treatment.objective_response %}selected{% endif %}>Complete Response</option>
+                  <option value="Partial Response" {% if 'Partial Response' == treatment.objective_response %}selected{% endif %}>Partial Response</option>
+                  <option value="No Response" {% if 'No Response' == treatment.objective_response %}selected{% endif %}>No Response</option>
+                  <option value="Disease Progression" {% if 'Disease Progression' == treatment.objective_response %}selected{% endif %}>Disease Progression</option>
+              </select>
+              
+              <label for="treatment_status_{{forloop.counter}}">Performance Status</label>
+              <select id="treatment_status_{{forloop.counter}}" name="treatment_status" class="form-control">
+                  <option value="" selected></option>
+                  <option value="0" {% if 0 == treatment.status %}selected{% endif %}>0</option>
+                  <option value="1" {% if 1 == treatment.status %}selected{% endif %}>1</option>
+                  <option value="2" {% if 2 == treatment.status %}selected{% endif %}>2</option>
+                  <option value="3" {% if 3 == treatment.status %}selected{% endif %}>3</option>
+                  <option value="4" {% if 4 == treatment.status %}selected{% endif %}>4</option>
+                  <option value="5" {% if 5 == treatment.status %}selected{% endif %}>5</option>
+              </select>
+          </div>
+          <div class="col-md-6 col-xs-12">
+              <label for="treatment_outcome_{{forloop.counter}}">Treatment Details, Outcomes, Notes</label>
+              <textarea name="treatment_outcome" class="form-control editor" rows="19"
+                   id="treatment_outcome_{{forloop.counter}}">{{ treatment.notes }}</textarea>
+              <div class="helpText">E.g., dose/cycle, response, tumor size post-trmt, time to progression, adverse events</div>
+         </div>
+        </div>
+        {% endfor %}
+        
+        {% if not casereport.get_treatments %}
+        <div class="row treatment">
+          <div class="col-md-6 col-xs-12">
+
+              <div class="form-group">
+              <input type="hidden" id="treatment_pk" name="treatment_pk" value="" />
+              <label for="treatment_name_1" class="required">Treatment Name</label>
+              <input id="treatment_name_1" name="treatment_name" class="form-control treatment_name"
+                     type="text" value="{{ treatment.name }}">
+               <div class="treatment-name-message">
+                 <p>This field is required.</p>
+               </div>
+              </div>
+
+              <div class="form-group">
+              <label for="treatment_duration_1" class="required">Dates/Duration</label>
+              <input id="treatment_duration_1" name="treatment_duration" class="form-control treatment_name"
+                     type="text" value="{{ treatment.duration }}">
+               <div class="treatment-duration-message">
+                 <p>This field is required.</p>
+               </div>
+              </div>
+
+              <div class="form-group">
+              <label for="treatment_type_1" class="required">Treatment Type</label>
+              <select id="treatment_type_1" name="treatment_type" class="form-control treatment_type">
+                  <option value="" selected></option>
+                  <option value="Chemoradiotherapy" {% if 'Chemoradiotherapy' == treatment.treatment_type %}selected{% endif %}>
+                      Chemoradiotherapy</option>
+                  <option value="Chemotherapy" {% if 'Chemotherapy' == treatment.treatment_type %}selected{% endif %}>
+                      Chemotherapy</option>
+                  <option value="Immunotherapy" {% if 'Immunotherapy' == treatment.treatment_type %}selected{% endif %}>
+                      Immunotherapy</option>
+                  <option value="Radiotherapy" {% if 'Radiotherapy' == treatment.treatment_type %}selected{% endif %}>
+                      Radiotherapy</option>
+                  <option value="Surgery" {% if 'Surgery' == treatment.treatment_type %}selected{% endif %}>
+                      Surgery</option>
+                  <option value="Systemic Therapy" {% if 'Systemic Therapy' == treatment.treatment_type %}selected{% endif %}>
+                      Systemic Therapy</option>
+                  <option value="Targeted Therapy" {% if 'Targeted Therapy' == treatment.treatment_type %}selected{% endif %}>
+                      Targeted Therapy</option>
+              </select>
+               <div class="treatment-type-message">
+                 <p>Select a treatment type.</p>
+               </div>
+              </div>
+
+              <label for="treatment_intent_1">Treatment Intent</label>
+              <select id="treatment_intent_1" name="treatment_intent" class="form-control">
+                  <option value="" selected></option>
+                  <option value="Neoadjuvant" {% if 'Neoadjuvant' == treatment.treatment_intent %}selected{% endif %}>Neoadjuvant</option>
+                  <option value="Adjuvant" {% if 'Adjuvant' == treatment.treatment_intent %}selected{% endif %}>Adjuvant</option>
+                  <option value="Metastatic/Advanced" {% if 'Metastatic/Advanced' == treatment.treatment_intent %}selected{% endif %}>Metastatic/Advanced</option>
+                  <option value="Palliative" {% if 'Palliative' == treatment.treatment_intent %}selected{% endif %}>Palliative</option>
+              </select>
+              
+              <label for="treatment_response_1">Objective Response</label>
+              <select id="treatment_response_1" name="treatment_response" class="form-control">
+                  <option value="" selected></option>
+                  <option value="Complete Response" {% if 'Complete Response' == treatment.objective_response %}selected{% endif %}>Complete Response</option>
+                  <option value="Partial Response" {% if 'Partial Response' == treatment.objective_response %}selected{% endif %}>Partial Response</option>
+                  <option value="No Response" {% if 'No Response' == treatment.objective_response %}selected{% endif %}>No Response</option>
+                  <option value="Disease Progression" {% if 'Disease Progression' == treatment.objective_response %}selected{% endif %}>Disease Progression</option>
+              </select>
+              
+              <label for="treatment_status_1">Performance Status</label>
+              <select id="treatment_status_1" name="treatment_status" class="form-control">
+                  <option value="" selected></option>
+                  <option value="0" {% if 0 == treatment.status %}selected{% endif %}>0</option>
+                  <option value="1" {% if 1 == treatment.status %}selected{% endif %}>1</option>
+                  <option value="2" {% if 2 == treatment.status %}selected{% endif %}>2</option>
+                  <option value="3" {% if 3 == treatment.status %}selected{% endif %}>3</option>
+                  <option value="4" {% if 4 == treatment.status %}selected{% endif %}>4</option>
+                  <option value="5" {% if 5 == treatment.status %}selected{% endif %}>5</option>
+              </select>
+          </div>
+          <div class="col-md-6 col-xs-12">
+              <label for="treatment_outcome_1">Treatment Details, Outcomes, Notes</label>
+              <textarea name="treatment_outcome" class="form-control editor" rows="19"
+                   id="treatment_outcome_1">{{ treatment.notes }}</textarea>
+              <div class="helpText">E.g., dose/cycle, response, tumor size post-trmt, time to progression, adverse events</div>
+         </div>
+        </div>
+        {% endif %}
+        
+     </div><!--treatment-section end -->
+    <a class="add_treatment" href="#"><i class="fa fa-plus"></i> Add another treatment</a>
+
+    <div class="form-group">
+      <h4><label for="additional_comment">Additional comments</label></h4>
+      <textarea name="additional_comment" class="form-control editor" rows="5" cols="73"
+                id="additional_comment">{{ casereport.additional_comment }}</textarea>
+    </div>
+
+</div>
+
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      ...
+    </div>
+  </div>
+</div>
+

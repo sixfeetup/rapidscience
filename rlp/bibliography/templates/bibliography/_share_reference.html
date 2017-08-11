@@ -1,11 +1,14 @@
 {% load bootstrap3 bibliography_tags %}
 
 <div class="share-widget">
-  <form class="share-button" method="post">{% csrf_token %}
-    <button type="button" data-toggle="modal" data-target="#modal-share-{{ action.id }}" title="Share">
-      <i class="fa fa-share" aria-hidden="true"></i>
-    </button>
-  </form>
+    {% comment %}
+      <form class="share-button" method="post">{% csrf_token %}
+        <button type="button" data-toggle="modal" data-target="#modal-share-{{ action.id }}" title="Share">
+          <i class="fa fa-share" aria-hidden="true"></i>
+        </button>
+      </form>
+    {% endcomment %}
+    <a class="share-link" href="/send/bibliography/userreference/{{ obj.id }}"><i class="fa fa-share"></i></a>
 </div>
 
 <div class="modal fade" id="modal-share-{{ action.id }}" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
@@ -13,7 +16,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Share "{{ action.action_object.reference.title }}"</h4>
+        <h4 class="modal-title">Share "{{ action.action_object.title }}"</h4>
       </div>
       <form class="share" action="{% url 'reference_share' reference_pk=action.action_object.pk %}" method="post">{% csrf_token %}
         <div class="modal-body">

@@ -15,6 +15,8 @@
     {% block canonical %}{% endblock canonical %}
 
     {% block css %}
+        <link rel="stylesheet" href="{{STATIC_URL}}font-awesome/css/font-awesome.css">
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" />
         {% compress css %}
             <link rel="stylesheet" type="text/x-scss" href="{% static 'css/styles.scss' %}" media="screen">
         {% endcompress %}
@@ -33,7 +35,7 @@
           <script src="/static/js/vendor/respond.proxy.js"></script>
         <![endif]-->
 </head>
-<body>
+<body class="{% block body_class %}{% endblock %}">
 <!--[if IE]>
 <div class="messages"><p class="browserupgrade bg-danger">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p></div>
 <![endif]-->
@@ -41,7 +43,7 @@
 {% cms_toolbar %}
 
 <nav class="navbar navbar-default navbar-fixed-top top-nav">
-    <div class="container-fluid">
+    <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse" aria-expanded="false">
                 <span class="sr-only">Toggle navigation</span>
@@ -49,9 +51,10 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">
-                {% include '_logo.html' %}
+            <a class="navbar-brand" href="/" title="Rapid Science">
+                RS
             </a>
+            <div class="subtitle">Sarcoma Central</div>
         </div>
         <div class="navbar-collapse collapse navbar-right">
             <ul class="nav navbar-nav">
@@ -59,27 +62,32 @@
             </ul>
             <ul class="nav navbar-nav navbar-secondary">
                 {% if request.user.is_authenticated %}
-                    <li><a href="{% url 'dashboard' %}">{{ request.user.first_name }}</a></li>
-                    <li><a href="javascript:void(0)" class="no-side-padding">|</a></li>
-                    <li><a href="{% url 'logout' %}">Sign out</a></li>
+                    <li class="dropdown user-menu">
+                        <a href="" class="dropdown-toggle">
+                            {{ request.user.get_full_name }}
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{% url 'profile' request.user.id %}">View profile</a></li>
+                            <li><a href="{% url 'profile_edit' %}">Edit profile</a></li>
+                            <li><a href="{% url 'logout' %}">Sign out</a></li>
+                        </ul>
+                    </li>
                 {% else %}
                     <li><a href="{% url 'login' %}">Sign in</a></li>
                     <li><a href="javascript:void(0)" class="no-side-padding">|</a></li>
                     <li><a href="{% url 'register' %}">Register</a></li>
                 {% endif %}
-                <li class="navbar-secondary">
-                    <a class="search-icon" href="#search-form" data-toggle="collapse">
-                        <i class="glyphicon glyphicon-search invert-horizontal"></i>
-                    </a>
+                <li class="navbar-secondary search-widget">
                     <div id="search-form" class="collapse">
                         <form class="clearfix" action="{% url 'haystack_search' %}" method="get">
                           <label for="search" class="sr-only">Search: </label>
-                          <input class="form-control" type="text" name="q" placeholder="Search">
-                          <button class="btn btn-primary" type="submit">
-                            Search
-                          </button>
+                          <input class="form-control" type="text" name="q" placeholder="Search keyword, name, DOI, PMID ...">
                       </form>
                     </div>
+                    <a class="search-icon" href="#search-form" data-toggle="collapse">
+                        <i class="glyphicon glyphicon-search invert-horizontal"></i>
+                    </a>
                 </li>
             </ul>
         </div>
@@ -96,35 +104,84 @@
     {% include '_footer.html' %}
 </div>
 
-{% if debug %}
-    <script src="{% static 'js/vendor/jquery-1.11.3.min.js' %}"></script>
-    <script src="{% static 'js/vendor/jquery.transit.min.js' %}"></script>
-{% else %}
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="{% static 'js/vendor/jquery.transit.min.js' %}"></script>
-    <script>window.jQuery || document.write('<script src="{% static 'js/vendor/jquery-1.11.3.min.js' %}"><\/script>')</script>
-{% endif %}
+<script src="{% static 'js/vendor/jquery-3.1.1.min.js' %}"></script>
+<script src="{% static 'js/vendor/jquery.transit.min.js' %}"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+<script src="{{STATIC_URL}}js/vendor/django_select2.js"></script>
+<script type="text/javascript">
+(function($) { $(function() {
+    $(".select2").select2()
+}); })(jQuery);
+</script>
 
 {% block js-footer %}
-    {% if not request.user.is_staff %}
-        <script>
-            var MEDIA_URL = "{{ MEDIA_URL }}";
-            var STATIC_URL = "{{ STATIC_URL }}";
-        </script>
-    {% endif %}
-    {% compress js %}
-        <script src="{% static 'js/vendor/image-scale.min.js' %}"></script>
-        <script src="{% static 'js/plugins.js' %}"></script>
-        <script src="{% static 'js/analytics.js' %}"></script>
-        <script src="{% static 'js/vendor/bootstrap.js' %}"></script>
-        <script src="{% static 'js/vendor/jasny-bootstrap.js' %}"></script>
-        <script src="{% static 'el-pagination/js/el-pagination.js' %}"></script>
-        <script src="{% static 'js/main.js' %}"></script>
-        <script>$.endlessPaginate({paginateOnScroll: true, onCompleted: function(context, fragment) {show_more();remaining_characters();}});</script>
-        {% block js-compress-inline %}
-        {% endblock %}
-    {% endcompress %}
 {% endblock js-footer %}
+
+{% if not request.user.is_staff %}
+    <script>
+        var MEDIA_URL = "{{ MEDIA_URL }}";
+        var STATIC_URL = "{{ STATIC_URL }}";
+    </script>
+{% endif %}
+{% compress js %}
+    <script src="{% static 'js/vendor/image-scale.min.js' %}"></script>
+    <script src="{% static 'js/plugins.js' %}"></script>
+    <script src="{% static 'js/analytics.js' %}"></script>
+    <script src="{% static 'js/vendor/bootstrap.js' %}"></script>
+    <script src="{% static 'js/vendor/jasny-bootstrap.js' %}"></script>
+    <script src="{% static 'el-pagination/js/el-pagination.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script>
+        function setBookmarks() {
+            savedlist = $("form[action='/remove_bookmark']");
+            savedlist.each(function (){
+                $(this).children(".bookmark-trigger").addClass('saved');
+                $(this).children(".bookmark-trigger").attr('data-placement', 'bottom').attr('title', 'Unsave');
+                $(this).children(".bookmark-trigger").tooltip();
+            });
+            notsavedlist = $("form[action='/bookmark']");
+            notsavedlist.each(function (){
+                $(this).children(".bookmark-trigger").attr('data-placement', 'bottom').attr('title', 'Save');
+                $(this).children(".bookmark-trigger").tooltip();
+            });
+            $(".bookmark-trigger").on('click', function(e) {
+                e.preventDefault();
+                element = $(this);
+                form = $(element).parent();
+                action = $(form).attr('action');
+                $.ajax({
+                    url: action,
+                    type:'post',
+                    data:$(element).parent().serialize(),
+                    success:function(){
+                        if($(element).hasClass('saved')) {
+                            newTitle = "Unsaved";
+                            $(element).attr('data-original-title', newTitle);
+                            $(element).parent().attr('action', '/bookmark');
+                            if($(element).parents('.activity-stream').length == 0) {
+                                row = $(element).parents('.row').first();
+                                rule = $(row).next('hr');
+                                $(row).slideUp();
+                                $(rule).slideUp();
+                            }
+                        } else {
+                            newTitle = "Saved";
+                            $(element).attr('data-original-title', newTitle);     
+                            $(element).parent().attr('action', '/remove_bookmark');
+                        }
+                        $(element).parent().find('.tooltip-inner').text(newTitle);
+                        $(element).toggleClass('saved');
+                    }
+                });
+            });
+        }
+        setBookmarks();
+        $.endlessPaginate({paginateOnScroll: true, onCompleted: function(context, fragment) {setBookmarks();}});
+
+    </script>
+    {% block js-compress-inline %}
+    {% endblock %}
+{% endcompress %}
 
 {% render_block 'js' %}
 

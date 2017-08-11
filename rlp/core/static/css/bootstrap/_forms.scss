@@ -162,6 +162,11 @@ output {
 textarea.form-control {
   height: auto;
 }
+.attachment .form-control input[type='file'] {
+    border: none;
+    height: auto;
+    box-shadow: none;
+}
 
 
 // Search inputs in iOS

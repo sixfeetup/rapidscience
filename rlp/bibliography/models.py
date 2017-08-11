@@ -1,9 +1,13 @@
 import logging
 import re
 
+from django.utils.safestring import mark_safe
+from simplejson import JSONDecodeError
+
 import requests
 
 from django.conf import settings
+from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.postgres.fields import JSONField
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
@@ -14,36 +18,59 @@ from Bio import Entrez
 from taggit.managers import TaggableManager
 from taggit.models import Tag
 
+from casereport.middleware import CurrentUserMiddleware
 from rlp.accounts.models import User
-from . import choices
+from rlp.core.models import SharedObjectMixin
+from rlp.discussions.models import ThreadedComment
+from rlp.managedtags.models import TaggedByManagedTag
 from rlp.projects.models import Project
+from . import choices
+from .search_topics import TOPICS
 
 logger = logging.getLogger(__name__)
 
 # From http://blog.crossref.org/2015/08/doi-regular-expressions.html
+# 10.1080/13577140500162409
 DOI_RE = re.compile(r'^10.\d{4,9}/[-._;()/:A-Za-z0-9]+$')
 PMID_RE = re.compile(r'^\d+$')
 CROSSREF_BASE_URL = "https://api.crossref.org/works"
 
 
-class Reference(models.Model):
+class Reference(SharedObjectMixin):
     title = models.CharField(max_length=500)
     pubmed_id = models.CharField(max_length=100, blank=True, db_index=True)
     doi = models.CharField(max_length=100, blank=True, db_index=True)
     source = models.CharField(max_length=25, db_index=True, choices=choices.SOURCE_CHOICES)
-    project = models.ManyToManyField(Project, through='ProjectReference')
     authors = models.ManyToManyField(User, through='Publication')
     raw_data = JSONField()
     parsed_data = JSONField(default=dict)
     upload = models.FileField('Upload file', upload_to='references', blank=True, max_length=255)
     date_added = models.DateTimeField(auto_now_add=True, db_index=True)
     date_updated = models.DateTimeField(auto_now=True)
+    # descriptions, discussions, tags and mtags are deprecated
+    description = models.CharField(blank=True, max_length=2000)
+    discussions = GenericRelation(
+        ThreadedComment,
+        object_id_field='object_pk',
+    )
 
     class Meta:
         verbose_name = 'Raw Reference'
 
     def __str__(self):
         return self.title
+
+    def current_user_reference(self, user=None):
+        if not user:
+            user = CurrentUserMiddleware.get_user()
+
+        uref =  self.userreference_set.filter(user=user).first()
+        if not uref:
+            uref = self
+        return uref
+
+    def user_description(self, user=None):
+        return self.current_user_reference().description
 
     def get_source_url(self):
         if self.doi:
@@ -55,12 +82,33 @@ class Reference(models.Model):
         elif 'upload_url' in self.parsed_data and self.parsed_data['upload_url']:
             return self.parsed_data['upload_url']
         # Should be safe to assume this is a user-generated reference and that this lives under exactly one project.
-        # Fetch the ProjectReference for this Reference and use its get_absolute_url()
         # Add the domain since this url may be used in email templates when shared.
         return 'https://{}{}'.format(
             Site.objects.get_current().domain,
-            self.projectreference_set.first().get_absolute_url()
+            self.get_absolute_url(),
         )
+
+    def get_absolute_url(self):
+        return reverse('bibliography:reference_add', kwargs={
+            'reference_pk': self.pk,
+        })
+
+    def get_edit_url(self):
+        # Don't provide an edit url for Pubmed/Crossref if there aren't any tags to add (there's nothing else to edit)
+        if self.source != choices.MEMBER and not Tag.objects.count():
+            return
+        return reverse('bibliography:reference_add', kwargs={
+            'reference_pk': self.pk,
+        })
+
+    def get_delete_url(self):
+        return reverse('bibliography:reference_delete', kwargs={
+            'reference_pk': self.pk,
+        })
+
+    @property
+    def display_type(self):
+        return 'Reference'
 
 
 class ReferenceShare(models.Model):
@@ -75,45 +123,30 @@ class ReferenceShare(models.Model):
         return 'Reference'
 
 
-class ProjectReference(models.Model):
+class UserReference(SharedObjectMixin, models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     reference = models.ForeignKey(Reference, on_delete=models.CASCADE)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
     date_added = models.DateTimeField(auto_now_add=True, db_index=True)
     date_updated = models.DateTimeField(auto_now=True)
+    description = models.CharField(blank=True, max_length=2000)
+    discussions = GenericRelation(
+        ThreadedComment,
+        object_id_field='object_pk',
+    )
 
-    tags = TaggableManager()
 
-    class Meta:
-        verbose_name = 'Reference'
-
-    def get_absolute_url(self):
-        return reverse('projects:reference_detail', kwargs={
-            'pk': self.project.pk,
-            'slug': self.project.slug,
-            'reference_pk': self.reference.pk,
-        })
-
-    def get_edit_url(self):
-        # Don't provide an edit url for Pubmed/Crossref if there aren't any tags to add (there's nothing else to edit)
-        if self.reference.source != choices.MEMBER and not Tag.objects.count():
-            return
-        return reverse('projects:reference_edit', kwargs={
-            'pk': self.project.pk,
-            'slug': self.project.slug,
-            'reference_pk': self.reference.pk,
-        })
-
-    def get_delete_url(self):
-        return reverse('projects:reference_delete', kwargs={
-            'pk': self.project.pk,
-            'slug': self.project.slug,
-            'reference_pk': self.reference.pk,
-        })
+    def __str__(self):
+        return "{u} reference to {r}".format(u=self.user, r=self.reference)
 
     @property
     def display_type(self):
-        return 'Reference'
+        return mark_safe('<!-- User -->Reference')
+
+    def get_absolute_url(self):
+        return reverse('bibliography:reference_detail', kwargs={
+            'reference_pk': self.reference.pk,
+            'uref_id': self.id,
+        })
 
 
 class Publication(models.Model):
@@ -211,7 +244,7 @@ def get_or_create_reference_from_orcid(result):
 
 
 def fetch_publications_for_user(user):
-    if not user.orcid:
+    if not hasattr(user, 'orcid'):
         return
     token_headers = {
         'Accept': 'application/json',
@@ -308,7 +341,7 @@ def parse_pubmed_data(raw_data):
         parsed_data['journal_volume'] = raw_data['MedlineCitation']['Article']['Journal']['JournalIssue'].get('Volume', '')
         parsed_data['issn'] = raw_data['MedlineCitation']['Article']['Journal']['ISSN']
     else:
-        logger.error('Unknown Pubmed result type: {}'.format(', '.join(raw_data.keys())))
+        print('Unknown Pubmed result type: {}'.format(', '.join(raw_data.keys())))
         return None
     return parsed_data
 
@@ -348,13 +381,11 @@ def get_or_create_reference_from_pubmed(result):
     parsed_data = parse_pubmed_data(result)
     if not parsed_data:
         return None, False
-    # First, check if this reference already exists from Pubmed
+    # First, check if this reference already exists under a CrossRef doi
     if parsed_data['doi']:
-        try:
-            ref = Reference.objects.get(doi=parsed_data['doi'])
-            return ref, False
-        except Reference.DoesNotExist:
-            pass
+        refs = Reference.objects.filter(doi=parsed_data['doi'])
+        if refs.count():
+            return refs.first(), False
     ref, created = Reference.objects.get_or_create(
         pubmed_id=parsed_data['pubmed_id'],
         defaults={
@@ -372,31 +403,62 @@ def get_or_create_reference_from_crossref(result):
     # We do a get_or_create by DOI here because this item may have been created by a Pubmed entry and we don't want
     # duplicates. We do not update the record because, ugh, who wants to get into that.
     parsed_data = parse_crossref_data(result)
-    ref, created = Reference.objects.get_or_create(
-        doi=parsed_data['doi'],
-        defaults={
-            'source': choices.CROSSREF,
-            'title': parsed_data['title'],
-            'raw_data': result,
-            'parsed_data': parsed_data,
-        }
-    )
+    # we have a race condition when multiple searches are running that can
+    # create duplicate records which get_or_create does not handle well.
+    # Also, if a search is done via crossref, the record will be created
+    # without a pubmed id.   If a subsequent pubmed search is done and that
+    # result has a doi, the doi keyed record gets returned without adding the pubmed id.
+    # If the pubmed result doesnt have a doi, then a pubmed record is created,
+    # possibly duplicating the doi record, without a doi, which prevents the doi from being
+    # used as a key field.
+    # TODO: refactor this fix out by adding keys to the model, inserting new
+    # records via independent, short lived transactions.
+    # I want to make doi the primary key, but I have pubmed records that have no doi
+    # We may also want to add an expiry to some of these records just to keep them
+    # somewhat fresh over time.
+
+    defaults={
+        'source': choices.CROSSREF,
+        'title': parsed_data['title'],
+        'raw_data': result,
+        'parsed_data': parsed_data,
+    }
+
+    try:
+        ref, created = Reference.objects.get_or_create(
+            doi=parsed_data['doi'],
+            defaults=defaults
+        )
+
+    except Reference.MultipleObjectsReturned:
+        while Reference.objects.filter(doi=parsed_data['doi']).count() > 1:
+            print("clearing extra references")
+            Reference.objects.filter(doi=parsed_data['doi']).last().delete()
+        return Reference.objects.filter(doi=parsed_data['doi']).first(), False
+
     return ref, created
 
 
 def fetch_crossref_by_doi(doi):
     doi_url = "{}/{}".format(CROSSREF_BASE_URL, doi)
-    r = requests.get(doi_url)
-    return r.json()['message']
+    try:
+        r = requests.get(doi_url)
+        return r.json()['message']
+    except JSONDecodeError as not_found:
+        return None
 
 
-def fetch_crossref_by_query(query=None, orcid=None):
+def fetch_crossref_by_query(query=None, orcid=None, topics=None):
     filters = ['type:{}'.format(t) for t in choices.CROSSREF_TYPES]
     if orcid:
         filters.append('orcid:{}'.format(orcid))
+    if topics:
+        for category in topics:
+            filters.append( 'category-name:{cat}'.format(cat=category))
     params = {
         'filter': ','.join(filters),
         'rows': 100,
+        #'facet': 'category-name:*',
     }
     if query:
         params['query'] = query
@@ -410,35 +472,35 @@ def fetch_crossref_by_query(query=None, orcid=None):
 def get_or_create_reference(query):
     # Remove any leading/trailing whitespace
     query = query.strip()
+
     # check the db first and bail if we have a match
-    references = Reference.objects.filter(
-        Q(pubmed_id__icontains=query) | Q(doi__icontains=query))
-    if references:
-        return references
+    existing_references = Reference.objects.filter(
+        Q(pubmed_id__iexact=query) | Q(doi__iexact=query))
+    if existing_references:
+        return existing_references
+
+    references = []
     # Otherwise, check against the services, but only if the query matches regex
     if DOI_RE.match(query):
         # fetch from crossref
         result = fetch_crossref_by_doi(query)
-        reference, created = get_or_create_reference_from_crossref(result)
-        return [reference]
-    elif PMID_RE.match(query):
+        if result:
+            reference, created = get_or_create_reference_from_crossref(result)
+            return [reference]
+    if not references and PMID_RE.match(query):# or DOI_RE.match(query):
         Entrez.email = settings.PUBMED_EMAIL
         results = Entrez.read(
             Entrez.efetch(db='pubmed', retmode='xml', id=query)
         )
-        references = []
-        for result in results:
-            reference, created = get_or_create_reference_from_pubmed(result)
-            references.append(reference)
-        if references:
-            return references
-    else:
-        results = fetch_crossref_by_query(query=query)
-        references = []
+        for result_type, result in results.items():
+            for item in result:
+                reference, created = get_or_create_reference_from_pubmed(item)
+                references.append(reference)
+    if not references:
+        results = fetch_crossref_by_query(query=query, topics=TOPICS)
         for result in results:
             reference, created = get_or_create_reference_from_crossref(result)
             references.append(reference)
-        if references:
-            return references
-    return Reference.objects.filter(Q(pubmed_id__icontains=query) | Q(doi__icontains=query) | Q(title__icontains=query))
 
+    return references
+    #return Reference.objects.filter(Q(pubmed_id__icontains=query) | Q(doi__icontains=query) | Q(title__icontains=query))

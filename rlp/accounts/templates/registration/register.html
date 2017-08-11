@@ -1,4 +1,4 @@
-{% extends 'single_col.html' %}{% load bootstrap3 %}
+{% extends 'base.html' %}{% load bootstrap3 %}
 
 {% load cms_tags %}
 
@@ -6,20 +6,83 @@
 
 {% block title %}Register{% endblock title %}
 
-{% block main_content %}
-<div class="messages">
-  {% include '_register_intro.html' %}
+{% block content %}
+<div class="login-banner register">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-md-push-2">
+                <h1>Register</h1>
+            </div>
+            <div class="col-md-4 col-md-push-2 text-right">
+                <p>Already a member? <a href="{% url 'login' %}">Sign in</a>.</p>
+            </div>
+        </div>
+    </div>
 </div>
-<div class="plugin-form">
-  <form method="post" action="">
-    {% include "forms/_non_field_errors.html" %}
-    {% csrf_token %}
-    {{ wizard.management_form }}
-    {% bootstrap_form wizard.form %}
-    <button type="submit" class="btn btn-primary">
-      Register
-    </button>
-  </form>
-  <hr>
-</div>
-{% endblock main_content %}
+
+<div class="container"><div class="row">
+    <div class="col-md-8 col-md-push-2">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            {{ message }}
+            </div>
+        {% endfor %}
+          <form class="rpds-form registration" method="post" action="">
+            {% include "forms/_non_field_errors.html" %}
+            {% csrf_token %}
+            {{ wizard.management_form }}
+            {% for field in form %}
+                {% if field.id_for_label == 'id_register-honeypot' %}
+                    <div class="fieldWrapper" id="wrapper-{{ field.auto_id }}" style="display:none">
+                {% else %}
+                    <div class="fieldWrapper" id="wrapper-{{ field.auto_id }}">
+                {% endif %}
+                {% if request.user_email and 'email' in field.name %}
+                    <div class="readonly">
+                        {{ field.errors }}
+                        <h4><label for="{{ field.id_for_label }}">
+                            {{ field.label }}{% if field.field.required %} <span class="required">*</span>{% endif %}
+                        </label></h4>
+                        <p class="small">(this can be changed after registration)</p>
+                        <input id="{{ field.id_for_label }}" maxlength="254" type="email"
+                               value="{{ request.user_email }}" name="register-{{ field.name }}">
+                        {% if field.help_text %}
+                        <p class="helptext">{{ field.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    {{ field.errors }}
+                    <h4><label for="{{ field.id_for_label }}">
+                        {{ field.label }}{% if field.field.required %} <span class="required">*</span>{% endif %}
+                    </label></h4>
+                    {{ field }}
+                    {% if field.help_text %}
+                    <p class="helptext">{{ field.help_text|safe }}</p>
+                    {% endif %}
+                {% endif %}
+                </div>
+            {% endfor %}
+            <div class="float-buttons">
+                <button type="submit" class="btn btn-primary">
+                  Register
+                </button>
+            </div>
+          </form>
+    </div>
+</div></div>
+{% endblock content %}
+
+{% block js-footer %}
+<script type="text/javascript">
+  (function($) { $(function() {
+      $("#id_register-new_institution").click(function(){
+          if ($(this).is(':checked')) {
+              $("[id^='wrapper-id_register-institution_']").slideDown()
+          } else {
+              $("[id^='wrapper-id_register-institution_']").slideUp()
+          }
+      })
+  }); })(jQuery);
+</script>
+{% endblock %}

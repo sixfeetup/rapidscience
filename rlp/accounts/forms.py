@@ -1,7 +1,7 @@
 from django import forms
-from django.conf import settings
 from django.contrib.auth.forms import ReadOnlyPasswordHashField, AuthenticationForm as DJAuthForm, \
     PasswordResetForm as DJPasswordResetForm
+from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
@@ -9,7 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from .models import User, Institution
 from rlp.core.email import send_transactional_mail
-from rlp.projects.models import Project, Role, ProjectMembership
+from rlp.projects.models import Project, ProjectMembership
 
 PASSWORD_RESET_SUBJECT = "Reset your password"
 
@@ -37,7 +37,10 @@ class UserCreationForm(forms.ModelForm):
     def clean_email(self):
         email = self.cleaned_data.get("email").lower().strip()
         try:
-            User._default_manager.get(email=email)
+            user = User._default_manager.get(email=email)
+            # return TEMP-email in case user exists but is unregistered
+            if not user.is_active:
+                return "TEMP-{0}".format(email)
         except User.DoesNotExist:
             return email
         raise forms.ValidationError(
@@ -54,9 +57,10 @@ class UserCreationForm(forms.ModelForm):
         email2 = self.cleaned_data.get('email_confirmation').lower().strip()
 
         if email1 and email2 and email1 != email2:
-            raise forms.ValidationError(
-                self.error_messages['email_mismatch'],
-                code='email_mismatch')
+            if email1 != "TEMP-{0}".format(email2):
+                raise forms.ValidationError(
+                    self.error_messages['email_mismatch'],
+                    code='email_mismatch')
 
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1")
@@ -66,6 +70,7 @@ class UserCreationForm(forms.ModelForm):
                 self.error_messages['password_mismatch'],
                 code='password_mismatch',
             )
+        validate_password(password2)
         return password2
 
     def save(self, commit=True):
@@ -104,16 +109,42 @@ class RegistrationForm(UserCreationForm):
     email_confirmation = forms.EmailField(max_length=254)
     first_name = forms.CharField(max_length=30, required=True)
     last_name = forms.CharField(max_length=30, required=True)
-    institution = forms.ModelChoiceField(queryset=Institution.objects.all(), empty_label='Other', required=False)
-    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
+    institution = forms.ModelChoiceField(
+        label="Primary Institution",
+        queryset=Institution.objects.all(),
+        required=False)
+    new_institution = forms.BooleanField(
+        label="My institution is not listed",
+        required=False)
+    institution_name = forms.CharField(max_length=80, required=False)
+    institution_city = forms.CharField(max_length=80, required=False)
+    institution_state = forms.CharField(max_length=80, required=False)
+    institution_country = forms.CharField(max_length=80, required=False)
+    institution_website = forms.CharField(max_length=80, required=False)
+    title = forms.CharField(label="Position", max_length=80, required=False)
+    password1 = forms.CharField(
+        label='Password',
+        widget=forms.PasswordInput,
+        help_text="Your password must contain at least:"+
+                  "<br />12 characters"+
+                  "<br />1 uppercase letter, A-Z."+
+                  "<br />1 lowercase letter, a-z."+
+                  "<br />1 digit, 0-9."+
+                  "<br />1 symbol: ()[]{}|\`~!@#$%&*_-+=;:'\",<>./?"
+    )
     password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
-    project = forms.ModelChoiceField(queryset=Project.objects.all())
-    role = forms.ModelChoiceField(help_text="Leave blank if not applicable",
-                                  queryset=Role.objects.exclude(contact=True), required=False)
+    field_order = ['first_name', 'last_name', 'institution', 'new_institution',
+                   'institution_name', 'institution_city', 'institution_state',
+                   'institution_country', 'institution_website', 'title',
+                   'email', 'email_confirmation', 'password1', 'password2']
+    honeypot = forms.CharField(
+        label="If you are human, leave this field blank",
+        max_length=30, required=False)
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'institution', 'email', 'email_confirmation']
+        fields = ['first_name', 'last_name', 'institution', 'title',
+                  'email', 'email_confirmation']
 
     def email_domain_matches(self):
         if not self.cleaned_data:
@@ -155,8 +186,6 @@ class UserChangeForm(forms.ModelForm):
 
 class ProjectMembershipForm(forms.ModelForm):
     project = forms.ModelChoiceField(queryset=Project.objects.exclude(auto_opt_in=True))
-    role = forms.ModelChoiceField(help_text="Leave blank if not applicable",
-                                  queryset=Role.objects.exclude(contact=True), required=False)
     class Meta:
         exclude = ['user']
         model = ProjectMembership
@@ -169,12 +198,28 @@ class RestrictedProjectMembershipForm(ProjectMembershipForm):
 class UserProfileForm(forms.ModelForm):
     first_name = forms.CharField(max_length=30, required=True)
     last_name = forms.CharField(max_length=30, required=True)
+    title = forms.CharField(max_length=255, required=True, label='Position')
+    institution = forms.ModelChoiceField(
+        label="Primary Institution",
+        queryset=Institution.objects.all(),
+        required=False)
+    new_institution = forms.BooleanField(
+        label="My institution is not listed",
+        required=False)
+    institution_name = forms.CharField(max_length=80, required=False)
+    institution_city = forms.CharField(max_length=80, required=False)
+    institution_state = forms.CharField(max_length=80, required=False)
+    institution_country = forms.CharField(max_length=80, required=False)
+    institution_website = forms.CharField(max_length=80, required=False)
 
     class Meta:
         model = User
         fields = [
-            'first_name', 'last_name', 'bio', 'photo', 'degrees', 'institution', 'title',
-            'research_interests', 'website', 'orcid', 'linkedin', 'twitter',
+            'photo', 'banner', 'first_name', 'last_name', 'degrees', 'title',
+            'department', 'institution', 'new_institution',
+            'institution_name', 'institution_city', 'institution_state',
+            'institution_country', 'institution_website', 'email', 'website',
+            'linkedin', 'twitter', 'bio', 'research_interests',
         ]
         widgets = {
             'bio': forms.Textarea(attrs={'class': 'remaining-characters'}),

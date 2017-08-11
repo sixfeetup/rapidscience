@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.db import transaction
@@ -8,23 +9,29 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.views.decorators.cache import never_cache
+from django.views.generic.edit import FormView
 
 from actstream import action
-from taggit.models import Tag
 
+from rlp.core.forms import member_choices, group_choices
+from rlp.core.utils import bookmark_and_notify, add_tags, fill_tags
 from rlp.discussions.models import ThreadedComment
-from rlp.discussions.shortcuts import get_comments_for_instance
 from . import choices
-from .forms import SearchForm, BookForm, BookSectionForm, JournalArticleForm, ProjectReferenceForm, ReferenceShareForm
-from .models import Reference, ProjectReference
-from rlp.core.email import send_transactional_mail
-from rlp.projects.models import Project
+from .forms import (
+    AttachReferenceForm,
+    BookForm,
+    BookSectionForm,
+    JournalArticleForm,
+    ReferenceShareForm,
+    SearchForm,
+)
+from .models import Reference, UserReference
+from rlp.core.email import send_transactional_mail, activity_mail
 
 
 @never_cache
 @login_required
-def reference_search(request, pk, slug, template_name='bibliography/reference_search.html'):
-    project = get_object_or_404(Project, pk=pk, slug=slug)
+def reference_search(request, template_name='bibliography/reference_search.html'):
     results = None
     query = request.GET.get('q', '')
     if query:
@@ -37,7 +44,6 @@ def reference_search(request, pk, slug, template_name='bibliography/reference_se
         form = SearchForm()
     context = {
         'form': form,
-        'project': project,
         'tab': 'bibliography',
         'results': results,
         'query': query
@@ -47,22 +53,18 @@ def reference_search(request, pk, slug, template_name='bibliography/reference_se
 
 @never_cache
 @login_required
-def add_book(request, pk, slug, reference_pk=None, template_name='bibliography/add_book.html'):
-    project = get_object_or_404(Project, pk=pk, slug=slug)
+def add_book(request, reference_pk=None, template_name='bibliography/add_book.html'):
     if reference_pk:
         instance = get_object_or_404(Reference, pk=reference_pk)
-        project_reference = ProjectReference.objects.get(
-            project=project,
-            reference=instance,
-            owner=request.user
-        )
     else:
         instance = None
     if request.method == 'POST':
         # Make a copy so we can manipulate
         POST = request.POST.copy()
         # Remove tags, if present
-        tag_ids = POST.pop('tags', [])
+        tags = {}
+        tags['ids'] = POST.pop('tags', [])
+        tags['new'] = POST.pop('new_tags', [])
         form = BookForm(POST, request.FILES, instance=instance)
         if form.is_valid():
             with transaction.atomic():
@@ -70,33 +72,23 @@ def add_book(request, pk, slug, reference_pk=None, template_name='bibliography/a
                 if reference_pk:
                     messages.success(request, "Reference updated successfully!")
                 else:
-                    project_reference = ProjectReference.objects.create(
-                        project=project, reference=reference, owner=request.user)
-                    action.send(request.user, verb='added', action_object=project_reference, target=project)
+                    action.send(request.user, verb='added', action_object=reference)
                     messages.success(request, "Reference added successfully!")
-                # Set the tags
-                if tag_ids:
-                    try:
-                        tags = Tag.objects.filter(id__in=tag_ids)
-                    except:
-                        tags = []
-                    project_reference.tags.set(*tags)
-                    # Trigger any post-save signals (e.g. Haystack's real-time indexing)
-                    project_reference.save()
-            return redirect(project.get_bibliography_url())
+                add_tags(reference, tags)
+            # TODO redirect to ?
+            return redirect('/')
     else:
         if instance:
             data = instance.raw_data.copy()
             if instance.upload:
                 data['upload'] = instance.upload
-            data['tags'] = project_reference.tags.all()
             form = BookForm(initial=data)
+            fill_tags(instance, form)
         else:
             form = BookForm()
     context = {
         'form': form,
         'instance': instance,
-        'project': project,
         'tab': 'bibliography',
     }
     return render(request, template_name, context)
@@ -104,22 +96,18 @@ def add_book(request, pk, slug, reference_pk=None, template_name='bibliography/a
 
 @never_cache
 @login_required
-def add_book_chapter(request, pk, slug, reference_pk=None, template_name='bibliography/add_book_chapter.html'):
-    project = get_object_or_404(Project, pk=pk, slug=slug)
+def add_book_chapter(request, reference_pk=None, template_name='bibliography/add_book_chapter.html'):
     if reference_pk:
         instance = get_object_or_404(Reference, pk=reference_pk)
-        project_reference = ProjectReference.objects.get(
-            project=project,
-            reference=instance,
-            owner=request.user
-        )
     else:
         instance = None
     if request.method == 'POST':
         # Make a copy so we can manipulate
         POST = request.POST.copy()
         # Remove tags, if present
-        tag_ids = POST.pop('tags', [])
+        tags = {}
+        tags['ids'] = POST.pop('tags', [])
+        tags['new'] = POST.pop('new_tags', [])
         form = BookSectionForm(POST, request.FILES, instance=instance)
         if form.is_valid():
             with transaction.atomic():
@@ -127,33 +115,24 @@ def add_book_chapter(request, pk, slug, reference_pk=None, template_name='biblio
                 if reference_pk:
                     messages.success(request, "Reference updated successfully!")
                 else:
-                    project_reference = ProjectReference.objects.create(
-                        project=project, reference=reference, owner=request.user)
-                    action.send(request.user, verb='added', action_object=project_reference, target=project)
+                    action.send(request.user, verb='added', action_object=reference)
                     messages.success(request, "Reference added successfully!")
                 # Set the tags
-                if tag_ids:
-                    try:
-                        tags = Tag.objects.filter(id__in=tag_ids)
-                    except:
-                        tags = []
-                    project_reference.tags.set(*tags)
-                    # Trigger any post-save signals (e.g. Haystack's real-time indexing)
-                    project_reference.save()
-            return redirect(project.get_bibliography_url())
+                add_tags(reference, tags)
+            # TODO redirect to ?
+            return redirect('/')
     else:
         if instance:
             data = instance.raw_data.copy()
             if instance.upload:
                 data['upload'] = instance.upload
-            data['tags'] = project_reference.tags.all()
             form = BookSectionForm(initial=data)
+            fill_tags(instance, form)
         else:
             form = BookSectionForm()
     context = {
         'form': form,
         'instance': instance,
-        'project': project,
         'tab': 'bibliography',
     }
     return render(request, template_name, context)
@@ -161,22 +140,18 @@ def add_book_chapter(request, pk, slug, reference_pk=None, template_name='biblio
 
 @never_cache
 @login_required
-def add_article(request, pk, slug, reference_pk=None, template_name='bibliography/add_article.html'):
-    project = get_object_or_404(Project, pk=pk, slug=slug)
+def add_article(request, reference_pk=None, template_name='bibliography/add_article.html'):
     if reference_pk:
         instance = get_object_or_404(Reference, pk=reference_pk)
-        project_reference = ProjectReference.objects.get(
-            project=project,
-            reference=instance,
-            owner=request.user
-        )
     else:
         instance = None
     if request.method == 'POST':
         # Make a copy so we can manipulate
         POST = request.POST.copy()
         # Remove tags, if present
-        tag_ids = POST.pop('tags', [])
+        tags = {}
+        tags['ids'] = POST.pop('tags', [])
+        tags['new'] = POST.pop('new_tags', [])
         form = JournalArticleForm(POST, request.FILES, instance=instance)
         if form.is_valid():
             with transaction.atomic():
@@ -184,114 +159,142 @@ def add_article(request, pk, slug, reference_pk=None, template_name='bibliograph
                 if reference_pk:
                     messages.success(request, "Reference updated successfully!")
                 else:
-                    project_reference = ProjectReference.objects.create(
-                        project=project, reference=reference, owner=request.user)
-                    action.send(request.user, verb='added', action_object=project_reference, target=project)
+                    action.send(request.user, verb='added', action_object=reference)
                     messages.success(request, "Reference added successfully!")
-                # Set the tags
-                if tag_ids:
-                    try:
-                        tags = Tag.objects.filter(id__in=tag_ids)
-                    except:
-                        tags = []
-                    project_reference.tags.set(*tags)
-                    # Trigger any post-save signals (e.g. Haystack's real-time indexing)
-                    project_reference.save()
-            return redirect(project.get_bibliography_url())
+                add_tags(reference, tags)
+            # TODO redirect to ?
+            return redirect('/')
     else:
         if instance:
             data = instance.raw_data.copy()
             if instance.upload:
                 data['upload'] = instance.upload
-            data['tags'] = project_reference.tags.all()
             data['publication_date'] = datetime.strptime(data['publication_date'], '%d %b %Y')
             form = JournalArticleForm(initial=data)
+            fill_tags(instance, form)
         else:
             form = JournalArticleForm()
     context = {
         'form': form,
         'instance': instance,
-        'project': project,
         'tab': 'bibliography',
     }
     return render(request, template_name, context)
 
 
-@never_cache
-@login_required
-def reference_add(request, pk, slug, reference_pk, edit=False):
-    project = get_object_or_404(Project, pk=pk, slug=slug)
-    reference = get_object_or_404(Reference, pk=reference_pk)
-    with transaction.atomic():
-        project_reference, created = ProjectReference.objects.get_or_create(
-            reference=reference, project=project, defaults={'owner': request.user}
-        )
-        if created:
-            action.send(request.user, verb='added', action_object=project_reference, target=project)
-            messages.success(
-                request,
-                'Reference added successfully! If you are finished adding references, '
-                'you can return to the <a href="{}">bibliography list</a>.'.format(project.get_bibliography_url()))
+class ReferenceAttachView(LoginRequiredMixin, FormView):
+    template_name = 'bibliography/edit_reference.html'
+    form_class = AttachReferenceForm
+
+    def get_context_data(self, **kwargs):
+        context = super(ReferenceAttachView, self).get_context_data(**kwargs)
+        user = self.request.user
+        uref_id = self.kwargs.get('uref_id',None)
+        reference_id = self.kwargs['reference_pk']
+
+        ref = Reference.objects.get(pk=reference_id)
+
+        if uref_id:
+            uref = UserReference.objects.get(id=uref_id)
         else:
-            messages.info(request, "The reference you selected was already added to this project by {}.".format(
-                project_reference.owner.get_full_name()))
-        if request.is_ajax():
-            context = {
-                'messages': render_to_string('bootstrap3/messages.html', {}, request=request),
-            }
-            return JsonResponse(context)
-    return redirect(project.get_bibliography_url())
+            uref = UserReference(reference=ref, user=user)
+            uref.id = -1 # fake, so that the tag lookup in the templates doesnt fail.
+
+        context['reference'] = ref
+        context['user_reference'] = uref
+        if self.request.method == 'GET':
+            # populate initial data
+            form = AttachReferenceForm()
+            form.fields['description'].initial = uref.description
+            form.fields['members'].choices = member_choices()
+            form.fields['groups'].choices = group_choices(self.request.user)
+            fill_tags(uref, form)
+            context['form'] = form
+        return context
+
+    def form_valid(self, form):
+        data = form.cleaned_data
+        user = self.request.user
+        ref = Reference.objects.get(pk=self.kwargs['reference_pk'])
+        uref_id = self.kwargs.get('uref_id',None)
+
+        if uref_id:
+            uref = UserReference.objects.get(id=uref_id, reference=ref, user=user)
+        else:
+            uref = UserReference(reference=ref, user=user)
+            uref.id = None
+
+        uref.description = data.get('description')
+        uref.save()
+
+        tags = {}
+        tags['ids'] = data.pop('tags', [])
+        tags['new'] = [data.pop('new_tags')] if data['new_tags'] else []
+        add_tags(uref, tags)
+        target = bookmark_and_notify(
+            uref, self, self.request, 'bibliography', 'userreference',
+        )
+        if not target:
+            target = user
+        action.send(
+            user,
+            verb='added',
+            action_object=uref,
+            target=target,
+        )
+        activity_mail(user, uref, target, self.request)
+        last_viewed_path = self.request.session.get('last_viewed_path', '/')
+        return redirect(last_viewed_path)
 
 
-@never_cache
-@login_required
-def reference_edit(request, pk, slug, reference_pk, template_name='bibliography/edit_reference.html'):
-    reference = get_object_or_404(Reference, pk=reference_pk)
-    # For manually added references, show the custom forms for each type
-    if 'reference_type' in reference.raw_data:
-        if reference.raw_data['reference_type'] == choices.JOURNAL_ARTICLE:
-            return add_article(request, pk, slug, reference_pk)
-        elif reference.raw_data['reference_type'] == choices.BOOK:
-            return add_book(request, pk, slug, reference_pk)
-        elif reference.raw_data['reference_type'] == choices.BOOK_SECTION:
-            return add_book_chapter(request, pk, slug, reference_pk)
-    # The rest of this view is for adding tags to references coming from Pubmed or Crossref
-    project = get_object_or_404(Project, pk=pk, slug=slug)
-    project_reference = ProjectReference.objects.get(project=project, reference=reference)
-    # Need to edit the 'project reference', that's what should get the tags right?
-    if request.method == 'POST':
-        form = ProjectReferenceForm(request.POST, instance=project_reference)
-        if form.is_valid():
-            tags = form.cleaned_data.get('tags') or []
-            project_reference.tags.set(*tags)
-            # Trigger any post-save signals (e.g. Haystack's real-time indexing)
-            project_reference.save()
-            messages.success(request, "Reference updated successfully!")
-            return redirect(project.get_bibliography_url())
-    else:
-        form = ProjectReferenceForm(instance=project_reference, initial={'tags': project_reference.tags.all()})
-    # It shouldn't be possible to land on the edit page if there aren't any tags, but just in case, remove the form
-    if not Tag.objects.count():
-        form = None
-    context = {
-        'form': form,
-        'instance': project_reference,
-        'project': project,
-        'tab': 'bibliography',
-    }
-    return render(request, template_name, context)
-
-
+# @never_cache
+# @login_required
+# def reference_edit(request, reference_pk, template_name='bibliography/edit_reference.html'):
+#     reference = get_object_or_404(Reference, pk=reference_pk)
+#     # For manually added references, show the custom forms for each type
+#     if 'reference_type' in reference.raw_data:
+#         if reference.raw_data['reference_type'] == choices.JOURNAL_ARTICLE:
+#             return add_article(request, reference_pk)
+#         elif reference.raw_data['reference_type'] == choices.BOOK:
+#             return add_book(request, reference_pk)
+#         elif reference.raw_data['reference_type'] == choices.BOOK_SECTION:
+#             return add_book_chapter(request, reference_pk)
+#     # The rest of this view is for adding tags to references coming from Pubmed or Crossref
+#     if request.method == 'POST':
+#         form = AttachReferenceForm(request.POST)
+#         if form.is_valid():
+#             tags = {}
+#             tags['ids'] = form.cleaned_data.getlist('tags', [])
+#             tags['new'] = form.cleaned_data.getlist('new_tags', [])
+#             add_tags(reference, tags)
+#             messages.success(request, "Reference updated successfully!")
+#             # TODO redirect to ?
+#             # should go to accounts/dashboard/bibliography/
+#             # or /groups/<group slug>/bibliography/
+#             return redirect('/')
+#     else:
+#         form = AttachReferenceForm()
+#         form.fields['description'].initial = reference.description
+#         form.fields['members'].choices = member_choices()
+#         form.fields['groups'].choices = group_choices(request.user)
+#         fill_tags(reference, form)
+#     context = {
+#         'form': form,
+#         'instance': reference,
+#         'tab': 'bibliography',
+#     }
+#     return render(request, template_name, context)
+#
 
 @login_required
 def reference_share(request, reference_pk):
-    project_reference = get_object_or_404(ProjectReference, pk=reference_pk)
+    reference = get_object_or_404(Reference, pk=reference_pk)
     if request.method == 'POST':
         form = ReferenceShareForm(request.POST)
         if form.is_valid():
             share = form.save(commit=False)
             share.user = request.user
-            share.reference = project_reference.reference
+            share.reference = reference
             share.save()
             form.save_m2m()
             # Collect the recipients using a set() so we don't send duplicate messages (as a share.recipient and as a
@@ -336,18 +339,19 @@ def reference_share(request, reference_pk):
 
 @never_cache
 @login_required
-def reference_delete(request, pk, slug, reference_pk, template_name='bibliography/reference_delete.html'):
-    project = get_object_or_404(Project, pk=pk, slug=slug)
-    project_reference = get_object_or_404(
-        ProjectReference, reference__id=reference_pk, project=project, owner=request.user)
+def reference_delete(request, reference_pk, uref_id, template_name='bibliography/reference_delete.html'):
+    reference = get_object_or_404(Reference, pk=reference_pk)
+    user = request.user
+    user_reference = UserReference.objects.get(id=uref_id, user=user, reference=reference)
+
     if request.POST:
-        title = project_reference.reference.title
-        ctype = ContentType.objects.get_for_model(project_reference.__class__)
+        title = reference.title
+        ctype = ContentType.objects.get_for_model(Reference)
         comment_ctype = ContentType.objects.get_for_model(ThreadedComment)
         with transaction.atomic():
-            # Recursively find all comments and replies for this project_reference and delete them.
+            # Recursively find all comments and replies for this reference and delete them.
             # TODO: turn this into a model manager method
-            qs_to_delete = ThreadedComment.objects.filter(object_pk=project_reference.id, content_type=ctype)
+            qs_to_delete = ThreadedComment.objects.filter(object_pk=user_reference.id, content_type=ctype)
             comment_children_ids = list(qs_to_delete.values_list('id', flat=True))
             qs_to_delete.delete()
             while comment_children_ids:
@@ -355,12 +359,13 @@ def reference_delete(request, pk, slug, reference_pk, template_name='bibliograph
                     content_type=comment_ctype, parent_id__in=comment_children_ids)
                 comment_children_ids = list(qs_to_delete.values_list('id', flat=True))
                 qs_to_delete.delete()
-            project_reference.delete()
+            user_reference.delete()
         messages.success(request, "Successfully deleted '{}'".format(title))
-        return redirect(project.get_bibliography_url())
+        # TODO redirect to ?
+        return redirect('/')
     context = {
-        'project': project,
-        'obj': project_reference,
+        'obj': reference,
+        'user_reference': user_reference,
         'tab': 'bibliography',
     }
     return render(request, template_name, context)
@@ -368,13 +373,20 @@ def reference_delete(request, pk, slug, reference_pk, template_name='bibliograph
 
 @never_cache
 @login_required
-def reference_detail(request, pk, slug, reference_pk, template_name='bibliography/reference_detail.html'):
-    project = get_object_or_404(Project, pk=pk, slug=slug)
-    project_reference = get_object_or_404(ProjectReference, reference__id=reference_pk, project=project)
+def reference_detail(request, reference_pk, uref_id, template_name='bibliography/reference_detail.html'):
+    reference = get_object_or_404(Reference, pk=reference_pk)
+    try:
+        user_reference = UserReference.objects.get(id=uref_id, reference_id=reference_pk)
+    except UserReference.DoesNotExist as dne:
+        user_reference = UserReference()
+        user_reference.id = 0
+    user_can_comment = user_reference.is_shared_with_user(request.user) or request.user == UserReference.user
     context = {
-        'obj': project_reference,
-        'project': project,
+        'obj': reference,
+        'user_reference': user_reference,
         'tab': 'bibliography',
-        'comment_list': get_comments_for_instance(project_reference)
+        'comment_list': user_reference.discussions.all(),
+        'user_interaction': user_can_comment,
+        'expand_comments': True,
     }
     return render(request, template_name, context)

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Sarcoma Central</title>
+    <link rel="stylesheet" href="{{STATIC_URL}}css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{STATIC_URL}}css/style.css">
+    <script src="{{STATIC_URL}}js/jquery-1.11.3.min.js"></script>
+    <script src="{{STATIC_URL}}js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="header-img"><img src="{{STATIC_URL}}images/header.png"> </div>
+    <div class="container">
+        <div class="logo-img"><img src="{{STATIC_URL}}images/logo.png"> </div>
+            <div class="back-button pull-left">
+                <a href="{% url 'haystac' %}">Return To Search Case Reports</a>
+            </div>
+            <div>
+                <p class="process-message">This link is not valid.</p>
+            </div>
+        </div>
+</body>
+</html>

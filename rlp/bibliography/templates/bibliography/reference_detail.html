@@ -1,7 +1,51 @@
-{% extends 'projects/projects_detail.html' %}{% load comments %}
+{% extends 'base.html' %}
+{% load comments %}
+{% load bootstrap3 %}
+{% load core_tags %}
+{% block body_class %}reference-detail{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-9 col-md-push-2">
+            <div class="row">
+              <div class="col-md-11">
+                  {% bootstrap_messages %}
+                  <h1>{% if obj.parsed_data.authors %}{{ obj.parsed_data.authors }}. {% endif %}{% if obj.get_source_url %}
+                      <a href="{{ obj.get_source_url }}" {% if 'http' in obj.get_source_url and not email %}target="_blank"{% endif %}>{% endif %}
+                      {% autoescape off %}{% if highlighted.title %}{{ highlighted.title.0 }}{% else %}{{ obj.parsed_data.title }}{% endif %}{% endautoescape %}
+                      {% if obj.get_source_url %}</a>{% endif %},
+                      {% if obj.parsed_data.container_title %}in <em>{{ obj.parsed_data.container_title }}</em>,{% endif %}
+                      {% if obj.parsed_data.page %}pp {{ obj.parsed_data.page }}.{% endif %}
+                      {% if obj.parsed_data.publication_date %}{{ obj.parsed_data.publication_date }};{% endif %}
+                      {{ obj.parsed_data.publisher }} {{ obj.parsed_data.journal_title }}
+                      {% if obj.parsed_data.doi %}DOI: {{ obj.parsed_data.doi }}{% endif %} {% if obj.parsed_data.pubmed_id %}PMID: {{ obj.parsed_data.pubmed_id }}{% endif %}
+                  </h1>
+                  <p class="small">
+                    {% if user_reference.user %}
+                        Posted by
+                        <a href="{{ user_reference.user.get_absolute_url }}">{% if request.user == user_reference.user %} me {% else %} {{ user_reference.user.get_full_name }}{% endif %}</a>
+                    {% endif %}
+                    | {{ obj.date_updated|date:"j M Y" }}
+                    {% if request.user == user_reference.user or request.user.is_staff %} |
+                    <a href="{% url "bibliography:reference_edit" reference_pk=obj.pk uref_id=user_reference.id %}">Edit</a> |
+                    <a href="{% url "bibliography:reference_delete" reference_pk=obj.pk uref_id=user_reference.id %}">Delete</a>
+                    {% endif %}
+                    <br />
 
-{% block project_bibliography %}
-  <p><a href="{{ project.get_bibliography_url }}">&lt; Back to the bibliography</a></p>
-  {% if obj.owner == request.user %}{% include 'forms/_edit_dropdown.html' with edit_url=obj.get_edit_url delete_url=obj.get_delete_url %}{% endif %}
-  {% include 'bibliography/_reference.html' with obj=obj.reference %}
-{% endblock project_bibliography %}
+                    {%  display_shared_with user_reference request.user %}
+                  </p>
+
+                  {% if user_reference.description %}<div class="initial">{% autoescape off %}{{ user_reference.description }}{% endautoescape %}</div>{% endif %}
+                  {% display_tag_links user_reference %}
+              </div>
+              <div class="col-md-1">
+                <a class="share-link" href="/send/bibliography/userreference/{{ user_reference.id }}"><i class="fa fa-share"></i></a>
+              </div>
+            </div>
+            <hr>
+            {% render_comment_form for user_reference %}
+            {% render_comment_list for user_reference %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

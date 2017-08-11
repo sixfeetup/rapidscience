@@ -1,0 +1,14 @@
+{% load staticfiles thumbnail %}
+{% if user.banner %}
+<div class="hero" style="background-image: url({{ user.banner.url }})">
+{% else %}
+<div class="hero" style="background-image: url('{% static "img/bg-profile1.jpg" %}')">
+{% endif %}
+  <div class="container">
+    <div class="row">
+      <div class="col-md-offset-3 col-md-9">
+        <h1>Edit Profile</h1>
+      </div>
+    </div>
+  </div>
+</div>

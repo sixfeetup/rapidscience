@@ -1,6 +1,6 @@
 {{ action.actor.get_full_name }} {% if action.action_object_content_type.model == 'threadedcomment' %}posted a new comment on {{ action.action_object.content_object }}:
 
-  "{{ action.action_object.comment|truncatewords:30 }}"
+  "{{ action.action_object.comment|striptags|truncatewords:30 }}"
 
 {% else %}added '{{ action.action_object.title }}' to {{ action.target }}.{% endif %}
 

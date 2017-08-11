@@ -1,6 +1,6 @@
 {% load cms_tags thumbnail %}{% load static from staticfiles %}
-<div class="box">
-    <p class="section-label">Projects</p>
+<div class="box groups">
+    <p class="section-label">Groups</p>
     <ul class="list-unstyled item-list">
       {% for project in projects %}
       <li class="clearfix">
@@ -10,14 +10,8 @@
                 {{ project.title }}
               </strong>
             </a>
+              <br /><span class="small">{% if user.get_full_name in project.project_mods %}Moderator{% else %}Member{% endif %}</span>
           </p>
-          {% if project.institution %}
-          <p>
-            <small>
-            ({{ project.institution.name }})
-            </small>
-          </p>
-          {% endif %}
       </li>
       {% endfor %}
     </ul>

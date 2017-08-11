@@ -6,6 +6,9 @@ from . import views
 
 urlpatterns = [
     url(r'^$', views.dashboard, name='dashboard'),
+    url(r'^dashboard/(?P<tab>\w+)/$',
+        views.dashboard,
+        name='dashboard_tab'),
     url(r'^bookmarks/$',
         views.dashboard,
         {'tab': 'bookmarks'},
@@ -53,6 +56,10 @@ urlpatterns = [
         name='password_reset_complete'),
 
     url(r'^register/$', views.Register.as_view(), name='register'),
+    url(r'^(?P<pk>\d+)/register/$', views.Register.as_view(), name='register_user'),
+    url(r'^confirm/(?P<activation_key>[-:\w]+)/$',
+        views.ActivationView.as_view(),
+        name='registration_confirm'),
     url(r'^activate/(?P<activation_key>[-:\w]+)/$',
         views.ActivationView.as_view(),
         name='registration_activate'),
@@ -60,8 +67,4 @@ urlpatterns = [
     url(r'^profile/(?P<pk>\d+)/$',
         views.profile,
         name='profile'),
-    url(r'^profile/(?P<pk>\d+)/publications/$',
-        views.profile,
-        {'tab': 'publications'},
-        name='profile_publications'),
 ]

@@ -166,3 +166,19 @@ input[type="button"] {
     width: 100%;
   }
 }
+
+// tags
+
+.btn-tag,
+.activity-stream .btn-tag {
+    color: #888888;
+    border: none;
+    background-color: rgb(238, 238, 238);
+    padding: 2px 15px;
+    margin-right: 4px;
+}
+.btn-tag:hover,
+.activity-stream .btn-tag:hover {
+    background-color: $btn-primary-bg;
+    color: rgb(246, 238, 227);
+}

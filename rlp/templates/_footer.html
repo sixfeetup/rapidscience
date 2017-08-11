@@ -1,21 +1,21 @@
 {% load cms_tags static %}
 <div class="container">
-  {% include '_logo_footer.html' %}
-  <div class="row col-sm-offset-3">
-    &copy; 2016 Rapid Science |
-    <a href="http://www.rapidscience.org/about/" target="_blank">About</a> |
-    <a href="mailto:info@rapidscience.org">Contact</a> |
-    <a href="{% page_url 'privacy-policy' %}">
-      {% page_attribute 'menu_title' 'privacy-policy' %}
-    </a> |
-    <a href="{% page_url 'terms-of-use' %}">
-      {% page_attribute 'menu_title' 'terms-of-use' %}
-    </a> |
+  <div class="logos">
+      <a href="http://www.rapidscience.org/" class="img" target="_blank">
+        <img src="{% static 'img/footer-logo.png' %}" class="img-responsive center-block" />
+      </a>
+  </div>
+  <p>
+    &copy; 2017 Rapid Science |
+    <a href="mailto:support@rapidscience.org">Contact</a> |
     <a href="https://www.linkedin.com/company/rapid-science" class="img" target="_blank">
-      <img src="{% static 'img/icon-footer-LinkedIn.png' %}" />
+        <i class="fa fa-linkedin-square"></i>
     </a>
     <a href="https://twitter.com/RapidScience" class="img" target="_blank">
-      <img src="{% static 'img/icon-footer-Twitter.png' %}" />
-    </a>
-  </div>
+        <i class="fa fa-twitter"></i>
+  </a><br />
+  Rapid Science is a nonprofit 501(c)3 company based in Brooklyn, NY<br />
+  CC-BY 4.0 License</p>
+  <p>Generous support was provided by Bayer, Eli Lilly, EMD Serono, Janssen Pharmaceuticals, and the National Institutes of Health.</p>
+  <p>There are known issues in IE10 that are being addressed. This web site is optimized for Chrome, Firefox, Safari, and IE 11. Coming soon: Android and iOS!</p>
 </div>

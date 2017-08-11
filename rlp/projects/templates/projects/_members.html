@@ -1,42 +1,116 @@
 {% load static thumbnail %}
-<div class="box">
+<div class="box members-list">
+  {% if project.approval_required %}
+      {% for mod in moderators %}
+          {% if request.user = mod.user %}
+          <a href="#" class="invite-link" title="Invite members to group">
+              <i class="fa fa-plus"></i>
+          </a>
+          {% endif %}
+      {% endfor %}
+  {% else %}
+      {% if request.user in project.active_members %}
+      <a href="#" class="invite-link" title="Invite members to group">
+          <i class="fa fa-plus"></i>
+      </a>
+      {% endif %}
+  {% endif %}
   <p class="section-label">Members</p>
   <ul class="list-unstyled item-list">
-    {% for membership in memberships|slice:":11" %}
-      {% with user=membership.user role=membership.role %}
-      <li class="clearfix">
-        <div class="col-xs-3">
-        {% if user.photo %}
-          {% thumbnail membership.user.photo 120x120 crop upscale as thumbnail %}
-          <img class="contain-img img-circle"
-               src="{{ thumbnail.url }}">
-        {% else %}
-          <img class="contain-img img-circle"
-               src="{% static 'img/user.jpg' %}">
-        {% endif %}
-        </div>
-        <div class="col-xs-9">
-          <p class="no-margin-bottom">
-            <small>
-              <a href="{{ user.get_absolute_url }}"><strong>{{ user.get_full_name }}</strong></a>{% if user.degrees %}, {{ user.degrees }}{% endif %}
-            </small>
-          </p>
-          {% if role %}
-          <p class="no-margin-bottom">
-            <small>
-              {{ role }}
-            </small>
-          </p>
+      {% for membership in moderators %}
+        {% with user=membership.user state=membership.state %}
+        <li class="clearfix row">
+          <div class="col-xs-3">
+          {% if user.photo %}
+            {% thumbnail membership.user.photo 120x120 crop upscale as thumbnail %}
+            <img class="contain-img img-circle"
+                 src="{{ thumbnail.url }}">
+          {% else %}
+            <img class="contain-img img-circle"
+                 src="{% static 'img/user.jpg' %}">
           {% endif %}
-        </div>
-      </li>
-      {% endwith %}
-    {% endfor %}
-    {% if memberships|length > 12 %}
-      <li><a href="{% url 'projects:projects_members' pk=project.pk slug=project.slug %}">View all</a></li>
-    {% endif %}
+          </div>
+          <div class="col-xs-8">
+            <p class="no-margin-bottom">
+                <a href="{{ user.get_absolute_url }}"><strong>{{ user.get_full_name }}{% if user.degrees %}, {{ user.degrees }}{% endif %}</strong></a>
+                {% if state %}<br /><small>{{ state|title }}</small>{% endif %}
+            </p>
+          </div>
+          <div class="col-xs-1">
+            {% if request.user in project.moderators %}
+                <div class="btn-group">
+                  <button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu">
+                      <li><a href="{% url 'projects:demote_to_user' membership_id=membership.id %}">Remove as Moderator</a></li>
+                      <li><a href="{% url 'projects:projects_leave' pk=project.id user=user.id %}">Remove from group</a></li>
+                  </ul>
+                </div>
+            {% else %}
+                {% if request.user == user %}<a class="leave-button" href="{% url 'projects:projects_leave' pk=project.id user=user.id %}"> <i class="fa fa-times-circle-o"></i></a>{% endif %}
+            {% endif %}
+          </div>
+        </li>
+        {% endwith %}
+      {% endfor %}
   </ul>
+{% if memberships %}
+  <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+      <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingOne">
+            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" class="collapsed">
+                See all members <span class="caret"></span>
+            </a>
+        </div>
+        <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+          <div class="panel-body">
+              <ul>
+                {% for membership in memberships %}
+                  {% with user=membership.user state=membership.state %}
+                  <li class="clearfix row">
+                    <div class="col-xs-11">
+                      <p class="no-margin-bottom">
+                        <small>
+                          {% if request.user in project.moderators or request.user.is_staff %}
+                            {% if membership.state == "pending" %}[{{ membership.state }}]
+                            {% endif %}
+                          {% endif %}
+                          <a href="{{ user.get_absolute_url }}">{{ user.get_full_name }}{% if user.degrees %}, {{ user.degrees }}{% endif %}</a>
+                        </small>
+                      </p>
+                    </div>
+                    <div class="col-xs-1">
+                        {% if request.user in project.moderators or request.user.is_staff %}
+                            <!-- moderator actions -->
+                            <div class="btn-group">
+                              <button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="caret"></span>
+                              </button>
+                              <ul class="dropdown-menu">
+                                {% if membership.state == 'pending' %}
+                                    <li><a href="{% url 'projects:accept_membership_request' membership_id=membership.id %}">Accept into group</a></li>
+                                    <li><a href="{% url 'projects:ignore_membership_request' membership_id=membership.id %}">Decline request to join group</a></li>
+                                {% elif membership.state == 'member' %}
+                                    <li><a href="{% url 'projects:promote_to_moderator' membership_id=membership.id %}">Make a Moderator</a></li>
+                                    <li><a href="{% url 'projects:projects_leave' pk=project.id user=user.id %}">Remove from group</a></li>
+                                {% elif membership.state == 'moderator' %}
+                                    <li><a href="{% url 'projects:demote_to_user' membership_id=membership.id %}">Remove as Moderator</a></li>
+                                    <li><a href="{% url 'projects:projects_leave' pk=project.id user=user.id %}">Remove from group</a></li>
+                                {% endif %}
+                              </ul>
+                            </div>
+                        {% else %}
+                            {% if request.user == user %}<a class="leave-button" href="{% url 'projects:projects_leave' pk=project.id user=user.id %}"> <i class="fa fa-times-circle-o"></i></a>{% endif %}
+                        {% endif %}
+                    </div>
+                  </li>
+                  {% endwith %}
+                {% endfor %}
+              </ul>
+          </div>
+        </div>
+      </div>
+  </div>
+{% endif %}
 </div>
-
-
-

@@ -43,7 +43,7 @@ class Command(BaseCommand):
             target_object_id__in=list(Project.objects.filter(approval_required=False).values_list('id', flat=True))
         )
         comment_ct = ContentType.objects.get(app_label='discussions', model='threadedcomment')
-        biblio_ct = ContentType.objects.get(app_label='bibliography', model='projectreference')
+        biblio_ct = ContentType.objects.get(app_label='bibliography', model='reference')
         docs_cts = ContentType.objects.filter(app_label='documents')
         subject = "What's new in the {} Network".format(site.name)
         context_for_all_projects = {

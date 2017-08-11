@@ -1,20 +1,76 @@
-{% extends 'projects/projects_detail.html' %}{% load bootstrap3 %}
+{% extends 'base.html' %}{% load bootstrap3 %}{% load core_tags %}
 
-{% block project_bibliography %}
-<h2>Edit reference</h2>
+{% block body_class %}edit-reference{% endblock %}
 
-  {% include 'bibliography/_reference.html' with obj=instance.reference %}
+{% block content %}
+<div class="bannerTitle">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-md-push-3">
+                <h1>{% if user_reference.id == -1 %}Add New{% else %}Edit{% endif %} Reference</h1>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-xs-12 col-md-push-3">
 
-{% if form %}
-<form method="post" action="">
-  {% csrf_token %}
-  {% bootstrap_form form %}
-  <button type="submit" class="btn btn-primary">
-    Submit
-  </button>
-  <a role="button" class="btn btn-default" href="{% url 'projects:reference_search' pk=project.pk slug=project.slug %}">
-    Cancel
-  </a>
-</form>
-{% endif %}
-{% endblock project_bibliography %}
+        <h2>{{ reference }}</h2>
+
+        <p>{% if reference.parsed_data.authors %}{{ reference.parsed_data.authors }}. {% endif %}
+        {% if reference.parsed_data.container_title %}in <em>{{ reference.parsed_data.container_title }}</em>,{% endif %}
+        {% if reference.parsed_data.page %}pp {{ reference.parsed_data.page }}.{% endif %}
+        {% if reference.parsed_data.publication_date %}{{ reference.parsed_data.publication_date }};{% endif %}
+        {{ reference.parsed_data.publisher }} {{ reference.parsed_data.journal_title }}
+        </p>
+        {% if reference.parsed_data.doi %}
+        <p>DOI: {{ reference.parsed_data.doi }}</p>
+        {% endif %}
+        {% if reference.parsed_data.pubmed_id %}
+        <p>PMID: {{ reference.parsed_data.pubmed_id }}</p>
+        {% endif %}
+
+
+        <p>
+            {% if user_reference.user %}
+            Posted by
+            <a href="{{ user_reference.user.get_absolute_url }}">{% if request.user == user_reference.user %} me {% else %} {{ user_reference.user.get_full_name }}{% endif %}</a>
+        {% endif %}
+        | {% if user_reference.date_updated %}{{ user_reference.date_updated|date:"j M Y" }}{% else %}{{ reference.date_updated|date:"j M Y" }}{% endif %}
+        </p>
+        {%  display_shared_with user_reference request.user %}
+
+        {% if form %}
+        <form method="post" action="" class="edit-reference-form">
+          {{ form.media }}
+          {% csrf_token %}
+          {% for field in form %}
+            {% if field.label == 'Members' %}
+              <p class="section-label">Sharing</p>
+              <div class="sharing-wrapper">
+            {% endif %}
+            {% if field.label == 'Members' or field.label == 'My Groups'%}
+              {% bootstrap_field field label_class="sub-label" %}
+            {% else %}
+              {% bootstrap_field field label_class="section-label" %}
+            {% endif %}
+            {% if forloop.last %}
+              </div>
+            {% endif %}
+          {% endfor %}
+          <div class="action-buttons">
+            <button type="submit" class="btn btn-primary">
+              Submit
+            </button>
+            <a role="button" class="btn btn-default" href="{% url 'bibliography:reference_search' %}">
+              Cancel
+            </a>
+          </div>
+        </form>
+        {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

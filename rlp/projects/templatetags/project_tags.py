@@ -17,11 +17,27 @@ def projects_sidebar(context):
 
 @register.inclusion_tag(
     'projects/_members.html',
+    takes_context=True,
 )
-def show_project_members(project):
+def show_project_members(context, project):
+    request = context['request']
+    user = request.user
+    memberships = project.projectmembership_set.filter(user__is_active=True,
+                                                       state__in=('member',
+                                                                  'moderator'))
+    # members list differs by viewer
+    if user.is_staff or user in project.moderators().all():
+        memberships = project.projectmembership_set.filter(
+            user__is_active=True).exclude(state='ignored')
+
+    memberships = memberships.exclude(state='moderator')
+    memberships = memberships.order_by('-state', 'user__first_name')
+
     return {
         'project': project,
-        'memberships': project.projectmembership_set.filter(
-            user__is_active=True).order_by('role__order', 'user__first_name')
+        'request': context['request'],
+        'moderators': project.projectmembership_set.filter(
+            user__is_active=True, state='moderator').order_by(
+            'state', 'user__first_name'),
+        'memberships': memberships,
     }
-

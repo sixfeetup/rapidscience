@@ -1,28 +1,68 @@
-{% extends 'single_col.html' %}{% load bootstrap3 cms_tags %}
+{% extends 'single_col.html' %}{% load bootstrap3 cms_tags thumbnail %}
 
 {% block hero %}
-    {% include "accounts/_hero.html" with user=user %}
+    {% include "accounts/_hero_edit.html" with user=user %}
 {% endblock hero %}
 
+{% block body_class %}edit-profile{% endblock %}
+
 {% block main_content %}
-<div class="plugin-form">
-    <h2>Edit your profile</h2>
-    <p>
-      Need to <a href="{% url 'password_change' %}">change your password</a>?
-    </p>
-    <form method="post" enctype="multipart/form-data" action="{% url 'profile_edit' %}">
+        <form method="post" enctype="multipart/form-data" action="{% url 'profile_edit' %}">
         {% csrf_token %}
-      {% bootstrap_form form %}
-      <fieldset>
-        <legend>Your Projects</legend>
-        {% bootstrap_formset formset layout='horizontal' %}
-      </fieldset>
-        <button class="btn btn-primary" type="submit">
-          Update
-        </button>
-        <a role="button" class="btn btn-default" href="{% url 'dashboard' %}">
-          Cancel
-        </a>
-    </form>
-</div>
+            <div class="plugin-form">
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-3">
+                            <p>
+                              Need to <a href="{% url 'password_change' %}">change your password</a>?
+                            </p>
+                    </div>
+                </div>
+                {% for field in form %}
+                    <div class="row profile-field" id="wrapper-{{ field.auto_id }}">
+                        <div class="col-md-2 col-md-offset-1 profile-thumbnail">
+                            {% if field.name == 'photo' %}
+                                {% if user.photo %}
+                                    {% thumbnail user.photo 86x86 crop upscale as thumbnail %}
+                                    <img src="{{ thumbnail.url }}" class="photo" />
+                                {% endif %}
+                            {% elif field.name == 'banner' %}
+                                {% if user.banner %}
+                                    {% thumbnail user.banner 86x86 upscale as thumbnail2 %}
+                                    <img src="{{ thumbnail2.url }}" />
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            {% bootstrap_field field label_class='section-label' %}
+                        </div>
+                    </div>
+                {% endfor %}
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-3">
+                        <div class="buttonbar">
+                            <button class="btn btn-primary btn-lg" type="submit">
+                              Save
+                            </button>
+                            <a role="button" class="btn btn-default btn-lg" href="{{ request.META.HTTP_REFERER }}">
+                              Cancel
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
 {% endblock main_content %}
+
+{% block js-footer %}
+<script type="text/javascript">
+  (function($) { $(function() {
+      $("#id_new_institution").click(function(){
+          if ($(this).is(':checked')) {
+              $("[id^='wrapper-id_institution_']").slideDown()
+          } else {
+              $("[id^='wrapper-id_institution_']").slideUp()
+          }
+      })
+  }); })(jQuery);
+</script>
+{% endblock %}

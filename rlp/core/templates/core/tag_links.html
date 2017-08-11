@@ -1,0 +1,14 @@
+<!-- tags = iterable taggit.Tag or managedtags.ManagedTag -->
+{% for tag in tags %}
+    {% if tag.slug != '' %}
+        <a role="button"
+           class="btn btn-tag btn-xs"
+           {% if tag.is_managed %}
+           href="{% url 'haystack_search' %}?mtags={{ tag.id }}"
+           {% else %}
+           href="{% url 'haystack_search' %}?tags={{ tag.id }}"
+           {% endif %}
+        >{{ tag.name }}
+        </a>
+    {% endif %}
+{% endfor %}

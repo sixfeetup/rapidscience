@@ -1,0 +1,107 @@
+{% load casereport_tags %}
+<p class="numresults"><span>{{ page.paginator.count }}</span> Total Cases</p>
+
+        <div class="results">
+
+{% for result in page.object_list %}
+
+            <!--search-->
+    <div class="searchresult">
+
+            <div class="row titlerow">
+                <div class="col-md-10">
+                    <h3>
+                        <a href="{% url 'casereport_detail' result.object.id  result.object.title|slugify %}">
+                            {{ result.object.title }}
+                        </a>
+                    </h3>
+                    Case ID: {{ result.object.id }} | {{ result.object.get_author|capfirst }}{% if result.object.primary_author.institution.country %},  {{ result.object.primary_author.institution.country }}{% endif %}
+                     |  {{ result.object.sort_date|date:"M d, Y" }}
+                </div>
+                <div class="col-md-2 crstatus {{ result.object.workflow_state|slugify }}">
+                    <i class="{{ result.object.get_workflow_icon }}" aria-hidden="true"></i><br />
+                    {% if result.object.workflow_state == 'live' %}
+                        Posted
+                    {% elif result.object.workflow_state == 'draft' %}
+                        Draft
+                    {% elif result.object.workflow_state == 'author review' %}
+                        Author Review
+                    {% elif result.object.workflow_state == 'processing' %}
+                        Submitted
+                    {% else %}
+                        {{ result.object.workflow_state }}
+                    {% endif %}
+                </div>
+            </div>
+
+
+            <div class="row">
+                {% if result.object.aberrations.all|length > 0 %}
+                <div class="col-md-6">
+                    <h4>Aberrations</h4>
+                    {% for aberration in result.object.aberrations.all %}
+                        {{ aberration.name }}{% if not forloop.last %},{% endif %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% if result.object.biomarkers %}
+                <div class="col-md-6">
+                    <h4>Biomarkers</h4>
+                    {{ result.object.biomarkers }}
+                </div>
+                {% endif %}
+                {% if result.object.get_treatments %}
+                <div class="col-md-12">
+                    <h4>Treatments</h4>
+                      <div class="row treatments">
+                        {{ result.object.get_treatments | join:" &raquo; " }}
+                      </div>
+                </div>
+                {% endif %}
+            </div>
+
+    </div>
+    {% comment %}
+        {% if page.has_previous or page.has_next %}
+            <div>
+                {% if page.has_previous %}<a href="{% get_pagination_url request.get_full_path page.previous_page_number %}">{% endif %}&laquo; Previous{% if page.has_previous %}</a>{% endif %}
+        |
+                {% if page.has_next %}<a href="{% get_pagination_url request.get_full_path page.next_page_number %}">{% endif %}Next &raquo;{% if page.has_next %}</a>{% endif %}
+            </div>
+        {% endif %}
+
+    {% endcomment %}
+{% empty %}
+    <p>
+    {% if suggestions %}
+      did you mean
+    {% endif %}
+    {% for sugg in suggestions %}
+        <a href="/?q={{ sugg.word }}">{{ sugg.word }}</a>
+           {% if not forloop.last %} or {% endif %}
+
+        {% empty %}
+        No Results
+        {% endfor %}</p>
+{% endfor %}
+        </div>
+{#</div>#}
+        {% if page.has_previous or page.has_next %}
+            <div class="row pagination_wrapper">
+                <ul class="pagination">
+                    <li>
+                        <a href="{% if page.has_previous %}{% get_pagination_url request.get_full_path page.previous_page_number %}{% else %}#{% endif %}">Previous</a>
+                    </li>
+                    {% for i in page.paginator.page_range %}
+                        {% ifequal i page.number %}
+                            <li class="active"><a href="{% get_pagination_url request.get_full_path i %}">{{ i }}</a></li>
+                        {% else %}
+                            <li><a href="{% get_pagination_url request.get_full_path i %}">{{ i }}</a></li>
+                        {% endifequal %}
+                    {% endfor %}
+                    <li>
+                        <a href="{% if page.has_next %}{% get_pagination_url request.get_full_path page.next_page_number %}{% else %}#{% endif %}">Next</a>
+                    </li>
+                </ul>
+            </div>
+        {% endif %}

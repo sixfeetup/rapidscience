@@ -1,0 +1,83 @@
+{% load core_tags %}
+{% user_can_link obj as can_link %}
+<div class="row">
+  <div class="col-md-11">
+    {% if 'Image' in obj.display_type %}
+        {% load thumbnail %}
+        {% thumbnail obj.upload 700x160 crop upscale HIGH_RESOLUTION as thumbnail %}
+        {% if project and request.user in project.active_members %}
+        <a href="{{ obj.upload.url }}" target="_blank">
+        {% endif %}
+          <img class="thumbnail-image" alt="{{ obj.title }}" src="{{ thumbnail.url }}" width="100%">
+        {% if project and request.user in project.active_members %}
+        </a>
+        {% endif %}
+    {% endif %}
+    {% if obj.display_type == "Video" %}
+        {% load embed_video_tags %}
+        {% video obj.share_link as shared_video %}
+        {% video shared_video 'small' %}
+        {% endvideo %}
+    {% endif %}
+    {% if 'Link' in obj.display_type %}
+        <h4>
+            {% if can_link %}
+            <a href="{{ obj.url }}" target="_blank">
+            {% endif %}
+        {% autoescape off %}{% if highlighted.title %}{{ highlighted.title.0 }}{% else %}{{ obj.title }}{% endif %}{% endautoescape %}
+            {% if can_link %}
+            </a>
+            {% endif %}
+        </h4>
+    {% else %}
+        <h4>
+            {% if can_link %}
+            <a href="{{ obj.get_absolute_url }}">
+            {% endif %}
+        {% autoescape off %}{% if highlighted.title %}{{ highlighted.title.0 }}{% else %}{{ obj.title }}{% endif %}{% endautoescape %}
+            {% if can_link %}
+            </a>
+            {% endif %}
+        </h4>
+    {% endif %}
+    <p class="small">
+        Posted by
+      <a href="{{ obj.owner.get_absolute_url }}">
+        {% if request.user == obj.owner %} me {% else %} {{ obj.owner.get_full_name }} {% endif %}
+      </a>
+      | {{ obj.date_added|date:"j M Y" }}
+      {% if request.user == obj.owner or request.user.is_staff %}
+      | {% with edit_url=obj.get_edit_url %}
+            {% if edit_url %}<a href="{{ edit_url }}">Edit</a>{% endif %}
+        {% endwith %}
+      {% endif %}<br />
+        {% display_shared_with obj request.user %}
+    </p>
+    <div class="more">{% autoescape off %}{{ obj.description }}{% endautoescape %}</div>
+    <p class="tags">
+        {% display_tag_links obj %}
+    </p>
+  </div>
+  <div class="col-md-1">
+    {% if not can_link %}
+        <!-- social tools suppressed because user is not an active member -->
+    {% else %}
+        {% include 'discussions/discussion_count_widget.html' %}
+        {% if user != obj.get_poster %}
+          {% if project %}
+          <form class="bookmark-form" method="POST" action="{% toggle_bookmark_url obj project %}">
+          {% else %}
+          <form class="bookmark-form" method="POST" action="{% toggle_bookmark_url obj user %}">
+          {% endif %}
+          {% csrf_token %}
+          <input type="hidden" name="{% if project %}group{% else %}dashboard{% endif %}" value="on" />
+          <input type="hidden" name="content_type" value="{{ obj.get_content_type_id }}" />
+          <input type="hidden" name="content_id" value="{{ obj.id }}" />
+          <a href="#" class="bookmark-trigger" data-toggle="tooltip" title="Save Bookmark"><i class="fa fa-star" aria-hidden="true"></i></a>
+          </form>
+        {% endif %}
+        <a class="share-link" href="/send/documents/document/{{ obj.id }}"><i class="fa fa-share"></i></a>
+    {% endif %}
+  </div>
+</div>
+<hr>

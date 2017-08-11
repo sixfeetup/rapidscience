@@ -1,0 +1,305 @@
+{% extends "casereport/search/search.html" %}
+{% load static %}
+
+{% block css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'djangocms_text_ckeditor/css/cms.ckeditor.css' %}">
+{% endblock  %}
+
+{% block body_class %}new-add-casereport{% endblock %}
+
+{% block content %}
+  <div id="crdb-overlay-loader" class="active">
+    <div id="crdb-thinking">
+        <div class="crdb-spinner" role="spinner"><div class="crdb-spinner-icon"></div></div>
+        <span class="crdb-loader-text">Submitting Case Report ...</span>
+    </div>
+</div>
+
+<form id="caseform" name="caseform" class="rpds-form" action="" method="post"
+      enctype="multipart/form-data">
+    {% csrf_token %}
+
+<div class="main-wrapper">
+  <div class="case-submit-hero">
+    <div class="container">
+        <div class="col-md-10 col-md-offset-1">
+            <h1>{{ heading }}</h1>
+        </div>
+    </div>
+  </div>
+
+  <div class="container">
+      <div class="inside-wrapper">
+      <div class="form submit-form">
+
+                <h4><label for="casetitle">Case Title</label></h4>
+                <input name="casetitle" value="{{ casereport.title }}" type="text" class="form-control" id="casetitle">
+
+
+                <h4 class="title-name">Primary Author/Contact</h4>
+                <p class="user-meta">
+                    {% if casereport.primary_author %}
+                        <strong>{{ casereport.primary_author.get_full_name }}
+                       {% if casereport.primary_author.title %}, {{ casereport.primary_author.title }}{% endif %}
+                       {% if casereport.primary_author.institution %}
+                            | {{ casereport.primary_author.institution }}{% if casereport.primary_author.institution.city %},
+                            {{ casereport.primary_author.institution.city }}{% endif %}{% if casereport.primary_author.institution.state %},
+                            {{ casereport.primary_author.institution.state }}{% endif %}
+                            {% if casereport.primary_author.institution.country %}| {{ casereport.primary_author.institution.country }}{% endif %}
+                       {% endif %}</strong>
+                        <br />{{ casereport.primary_author.email }}
+                    {% else %}
+                        <strong>{{ request.user.get_full_name }}
+                       {% if request.user.title %}, {{ request.user.title }}{% endif %}
+                       {% if request.user.institution %}
+                            | {{ request.user.institution }}{% if request.user.institution.city %},
+                            {{ request.user.institution.city }}{% endif %}{% if request.user.institution.state %},
+                            {{ request.user.institution.state }}{% endif %}
+                            {% if request.user.institution.country %}| {{ request.user.institution.country }}{% endif %}
+                       {% endif %}</strong>
+                        <br />{{ request.user.email }}
+                    {% endif %}
+                </p>
+                <div class="alert alert-danger required-message" role="alert">
+                    <p>Please fill the fields marked with asterisk. (*)</p>
+                </div>
+                <div>
+                    <label for="author">Alternative Correspondence Email Address</label>
+                    <input name="author" value="{% for rep in casereport.authorized_reps.all %}{{ rep }}{% endfor %}"  type="EMAIL" class="form-control" id="author">
+              </div>
+
+              <h4>Co-Authors</h4>
+              <div class="helpText">Only coauthors who are members of Sarcoma Central will be able edit or comment on this case report. You may invite colleagues to register from the Community Commons group page.</div>
+              <div class="coauthor-div">
+                  <select name="coauthors" class="form-control select2" id="coauthors" multiple="multiple" size="5">
+                      {% for item in all_members %}
+                          <option value="{{ item.id }}"
+                                  {% if item in casereport.co_author.all %}selected{% endif %}>
+                              {{ item.get_full_name }}
+                          </option>
+                      {% endfor %}
+                  </select>
+              </div>
+
+              <a class="add_coauthor_button" href="#"><i class="fa fa-plus"></i> <span class="add_coauthor_button_text">Add a non-members as a co-author(s)</a></a>
+
+        <div class="form-group radio-box"{% if casereport.workflow_state != 'draft' and casereport.workflow_state != 'processing' and casereport.workflow_state != None %} style="display: none;"{% endif %}>
+        <input checked="checked"  id="id_radio1" type="radio"  class="radiobut" name="entry-type" value="M" />
+        <label for="id_radio1">Use Template</label>
+        <input id="id_radio2" type="radio" class="radiobut"  name="entry-type" value="T" />
+        <label for="id_radio2">Free Text</label>
+        <input id="id_radio3" type="radio" class="radiobut"  name="entry-type" value="F" />
+        <label for="id_radio3">Upload File</label>
+            <div class="choose-message">
+                <p>Choose one of the options.</p>
+            </div>
+        </div>
+
+        <h4 class="title-name">Diagnosis/Presentation</h4>
+        <div class="row">
+                    <div class="form-group col-xs-2">
+                        <label for="age" class="required">Age</label>
+                        <input type="text" name="age" id="age" class="form-control" value="{{ casereport.age }}">
+                        <div class="age-message">
+                                <p>Field required.</p>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-2 col-xs-2">
+                      <label for="gender" class="required">Gender</label>
+                      <select name="gender" class="form-control" id="gender">
+                          <option disabled value="" {% if not casereport.gender %}selected{% endif %}></option>
+                          <option value="male" {% if 'male' == casereport.gender %}selected{% endif %}>
+                              Male</option>
+                          <option value="female" {% if 'female' == casereport.gender %}selected{% endif %}>
+                              Female</option>
+                          <option value="transgender_male" {% if 'transgender_male' == casereport.gender %}selected{% endif %}>
+                              Transgender Male</option>
+                          <option value="transgender_female" {% if 'transgender_female' == casereport.gender %}selected{% endif %}>
+                              Transgender Female</option>
+                          <option value="other" {% if 'other' == casereport.gender %}selected{% endif %}>
+                              Other</option>
+                      </select>
+                             <div class="gender-message">
+                             <p>Select gender.</p>
+                            </div>
+                    </div>
+
+                    <div class="form-group col-md-8 col-xs-8">
+                        <label class="required" for="subtype"> Subtype:</label>
+                           <select name="subtype" class="form-control select2" id="subtype">
+                                 <option value="">select sub type</option>
+                                 {% for item in subtypes %}
+                                     <option value="{{ item }}" {% if item == casereport.subtype %}selected{% endif %}>
+                                         {{ item }}</option>
+                                 {% endfor %}
+                           </select>
+                       <div class="form-group others">
+                         <label for="subtype-other">Other</label>
+                         <input id="subtype-other" name="subtype_other" class="form-control" value="{{ casereport.subtype_other }}" />
+                       </div>
+                       <div class="subtype-message">
+                        <p>This field is required.</p>
+                       </div>
+                   </div>
+        </div>
+
+        {% include "casereport/manualform.html" %}
+        {% include "casereport/free-text.html" %}
+        {% include "casereport/fileform.html" %}
+
+                <!-- attachments -->
+                <h4>Attachments</h4>
+                <div class="attachments-div">
+                    {% for attachment in casereport.get_attachments %}
+                    <div class="attachment row">
+                    <div class="col-md-11">
+                        <div class="figure">Fig {{forloop.counter}}</div>
+                        <a href="{{ attachment.file.url }}" target="_blank" class="download">View Current file</a>
+                        <div class="form-control">
+                            <input type="file" name="attachment{{forloop.counter}}" id="attachment{{forloop.counter}}" onchange="checkfile(this);">
+                        </div>
+                        <div class="helpText">JPG, PDF, PNG, TIFF file types; max file size 2MB; minimum width 770px
+                                              <br/>Be sure to explicitly cite this figure's name in relevant text above</div>
+
+                        <label for="attachment{{forloop.counter}}_title">Title</label>
+                        <input id="attachment{{forloop.counter}}_title" name="attachment{{forloop.counter}}_title"
+                               class="form-control attachment{{forloop.counter}}_title"
+                               value="{{ attachment.title }}">
+
+                        <label for="attachment{{forloop.counter}}_description">Description</label>
+                        <textarea id="attachment{{forloop.counter}}_description" name="attachment{{forloop.counter}}_description"
+                                  rows="4" cols="73" class="form-control attachment{{forloop.counter}}_description editor"
+                                  >{{ attachment.description }}</textarea>
+                    </div>
+                    <div class="col-md-1">
+                        <a href="#" class="remove_att">✕</i></a>
+                    </div>
+                    </div>
+                    {% endfor %}
+
+                </div>
+
+                <a class="add_att_button" href="#"><i class="fa fa-plus"></i> <span class="add_att_button_text">Add another attachment</a></a>
+                    
+                <div id="consent-wrapper">
+                    <p>HIPAA limits how health care providers may use individually
+                        identifiable health information. The act does not restrict
+                        physicians, nurses, and other practitioners from sharing
+                        information needed to treat their patients. However,
+                        practitioners may use or share the minimum amount of
+                        protected information needed for a particular purpose.
+                        Should this case report be submitted for open access publication,
+                        patient permission will be required.</p>
+                    <input class="agree-checkbox" type="checkbox" id="consent" name="consent"
+                        {% if casereport.consent %}checked{% endif %}>
+                    <label for="consent">Check here to indicate that you have read and agree to the HIPAA Privacy Policy.</label>
+                    <div class="agree-message">
+                     <p>Please select the checkbox.</p>
+                    </div>
+                </div>
+                
+                <!-- sharing -->
+                <div class="sharing-wrapper">
+                {% for field in form %}
+                    <div class="fieldWrapper">
+                        {% if field.auto_id == 'id_members' %}
+                            <h4>Sharing</h4>
+                            <p>We encourage you to share all submissions with the Community Commons group – i.e., all validated members of Sarcoma Central.</p>
+                        {% endif %}
+                        {{ field.errors }}
+                        {% if field.auto_id != 'id_approval' %}
+                        <label for="{{ field.id_for_label }}">
+                            {{ field.label }}{% if field.field.required %} <span class="required">*</span>{% endif %}
+                        </label>
+                        {% endif %}
+                        {{ field }}
+                        {% if field.help_text %}
+                        <p class="helptext">{{ field.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                </div>
+
+                <div class="submit-button">
+                    <input id="save-button" class="btn btn-primary" type="submit" value="Save" />
+                    <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-default" id="button-cancel">Cancel</a>
+
+                </div>
+
+   <div class="modal fade" id="modal-cancel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-body">
+            <p>Are you sure you want to cancel this submission? The information will be permanently deleted.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger btn-confirm">Delete</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Return to form</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+          </div>
+      </div>
+</div>
+</div>
+</form>
+
+{% endblock content %}
+
+{% block js-footer %}
+    {{ block.super }}
+    <script src="{{STATIC_URL}}js/add_case_report.js"></script>
+    <script src="{% static "djangocms_text_ckeditor/ckeditor/ckeditor.js" %}"></script>
+    <script src="{% static "cms/js/modules/cms.base.js" %}"></script>
+    <script src="{% static 'djangocms_text_ckeditor/js/cms.ckeditor.js' %}"></script>
+    <script src="{{STATIC_URL}}js/free-text.js"></script>
+
+    <script type="text/javascript">
+    (function($) { $(function() {
+        $('#button-cancel').click(function (event) {
+            event.preventDefault();
+            $('#modal-cancel').modal();
+        });
+        $('#modal-cancel').on('show.bs.modal', function (event) {
+            var modal = $(this);
+            modal.find('.modal-footer .btn-confirm').click(function () {
+                return_url = document.referrer
+                if (return_url) {
+                    window.location.href = return_url;
+                } else {
+                    window.location.href = "/";
+                }
+            });
+        });
+
+         $('.select2').select2();
+    }); })(jQuery);
+
+     CKEDITOR.replace('pathology', {
+         language: 'en',
+         skin: 'moono',
+         toolbar: [
+            ['Undo', 'Redo'],
+            ['ShowBlocks'],
+            ['Format', 'Styles'],
+            ['PasteText', 'PasteFromWord'],
+            ['Maximize', ''],
+            '/',
+            ['Bold', 'Italic', 'Underline', '-', 'Subscript', 'Superscript', '-', 'RemoveFormat'],
+            ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['HorizontalRule'],
+            ['Link', 'Unlink'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Table'],
+            ['Source']
+         ],
+         allowedContent: true,
+         toolbarCanCollapse: false,
+         extraPlugins: '',
+         width: '100%'
+     });
+    </script>
+{% endblock %}

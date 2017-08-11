@@ -1,0 +1,19 @@
+{% load core_tags %}
+{% user_can_link casereport as can_link %}
+<!-- casereport/casereport_activity -->
+{% with casereport=obj %}
+    <h4>
+        {% if can_link %}<a href="{{ casereport.get_absolute_url }}">{% endif %}
+            {{ casereport.title }}
+        {% if can_link %}</a>{% endif %}
+    </h4>
+    {% if action.verb == 'shared' %}
+        <p class="small meta">
+            Posted by
+            {{ casereport.primary_author }}
+          | {{ casereport.date_added|date:"j M Y" }}<br />
+          {% display_shared_with casereport request.user %}
+        </p>
+    {% endif %}
+{% endwith %}
+<!-- /casereport/casereport_activity -->

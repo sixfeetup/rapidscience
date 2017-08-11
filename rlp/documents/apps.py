@@ -7,6 +7,7 @@ class DocumentsConfig(AppConfig):
 
     def ready(self):
         from actstream import registry
+        registry.register(self.get_model('Document'))
         registry.register(self.get_model('File'))
         registry.register(self.get_model('Image'))
         registry.register(self.get_model('Link'))

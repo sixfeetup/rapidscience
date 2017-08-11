@@ -1,0 +1,76 @@
+{% load thumbnail humanize core_tags %}
+
+{% comment %}
+The template variable 'thumbnail_url' is just what it says.
+In some cases such as Youtube videos, we don't have local images so we can't make our own thumbnails.
+{% endcomment %}
+
+<div class="row">
+    <div class="plugin plugin-teaser col-md-11">
+      {% if label %}<p>{{ label|capfirst }}</p>{% endif %}
+        {% if image or thumbnail_url %}
+            {% if link %}<a {% if target_blank %}target="_blank" {% endif %}href="{{ link }}">{% endif %}
+            {% if image %}
+                {% thumbnail image 120x120 crop upscale subject_location=image.subject_location as thumbnail %}
+                <img{% if image.default_alt_text %} alt="{{ image.default_alt_text|default:title }}"{% endif %}
+                                                    src="{{ thumbnail.url }}">
+            {% elif thumbnail_url %}
+                <img src="{{ thumbnail_url }}" alt="{{ title }}">
+            {% endif %}
+            {% if link %}</a>{% endif %}
+        {% endif %}
+
+        {% if title %}
+        <h4>
+            {% if link %}
+                <a {% if target_blank or 'http' in link %}target="_blank" {% endif %}href="{{ link }}">
+                    {% autoescape off %}
+                    {% if highlighted.title %}{{ highlighted.title.0 }}{% else %}{{ title }}{% endif %}
+                    {% endautoescape %}
+                </a>
+            {% else %}
+                {{ title }}
+            {% endif %}
+        </h4>
+        {% endif %}
+        {% with action=result.object.action_object_actions.first %}
+                <p class="small">{% if action %}{{ action.action_object.display_type }}
+                    {% if action.action_object_content_type.model != 'threadedcomment' %}{{ action.verb|verb_alias }}{% endif %}
+                    by <a href="{{ action.actor.get_absolute_url }}">{{ action.actor.get_full_name }}</a>
+                    | {{ action.timestamp|naturaltime }}
+                    <br />{% endif %}
+                    {% display_shared_with result.object request.user %}
+                </p>
+        {% endwith %}
+
+        {% if description %}
+        <p class="more small">
+            {% if highlighted.text %}
+              {% autoescape off %}
+              {{ highlighted.text.0 }}
+              {% endautoescape %}
+            {% else %}
+              {% autoescape off %}
+              {{ description|striptags }}
+              {% endautoescape %}
+            {% endif %}
+        </p>
+        {% endif %}
+    </div>
+    <div class="col-md-1">
+        {% with obj=result.object model=result.content_type %}
+            {% if model == 'discussions.threadedcomment' %}
+              {% if obj.user == request.user %}{% include 'forms/_edit_dropdown.html' with edit_url=obj.get_edit_url delete_url=obj.get_delete_url %}{% endif %}
+            {% else %}
+              {% if obj.owner == request.user %}{% include 'forms/_edit_dropdown.html' with edit_url=obj.get_edit_url delete_url=obj.get_delete_url %}{% endif %}
+            {% endif %}
+{#            {% if model == 'bibliography.reference' and request.user.is_authenticated %}#}
+{#              {% include 'bibliography/_share_reference.html' %}#}
+{#            {%  endif %}#}
+            {% if model != 'accounts.user' and model != 'bibliography.reference' %}
+                {% include 'discussions/discussion_count_widget.html' %}
+            {% endif %}
+        {% endwith %}
+    </div>
+</div>
+<hr>

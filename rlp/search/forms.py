@@ -10,26 +10,31 @@ from haystack.utils import get_model_ct
 
 from taggit.models import Tag
 
+from rlp.managedtags.models import ManagedTag
 from rlp.projects.models import Project
 
 
 EXCLUDE_MODELS = (
     'Title',
+    'Post',
+    'NewsItem'
 )
 
 
 def get_action_object_content_types():
-    from rlp.bibliography.models import ProjectReference
+    from rlp.bibliography.models import UserReference
     from rlp.discussions.models import ThreadedComment
     from rlp.documents.models import File, Image, Video, Link
+    from casereport.models import CaseReport
     choices = [
-        ('', 'All Types'),
-        (get_model_ct(ThreadedComment), 'Comments'),
+        ('', 'All'),
+        (get_model_ct(ThreadedComment), 'Discussions'),
+        (get_model_ct(CaseReport), 'Case Reports'),
         (get_model_ct(File), 'Documents'),
         (get_model_ct(Image), 'Images'),
         (get_model_ct(Video), 'Videos'),
         (get_model_ct(Link), 'Links'),
-        (get_model_ct(ProjectReference), 'References')
+        (get_model_ct(UserReference), 'References'),
     ]
     return choices
 
@@ -66,10 +71,19 @@ class ProjectContentForm(ActionObjectForm):
 
 def model_choices(using=DEFAULT_ALIAS):
     choices = [
-        (get_model_ct(m), smart_text(m._meta.verbose_name_plural).title())
+        [get_model_ct(m), smart_text(m._meta.verbose_name_plural).title()]
         for m in connections[using].get_unified_index().get_indexed_models()
         if m.__name__ not in EXCLUDE_MODELS
     ]
+    for index, sublist in enumerate(choices):
+        if sublist[1] == "Comments":
+            choices[index][1] = "Discussions"
+        if sublist[1] == "Projects":
+            choices[index][1] = "Groups"
+        if sublist[1] == "Raw References":
+            choices[index][1] = "References"
+        if sublist[1] == "User References":
+            choices[index][1] = "References"
     return sorted(choices, key=lambda x: x[1])
 
 
@@ -94,7 +108,12 @@ class ModelSearchForm(BaseModelSearchForm):
         )
     )
     tags = forms.ModelMultipleChoiceField(
-        queryset=Tag.objects.all(),
+        queryset=Tag.objects.order_by('slug'),
+        required=False,
+        widget=forms.CheckboxSelectMultiple(),
+    )
+    mtags = forms.ModelMultipleChoiceField(
+        queryset=ManagedTag.objects.order_by('slug'),
         required=False,
         widget=forms.CheckboxSelectMultiple(),
     )
@@ -108,17 +127,25 @@ class ModelSearchForm(BaseModelSearchForm):
             return self.no_query_found()
         query = self.cleaned_data.get('q')
         tags = self.cleaned_data.get('tags')
+        mtags = self.cleaned_data.get('mtags')
         models = self.get_models()
-        if not any([query, models, tags]):
+        if not any([query, models, tags, mtags]):
             return self.no_query_found()
-        sqs = self.searchqueryset
+        sqs = self.searchqueryset.using('default')
         if query:
+            kwargs = {
+                'fl': ['title','text'],
+                'simple.pre': '<em class="highlighted">',
+                'simple.post': '</em>'
+            }
             # We search both title and text so we get the benefit of boosting title fields
             sqs = sqs.filter(
                 SQ(title=query) | SQ(text=query)
-            ).highlight()
+            ).highlight(**kwargs)
         if models:
             sqs = sqs.models(*self.get_models())
         if tags:
             sqs = sqs.filter(tags__in=[tag.id for tag in tags])
+        if mtags:
+            sqs = sqs.filter(mtags__in=[mtag.id for mtag in mtags])
         return sqs

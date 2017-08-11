@@ -10,6 +10,7 @@ from rlp.projects.models import ProjectMembership
 class ProjectMembershipAdmin(admin.TabularInline):
     model = ProjectMembership
     extra = 1
+    fk_name = 'user'
 
 
 class CustomUserAdmin(UserAdmin):
@@ -22,7 +23,7 @@ class CustomUserAdmin(UserAdmin):
         }),
         (_('Profile'), {
             'fields': (
-                'title', 'degrees', 'bio', 'research_interests', 'website', 'orcid', 'photo', 'institution',
+                'title', 'degrees', 'bio', 'research_interests', 'website', 'photo', 'institution',
                 'linkedin', 'twitter',),
             'classes': ('collapse',)
         }),

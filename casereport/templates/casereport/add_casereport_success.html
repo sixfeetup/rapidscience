@@ -1,0 +1,20 @@
+{% extends "casereport/search/search.html" %}
+
+{% block title %}
+   Case successfully submitted
+{% endblock %}
+{% block container %}
+<div class="container-detail submission-success">
+    <div class="row headingBanner">
+        <div class="col-md-8 col-md-offset-2">
+            <h1>Case successfully submitted.</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2 success-message">
+            <p>Your Case Report has been moved to {{ casereport.workflow_state }}. Please note case no. {{ casereport.id }} for future reference.</p>
+            <p><a href="{% url 'haystac' %}" class="btn btn-primary btn-lg">See all cases</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

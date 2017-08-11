@@ -1,0 +1,16 @@
+
+<div class="file-form">
+
+    <h4><label for="uploadfile">Upload Case</label></h4>
+    {% if casereport.casefile_f %}
+        <p><a href="{{ casereport.casefile_f.url }}" target="_blank" class="download">View Current file</a><br />
+           Uploading a new file will replace the current one:</p>
+    {% endif %}
+    <div class="form-control">
+        <input type="file" name="uploadfile" id="uploadfile" onchange="checkfile(this);">
+    </div>
+    <div class="helpText">PDF, Word Doc, Google Doc file types; max file size 2MB</div>
+    <div class="file-message">
+     <p>This field is required.</p>
+    </div>
+</div>

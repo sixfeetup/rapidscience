@@ -1,28 +1,21 @@
 {% load el_pagination_tags %}
 {% lazy_paginate object_list %}
 {% for result in object_list %}
-
-  {% if result.content_type == "cms.title" %}
-    {% include "_item.html" with title=result.title link=result.object.page.get_absolute_url description=result.text highlighted=result.highlighted %}
-  {% elif 'newsfeed.' in result.content_type or 'accounts.' in result.content_type %}
-    {% include "_item.html" with label=result.verbose_name title=result.title link=result.link description=result.text highlighted=result.highlighted %}
-  {% elif result.content_type == 'bibliography.projectreference' %}
-    {# We only override this one because we need to pass in the actual Reference, not the ProjectReference #}
-    <p class="small">
-      {% include 'actstream/_action_detail.html' with action=result.object.action_object_actions.first %}
-    </p>
-    {% include 'bibliography/_reference.html' with obj=result.object.reference %}
+  {% if  'accounts.' in result.content_type %}
+    {% include "search/_result_item.html" with label=result.verbose_name title=result.title link=result.link description=result.text highlighted=result.highlighted %}
+  {% elif 'discussions.' in result.content_type %}
+    {% include 'comments/list_item.html' with view='tab-content' comment=result.object highlighted=result.highlighted %}
+  {% elif 'casereport.' in result.content_type %}
+    {% include 'casereport/listing_preview.html' with obj=result.object highlighted=result.highlighted %}
+  {% elif 'documents.' in result.content_type %}
+    {% include 'documents/listing_preview.html' with obj=result.object highlighted=result.highlighted %}
+  {% elif 'userreference' in result.content_type %}
+    {% include 'bibliography/_uref_tab.html' with obj=result.object.reference ref=result.object user=request.user highlighted=result.highlighted %}
+  {% elif 'bibliography.' in result.content_type %}
+      {% include 'bibliography/_ref_tab.html' with obj=result.object user=request.user highlighted=result.highlighted %}
   {% else %}
-    {% with action=result.object.action_object_actions.first %}
-      {% if action %}
-      <p class="small">
-        {% include 'actstream/_action_detail.html' %}
-      </p>
-      {% endif %}
-    {% endwith %}
-    {% include "_item.html" with title=result.title link=result.link description=result.text highlighted=result.highlighted %}
+    {% include "search/_result_item.html" with title=result.title link=result.link description=result.text highlighted=result.highlighted %}
   {% endif %}
-  <hr>
 {% empty %}
     <p>No results found.</p>
 {% endfor %}

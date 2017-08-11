@@ -2,9 +2,17 @@ from django import forms
 from django.utils.timezone import now
 
 from taggit.models import Tag
+from ckeditor.widgets import CKEditorWidget
 
 from . import choices
-from .models import get_or_create_reference, parse_user_submission, ProjectReference, Reference, ReferenceShare
+from .models import (
+    get_or_create_reference,
+    parse_user_submission,
+    Reference,
+    ReferenceShare,
+)
+from rlp.core.forms import GroupListField
+from rlp.core.forms import MemberListField
 from rlp.projects.models import Project
 
 
@@ -50,9 +58,14 @@ class BaseReferenceForm(forms.ModelForm):
         if Tag.objects.count():
             self.fields['tags'] = forms.ModelMultipleChoiceField(
                 widget=forms.CheckboxSelectMultiple(),
-                queryset=Tag.objects.all(),
+                queryset=Tag.objects.order_by('slug'),
                 required=False
             )
+        self.fields['new_tags'] = forms.CharField(
+            max_length=400,
+            required=False,
+            help_text="Terms added here will be added as new tags in the system. \
+                       Separate with commas.")
 
     publication_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
     authors = forms.CharField(max_length=255,
@@ -183,16 +196,38 @@ class JournalArticleForm(BaseReferenceForm):
         return data
 
 
-class ProjectReferenceForm(forms.ModelForm):
-    tags = forms.ModelMultipleChoiceField(
-        widget=forms.CheckboxSelectMultiple(),
-        queryset=Tag.objects.all(),
-        required=False
+class AttachReferenceForm(forms.Form):
+    description = forms.CharField(
+        widget=CKEditorWidget(),
+        label='Description / Comment',
+        required=False,
     )
-
-    class Meta:
-        fields = [
-            'tags'
-        ]
-        model = ProjectReference
-
+    tags = forms.ModelMultipleChoiceField(
+        queryset=Tag.objects.order_by('slug'),
+        help_text='Separate tags with commas',
+        required=False,
+    )
+    tags.widget.attrs['class'] = 'select2'
+    new_tags = forms.CharField(
+        max_length=400,
+        required=False,
+        help_text="Terms added here will be added as new tags in the system. \
+                   Separate with commas.")
+    members = MemberListField(
+        label='Members',
+        help_text='Separate names with commas',
+        choices=(),  # gets filled in by the view
+        required=False,
+    )
+    groups = GroupListField(
+        label='My Groups',
+        help_text='Separate names with commas',
+        choices=(),  # gets filled in by the view
+        required=False,
+    )
+    to_dashboard = forms.BooleanField(
+        label='',
+        required=False,
+        widget=forms.HiddenInput,
+        initial=True,
+    )

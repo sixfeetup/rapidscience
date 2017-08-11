@@ -1,55 +1,63 @@
-{% extends 'projects/projects_detail.html' %}{% load comments embed_video_tags %}
+{% extends 'base.html' %}{% load bootstrap3 comments embed_video_tags core_tags %}
 
-{% block project_documents %}
-  <p><a href="{{ project.get_documents_url }}">&lt; Back to all documents</a></p>
-  <p class="small">
-    {% include 'actstream/_action_detail.html' with action=document.action_object_actions.first %}
-  </p>
+{% block body_class %}document-detail{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-md-push-2">
   {% with obj=document %}
   <div class="row">
-    <div class="col-md-11">
-      <h4>{{ obj.title }}</h4>
-      {% if obj.description %}<p>{{ obj.description|urlize }}</p>{% endif %}
-      {% if document.polymorphic_ctype.model == 'file' %}
-        <a class="btn btn-primary" href="{{ obj.upload.url }}" target="_blank">
-          Download
+    <div class="col-md-12">
+      {% if last_viewed_path %}
+      <p class="backlink"><a href="{{ last_viewed_path }}">&larr; Back</a></p>
+      {% endif %}
+      {% bootstrap_messages %}
+      <a class="share-link pull-right" href="/send/documents/document/{{ obj.id }}"><i class="fa fa-share"></i></a>
+      {% if document.polymorphic_ctype.model == 'link' %}
+        <a href="{{ obj.url }}" target="_blank">
+            <h1>{{ obj.title }}</h1>
         </a>
+      {% else %}
+        <h1>{{ obj.title }}</h1>
+      {% endif %}
+      <p class="small">
+        Posted by
+        <a href="{{ obj.owner.get_absolute_url }}">{% if request.user == obj.owner %} me {% else %} {{ obj.owner.get_full_name }}{% endif %}</a>
+        | {{ obj.date_updated|date:"j M Y" }}
+        {% if request.user == obj.owner or request.user.is_staff %} | <a href="{% url 'documents:document_edit' obj.id %}">Edit</a> | <a href="{% url 'documents:document_delete' obj.id %}">Delete</a>{% endif %}
+        <br />
+        {% display_shared_with obj request.user %}
+      </p>
+
+      {% if obj.description %}<div class="initial">{% autoescape off %}{{ obj.description }}{% endautoescape %}</div>{% endif %}
+      {% if document.polymorphic_ctype.model == 'file' %}
+        <p class="initial"><a class="btn btn-primary" href="{{ obj.upload.url }}" target="_blank">
+          Download
+      </a></p>
       {% elif document.polymorphic_ctype.model == 'image' %}
         <a href="{{ obj.upload.url }}" target="_blank">
           <img alt="{{ obj.title }}" src="{{ obj.upload.url }}" width="{% if obj.upload.width < 500 %}{{ obj.upload.width }}{% else %}500px{% endif %}">
         </a>
-      {% elif document.polymorphic_ctype.model == 'link' %}
-        <blockquote>
-        <a href="{{ obj.url }}" target="_blank">
-          {{ obj.url }}
-        </a>
-        </blockquote>
+        <p class="initial"><a class="btn btn-primary" href="{{ obj.upload.url }}" target="_blank">
+          Download
+      </a></p>
       {% elif document.polymorphic_ctype.model == 'video' %}
         {% video obj.share_link as shared_video %}
         {% video shared_video 'medium' %}
         {% endvideo %}
       {% endif %}
-    </div>
-    <div class="col-md-1">
-      {% if obj.owner == request.user %}{% include 'forms/_edit_dropdown.html' with edit_url=obj.get_edit_url delete_url=obj.get_delete_url %}{% endif %}
-      {% if request.user.is_authenticated %}
-      {% include 'bookmarks/_form.html' with action=obj.action_object_actions.first %}
-      {% endif %}
+      <p class="tags">
+        {% display_tag_links obj %}
+      </p>
     </div>
   </div>
-  {% with tags=obj.tags.all %}
-    {% if tags %}
-      <br>
-      {% for tag in obj.tags.all %}
-        <a role="button" class="btn btn-tag btn-xs" href="{% url 'haystack_search' %}?tags={{ tag.id }}">
-          {{ tag }}
-        </a>
-      {% endfor %}
-    {% endif %}
-  {% endwith %}
   <hr>
   {% render_comment_form for obj %}
   <br>
   {% render_comment_list for obj %}
+</div>
+</div>
+</div>
 {% endwith %}
-{% endblock project_documents %}
+{% endblock content %}

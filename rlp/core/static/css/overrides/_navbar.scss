@@ -145,7 +145,7 @@
 
 .navbar-fixed-top {
     top: 0;
-    border-width: 0 0 1px;
+    border: none;
 }
 
 .navbar-fixed-bottom {
@@ -159,17 +159,28 @@
 .navbar-brand {
     float: left;
     padding: $navbar-padding-vertical $navbar-padding-horizontal;
-    font-size: $font-size-large;
-    line-height: $line-height-computed;
+    font-size: 24px;
+    line-height: 20px;
+    font-weight: 600;
     height: $navbar-height;
+    color: $navbar-default-brand-color;
+    -webkit-transition: color .5s;
+    -moz-transition: color .5s;
+    -ms-transition: color .5s;
+    -o-transition: color .5s;
+    transition: color .5s;
+    font-style: italic;
+    border-right: 1px solid #4f4f4f;
+    margin-right: 15px;
 
     &:hover,
     &:focus {
         text-decoration: none;
-    }
-
-    > img {
-        display: block;
+        -webkit-transition: color .5s;
+        -moz-transition: color .5s;
+        -ms-transition: color .5s;
+        -o-transition: color .5s;
+        transition: color .5s;
     }
 
     @media (min-width: $grid-float-breakpoint) {
@@ -226,11 +237,70 @@
 .navbar-nav {
     margin: ($navbar-padding-vertical / 2) (-$navbar-padding-horizontal);
 
-    > li > a {
-        padding-top: 10px;
-        padding-bottom: 10px;
+    > li {
+        border-top: 3px solid #332f2d;
+        padding-top: 12px;
+        padding-bottom: 15px;
         line-height: $line-height-computed;
+        -webkit-transition: border-top-color .5s;
+        -moz-transition: border-top-color .5s;
+        -ms-transition: border-top-color .5s;
+        -o-transition: border-top-color .5s;
+        transition: border-top-color .5s;
+
+        &:hover,
+        &:focus {
+            border-top-color: $navbar-default-color;
+            -webkit-transition: border-top-color .5s;
+            -moz-transition: border-top-color .5s;
+            -ms-transition: border-top-color .5s;
+            -o-transition: border-top-color .5s;
+            transition: border-top-color .5s;
+        }
+
     }
+
+    .search-widget {
+        padding: 0;
+        border-top: none;
+        position: static;
+        #search-form {
+            position: absolute;
+            z-index: 1000005;
+            top: 5px;
+            height: 45px;
+            left: 0;
+            width: calc(100% - 50px);
+            background-color: #332f2d;
+        }
+        input.form-control {
+            background-color: #444444;
+            border: none;
+            border-radius: 0;
+            height: 47px;
+            min-width: 430px;
+            color: #f6eee3;
+            font-weight: normal;
+            position: absolute;
+            right: 0;
+        }
+        input.form-control::placeholder {
+            color: #f6eee3;
+            font-style: italic;
+            font-weight: normal;
+        }
+    }
+    .search-icon {
+        border: none;
+        padding-top: 15px;
+        padding-bottom: 15px;
+        float: right;
+    }
+    .search-icon:focus,
+    .search-icon:active {
+        outline: none;
+    }
+
 
     @media (max-width: $grid-float-breakpoint-max) {
         // Dropdowns get custom display when collapsed
@@ -264,8 +334,8 @@
         > li {
             float: left;
             > a {
-                padding-top: $navbar-padding-vertical;
-                padding-bottom: $navbar-padding-vertical;
+                padding-top: 0;
+                padding-bottom: 0;
             }
         }
     }
@@ -317,7 +387,7 @@
 
 // Menu position and menu carets
 .navbar-nav > li > .dropdown-menu {
-    margin-top: 0;
+    margin-top: -1px;
     @include border-top-radius(0);
 }
 
@@ -393,7 +463,6 @@
 
     .navbar-brand {
         color: $navbar-default-brand-color;
-        padding-top: 11px;
         &:hover,
         &:focus {
             color: $navbar-default-brand-hover-color;
@@ -408,7 +477,17 @@
     .navbar-nav {
 
         &.navbar-secondary, > li.navbar-secondary {
-            border-left: 1px solid $navbar-default-color;
+
+            .user-menu .dropdown-toggle {
+                padding-top: 0;
+                padding-bottom: 0;
+                border-top-width: 0;
+                border-left-width: 1px;
+                border-right-width: 1px;
+                border-bottom-width: 0;
+                border-color: #4f4f4f;
+                border-style: solid;
+            }
 
             .glyphicon-search {
                 font-size: 1.25em;
@@ -430,6 +509,7 @@
             &:hover,
             &:focus {
                 color: $navbar-default-link-active-color;
+                background-color: transparent;
             }
         }
         > .disabled > a {
@@ -455,6 +535,7 @@
     .navbar-collapse,
     .navbar-form {
         border-color: $navbar-default-border;
+        position: relative;
     }
 
     // Dropdown menu items

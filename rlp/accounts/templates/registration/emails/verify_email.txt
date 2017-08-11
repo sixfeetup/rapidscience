@@ -1,0 +1,15 @@
+Hello {{ name }},<br><br>
+
+Thank you for your interest in joining Sarcoma Central.<br><br>
+
+Please <a href="{{ link }}">click here</a> to confirm your email address.<br><br>
+
+You will receive an email when your membership has been confirmed.<br><br>
+
+If you have questions or technical difficulties, please contact us at <​a href="mailto:support@rapidscience.org">support@rapidscience.org</a>.<br><br>
+
+Sincerely,<br><br>
+
+Sarcoma Central Team<br><br>
+
+<a href="https://twitter.com/rapidscience">@RapidScience</a>

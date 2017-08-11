@@ -13,15 +13,14 @@
 }
 
 .nav-tabs > li {
-    width: 25%;
+    width: 20%;
+    white-space: nowrap;
 }
 .navbar-secondary {
     .search-icon {
         width: 50px;
     }
     form {
-        margin-top: -45px;
-        padding: 0 20px 10px 40px;
         min-width: 330px;
     }
     /*.collapse {
@@ -137,7 +136,38 @@
 
 .tab-content {
     h4 {
+        font-size: 20px;
+        line-height: 21px;
+        font-weight: normal;
         margin-bottom: .5em;
+    }
+    .activity-reference h4,
+    #bibliography h4 {
+        font-size: 16px;
+        color: #444444;
+    }
+    p {
+        font-size: 14px;
+        line-height: 21px;
+        color: #444444;
+    }
+}
+
+.tab-content,
+.search-page {
+    a.morelink {
+        border: 1px solid #3792bf;
+        border-radius: 3px;
+        padding: 0 2px;
+        line-height: 12px;
+        display: inline-block;
+        height: 15px;
+        width: 15px;
+        text-align: center;
+        font-weight: bold;
+    }
+    a.morelink:focus {
+        outline: none;
     }
 }
 

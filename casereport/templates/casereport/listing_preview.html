@@ -1,0 +1,64 @@
+{% load core_tags %}
+{% user_can_link obj as can_link %}
+<div class="row comment-item">
+    <div class="col-md-11">
+      <h4>
+          {%  if can_link %}
+          <a href="{% url 'casereport_detail' case_id=obj.id title_slug=obj.title|slugify %}">
+          {% endif %}
+        {% autoescape off %}{%  if highlighted.title %}{{ highlighted.title.0 }}{% else %}{{ obj.title }}{% endif %}{% endautoescape %}
+          {%  if can_link %}
+          </a>
+          {% endif %}
+      </h4>
+      <p class="small">
+          Posted by <a href="{% url "profile" obj.primary_author.id %}">{% if request.user == obj.primary_author %} me {% else %} {{ obj.primary_author }} {% endif %}</a>
+        | {{ obj.date_updated|date:"j M Y" }}<br />
+        {% display_shared_with obj request.user %}
+      </p>
+      <p class="more">{{ obj.description|urlize|linebreaksbr }}</p>
+      <p class="tags">
+          {% if request.user.is_superuser or request.user == obj.primary_author %}
+          <span class="btn btn-tag btn-xs">
+              <i class="{{ obj.get_workflow_icon }}" aria-hidden="true"></i>
+              {% if obj.workflow_state == 'live' %}
+                  Posted
+              {% elif obj.workflow_state == 'draft' %}
+                  Draft
+              {% elif obj.workflow_state == 'author review' %}
+                  Author Review
+              {% elif obj.workflow_state == 'processing' %}
+                  Submitted
+              {% else %}
+                  {{ obj.workflow_state }}
+              {% endif %}
+          </span>
+          {% endif %}
+          {% for tag in obj.tags.all %}
+            {% if tag.slug != '' %}
+            <a role="button" class="btn btn-tag btn-xs" href="{% url 'haystack_search' %}?tags={{ tag.id }}">
+              {{ tag.name }}
+            </a>
+            {% endif %}
+          {% endfor %}
+      </p>
+    </div>
+    <div class="col-md-1">
+    {%  if not can_link %}
+        <!-- social tools suppressed because user is not an active member -->
+    {% else %}
+      {% include 'discussions/discussion_count_widget.html' %}
+      {% if user != obj.get_poster %}
+        <form class="bookmark-form" method="POST" action="{% toggle_bookmark_url obj user %}">
+        {% csrf_token %}
+        <input type="hidden" name="{% if project %}group{% else %}dashboard{% endif %}" value="on" />
+        <input type="hidden" name="content_type" value="{{ obj.get_content_type_id }}" />
+        <input type="hidden" name="content_id" value="{{ obj.id }}" />
+        <a href="#" class="bookmark-trigger" data-toggle="tooltip" title="Save Bookmark"><i class="fa fa-star" aria-hidden="true"></i></a>
+        </form>
+      {% endif %}
+      <a class="share-link" href="/send/casereport/casereport/{{ obj.id }}"><i class="fa fa-share"></i></a>
+    {%  endif %}
+    </div>
+</div>
+<hr>

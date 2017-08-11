@@ -1,0 +1,3218 @@
+[
+{
+    "fields": {
+        "model": "logentry",
+        "app_label": "admin"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": 1
+},
+{
+    "fields": {
+        "model": "permission",
+        "app_label": "auth"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": 2
+},
+{
+    "fields": {
+        "model": "group",
+        "app_label": "auth"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": 3
+},
+{
+    "fields": {
+        "model": "user",
+        "app_label": "auth"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": 4
+},
+{
+    "fields": {
+        "model": "contenttype",
+        "app_label": "contenttypes"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": 5
+},
+{
+    "fields": {
+        "model": "session",
+        "app_label": "sessions"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": 6
+},
+{
+    "fields": {
+        "model": "crdbbase",
+        "app_label": "casereport"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": 7
+},
+{
+    "fields": {
+        "model": "institution",
+        "app_label": "casereport"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": 8
+},
+{
+    "fields": {
+        "model": "physician",
+        "app_label": "casereport"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": 9
+},
+{
+    "fields": {
+        "model": "casefile",
+        "app_label": "casereport"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": 10
+},
+{
+    "fields": {
+        "model": "concept",
+        "app_label": "casereport"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": 11
+},
+{
+    "fields": {
+        "model": "molecule",
+        "app_label": "casereport"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": 12
+},
+{
+    "fields": {
+        "model": "molecularabberation",
+        "app_label": "casereport"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": 13
+},
+{
+    "fields": {
+        "model": "authorizedrep",
+        "app_label": "casereport"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": 14
+},
+{
+    "fields": {
+        "model": "casereport",
+        "app_label": "casereport"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": 15
+},
+{
+    "fields": {
+        "model": "event",
+        "app_label": "casereport"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": 16
+},
+{
+    "fields": {
+        "model": "testevent",
+        "app_label": "casereport"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": 17
+},
+{
+    "fields": {
+        "model": "treatmentevent",
+        "app_label": "casereport"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": 18
+},
+{
+    "fields": {
+        "model": "resultvalueevent",
+        "app_label": "casereport"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": 19
+},
+{
+    "fields": {
+        "model": "diagnosisevent",
+        "app_label": "casereport"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": 20
+},
+{
+    "fields": {
+        "model": "captchastore",
+        "app_label": "captcha"
+    },
+    "model": "contenttypes.contenttype",
+    "pk": 21
+},
+{
+    "fields": {
+        "expire_date": "2015-12-01T10:45:05.990Z",
+        "session_data": "NTBjMWFmYWY2YTkxY2FlNmQyZDJjOGFkMjQ4OTJlMTJiYjQzYjJlYzp7Il9hdXRoX3VzZXJfaGFzaCI6IjU3MDU3MGMzMmFhOGM4MWQ1YmEzMjU5ZWE5M2FlMmZiNDAwYjZlYzgiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZCIsIl9hdXRoX3VzZXJfaWQiOiIxIn0="
+    },
+    "model": "sessions.session",
+    "pk": "220gyg7sycxnlsm7hbb2hhaxbv0czh6t"
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T10:48:29.862Z",
+        "created_on": "2015-11-17T10:48:29.862Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 1
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T10:52:48.643Z",
+        "created_on": "2015-11-17T10:52:48.643Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 2
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T10:53:33.841Z",
+        "created_on": "2015-11-17T10:53:33.841Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 3
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T10:54:31.901Z",
+        "created_on": "2015-11-17T10:54:31.901Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 4
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T10:55:02.729Z",
+        "created_on": "2015-11-17T10:55:02.729Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 5
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T10:55:26.910Z",
+        "created_on": "2015-11-17T10:55:26.910Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 6
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 7
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 8
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 9
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 10
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 11
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 12
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 13
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 14
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 15
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 16
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 17
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 18
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 19
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 20
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 21
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 22
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 23
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 24
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 25
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 26
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 27
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 28
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 29
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 30
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 31
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 32
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 33
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 34
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 35
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 36
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 37
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 38
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 39
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 40
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 41
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 42
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 43
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 44
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 45
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 46
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 47
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 48
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 49
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 50
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 51
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 52
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 53
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 54
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 55
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 56
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 57
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 58
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 59
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 60
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 61
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 62
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 63
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 64
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 65
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 66
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 67
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 68
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 69
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 70
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 71
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 72
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 73
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 74
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 75
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 76
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 77
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 78
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 79
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 80
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 81
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 82
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 83
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 84
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 85
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 86
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 87
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 88
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 89
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 90
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 91
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 92
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 93
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 94
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 95
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 96
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 97
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 98
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 99
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 100
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 101
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 102
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 103
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 104
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 105
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 106
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 107
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 108
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 109
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 110
+},
+{
+    "fields": {
+        "modified_on": "2015-11-17T11:06:00.370Z",
+        "created_on": "2015-11-17T11:06:00.370Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 111
+},
+{
+    "fields": {
+        "modified_on": "2015-11-18T10:08:40.234Z",
+        "created_on": "2015-11-18T10:08:40.234Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 112
+},
+{
+    "fields": {
+        "modified_on": "2015-11-18T10:09:51.276Z",
+        "created_on": "2015-11-18T10:09:51.276Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 113
+},
+{
+    "fields": {
+        "modified_on": "2015-11-18T10:10:59.525Z",
+        "created_on": "2015-11-18T10:10:59.525Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 114
+},
+{
+    "fields": {
+        "modified_on": "2015-11-18T10:10:59.525Z",
+        "created_on": "2015-11-18T10:10:59.525Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 115
+},
+{
+    "fields": {
+        "modified_on": "2015-11-18T10:10:59.525Z",
+        "created_on": "2015-11-18T10:10:59.525Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 116
+},
+{
+    "fields": {
+        "modified_on": "2015-11-18T10:10:59.525Z",
+        "created_on": "2015-11-18T10:10:59.525Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 117
+},
+{
+    "fields": {
+        "modified_on": "2015-11-18T10:10:59.525Z",
+        "created_on": "2015-11-18T10:10:59.525Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 118
+},
+{
+    "fields": {
+        "modified_on": "2015-11-18T10:10:59.525Z",
+        "created_on": "2015-11-18T10:10:59.525Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 119
+},
+{
+    "fields": {
+        "modified_on": "2015-11-18T10:10:59.525Z",
+        "created_on": "2015-11-18T10:10:59.525Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 120
+},
+{
+    "fields": {
+        "modified_on": "2015-11-18T11:43:03.549Z",
+        "created_on": "2015-11-18T11:43:03.549Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 121
+},
+{
+    "fields": {
+        "modified_on": "2015-11-18T11:46:13.428Z",
+        "created_on": "2015-11-18T11:46:13.428Z"
+    },
+    "model": "casereport.crdbbase",
+    "pk": 122
+},
+{
+    "fields": {
+        "city": "California",
+        "address": "California Northstate University College of Medicine, California, USA",
+        "name": "California Northstate University College of Medicine",
+        "country": "US"
+    },
+    "model": "casereport.institution",
+    "pk": 1
+},
+{
+    "fields": {
+        "city": "Alabama",
+        "address": "Alabama College of Osteopathic Medicine, Alabama, USA",
+        "name": "Alabama College of Osteopathic Medicine",
+        "country": "US"
+    },
+    "model": "casereport.institution",
+    "pk": 2
+},
+{
+    "fields": {
+        "city": "Newyork",
+        "address": "Penn Presbyterian Medical Center, Newyork, USA",
+        "name": "Penn Presbyterian Medical Center",
+        "country": "US"
+    },
+    "model": "casereport.institution",
+    "pk": 3
+},
+{
+    "fields": {
+        "affiliation": 1,
+        "email": "john@cnu.org"
+    },
+    "model": "casereport.physician",
+    "pk": 4
+},
+{
+    "fields": {
+        "affiliation": 2,
+        "email": "james@acom.org"
+    },
+    "model": "casereport.physician",
+    "pk": 5
+},
+{
+    "fields": {
+        "affiliation": 3,
+        "email": "marc@ppmc.org"
+    },
+    "model": "casereport.physician",
+    "pk": 6
+},
+{
+    "fields": {
+        "name": "MDM2",
+        "cui": "C0812222"
+    },
+    "model": "casereport.concept",
+    "pk": 7
+},
+{
+    "fields": {
+        "name": "MDM2 gene",
+        "cui": "C0812222"
+    },
+    "model": "casereport.concept",
+    "pk": 8
+},
+{
+    "fields": {
+        "name": "MDM2 oncogene, E3 ubiquitin protein ligase",
+        "cui": "C0812222"
+    },
+    "model": "casereport.concept",
+    "pk": 9
+},
+{
+    "fields": {
+        "name": "p53-BINDING PROTEIN MDM2",
+        "cui": "C0812222"
+    },
+    "model": "casereport.concept",
+    "pk": 10
+},
+{
+    "fields": {
+        "name": "MDM2, Transformed 3T3 Cell Double Minute 2, p53 Binding Protein (Mouse) Gene",
+        "cui": "C0812222"
+    },
+    "model": "casereport.concept",
+    "pk": 11
+},
+{
+    "fields": {
+        "name": "MOUSE DOUBLE MINUTE 2 HOMOLOG",
+        "cui": "C0812222"
+    },
+    "model": "casereport.concept",
+    "pk": 12
+},
+{
+    "fields": {
+        "name": "ONCOPROTEIN MDM2",
+        "cui": "C0812222"
+    },
+    "model": "casereport.concept",
+    "pk": 13
+},
+{
+    "fields": {
+        "name": "MGC5370",
+        "cui": "C0812222"
+    },
+    "model": "casereport.concept",
+    "pk": 14
+},
+{
+    "fields": {
+        "name": "FKHR",
+        "cui": "C1333572"
+    },
+    "model": "casereport.concept",
+    "pk": 15
+},
+{
+    "fields": {
+        "name": "FOXO1 Gene",
+        "cui": "C1333572"
+    },
+    "model": "casereport.concept",
+    "pk": 16
+},
+{
+    "fields": {
+        "name": "FOXO1 Gene",
+        "cui": "C1333572"
+    },
+    "model": "casereport.concept",
+    "pk": 17
+},
+{
+    "fields": {
+        "name": "FORKHEAD BOX O1A",
+        "cui": "C1333572"
+    },
+    "model": "casereport.concept",
+    "pk": 18
+},
+{
+    "fields": {
+        "name": "FKH1",
+        "cui": "C1333572"
+    },
+    "model": "casereport.concept",
+    "pk": 19
+},
+{
+    "fields": {
+        "name": "FKHR",
+        "cui": "C1333572"
+    },
+    "model": "casereport.concept",
+    "pk": 20
+},
+{
+    "fields": {
+        "name": "FOXO1A",
+        "cui": "C1333572"
+    },
+    "model": "casereport.concept",
+    "pk": 21
+},
+{
+    "fields": {
+        "name": "FORKHEAD, DROSOPHILA, HOMOLOG OF, IN RHABDOMYOSARCOMA",
+        "cui": "C1333572"
+    },
+    "model": "casereport.concept",
+    "pk": 22
+},
+{
+    "fields": {
+        "name": "FOXO1",
+        "cui": "C1333572"
+    },
+    "model": "casereport.concept",
+    "pk": 23
+},
+{
+    "fields": {
+        "name": "FORKHEAD IN RHABDOMYOSARCOMA",
+        "cui": "C1333572"
+    },
+    "model": "casereport.concept",
+    "pk": 24
+},
+{
+    "fields": {
+        "name": "forkhead box O1",
+        "cui": "C1333572"
+    },
+    "model": "casereport.concept",
+    "pk": 25
+},
+{
+    "fields": {
+        "name": "Forkhead Box O1 Gene",
+        "cui": "C1333572"
+    },
+    "model": "casereport.concept",
+    "pk": 26
+},
+{
+    "fields": {
+        "name": "erbB-2 Receptor",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 34
+},
+{
+    "fields": {
+        "name": "Receptor, ErbB 2",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 35
+},
+{
+    "fields": {
+        "name": "erbb-2 receptor",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 36
+},
+{
+    "fields": {
+        "name": "Receptors, erbB 2",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 37
+},
+{
+    "fields": {
+        "name": "erbB-2 Receptors",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 38
+},
+{
+    "fields": {
+        "name": "Receptor, erbB-2",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 39
+},
+{
+    "fields": {
+        "name": "Oncogene Protein HER-2",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 40
+},
+{
+    "fields": {
+        "name": "erbB-2 Proto-Oncogene Protein",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 41
+},
+{
+    "fields": {
+        "name": "Proto-Oncogene Protein, erbB-2",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 42
+},
+{
+    "fields": {
+        "name": "c-erbB-2 Protein",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 43
+},
+{
+    "fields": {
+        "name": "Receptor, Neu",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 44
+},
+{
+    "fields": {
+        "name": "neu Receptor",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 45
+},
+{
+    "fields": {
+        "name": "Receptor, neu",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 46
+},
+{
+    "fields": {
+        "name": "neu receptors",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 47
+},
+{
+    "fields": {
+        "name": "Neu Receptor",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 48
+},
+{
+    "fields": {
+        "name": "Proto Oncogene Protein HER 2",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 49
+},
+{
+    "fields": {
+        "name": "Proto-Oncogene Protein, HER-2",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 50
+},
+{
+    "fields": {
+        "name": "HER-2 Proto-Oncogene Protein",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 51
+},
+{
+    "fields": {
+        "name": "Proto-Oncogene Protein p185(neu)",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 52
+},
+{
+    "fields": {
+        "name": "Proto Oncogene Proteins c erbB 2",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 53
+},
+{
+    "fields": {
+        "name": "Proto oncogene c ErbB 2",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 54
+},
+{
+    "fields": {
+        "name": "c-ErbB-2, Proto-oncogene",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 55
+},
+{
+    "fields": {
+        "name": "neu Proto-Oncogene Protein",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 56
+},
+{
+    "fields": {
+        "name": "Protein Neu, Proto-oncogene",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 57
+},
+{
+    "fields": {
+        "name": "Proto oncogene Protein Neu",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 58
+},
+{
+    "fields": {
+        "name": "Neu, Proto-oncogene Protein",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 59
+},
+{
+    "fields": {
+        "name": "neu Proto Oncogene Protein",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 60
+},
+{
+    "fields": {
+        "name": "Proto-Oncogene Protein, neu",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 61
+},
+{
+    "fields": {
+        "name": "p185(c-neu)",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 62
+},
+{
+    "fields": {
+        "name": "Oncogene protein HER-2/neu",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 63
+},
+{
+    "fields": {
+        "name": "Proto-Oncogene Neu",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 64
+},
+{
+    "fields": {
+        "name": "CD340 Antigen",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 65
+},
+{
+    "fields": {
+        "name": "Antigens, CD340",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 66
+},
+{
+    "fields": {
+        "name": "CD340 Antigens",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 67
+},
+{
+    "fields": {
+        "name": "Antigen CD340",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 68
+},
+{
+    "fields": {
+        "name": "Antigen, CD340",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 69
+},
+{
+    "fields": {
+        "name": "MLN 19",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 70
+},
+{
+    "fields": {
+        "name": "p185erbB2",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 71
+},
+{
+    "fields": {
+        "name": "EC 2.7.10.1",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 72
+},
+{
+    "fields": {
+        "name": "Metastatic Lymph Node Gene 19 Protein",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 73
+},
+{
+    "fields": {
+        "name": "p185erbB2 Protein",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 74
+},
+{
+    "fields": {
+        "name": "Protein, p185erbB2",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 75
+},
+{
+    "fields": {
+        "name": "c-erbB-2",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 76
+},
+{
+    "fields": {
+        "name": "HER2/neu",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 77
+},
+{
+    "fields": {
+        "name": "erbB 2 Receptor Protein Tyrosine Kinase",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 78
+},
+{
+    "fields": {
+        "name": "Receptor Tyrosine-Protein Kinase erbB-2",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 79
+},
+{
+    "fields": {
+        "name": "HER-2",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 80
+},
+{
+    "fields": {
+        "name": "her-2",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 81
+},
+{
+    "fields": {
+        "name": "ERBB2",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 82
+},
+{
+    "fields": {
+        "name": "erbb2",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 83
+},
+{
+    "fields": {
+        "name": "HER2",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 84
+},
+{
+    "fields": {
+        "name": "her2",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 85
+},
+{
+    "fields": {
+        "name": "NEU",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 86
+},
+{
+    "fields": {
+        "name": "neu",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 87
+},
+{
+    "fields": {
+        "name": "Oncogene protein HER-2/neu (substance)",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 88
+},
+{
+    "fields": {
+        "name": "ERBB2 Receptor Protein-Tyrosine Kinase",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 89
+},
+{
+    "fields": {
+        "name": "Tyrosine Kinase type Cell Surface Receptor HER2",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 90
+},
+{
+    "fields": {
+        "name": "ERBB PROTO ONCOGENE PROTEIN 002",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 91
+},
+{
+    "fields": {
+        "name": "C ERBB PROTEIN 002",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 92
+},
+{
+    "fields": {
+        "name": "ERBB RECEPTOR PROTEIN TYROSINE KINASE 002",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 93
+},
+{
+    "fields": {
+        "name": "HER PROTO ONCOGENE PROTEIN 002",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 94
+},
+{
+    "fields": {
+        "name": "PROTO ONCOGENE PROTEIN HER 002",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 95
+},
+{
+    "fields": {
+        "name": "PROTO ONCOGENE PROTEIN P 185 NEU",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 96
+},
+{
+    "fields": {
+        "name": "CD340",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 97
+},
+{
+    "fields": {
+        "name": "Receptor, erbB-2 [Chemical/Ingredient]",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 98
+},
+{
+    "fields": {
+        "name": "human EGF receptor 2",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 99
+},
+{
+    "fields": {
+        "name": "human epidermal growth factor receptor 2",
+        "cui": "C0069515"
+    },
+    "model": "casereport.concept",
+    "pk": 100
+},
+{
+    "fields": {
+        "name": "chemotherapy",
+        "cui": "C0013217"
+    },
+    "model": "casereport.concept",
+    "pk": 107
+},
+{
+    "fields": {
+        "name": "ifosfamide",
+        "cui": "C0020823"
+    },
+    "model": "casereport.concept",
+    "pk": 108
+},
+{
+    "fields": {
+        "name": "doxorubicin",
+        "cui": "C0013089"
+    },
+    "model": "casereport.concept",
+    "pk": 109
+},
+{
+    "fields": {
+        "name": "mesna",
+        "cui": "C0000294"
+    },
+    "model": "casereport.concept",
+    "pk": 110
+},
+{
+    "fields": {
+        "name": "Surgery",
+        "cui": "C0038894"
+    },
+    "model": "casereport.concept",
+    "pk": 111
+},
+{
+    "fields": {
+        "name": "Surgery specialty",
+        "cui": "C0038894"
+    },
+    "model": "casereport.concept",
+    "pk": 112
+},
+{
+    "fields": {
+        "name": "re-excision",
+        "cui": "C0184913"
+    },
+    "model": "casereport.concept",
+    "pk": 113
+},
+{
+    "fields": {
+        "name": "Reexcision",
+        "cui": "C0184913"
+    },
+    "model": "casereport.concept",
+    "pk": 114
+},
+{
+    "fields": {
+        "name": "Reexcision, NOS",
+        "cui": "C0184913"
+    },
+    "model": "casereport.concept",
+    "pk": 115
+},
+{
+    "fields": {
+        "name": "Reexcision (procedure)",
+        "cui": "C0184913"
+    },
+    "model": "casereport.concept",
+    "pk": 116
+},
+{
+    "fields": {
+        "name": "re-excision",
+        "cui": "C0184913"
+    },
+    "model": "casereport.concept",
+    "pk": 117
+},
+{
+    "fields": {
+        "name": "capecitabine",
+        "cui": "C0671970"
+    },
+    "model": "casereport.concept",
+    "pk": 118
+},
+{
+    "fields": {
+        "name": "oxaliplatin",
+        "cui": "C0069717"
+    },
+    "model": "casereport.concept",
+    "pk": 119
+},
+{
+    "fields": {
+        "name": "irinotecan",
+        "cui": "C0123931"
+    },
+    "model": "casereport.concept",
+    "pk": 120
+},
+{
+    "fields": {
+        "name": "MDM2",
+        "concepts": [
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14
+        ]
+    },
+    "model": "casereport.molecule",
+    "pk": 27
+},
+{
+    "fields": {
+        "name": "FKHR",
+        "concepts": [
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26
+        ]
+    },
+    "model": "casereport.molecule",
+    "pk": 28
+},
+{
+    "fields": {
+        "name": "ERBB2",
+        "concepts": [
+            34,
+            35,
+            36,
+            37,
+            38,
+            39,
+            40,
+            41,
+            42,
+            43,
+            44,
+            45,
+            46,
+            47,
+            48,
+            49,
+            50,
+            51,
+            52,
+            53,
+            54,
+            55,
+            56,
+            57,
+            58,
+            59,
+            60,
+            61,
+            62,
+            63,
+            64,
+            65,
+            66,
+            67,
+            68,
+            69,
+            70,
+            71,
+            72,
+            73,
+            74,
+            75,
+            76,
+            77,
+            78,
+            79,
+            80,
+            81,
+            82,
+            83,
+            84,
+            85,
+            86,
+            87,
+            88,
+            89,
+            90,
+            91,
+            92,
+            93,
+            94,
+            95,
+            96,
+            97,
+            98,
+            99,
+            100
+        ]
+    },
+    "model": "casereport.molecule",
+    "pk": 101
+},
+{
+    "fields": {
+        "molecule": 27,
+        "name": "MDM2: Negative (FISH)"
+    },
+    "model": "casereport.molecularabberation",
+    "pk": 29
+},
+{
+    "fields": {
+        "molecule": 28,
+        "name": "FKHR: Negative (FISH)"
+    },
+    "model": "casereport.molecularabberation",
+    "pk": 30
+},
+{
+    "fields": {
+        "molecule": 28,
+        "name": "PAX7-FKHR: Negative transcript (RT-PCR)"
+    },
+    "model": "casereport.molecularabberation",
+    "pk": 31
+},
+{
+    "fields": {
+        "molecule": 28,
+        "name": "PAX3-FKHR: Negative transcript (RT-PCR)"
+    },
+    "model": "casereport.molecularabberation",
+    "pk": 32
+},
+{
+    "fields": {
+        "molecule": 101,
+        "name": "ERBB2 amplification"
+    },
+    "model": "casereport.molecularabberation",
+    "pk": 102
+},
+{
+    "fields": {
+        "first_name": "Asreedh",
+        "last_name": "R",
+        "email": "asreedh@trialx.org"
+    },
+    "model": "casereport.authorizedrep",
+    "pk": 104
+},
+{
+    "fields": {
+        "first_name": "Yaseen",
+        "last_name": "Dar",
+        "email": "yaseen@trialx.org"
+    },
+    "model": "casereport.authorizedrep",
+    "pk": 105
+},
+{
+    "fields": {
+        "first_name": "Nadeem",
+        "last_name": "Aslam",
+        "email": "nadeem@trialx.org"
+    },
+    "model": "casereport.authorizedrep",
+    "pk": 106
+},
+{
+    "fields": {
+        "specimen_analyzed": "May 2005: open biopsy\r\nJuly 2005: tumour resection\r\nAugust 2005: reexcision primary tumour",
+        "status": "approved",
+        "previous_treatments": "7/2005: surgery (wide resection)\r\n8/2005: re-excision (no residu after reexcision) R0\r\n09/2005 - 12/2005: ifosfamide/doxorubicin/mesna (4 cures)\r\nClinical trial: no\r\nBest RECIST response chemo: progressive disease\r\nProgression chemo: 12/07/2005\r\n",
+        "precision_treatment": "06/2005: Medical consultation\r\nThe patient is seen today to confirm the surgery indication.\r\nIt is a superficial lesion. It does not overcome the supra-epinal ligament. There is hypervascularization around the lesion. The lesion does not penetrate the derma, which allows a surgical excision in good condition.\r\nScar will be removed as well.\r\nExtension did not include a thoracic scan.\r\nRadiotherapy is considered as standard.\r\n\r\n\r\n06/2005: Multidisciplinary sarcoma tumour board\r\n30 Y/O Patient 3 month pregnant has discovered a posterior cervical mass relatively suspect through ultrasound.\r\nA micro-biopsy has been made in favor of a Rhabdomyosarcoma with high mitotic index. The lesion was 37 x 25 x 21 mm and is superficial. \r\nA surgical excision is planned. \r\nComplementary treatments will depend on the histologic analysis.\r\n\r\n\r\n\r\n06/2005 : Medical consultation\r\nPatient seen for anaesthesia consultation \r\nWeight = 59,0 kg, Heigth = 165 cm, IMC = 21,67.\r\nPlanned surgery : Surgical excision of posterior cervical rhabdomyosarcoma.\r\nPatient is pregnant (4months)\r\nSurgeon is informed of the ventral decubitus position more favorable to the fetus.\r\nThe Spontaneous abortion risk has been explained.\r\n\r\n07/2005: Medical consultation\r\n\r\nA therapeutic abortion has been decided which will be followed by a surgical revision and a MAID adjuvant chemotherapy.\r\nA thoracic scan has been requested and will be done at the same time as anesthesia consultation.\r\n\r\n07/2005: Medical consultation\r\nThe patient is seen for the follow up of a high grade pleomorphic rhabdomyosarcoma from the posterior cervical region.\r\nThe patient has had a surgical excision on July 7th 2005. The resection is non in-sano at the lateral dermo-epidermical level.\r\nAfter discussion it is established that patient needs a wider skin and aponeurosis resection. 5cm margin will be done. A large substance lose of 12 x 18 cm in its maximum dimension will occur.\r\nTaking into account the spinal exposure of the central substance lose and the necessity of an additional radiotherapy, a trophic coverage will be done. An orientation toward Latissimus Dorsi flap.\r\n\r\n08/2005: Medical consultation\r\nThe second surgery has allowed a large primary tumor in sano excision. Tumor redisue have been found in the median healing zone between the initial surgical cavity and the superficial cutaneous plan.\r\nThe dossier will be discussed in Multidisciplinary board to discuss the adjuvant chemotherapy and loco-regional radiotherapy.\r\nPregnency topic: caesarean could be possible at week 29 and if chemotherapy is not urgent the delivery could be delayed for about 10 days.\r\n\r\n08/2005: Multidisciplinary sarcoma tumour board\r\nPatient with high grade rhabdomyosarcoma.\r\nInitial July resection was not in sano. The second resection in August with flap was an R0 resection\r\nA MAI adjuvant chemotherapy has been confirmed, 5 cures completed by a complementary radiotherapy.\r\nUnfortunately, the patient is pregnant. She will be at 29 weeks by end August with a viable child. The decision is difficult we can confirm chemotherapy indication considering tumor size, histological grade and tumor histotype. Theoretically, starting the chemotherapy after end September 2005 seems to increase the risk on treatment efficacy.\r\nObviously, the decision will be taken with patient and obstetrics in order to identify the risks for the child if he will be delivered end of August. A radiotherapy is planned after chemotherapy.\r\n. \r\n\r\n08/2005: Medical consultation\r\nCurrently, Healing is perfectly acquired except in the distal part of the flap for 3cm2.\r\nThese 3cm2 are surgically excised with daily care prescribes.\r\n\r\n08/2005: Medical consultation\r\nThe cesarean is planned on September 15 which will allow the best condition for the newborn.\r\nThe chemotherapy will begin on September 26th. \r\nThe condition will be optimized so that the mother and the baby share a maximum of time in maternity as well as during chemotherapy in pediatric service.\r\n\r\n\r\n09/2005: Medical consultation\r\n2 non-epidemalized zones, distal part and right lateral part of the flap.\r\nLocal care with fat bandage\r\nThe patient has given birth with normal follow-up. The newborn is fine.\r\nClinical exams shows bilateral adenopathies on spinal chain more important on the right.\r\nWe find in addition a centimetric adenopathy on the right axillary region.\r\nPatient has been re-hospitalized for 5 days. Enlarged scan has been planned.\r\n\r\n\r\n09/2005: Cervical and thoracic scan\r\nAppearance of a small left pleural effusion and non nodular parenchymal lung fuzzy opacities to by to be monitored.\r\nAppearance of suspect intra-liver hypo-dense images not visible previously\r\nTissue effusion on more than 10cm of the height of the right posterior cervical region diffusing up to the left superior side of the left blade associated with spinal adenomegaly.\r\n\r\n09/2005: Medical consultation\r\nVery bad tumor evolution with local recurrence on scar side. Fixed sub-cutaneous tumor mass with bilateral subclavicular  adenopathy .\r\nThere is as well an axillary adenopathy, a tumor mass in the left breast.\r\nScan and bone scintigraphy are expected for extension.\r\nA MAID chemotherapy has been started.\r\n\r\n10/2005 : Bone scintigraphy\r\nThe left iliac wing scintigraphy is suspect and request a comparison to a pelvis scan.\r\n\r\n\r\n11/2005 : Medical consultation\r\nTreatment follow up visit\r\nKarnofsky = 60 %, PS = 2, weigth = 55,0 kg. \r\nProgressive disease\r\n4th line of MAID for her rhabdomyosarcoma\r\nThe patient has pain in t the hollow armpit relative to lymph node accumulation with for-arm pain.\r\nClinical exam reveal large lymph node mass in the right hollow armpit. There is a indurate cervical adenopathy.\r\nAnemia with 98g/L hemoglobin, Lymphoma at 10000 and Neutrophilia at 9000, platelettes at 669 giga/l \r\nRenal ponction is normal and liver enzyme as well.\r\nClinical progression at the axillary lymph node.\r\nChemlotherapy is prescribed and follow up at 3 weeks planned for inclusion in GIMATECAN protocol.\r\n\r\n12/2005: Medical consultation\r\nLarge tumor progression and inclusion visit\r\nGW or GIMATECAN treatment is very import\r\n",
+        "title": "Adult spindle cell rhabdomyosarcoma",
+        "gender": "female",
+        "age": 38,
+        "casefile": null,
+        "authorized_reps": [],
+        "referring_physician": 4,
+        "molecular_abberations": [
+            29,
+            30,
+            31,
+            32
+        ],
+        "clinical_outcome": "12/2005\r\nPatient deceased du to disease progression\r\n",
+        "history": "Adult spindle cell rhabdomyosarcoma\r\nGrade 3\r\nLocation: right trunk paraspinal\r\nSize: 45 mm\r\nDepth of tumour: superficial\r\n\r\n38 YO patient 3 month pregnancy (3rd child) without any background, having notice 2 month ago a swelling at neck base with regards to the seventh cervical vertebra, swelling of 4cm in the wider axe.\r\nA biopsy has been made which guides toward a sarcoma but immune-histochemical tests are on-going.\r\nUltrasounds shows hypo echogenic and a little heterogeneous.\r\nThyroid and abdominal ultrasound OK\r\nLesion MRI is requested for surgical process organization.\r\n\r\n"
+    },
+    "model": "casereport.casereport",
+    "pk": 33
+},
+{
+    "fields": {
+        "specimen_analyzed": "Image-guided core needle biopsy of an enlarging metastasis in the right hepatic lobe (Figure) was performed in April 2013.  Pathology review confirmed metastatic adenocarcinoma.",
+        "status": "approved",
+        "previous_treatments": "2/2012-8/2012:  capecitabine/oxaliplatin (6 cycles)\r\n8/2012-10/2012: capecitabine/irinotecan (3 cycles)\r\n11/2012-04/2013: irinotecan/cetuximab   (4 cycles)\r\n04/2013-06/2013: trastuzumab (2 cycles)\r\n07/2013-current:  trastuzumab-emtansine (3 cycles to date)",
+        "precision_treatment": "The patient\u2019s case, including previous treatments, clinical course, and genomic analysis were presented at our institution\u2019s molecular tumor board.  Participating in the tumor board were both intramural and extramural experts in the fields of medical oncology, cancer genomics, cancer cell biology, cells signaling and pharmacy.  The panel consensus was that a tumor with the indicated molecular aberrations would have an increased likelihood of responding to anti-Her2 targeted therapies including Trastuzumab or Trastuzumab-emtansine (TD-M1).  Extensive experience with Her-2 targeted treatment in breast cancer indicates that Her2 amplification predicts for response to such drugs.  However, the panel readily acknowledged that less is known about the efficacy of these agents in tumors of primary colon origin.  APC and TP53 mutations are extremely common in colon cancer and neither is currently predictive of response to available therapies.  The presence of APC and TP53 alterations does not appear to impact any clinical management decisions in this setting.",
+        "title": "Precision Oncology",
+        "gender": "male",
+        "age": 49,
+        "casefile": null,
+        "authorized_reps": [],
+        "referring_physician": 5,
+        "molecular_abberations": [
+            29,
+            102
+        ],
+        "clinical_outcome": "The patient in this case had exhausted all of the commonly utilized therapeutics for the treatment of colon cancer and retained an acceptable performance status.  Genomic analysis performed in a certified laboratory indicated the presence of a Her-2 amplification.\r\n The patient received Trastuzumab every three weeks for a total of three treatments.  Follow-up evaluation identified a CEA of 29 (previously 15) and CT scan confirmed slight disease progression.  He then received Trastuzumab-emtansine every three weeks for two cycles.  Laboratory evaluation revealed a CEA of 13 and CT imaging confirmed clear evidence of disease response.  The patient went on to receive an additional three cycles of Trastuzumab-emtansine with CT imaging again confirming ongoing response to treatment (Fig 1D).",
+        "history": "A 49-year-old gentleman presented to the emergency department complaining of right flank pain.  Initial labs revealed a hemoglobin of 7.1 g/dL, while imaging identified thickening of the sigmoid colon and multiple hepatic and pulmonary nodules.  Image-guided core needle biopsy of a liver nodule revealed metastatic adenocarcinoma consistent with metastatic colorectal cancer. Molecular analysis confirmed KRas-wildtype disease.\r\n\r\n Shortly after diagnosis, the patient began palliative chemotherapy with capecitabine/oxaliplatin.  Bevacizumab was not given due to evidence of rectal bleeding and a history of deep venous thrombosis. Three months after initiation of treatment, an interval CT scan confirmed stable disease.  However, follow-up imaging six months after treatment initiation identified progressive disease in the liver and lung as well as a new adrenal gland lesion.  Over the next several months the patient was treated with Capecitabine/Irinotecan and Irinotecan/Cetuximab ultimately progressing through each regimen with enlargement of hepatic metastases.  Given the patient\u2019s age and excellent performance status, a repeat liver biopsy was performed and NextGen Sequencing diagnostic testing completed with the results listed below."
+    },
+    "model": "casereport.casereport",
+    "pk": 103
+},
+{
+    "fields": {
+        "casereport": 33,
+        "parent_event": null,
+        "name": "ifosfamide",
+        "event_type": "treatment",
+        "interval": "",
+        "name_coded": [
+            108
+        ],
+        "previous_event": null,
+        "end_date_point": "12/07/2005",
+        "frequency": null,
+        "date_point": "09/2005",
+        "next_event": null,
+        "is_negation": false
+    },
+    "model": "casereport.event",
+    "pk": 112
+},
+{
+    "fields": {
+        "casereport": 33,
+        "parent_event": null,
+        "name": "doxorubicin",
+        "event_type": "treatment",
+        "interval": "",
+        "name_coded": [
+            109
+        ],
+        "previous_event": null,
+        "end_date_point": "12/07/2005",
+        "frequency": null,
+        "date_point": "09/2005",
+        "next_event": null,
+        "is_negation": false
+    },
+    "model": "casereport.event",
+    "pk": 113
+},
+{
+    "fields": {
+        "casereport": 33,
+        "parent_event": null,
+        "name": "mesna",
+        "event_type": "treatment",
+        "interval": "",
+        "name_coded": [
+            110
+        ],
+        "previous_event": null,
+        "end_date_point": "12/07/2005",
+        "frequency": null,
+        "date_point": "09/2005",
+        "next_event": null,
+        "is_negation": false
+    },
+    "model": "casereport.event",
+    "pk": 114
+},
+{
+    "fields": {
+        "casereport": 33,
+        "parent_event": null,
+        "name": "ifosfamide",
+        "event_type": "treatment",
+        "interval": "cycles",
+        "name_coded": [],
+        "previous_event": null,
+        "end_date_point": "8/2012",
+        "frequency": 6,
+        "date_point": "2/2012",
+        "next_event": null,
+        "is_negation": false
+    },
+    "model": "casereport.event",
+    "pk": 121
+},
+{
+    "fields": {
+        "casereport": 103,
+        "parent_event": null,
+        "name": "capecitabine",
+        "event_type": "treatment",
+        "interval": "",
+        "name_coded": [
+            118
+        ],
+        "previous_event": null,
+        "end_date_point": "",
+        "frequency": null,
+        "date_point": "",
+        "next_event": null,
+        "is_negation": false
+    },
+    "model": "casereport.event",
+    "pk": 122
+},
+{
+    "fields": {
+        "name_coded": [
+            108
+        ],
+        "followed_by_interval": "",
+        "outcomes_coded": [],
+        "side_effects": "",
+        "followed_by": null,
+        "treatment_type": "chemotherapy",
+        "combined_with": null,
+        "side_effects_coded": [],
+        "outcomes": "progressive",
+        "followed_by_interval_unit": "",
+        "treatment_type_coded": [
+            107
+        ]
+    },
+    "model": "casereport.treatmentevent",
+    "pk": 112
+},
+{
+    "fields": {
+        "name_coded": [
+            109
+        ],
+        "followed_by_interval": "",
+        "outcomes_coded": [],
+        "side_effects": "",
+        "followed_by": null,
+        "treatment_type": "chemotherapy",
+        "combined_with": 112,
+        "side_effects_coded": [],
+        "outcomes": "progressive",
+        "followed_by_interval_unit": "",
+        "treatment_type_coded": [
+            107
+        ]
+    },
+    "model": "casereport.treatmentevent",
+    "pk": 113
+},
+{
+    "fields": {
+        "name_coded": [
+            110
+        ],
+        "followed_by_interval": "",
+        "outcomes_coded": [],
+        "side_effects": "",
+        "followed_by": null,
+        "treatment_type": "chemotherapy",
+        "combined_with": 113,
+        "side_effects_coded": [],
+        "outcomes": "progressive",
+        "followed_by_interval_unit": "",
+        "treatment_type_coded": [
+            107
+        ]
+    },
+    "model": "casereport.treatmentevent",
+    "pk": 114
+},
+{
+    "fields": {
+        "name_coded": [],
+        "followed_by_interval": "",
+        "outcomes_coded": [],
+        "side_effects": "",
+        "followed_by": null,
+        "treatment_type": "chemotherapy",
+        "combined_with": null,
+        "side_effects_coded": [],
+        "outcomes": "",
+        "followed_by_interval_unit": "",
+        "treatment_type_coded": [
+            97
+        ]
+    },
+    "model": "casereport.treatmentevent",
+    "pk": 121
+},
+{
+    "fields": {
+        "name_coded": [
+            118
+        ],
+        "followed_by_interval": "",
+        "outcomes_coded": [],
+        "side_effects": "",
+        "followed_by": null,
+        "treatment_type": "chemotherapy",
+        "combined_with": null,
+        "side_effects_coded": [],
+        "outcomes": "",
+        "followed_by_interval_unit": "",
+        "treatment_type_coded": [
+            107
+        ]
+    },
+    "model": "casereport.treatmentevent",
+    "pk": 122
+},
+{
+    "fields": {
+        "challenge": "XKDA",
+        "hashkey": "75d1156a9d56fbc770c30784bdbf5b658a33cd04",
+        "response": "xkda",
+        "expiration": "2015-11-18T09:48:57.709Z"
+    },
+    "model": "captcha.captchastore",
+    "pk": 1
+},
+{
+    "fields": {
+        "challenge": "SMXL",
+        "hashkey": "3f16fe78f6fed33f457bf2350baa022242b4b8d9",
+        "response": "smxl",
+        "expiration": "2015-11-18T09:49:13.149Z"
+    },
+    "model": "captcha.captchastore",
+    "pk": 2
+},
+{
+    "fields": {
+        "codename": "add_logentry",
+        "name": "Can add log entry",
+        "content_type": 1
+    },
+    "model": "auth.permission",
+    "pk": 1
+},
+{
+    "fields": {
+        "codename": "change_logentry",
+        "name": "Can change log entry",
+        "content_type": 1
+    },
+    "model": "auth.permission",
+    "pk": 2
+},
+{
+    "fields": {
+        "codename": "delete_logentry",
+        "name": "Can delete log entry",
+        "content_type": 1
+    },
+    "model": "auth.permission",
+    "pk": 3
+},
+{
+    "fields": {
+        "codename": "add_permission",
+        "name": "Can add permission",
+        "content_type": 2
+    },
+    "model": "auth.permission",
+    "pk": 4
+},
+{
+    "fields": {
+        "codename": "change_permission",
+        "name": "Can change permission",
+        "content_type": 2
+    },
+    "model": "auth.permission",
+    "pk": 5
+},
+{
+    "fields": {
+        "codename": "delete_permission",
+        "name": "Can delete permission",
+        "content_type": 2
+    },
+    "model": "auth.permission",
+    "pk": 6
+},
+{
+    "fields": {
+        "codename": "add_group",
+        "name": "Can add group",
+        "content_type": 3
+    },
+    "model": "auth.permission",
+    "pk": 7
+},
+{
+    "fields": {
+        "codename": "change_group",
+        "name": "Can change group",
+        "content_type": 3
+    },
+    "model": "auth.permission",
+    "pk": 8
+},
+{
+    "fields": {
+        "codename": "delete_group",
+        "name": "Can delete group",
+        "content_type": 3
+    },
+    "model": "auth.permission",
+    "pk": 9
+},
+{
+    "fields": {
+        "codename": "add_user",
+        "name": "Can add user",
+        "content_type": 4
+    },
+    "model": "auth.permission",
+    "pk": 10
+},
+{
+    "fields": {
+        "codename": "change_user",
+        "name": "Can change user",
+        "content_type": 4
+    },
+    "model": "auth.permission",
+    "pk": 11
+},
+{
+    "fields": {
+        "codename": "delete_user",
+        "name": "Can delete user",
+        "content_type": 4
+    },
+    "model": "auth.permission",
+    "pk": 12
+},
+{
+    "fields": {
+        "codename": "add_contenttype",
+        "name": "Can add content type",
+        "content_type": 5
+    },
+    "model": "auth.permission",
+    "pk": 13
+},
+{
+    "fields": {
+        "codename": "change_contenttype",
+        "name": "Can change content type",
+        "content_type": 5
+    },
+    "model": "auth.permission",
+    "pk": 14
+},
+{
+    "fields": {
+        "codename": "delete_contenttype",
+        "name": "Can delete content type",
+        "content_type": 5
+    },
+    "model": "auth.permission",
+    "pk": 15
+},
+{
+    "fields": {
+        "codename": "add_session",
+        "name": "Can add session",
+        "content_type": 6
+    },
+    "model": "auth.permission",
+    "pk": 16
+},
+{
+    "fields": {
+        "codename": "change_session",
+        "name": "Can change session",
+        "content_type": 6
+    },
+    "model": "auth.permission",
+    "pk": 17
+},
+{
+    "fields": {
+        "codename": "delete_session",
+        "name": "Can delete session",
+        "content_type": 6
+    },
+    "model": "auth.permission",
+    "pk": 18
+},
+{
+    "fields": {
+        "codename": "add_crdbbase",
+        "name": "Can add crdb base",
+        "content_type": 7
+    },
+    "model": "auth.permission",
+    "pk": 19
+},
+{
+    "fields": {
+        "codename": "change_crdbbase",
+        "name": "Can change crdb base",
+        "content_type": 7
+    },
+    "model": "auth.permission",
+    "pk": 20
+},
+{
+    "fields": {
+        "codename": "delete_crdbbase",
+        "name": "Can delete crdb base",
+        "content_type": 7
+    },
+    "model": "auth.permission",
+    "pk": 21
+},
+{
+    "fields": {
+        "codename": "add_institution",
+        "name": "Can add institution",
+        "content_type": 8
+    },
+    "model": "auth.permission",
+    "pk": 22
+},
+{
+    "fields": {
+        "codename": "change_institution",
+        "name": "Can change institution",
+        "content_type": 8
+    },
+    "model": "auth.permission",
+    "pk": 23
+},
+{
+    "fields": {
+        "codename": "delete_institution",
+        "name": "Can delete institution",
+        "content_type": 8
+    },
+    "model": "auth.permission",
+    "pk": 24
+},
+{
+    "fields": {
+        "codename": "add_physician",
+        "name": "Can add physician",
+        "content_type": 9
+    },
+    "model": "auth.permission",
+    "pk": 25
+},
+{
+    "fields": {
+        "codename": "change_physician",
+        "name": "Can change physician",
+        "content_type": 9
+    },
+    "model": "auth.permission",
+    "pk": 26
+},
+{
+    "fields": {
+        "codename": "delete_physician",
+        "name": "Can delete physician",
+        "content_type": 9
+    },
+    "model": "auth.permission",
+    "pk": 27
+},
+{
+    "fields": {
+        "codename": "add_casefile",
+        "name": "Can add case file",
+        "content_type": 10
+    },
+    "model": "auth.permission",
+    "pk": 28
+},
+{
+    "fields": {
+        "codename": "change_casefile",
+        "name": "Can change case file",
+        "content_type": 10
+    },
+    "model": "auth.permission",
+    "pk": 29
+},
+{
+    "fields": {
+        "codename": "delete_casefile",
+        "name": "Can delete case file",
+        "content_type": 10
+    },
+    "model": "auth.permission",
+    "pk": 30
+},
+{
+    "fields": {
+        "codename": "add_concept",
+        "name": "Can add concept",
+        "content_type": 11
+    },
+    "model": "auth.permission",
+    "pk": 31
+},
+{
+    "fields": {
+        "codename": "change_concept",
+        "name": "Can change concept",
+        "content_type": 11
+    },
+    "model": "auth.permission",
+    "pk": 32
+},
+{
+    "fields": {
+        "codename": "delete_concept",
+        "name": "Can delete concept",
+        "content_type": 11
+    },
+    "model": "auth.permission",
+    "pk": 33
+},
+{
+    "fields": {
+        "codename": "add_molecule",
+        "name": "Can add molecule",
+        "content_type": 12
+    },
+    "model": "auth.permission",
+    "pk": 34
+},
+{
+    "fields": {
+        "codename": "change_molecule",
+        "name": "Can change molecule",
+        "content_type": 12
+    },
+    "model": "auth.permission",
+    "pk": 35
+},
+{
+    "fields": {
+        "codename": "delete_molecule",
+        "name": "Can delete molecule",
+        "content_type": 12
+    },
+    "model": "auth.permission",
+    "pk": 36
+},
+{
+    "fields": {
+        "codename": "add_molecularabberation",
+        "name": "Can add molecular abberation",
+        "content_type": 13
+    },
+    "model": "auth.permission",
+    "pk": 37
+},
+{
+    "fields": {
+        "codename": "change_molecularabberation",
+        "name": "Can change molecular abberation",
+        "content_type": 13
+    },
+    "model": "auth.permission",
+    "pk": 38
+},
+{
+    "fields": {
+        "codename": "delete_molecularabberation",
+        "name": "Can delete molecular abberation",
+        "content_type": 13
+    },
+    "model": "auth.permission",
+    "pk": 39
+},
+{
+    "fields": {
+        "codename": "add_authorizedrep",
+        "name": "Can add authorized rep",
+        "content_type": 14
+    },
+    "model": "auth.permission",
+    "pk": 40
+},
+{
+    "fields": {
+        "codename": "change_authorizedrep",
+        "name": "Can change authorized rep",
+        "content_type": 14
+    },
+    "model": "auth.permission",
+    "pk": 41
+},
+{
+    "fields": {
+        "codename": "delete_authorizedrep",
+        "name": "Can delete authorized rep",
+        "content_type": 14
+    },
+    "model": "auth.permission",
+    "pk": 42
+},
+{
+    "fields": {
+        "codename": "add_casereport",
+        "name": "Can add case report",
+        "content_type": 15
+    },
+    "model": "auth.permission",
+    "pk": 43
+},
+{
+    "fields": {
+        "codename": "change_casereport",
+        "name": "Can change case report",
+        "content_type": 15
+    },
+    "model": "auth.permission",
+    "pk": 44
+},
+{
+    "fields": {
+        "codename": "delete_casereport",
+        "name": "Can delete case report",
+        "content_type": 15
+    },
+    "model": "auth.permission",
+    "pk": 45
+},
+{
+    "fields": {
+        "codename": "add_event",
+        "name": "Can add event",
+        "content_type": 16
+    },
+    "model": "auth.permission",
+    "pk": 46
+},
+{
+    "fields": {
+        "codename": "change_event",
+        "name": "Can change event",
+        "content_type": 16
+    },
+    "model": "auth.permission",
+    "pk": 47
+},
+{
+    "fields": {
+        "codename": "delete_event",
+        "name": "Can delete event",
+        "content_type": 16
+    },
+    "model": "auth.permission",
+    "pk": 48
+},
+{
+    "fields": {
+        "codename": "add_testevent",
+        "name": "Can add test event",
+        "content_type": 17
+    },
+    "model": "auth.permission",
+    "pk": 49
+},
+{
+    "fields": {
+        "codename": "change_testevent",
+        "name": "Can change test event",
+        "content_type": 17
+    },
+    "model": "auth.permission",
+    "pk": 50
+},
+{
+    "fields": {
+        "codename": "delete_testevent",
+        "name": "Can delete test event",
+        "content_type": 17
+    },
+    "model": "auth.permission",
+    "pk": 51
+},
+{
+    "fields": {
+        "codename": "add_treatmentevent",
+        "name": "Can add treatment event",
+        "content_type": 18
+    },
+    "model": "auth.permission",
+    "pk": 52
+},
+{
+    "fields": {
+        "codename": "change_treatmentevent",
+        "name": "Can change treatment event",
+        "content_type": 18
+    },
+    "model": "auth.permission",
+    "pk": 53
+},
+{
+    "fields": {
+        "codename": "delete_treatmentevent",
+        "name": "Can delete treatment event",
+        "content_type": 18
+    },
+    "model": "auth.permission",
+    "pk": 54
+},
+{
+    "fields": {
+        "codename": "add_resultvalueevent",
+        "name": "Can add result value event",
+        "content_type": 19
+    },
+    "model": "auth.permission",
+    "pk": 55
+},
+{
+    "fields": {
+        "codename": "change_resultvalueevent",
+        "name": "Can change result value event",
+        "content_type": 19
+    },
+    "model": "auth.permission",
+    "pk": 56
+},
+{
+    "fields": {
+        "codename": "delete_resultvalueevent",
+        "name": "Can delete result value event",
+        "content_type": 19
+    },
+    "model": "auth.permission",
+    "pk": 57
+},
+{
+    "fields": {
+        "codename": "add_diagnosisevent",
+        "name": "Can add diagnosis event",
+        "content_type": 20
+    },
+    "model": "auth.permission",
+    "pk": 58
+},
+{
+    "fields": {
+        "codename": "change_diagnosisevent",
+        "name": "Can change diagnosis event",
+        "content_type": 20
+    },
+    "model": "auth.permission",
+    "pk": 59
+},
+{
+    "fields": {
+        "codename": "delete_diagnosisevent",
+        "name": "Can delete diagnosis event",
+        "content_type": 20
+    },
+    "model": "auth.permission",
+    "pk": 60
+},
+{
+    "fields": {
+        "codename": "add_captchastore",
+        "name": "Can add captcha store",
+        "content_type": 21
+    },
+    "model": "auth.permission",
+    "pk": 61
+},
+{
+    "fields": {
+        "codename": "change_captchastore",
+        "name": "Can change captcha store",
+        "content_type": 21
+    },
+    "model": "auth.permission",
+    "pk": 62
+},
+{
+    "fields": {
+        "codename": "delete_captchastore",
+        "name": "Can delete captcha store",
+        "content_type": 21
+    },
+    "model": "auth.permission",
+    "pk": 63
+},
+{
+    "fields": {
+        "username": "admin",
+        "first_name": "",
+        "last_name": "",
+        "is_active": true,
+        "is_superuser": true,
+        "is_staff": true,
+        "last_login": "2015-11-17T10:45:05.966Z",
+        "groups": [],
+        "user_permissions": [],
+        "password": "pbkdf2_sha256$20000$pHiHg2LxSDbN$ARWgszjSjamYK503pd9JkQKgT86BDxxw1/vBnyqWmY4=",
+        "email": "asd@al.in",
+        "date_joined": "2015-11-17T10:27:37.173Z"
+    },
+    "model": "auth.user",
+    "pk": 1
+},
+{
+    "fields": {
+        "action_flag": 1,
+        "action_time": "2015-11-17T10:48:29.866Z",
+        "object_repr": "California Northstate University College of Medicine",
+        "object_id": "1",
+        "change_message": "",
+        "user": 1,
+        "content_type": 8
+    },
+    "model": "admin.logentry",
+    "pk": 1
+},
+{
+    "fields": {
+        "action_flag": 1,
+        "action_time": "2015-11-17T10:52:48.647Z",
+        "object_repr": "Alabama College of Osteopathic Medicine",
+        "object_id": "2",
+        "change_message": "",
+        "user": 1,
+        "content_type": 8
+    },
+    "model": "admin.logentry",
+    "pk": 2
+},
+{
+    "fields": {
+        "action_flag": 1,
+        "action_time": "2015-11-17T10:53:33.845Z",
+        "object_repr": "Penn Presbyterian Medical Center",
+        "object_id": "3",
+        "change_message": "",
+        "user": 1,
+        "content_type": 8
+    },
+    "model": "admin.logentry",
+    "pk": 3
+},
+{
+    "fields": {
+        "action_flag": 1,
+        "action_time": "2015-11-17T10:54:31.911Z",
+        "object_repr": "Physician object",
+        "object_id": "4",
+        "change_message": "",
+        "user": 1,
+        "content_type": 9
+    },
+    "model": "admin.logentry",
+    "pk": 4
+},
+{
+    "fields": {
+        "action_flag": 1,
+        "action_time": "2015-11-17T10:55:02.740Z",
+        "object_repr": "Physician object",
+        "object_id": "5",
+        "change_message": "",
+        "user": 1,
+        "content_type": 9
+    },
+    "model": "admin.logentry",
+    "pk": 5
+},
+{
+    "fields": {
+        "action_flag": 1,
+        "action_time": "2015-11-17T10:55:26.916Z",
+        "object_repr": "Physician object",
+        "object_id": "6",
+        "change_message": "",
+        "user": 1,
+        "content_type": 9
+    },
+    "model": "admin.logentry",
+    "pk": 6
+},
+{
+    "fields": {
+        "action_flag": 1,
+        "action_time": "2015-11-17T11:06:00.434Z",
+        "object_repr": "MDM2",
+        "object_id": "7",
+        "change_message": "",
+        "user": 1,
+        "content_type": 11
+    },
+    "model": "admin.logentry",
+    "pk": 7
+},
+{
+    "fields": {
+        "action_flag": 1,
+        "action_time": "2015-11-18T09:47:10.306Z",
+        "object_repr": "asreedh@trialx.org",
+        "object_id": "104",
+        "change_message": "",
+        "user": 1,
+        "content_type": 14
+    },
+    "model": "admin.logentry",
+    "pk": 8
+},
+{
+    "fields": {
+        "action_flag": 1,
+        "action_time": "2015-11-18T10:08:40.494Z",
+        "object_repr": "TreatmentEvent object",
+        "object_id": "112",
+        "change_message": "",
+        "user": 1,
+        "content_type": 18
+    },
+    "model": "admin.logentry",
+    "pk": 9
+},
+{
+    "fields": {
+        "action_flag": 1,
+        "action_time": "2015-11-18T10:09:51.396Z",
+        "object_repr": "TreatmentEvent object",
+        "object_id": "113",
+        "change_message": "",
+        "user": 1,
+        "content_type": 18
+    },
+    "model": "admin.logentry",
+    "pk": 10
+},
+{
+    "fields": {
+        "action_flag": 1,
+        "action_time": "2015-11-18T10:10:59.563Z",
+        "object_repr": "TreatmentEvent object",
+        "object_id": "114",
+        "change_message": "",
+        "user": 1,
+        "content_type": 18
+    },
+    "model": "admin.logentry",
+    "pk": 11
+},
+{
+    "fields": {
+        "action_flag": 1,
+        "action_time": "2015-11-18T11:43:03.663Z",
+        "object_repr": "TreatmentEvent object",
+        "object_id": "121",
+        "change_message": "",
+        "user": 1,
+        "content_type": 18
+    },
+    "model": "admin.logentry",
+    "pk": 12
+},
+{
+    "fields": {
+        "action_flag": 1,
+        "action_time": "2015-11-18T11:46:13.458Z",
+        "object_repr": "TreatmentEvent object",
+        "object_id": "122",
+        "change_message": "",
+        "user": 1,
+        "content_type": 18
+    },
+    "model": "admin.logentry",
+    "pk": 13
+}
+]

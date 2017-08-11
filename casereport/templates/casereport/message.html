@@ -1,0 +1,11 @@
+{% if back_link %}
+    <div class="back-button pull-left">
+        <a href="{{ back_link }}">{{ back_link_label}}</a>
+        <div class="clear"></div>
+    </div>
+{% endif %}
+<div class="col-md-offset-1 col-lg-10">
+    <div  class="message alert alert-warning">
+        <h4>{{ message|safe }}</h4>
+    </div>
+</div>

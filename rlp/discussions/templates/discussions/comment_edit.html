@@ -1,16 +1,36 @@
-{% extends 'projects/projects_detail.html' %}{% load bootstrap3 %}
+{% extends 'base.html' %}{% load bootstrap3 %}
 
-{% block project_discussion %}
-<h2>Edit Comment</h2>
-<p>{{ comment.comment }}</p>
-<form method="post" action="">
-  {% csrf_token %}
-  {% bootstrap_form form %}
-  <button class="btn btn-primary" type="submit">
-    Edit
-  </button>
-  <a role="button" class="btn btn-default" href="{{ comment.get_absolute_url }}">
-    Cancel
-  </a>
-</form>
-{% endblock project_discussion %}
+{% block content %}
+<div class="bannerTitle">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 col-md-push-2">
+                <h1>Edit Comment</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-xs-12 col-md-push-2">
+            <form method="post" action="">
+              {{ form.media }}
+              {% csrf_token %}
+              {% for field in form %}
+                  {% if field.name == 'title' and comment.level != 0 %}
+                  {% else %}
+                    {% bootstrap_field field label_class='section-label' %}
+                  {% endif %}
+              {% endfor %}
+              <button class="btn btn-primary" type="submit">
+                Save
+              </button>
+              <a role="button" class="btn btn-default" href="{{ comment.get_absolute_url }}">
+                Cancel
+              </a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

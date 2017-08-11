@@ -30,7 +30,7 @@ def get_reply_form(context, comment):
     ]
     context_dict = {
         'form': form,
-        'button_label': 'Reply',
+        'button_label': 'Post',
     }
     return render_to_string(template_search_list, context_dict, request=request)
 

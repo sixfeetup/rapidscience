@@ -1,22 +1,26 @@
 from django.conf import settings
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 
 from embed_video.fields import EmbedVideoField
 from polymorphic.models import PolymorphicModel
-from taggit.managers import TaggableManager
 
-from rlp.projects.models import Project
+from rlp.core.models import SharedObjectMixin
+from rlp.discussions.models import ThreadedComment
 
 
-class Document(PolymorphicModel):
+class Document(PolymorphicModel, SharedObjectMixin):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    project = models.ForeignKey(Project)
     date_added = models.DateTimeField(auto_now_add=True, db_index=True)
     date_updated = models.DateTimeField(auto_now=True)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL)
+    discussions = GenericRelation(
+        ThreadedComment,
+        object_id_field='object_pk',
+    )
 
-    tags = TaggableManager()
+    copyright = models.BooleanField(blank=True, default=False)
 
     class Meta:
         ordering = ['-date_added']
@@ -26,27 +30,20 @@ class Document(PolymorphicModel):
 
     def get_absolute_url(self):
         from django.core.urlresolvers import reverse
-        return reverse('projects:document_detail', kwargs={
-            'pk': self.project.pk,
-            'slug': self.project.slug,
-            'doc_pk': self.pk
+        return reverse('documents:document_detail', kwargs={
+            'doc_pk': self.id,
         })
 
     def get_edit_url(self):
         from django.core.urlresolvers import reverse
-        return reverse('projects:document_edit', kwargs={
-            'pk': self.project.pk,
-            'slug': self.project.slug,
-            'doc_pk': self.pk,
-            'doc_type': self.polymorphic_ctype.model,
+        return reverse('documents:document_edit', kwargs={
+            'doc_pk': self.id,
         })
 
     def get_delete_url(self):
         from django.core.urlresolvers import reverse
-        return reverse('projects:document_delete', kwargs={
-            'pk': self.project.pk,
-            'slug': self.project.slug,
-            'doc_pk': self.pk
+        return reverse('documents:document_delete', kwargs={
+            'doc_pk': self.id,
         })
 
     @property
@@ -85,19 +82,18 @@ class Document(PolymorphicModel):
 
 class File(Document):
     upload = models.FileField(upload_to="docs/%Y/%m/%d")
-    working_document = models.BooleanField(default=False,
-                                           verbose_name="Core Project Document (will appear as top-listed document)")
 
 
 class Image(Document):
-    upload = models.ImageField(upload_to="docs/images/%Y/%m/%d", max_length=255,
-                             height_field='height', width_field='width')
+    upload = models.ImageField(upload_to="docs/images/%Y/%m/%d",
+                               max_length=255,
+                               height_field='height', width_field='width')
     height = models.PositiveIntegerField()
     width = models.PositiveIntegerField()
 
 
 class Video(Document):
-    share_link = EmbedVideoField(help_text='Should be a Youtube or Vimeo share link e.g. https://youtu.be/xyz123')
+    share_link = EmbedVideoField(help_text='YouTube URL')
 
     @property
     def display_type(self):

@@ -1,0 +1,32 @@
+{% if status == "ready" %}
+    {% if history_object %}
+    <p>Dear  {{ name|title }}</p>
+      <p>
+          The revisions to your case report, “{{ title }}”, submitted on {{ history_object.created_on |date:"M d Y" }},
+          have been incorporated by our data science team.
+          Please review the revised structured report and submit your approval or further revisions: <a href="http{% if request.is_secure %}s{% endif %}://{{ DOMAIN }}/casereport/edit/{{ id }}/{{ token}}">  Click Here</a>
+      </p>
+
+     {% else %}
+        <p>Dear  {{ name|title }},</p>
+        <p>The case report you submitted to Cases Central on {{ Date |date:"M d Y" }},
+            "{{ title }}" has been standardized and coded by our data science team.
+         Please review the structured report and submit your approval or revisions:
+            <a href="http{% if request.is_secure %}s{% endif %}://{{ DOMAIN }}/casereport/edit/{{ id }}/{{ token}}">  Click Here</a></p>
+    {% endif %}
+    <p>Many thanks for your time and involvement with this project. If you have any questions,
+        please contact us at support@rapidscience.org.</p>
+
+    <p> Data Science Team<br/>
+        Sarcoma Inquiry Network<br/>
+        Rapid Science</p>
+
+{% endif %}
+{% if status == 'approved' %}
+<p>Dear {{ name|title }},</p>
+    <p>Your case report "{{ title }}" has been approved and will be posted to Cases Central shortly.</p>
+
+<p> Data Science Team<br/>
+    Sarcoma Inquiry Network<br/>
+    Rapid Science</p>
+{% endif %}

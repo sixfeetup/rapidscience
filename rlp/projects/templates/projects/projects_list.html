@@ -1,25 +1,30 @@
-{% extends 'cms/left_col.html' %}
+{% extends 'cms/single_col.html' %}
 {% load cms_tags project_tags %}{% load static from staticfiles %}
 
+{% block css %}
+{{ block.super }}
+<link rel="stylesheet" href="{{STATIC_URL}}css/cases.css">
+{% endblock css %}
+
 {% block hero %}
-<div class="hero">
-  <div class="image-container">
-    {% placeholder 'hero-image' %}
-  </div>
-  <div class="container">
-    <div class="col-md-8">
-      {% placeholder 'hero-text' %}
-    </div>
+<div class="hero projects">
+    <div class="container">
+      <h1>Groups</h1>
+      <a class="add-button" href="{% url 'projects:projects_add' %}">
+          <i class="fa fa-plus"></i> Create a Group
+      </a>
+      <div class="image-container">
+        {% placeholder 'hero-image' %}
+      </div>
+      <div class="container">
+        <div class="col-md-8">
+          {% placeholder 'hero-text' %}
+        </div>
+      </div>
   </div>
 </div>
 {% endblock hero %}
 
-{% block left_column %}
-    {% projects_sidebar %}
-{% endblock left_column %}
-
 {% block main_content %}
-  <div class="box">
-  {% placeholder 'content' %}
-  </div>
+  {% projects_sidebar %}
 {% endblock main_content %}

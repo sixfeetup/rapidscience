@@ -1,0 +1,15 @@
+{{ casereport.primary_author.get_full_name }} has posted an Editorial Note on <a href="{{ link }}">Case Report #{{ casereport.pk }}</a>:<br><br>
+
+<div style="margin-left: 20px;">
+<em>{{ casereport.title }}</em><br>
+
+    <div style="margin-left: 20px;">
+    {{ comment|safe }}<br><br>
+    </div>
+</div>
+
+Sincerely,<br><br>
+
+Editorial Team<br>
+<a href="https://sarcoma.rapidscience.org/">Sarcoma Central</a><br>
+<a href="https://twitter.com/RapidScience">@RapidScience</a>

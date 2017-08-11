@@ -1,0 +1,13 @@
+{{ name }} at {{ email }} has submitted a registration to join Sarcoma Central.<br><br>
+
+If this individual has permission to register as a member of Sarcoma Central, please click <a href="{{ link }}">Approve</a>.<br><br>
+
+Note that immediately upon clicking "Approve", the individual will receive a link to his or her dashboard.<br><br>
+
+If you clicked "Approve" in error, please email <a href="mailto:support@rapidscience.org">support@rapidscience.org</a> as soon as possible.<br><br>
+
+Sincerely,<br><br>
+
+Sarcoma Central Team<br><br>
+
+<a href="https://twitter.com/rapidscience">@RapidScience</a>

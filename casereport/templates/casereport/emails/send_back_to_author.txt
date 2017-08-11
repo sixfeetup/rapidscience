@@ -1,0 +1,14 @@
+Dear {{ casereport.primary_author.get_full_name }},<br><br>
+
+The case report you submitted to Cases Central, "{{ casereport.title }}," has been edited and standardized by our editors. Please review the <a href="https://{{ site }}{{ casereport.get_absolute_url }}">report</a> and submit your approval or revisions.<br><br>
+
+There is a drop-down box on the report page – “EDITORIAL NOTES” – for private discussion between author and editorial team, should you wish to send issues or questions about the edits. Notifications of any comments here are sent by email and also appear in your Activity Feed.<br><br>
+
+We appreciate your time and effort on this project.<br><br>
+
+Sincerely,<br><br>
+
+Editorial Team<br><br>
+
+<a href="https://sarcoma.rapidscience.org/">Sarcoma Central</a><br>
+<a href="https://twitter.com/RapidScience">@RapidScience</a>

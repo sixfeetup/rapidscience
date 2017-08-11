@@ -1,55 +1,68 @@
-{% extends 'accounts/accounts_base.html' %}{% load bootstrap3 %}
+{% extends 'single_col.html' %}{% load bootstrap3 %}
 {% load cms_tags staticfiles %}
 
 {% block page_title %}Profile for {{ user.get_full_name }}{% endblock page_title %}
 
 {% block title %}Profile{% endblock title %}
 
-{% block css %}{{ block.super }}
-<link rel="stylesheet" type="text/css" href="{% static 'js/vendor/chosen/chosen.min.css' %}" media="screen">
-{% endblock css %}
+{% block body_class %}profile-public{% endblock %}
 
-{% block main_content %}{# TODO: change this to use tabs like project detail pages, Activity & Publications #}
-<div>
-  <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation"{% if tab == 'activity' %} class="active"{% endif %}>
-      <a href="{{ user.get_absolute_url }}">Activity</a>
-    </li>
-    <li role="presentation"{% if tab == 'publications' %} class="active"{% endif %}>
-      <a href="{% url 'profile_publications' pk=user.pk %}">Publications</a>
-    </li>
-  </ul>
-</div>
-<div class="tab-content">
-  <div role="tabpanel" class="tab-pane{% if tab == 'activity' %} active{% endif %}" id="activity">
-    {% if tab == 'activity' %}
-      {% bootstrap_messages %}
-      <form class="form-inline" action="" method="get">
-        {% bootstrap_field filter_form.content_type show_label=False %}
-        <button class="btn btn-primary" type="submit">
-          Filter
-        </button>
-      </form>
-      <hr>
-      {% include page_template %}
-    {% endif %}
-  </div>
-  <div role="tabpanel" class="tab-pane{% if tab == 'publications' %} active{% endif %}" id="publications">
-    {% if tab == 'publications' %}
-      {% for publication in publications %}
-        {% include 'bibliography/_reference.html' with obj=publication.reference %}
-      {% empty %}
-        {% if request.user == user %}
-          <p>Please add your <a href="{% url 'profile_edit' %}">ORCID id to your profile</a> so we can show your publications.</p>
-        {% else %}
-          <p>Coming soon!</p>
-        {% endif %}
-      {% endfor %}
-    {% endif %}
-  </div>
-</div>
+{% block hero %}
+    {% include "accounts/_hero2.html" with user=user %}
+{% endblock hero %}
+
+{% block main_content %}
+    <div class="row">
+        <div class="col-md-7 col-md-offset-3">
+            {% if user.title or user.department or user.institution %}
+            <div class="section">
+                <p class="section-label">Affiliation</p>
+                <p>{{ user.title }}{% if user.title and user.department %}, {% endif %}{{ user.department }}{% if user.department and user.institution or user.title and user.institution %}, {% endif %}
+                   {% if institution.website %}
+                       <a href="{{ institution.website }}">
+                           {{ user.institution }}
+                       </a>
+                   {% else %}
+                       {{ user.institution }}
+                   {% endif %}
+                   {% if user.title or user.department or user.institution %}<br />{% endif %}
+                   {{ institution.city }}{% if institution.city and institution.state %}, {% endif %}
+                   {{ institution.state }}</p>
+            {% endif %}
+            </div>
+            {% if user.bio %}
+                <div class="section">
+                    <p class="section-label">Biography</p>
+                    {{ user.bio|linebreaks }}
+                </div>
+            {% endif %}
+            {% if user.research_interests %}
+                <div class="section">
+                    <p class="section-label">Research Interests</p>
+                    <p>{{ user.research_interests }}</p>
+                </div>
+            {% endif %}
+            {% if projects %}
+                <div class="section">
+                    <p class="section-label">Groups</p>
+                    <ul class="fa-ul">
+                        {% for project in projects %}
+                            <li><i class="fa-li fa fa-angle-right" aria-hidden="true"></i>
+                                <a href="{% url 'projects:projects_detail' project.id project.slug %}">{{ project.title }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            {% if user.id == request.user.id %}
+                <div class="buttonbar">
+                    <a role="button" class="btn btn-primary btn-lg" href="{% url 'profile_edit' %}">
+                      Edit Profile
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
 {% endblock main_content %}
-
-{% block js-footer %}{{ block.super }}
-  <script src="{% static 'js/vendor/chosen/chosen.jquery.min.js' %}"></script>
-{% endblock js-footer %}
