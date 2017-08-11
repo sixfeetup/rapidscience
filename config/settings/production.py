@@ -4,6 +4,12 @@ import socket
 hostname = socket.gethostname()
 if any(pat in hostname for pat in ('tst0', 'stg0')):
     EMAIL_PORT = 1025 # for locally run maildump
+else:
+    EMAIL_HOST = 'smtp.mailgun.org'
+    EMAIL_PORT = 587
+    EMAIL_HOST_USER = 'postmaster@mg.rapidscience.org'
+    EMAIL_HOST_PASSWORD = env('MAILGUN_EMAIL_HOST_PASSWORD', default='nope')
+    EMAIL_USE_TLS = True
 
 SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_HTTPONLY = True
