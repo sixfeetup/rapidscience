@@ -34,7 +34,7 @@ class AddMediaForm(forms.Form):
                    Separate with commas.")
     copyright = forms.BooleanField(label=CLABEL, required=False)
     members = MemberListField(
-        label='Members',
+        label='Sarcoma Central Members',
         help_text='Type name; separate with commas',
         choices=(),  # gets filled in by the view
         required=False,)

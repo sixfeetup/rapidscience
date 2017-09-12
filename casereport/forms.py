@@ -12,7 +12,7 @@ from rlp.projects.forms import CommaSeparatedEmailField
 
 class CaseForm(forms.Form):
     members = MemberListField(
-        label='Invite Members',
+        label='Invite Sarcoma Central Members',
         help_text='Separate names with commas',
         choices=(),  # gets filled in by the view
         required=False,

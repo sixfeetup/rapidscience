@@ -41,7 +41,7 @@ def group_choices(user):
 
 
 member_choice_field = MemberListField(
-    label='Members',
+    label='Sarcoma Central Members',
     help_text='Type name; separate with commas',
     choices=(),  # override this in the view with member_choices()
     required=False,

@@ -76,7 +76,7 @@ class ThreadedCommentWithTitleEditForm(forms.ModelForm):
 
 
 internal_member_field = MemberListField(
-    label='Members',
+    label='Sarcoma Central Members',
     help_text='Separate names with commas',
     choices=(),  # gets filled in by the view
     required=False,

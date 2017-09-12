@@ -214,7 +214,7 @@ class AttachReferenceForm(forms.Form):
         help_text="Terms added here will be added as new tags in the system. \
                    Separate with commas.")
     members = MemberListField(
-        label='Members',
+        label='Sarcoma Central Members',
         help_text='Separate names with commas',
         choices=(),  # gets filled in by the view
         required=False,

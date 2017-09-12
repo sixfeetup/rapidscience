@@ -50,7 +50,7 @@ class CommaSeparatedEmailField(forms.Field):
 
 
 internal_member_field = MemberListField(
-    label='Invite Rapid Science Members',
+    label='Invite Sarcoma Central Members',
     help_text='Type name; separate with commas',
     choices=(),  # gets filled in by the view
     required=False,
@@ -83,7 +83,7 @@ moderator] to join the [Group Name] group in Sarcoma Central network.\
 GROUP_APPROVAL_CHOICES = (
     (0, ('Open - All validated Sarcoma Central members can '
          'view activity and join to participate')),
-    (1, 'Closed - Moderator must approve / invite members'))
+    (1, 'Closed - Moderator must approve / invite Sarcoma Central Members'))
 
 
 class BaseGroupForm(forms.Form):
