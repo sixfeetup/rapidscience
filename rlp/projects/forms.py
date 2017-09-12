@@ -51,7 +51,7 @@ class CommaSeparatedEmailField(forms.Field):
 
 internal_member_field = MemberListField(
     label='Invite Sarcoma Central Members',
-    help_text='Type name; separate with commas',
+    help_text='Start typing or select member(s) in the list',
     choices=(),  # gets filled in by the view
     required=False,
 )

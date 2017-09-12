@@ -60,7 +60,7 @@ class ThreadedCommentWithTitleEditForm(forms.ModelForm):
     )
     tags = forms.ModelMultipleChoiceField(
         queryset=Tag.objects.order_by('slug'),
-        help_text='Separate tags with commas',
+        help_text='Start typing or select tag(s) in the list',
         required=False,
     )
     tags.widget.attrs['class'] = 'select2'
@@ -77,13 +77,13 @@ class ThreadedCommentWithTitleEditForm(forms.ModelForm):
 
 internal_member_field = MemberListField(
     label='Sarcoma Central Members',
-    help_text='Separate names with commas',
+    help_text='Start typing or select member(s) in the list',
     choices=(),  # gets filled in by the view
     required=False,
 )
 group_field = GroupListField(
     label='My Groups',
-    help_text='Separate names with commas',
+    help_text='Start typing or select group(s) in the list',
     choices=(),  # gets filled in by the view
     required=False,
 )
@@ -102,7 +102,7 @@ class NewDiscussionForm(forms.Form):
     )
     tags = forms.ModelMultipleChoiceField(
         queryset=Tag.objects.order_by('slug'),
-        help_text='Separate tags with commas',
+        help_text='Start typing or select tag(s) in the list',
         required=False,
     )
     tags.widget.attrs['class'] = 'select2'

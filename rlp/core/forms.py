@@ -42,14 +42,14 @@ def group_choices(user):
 
 member_choice_field = MemberListField(
     label='Sarcoma Central Members',
-    help_text='Type name; separate with commas',
+    help_text='Start typing or select member(s) in the list',
     choices=(),  # override this in the view with member_choices()
     required=False,
 )
 
 group_choice_field = GroupListField(
     label='Groups',
-    help_text='Type name; separate with commas',
+    help_text='Start typing or select group(s) in the list',
     choices=(),  # override this in the view with group_choices()
     required=False,
 )
