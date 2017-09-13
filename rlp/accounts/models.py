@@ -112,12 +112,11 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
     photo = models.ImageField(upload_to="profile_photos", blank=True)
     banner = models.ImageField(upload_to="banner_photos", blank=True)
     institution = models.ForeignKey(Institution, blank=True, null=True)
-    opt_out_of_email = models.BooleanField(default=False,
-                                           verbose_name="Check this box "
-                                                "to opt-out of ALL email "
-                                                "notifications, except Case "
-                                                "Report workflow and "
-                                                "registration-related emails.")
+    opt_out_of_email = models.BooleanField(
+        default=False,
+        verbose_name="Check this box to receive immediate e-mail \
+            notifications. If the box is unchecked, you will only receive \
+            emails about Case Report workflow and registration-related emails.")
 
     objects = UserManager()
 

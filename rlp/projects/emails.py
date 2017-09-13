@@ -9,7 +9,7 @@ from rlp.projects.models import ProjectMembership
 
 
 def reject_to_requester(request, membership, group):
-    if membership.user.opt_out_of_email:
+    if not membership.user.opt_out_of_email:
         return
     data = {
         'group': group.title,
@@ -28,7 +28,7 @@ def reject_to_requester(request, membership, group):
 
 
 def approve_to_requester(request, membership, group):
-    if membership.user.opt_out_of_email:
+    if not membership.user.opt_out_of_email:
         return
     data = {
         'user': request.user.get_full_name(),
