@@ -24,7 +24,7 @@ class CustomUserAdmin(UserAdmin):
         (_('Profile'), {
             'fields': (
                 'title', 'degrees', 'bio', 'research_interests', 'website', 'photo', 'institution',
-                'linkedin', 'twitter', 'opt_out_of_email'),
+                'linkedin', 'twitter', 'email_prefs'),
             'classes': ('collapse',)
         }),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',

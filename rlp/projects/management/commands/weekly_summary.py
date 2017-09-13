@@ -67,8 +67,8 @@ class Command(BaseCommand):
                 if not activity_stream_for_open_projects.count():
                     continue
                 context.update(context_for_open_projects)
-            if user.opt_out_of_email:
-                print( "skipping ", user, " for opt_out")
+            if user.email_prefs != 'digest':
+                print("skipping ", user, " for opt_out")
             else:
                 send_transactional_mail(
                     user.email,

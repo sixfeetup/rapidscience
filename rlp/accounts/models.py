@@ -17,6 +17,16 @@ logger = logging.getLogger(__name__)
 
 phone_digits_re = re.compile(r'^(?:1-?)?(\d{3})[-\.]?(\d{3})[-\.]?(\d{4}).*$')
 
+EMAIL_CHOICES = (
+    ('immediate', 'Immediately notify me when an item is shared with \
+        me or with a group to which I belong. Includes case reports, \
+        documents, discussions, references and comments.'),
+    ('digest', 'Send a weekly digest of all items shared with me or \
+        with a group to which I belong.'),
+    ('disabled', 'Do not send notification emails(*). I will check my \
+        Dashboard to view shared items.')
+)
+
 
 class Institution(models.Model):
     name = models.CharField(max_length=255)
@@ -112,12 +122,12 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
     photo = models.ImageField(upload_to="profile_photos", blank=True)
     banner = models.ImageField(upload_to="banner_photos", blank=True)
     institution = models.ForeignKey(Institution, blank=True, null=True)
-    opt_out_of_email = models.BooleanField(
-        default=False,
-        verbose_name="Check this box to opt out of ALL email notifications regarding new content and discussions"
-                     " shared with you, including weekly digests. You will still receive occasional emails regarding"
-                     " (1) invitations from your colleagues to join new groups,(2) editorial correspondence when"
-                     " you submit a case report, and (3) registration-related notices.")
+    email_prefs = models.CharField(
+        max_length=255,
+        verbose_name='Email notification preferences',
+        default='digest',
+        choices=EMAIL_CHOICES
+    )
 
     objects = UserManager()
 
@@ -153,6 +163,9 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
     def get_short_name(self):
         "Returns the short name for the user."
         return self.first_name
+
+    def notify_immediately(self):
+        return self.email_prefs == 'immediate'
 
     @property
     def can_access_all_projects(self):
