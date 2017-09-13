@@ -8,6 +8,6 @@ You can view the case report in the <a href="https://{{ site }}{{ casescentral }
 
 If you're not already a Rapid Science member, you must first <a href="https://{{ site }}{{ reg_link }}">register</a>.<br><br>
 
-Editorial Team
-<br><a href="https://sarcoma.rapidscience.org">Sarcoma Central</a>
-<br><a href="https://twitter.com/RapidScience">@RapidScience</a>
+Sincerely,<br><br>
+
+The <a href="https://sarcoma.rapidscience.org/">Sarcoma Central</a> Team <a href="https://twitter.com/RapidScience/">@RapidScience</a><br><br>

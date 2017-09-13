@@ -4,7 +4,6 @@ Thank you for submitting Case Report no. {{ casereport.pk }}, "{{ casereport.tit
 
 If you have any questions or concerns, please contact us any time at <a href="mailto:edit@rapidscience.org">​edit@rapidscience.org</a>.<br><br>
 
-Editorial Team<br><br>
+Sincerely,<br><br>
 
-<a href="https://sarcoma.rapidscience.org">Sarcoma Central</a>
-<br><a href="https://twitter.com/RapidScience">@RapidScience</a>
+The <a href="https://sarcoma.rapidscience.org/">Sarcoma Central</a> Team <a href="https://twitter.com/RapidScience/">@RapidScience</a><br><br>

@@ -1,10 +1,8 @@
 Moderator {{ user }} has approved your request to join the <a href="{{ link }}">{{ group }}</a> group.
 You may post discussions, files, case reports, and references to this group, and participate in member discussions.
-If you wish to invite others to join the group, please contact the moderator(s). 
+If you wish to invite others to join the group, please contact the moderator(s).
 If you have questions, please contact us at <a href="mailto:support@rapidscience.org">support@rapidscience.org</a>.<br><br>
 
 Sincerely,<br><br>
 
-Sarcoma Central Team<br><br>
-
-<a href="https://twitter.com/rapidscience">@RapidScience</a>
+The <a href="https://sarcoma.rapidscience.org/">Sarcoma Central</a> Team <a href="https://twitter.com/RapidScience/">@RapidScience</a><br><br>

@@ -7,5 +7,5 @@ We invite you to <a href="https://sarcoma.rapidscience.org{% url 'register_user'
 Members of Sarcoma Central can join and form groups, invite new members, and post/discuss case reports, discussions, documents, and references. <br><br>
 
 Sincerely,<br><br>
-<a href="https://sarcoma.rapidscience.org">The Sarcoma Central Team</a><br>
-<a href="https://twitter.com/RapidScience">@RapidScience</a>
+
+The <a href="https://sarcoma.rapidscience.org/">Sarcoma Central</a> Team <a href="https://twitter.com/RapidScience/">@RapidScience</a><br><br>
