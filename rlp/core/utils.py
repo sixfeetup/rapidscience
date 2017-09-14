@@ -295,8 +295,8 @@ def resolve_email_targets(target, exclude=None, fmt=FORMAT_NAMED, debug=False):
         NameAndAddress = namedtuple('NameAndAddress', "name address")
         for recipient in users_and_strings:
             if hasattr(recipient, "email_prefs"):
-                if not recipient.notify_immediately:
-                    pass # skip the opted-out target
+                if not recipient.notify_immediately():
+                    continue  # skip the opted-out target
                 else:
                     naa = NameAndAddress(recipient.get_full_name(),
                                          recipient.email)
