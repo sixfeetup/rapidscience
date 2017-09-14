@@ -47,7 +47,7 @@ class CustomUserAdmin(UserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('email', 'first_name', 'last_name', 'is_active')
+    list_display = ('email', 'first_name', 'last_name', 'opt_out_of_email', 'is_active')
     readonly_fields = ['date_joined', 'last_login']
     search_fields = (
         'email', 'first_name', 'last_name',
