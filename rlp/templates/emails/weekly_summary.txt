@@ -1,30 +1,52 @@
-Hi {{ user.get_full_name }},
+{% extends 'emails/base_email.html' %}
 
-Here's your weekly summary of activity on the {{ site.name }} web site, all of which appears on your dashboard (https://{{ site.domain }}{% url 'dashboard' %}):
-{% if comments %}
-{{ comments.count }} Comment{{ comments.count|pluralize }}
+{% block content %}
+Hi {{ user.get_full_name }},<br><br>
+Here's a summary of content shared with you last week on Sarcoma Central, all of which appears on <a href="https://{{ site.domain }}{% url 'dashboard' %}">your dashboard</a>:<br><br>
 
-  {% for action in comments|slice:":2" %}
-    {{ action.actor.get_full_name }} said "{{ action.action_object.comment|truncatewords:30 }}" in {{ action.target }}
-
+{% if threadedcomment %}
+  <strong>{{ threadedcomment|length }} Discussion{{ threadedcomment|length|pluralize }}</strong>
+  <ul>
+  {% for action in threadedcomment|slice:":2" %}
+    <li>{{ action.actor.get_full_name }} said: <a href="https://{{ site.domain }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.title|safe|truncatewords:30 }}</a></li>
   {% endfor %}
+    <li><a href="https://{{ site.domain }}{% url 'dashboard' %}">View more on your dashboard.</a></li>
+  </ul>
 {% endif %}
 
-{% if docs %}
-{{ docs.count }} Document{{ docs.count|pluralize }}/Media
-
-  {% for action in docs|slice:":2" %}
-    {{ action.actor.get_full_name }} uploaded {{ action.action_object.title }} (https://{{ site.domain }}{{ action.action_object.get_absolute_url }}) to {{ action.target }}
-
+{% if casereport %}
+  <strong>{{ casereport|length }} Case Report{{ casereport|length|pluralize }}</strong>
+  <ul>
+  {% for action in casereport|slice:":2" %}
+    <li>{{ action.actor.get_full_name }} added <a href="https://{{ site.domain }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.title }}</a></li>
   {% endfor %}
+    <li><a href="https://{{ site.domain }}{% url 'dashboard' %}">View more on your dashboard.</a></li>
+  </ul>
 {% endif %}
 
-{% if references %}
-{{ references.count }} Reference{{ references.count|pluralize }}
-
-  {% for action in references|slice:":2" %}
-    {{ action.actor.get_full_name }} added {{ action.action_object.title }} (https://{{ site.domain }}{{ action.action_object.get_absolute_url }}) to {{ action.target }}
+{% if document %}
+  <strong>{{ document|length }} Document{{ document|length|pluralize }}/Media</strong>
+  <ul>
+  {% for action in document|slice:":2" %}
+    <li>{{ action.actor.get_full_name }} uploaded <a href="https://{{ site.domain }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.title }}</a></li>
   {% endfor %}
-
-Visit your dashboard to view all recent activity: https://{{ site.domain }}{% url 'dashboard' %}
+    <li><a href="https://{{ site.domain }}{% url 'dashboard' %}">View more on your dashboard.</a></li>
+  </ul>
 {% endif %}
+
+{% if userreference %}
+  <strong>{{ userreference|length }} Bibliography</strong>
+  <ul>
+  {% for action in userreference|slice:":2" %}
+    <li>{{ action.actor.get_full_name }} added <a href="https://{{ site.domain }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.reference.title }}</a></li>
+  {% endfor %}
+  <li><a href="https://{{ site.domain }}{% url 'dashboard' %}">View more on your dashboard.</a></li>
+  </ul>
+{% endif %}
+
+Join the conversation! Connect with your colleagues in {{ user_groups }}<br><br>
+
+The Sarcoma Central Team<br><br>
+
+Respond or send questions/concerns to <a href="mailto:info@rapidscience.org">info@rapidscience.org</a>.
+{% endblock content %}
