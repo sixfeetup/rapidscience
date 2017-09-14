@@ -44,7 +44,8 @@ Here's a summary of content shared with you last week on Sarcoma Central, all of
   </ul>
 {% endif %}
 
-Join the conversation! Connect with your colleagues in {{ user_groups }}<br><br>
+Join the conversation! Connect with your colleagues in 
+{% for group in user_groups %}{% if forloop.last %}and {% endif %}{{ group.title }}{% if not forloop.last %}, {% endif %}{% endfor %}.<br><br>
 
 The Sarcoma Central Team<br><br>
 

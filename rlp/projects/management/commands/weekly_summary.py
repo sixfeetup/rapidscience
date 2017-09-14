@@ -63,7 +63,8 @@ class Command(BaseCommand):
             )
             email_context = {
                 'user': user,
-                'site': site
+                'site': site,
+                'user_groups': projects
             }
 
             results = 0
