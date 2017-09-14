@@ -55,6 +55,7 @@ class Command(BaseCommand):
         for user in User.objects.filter(is_active=True):
             if user.email_prefs != 'digest':
                 print("skipping ", user, ": email setting is {0}".format(user.email_prefs))
+                continue
             projects = user.active_projects()
             stream_for_user_projects = activity_stream.filter(
                 target_content_type=ContentType.objects.get_for_model(Project),
