@@ -167,6 +167,9 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
     def notify_immediately(self):
         return self.email_prefs == 'immediate'
 
+    def email_setting(self):
+        return self.email_prefs
+
     @property
     def can_access_all_projects(self):
         # If the user is an admin, they can access any project on the site
