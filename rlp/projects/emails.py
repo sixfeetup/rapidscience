@@ -45,7 +45,7 @@ def approve_to_requester(request, membership, group):
     template = "projects/emails/approve_to_requester"
     body = render_to_string('{}.txt'.format(template), data)
     mail = EmailMessage(subject, body,
-                        "Sarcoma Central with the email address support@rapidscience.org",
+                        settings.DEFAULT_FROM_EMAIL,
                         [membership.user.email, ])
     mail.content_subtype = "html"
     mail.send()
