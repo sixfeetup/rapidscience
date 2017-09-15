@@ -93,7 +93,11 @@ class Command(BaseCommand):
                         if item.action_object_object_id in content_id_set:
                             continue
                         content_id_set.append(item.action_object_object_id)
+                        # only include top level discussions
                         if ctype.model == 'threadedcomment' and not item.action_object.title:
+                            continue
+                        # only include live case reports
+                        if ctype.model == 'casereport' and item.action_object.workflow_state != 'live':
                             continue
                         display_items.append(item)
                 results += len(display_items)
