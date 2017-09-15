@@ -31,6 +31,8 @@ class CaseForm(forms.Form):
     )
     comment = forms.CharField(
         label='Invitation Message',
+        help_text='Invitations will not be sent until the case report has \
+            been edited and approved.',
         max_length=600,
         widget=forms.Textarea,
         required=False,

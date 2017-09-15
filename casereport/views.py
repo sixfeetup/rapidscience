@@ -267,6 +267,10 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
             emails.notify_coauthor(case, coauthor)
 
         case.save()
+        
+        if data.get('sharing-options') == 'share-all':
+            cc_group = Project.objects.get(title='Community Commons')
+            case.share_with([cc_group], shared_by=case.primary_author)
 
         bookmark_and_notify(
             case, self, self.request, 'casereport', 'casereport',
@@ -626,6 +630,10 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
         past_tense_verb = 'updated'
         for group in data.getlist('groups'):
             print( request.user, past_tense_verb, case, group )
+
+        if data.get('sharing-options') == 'share-all':
+            cc_group = Project.objects.get(title='Community Commons')
+            case.share_with([cc_group], shared_by=case.primary_author)
 
         external = data.get('external').split(",")
         for address in external:

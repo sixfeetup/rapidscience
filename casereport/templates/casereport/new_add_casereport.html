@@ -202,12 +202,17 @@
                 
                 <!-- sharing -->
                 <div class="sharing-wrapper">
+                    <h4>Sharing</h4>
+                    <div class="choices">
+                        <input type="radio" name="sharing-options" value="share-all" id="share1">
+                          I would like to share this case report with all members of Sarcoma Central<br />
+                        <input type="radio" name="sharing-options" value="share-pick" id="share1">
+                          I would like to share with specific individuals and/or groups<br />
+                        <input type="radio" name="sharing-options" value="share-none" id="share1">
+                          I am not ready to share this case report at this time<br />
+                    </div>
                 {% for field in form %}
-                    <div class="fieldWrapper">
-                        {% if field.auto_id == 'id_members' %}
-                            <h4>Sharing</h4>
-                            <p>We encourage you to share all submissions with the Community Commons group – i.e., all validated members of Sarcoma Central.</p>
-                        {% endif %}
+                    <div class="fieldWrapper" id="sharing-field-{{ field.name }}">
                         {{ field.errors }}
                         {% if field.auto_id != 'id_approval' %}
                         <label for="{{ field.id_for_label }}">

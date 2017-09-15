@@ -1411,6 +1411,18 @@ input:focus + div.info {
     text-transform: uppercase;
     width: 50px;
 }
+/* add/edit cases sharing */
+.sharing-wrapper .choices {
+	font-size: 16px;
+}
+#sharing-field-members,
+#sharing-field-external,
+#sharing-field-groups,
+#sharing-field-comment {
+	display: none;
+}
+
+
 body.casereport-view {
     position: relative;
 }
