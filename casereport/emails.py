@@ -173,4 +173,10 @@ def cr_published_notifications(casereport):
     shared_with = casereport.get_viewers()
     for viewer in resolve_email_targets(shared_with,
                                         exclude=casereport.primary_author):
-        invite_people(casereport,viewer)
+        invite_people(casereport, viewer)
+    # specifically send to the non-members, who get an account
+    # created with the email digest option, so they are not
+    # returned in the resolve_email_targets()
+    for viewer in shared_with:
+        if not viewer.is_active:
+            invite_people(casereport, viewer.email)
