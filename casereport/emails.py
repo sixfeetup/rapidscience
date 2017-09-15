@@ -178,5 +178,5 @@ def cr_published_notifications(casereport):
     # created with the email digest option, so they are not
     # returned in the resolve_email_targets()
     for viewer in shared_with:
-        if not viewer.is_active:
+        if hasattr(viewer, 'is_active') and not viewer.is_active:
             invite_people(casereport, viewer.email)
