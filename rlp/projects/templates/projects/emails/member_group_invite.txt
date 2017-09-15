@@ -1,7 +1,9 @@
 You are invited by <a href="{{ user_link }}">{{ user }}</a> to join <a href="{{ project_link }}">{{ project_title }}</a> and participate in member discussions and file sharing.<br><br>
 
 {% if message %}
-<div style="margin-left: 20px;">{{ message|linebreaks }}</div><br>
+<div style="margin-left: 20px;">
+{{ message|safe }}
+</div><br>
 {% endif %}
 
 The group’s {{ mods }}.<br><br>
