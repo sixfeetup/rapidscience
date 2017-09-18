@@ -11,6 +11,8 @@ from django.utils import timezone
 
 from actstream.models import Action
 
+from django.conf import settings
+
 from rlp.accounts.models import User
 from rlp.core.email import send_transactional_mail
 from rlp.projects.models import Project
@@ -108,7 +110,7 @@ class Command(BaseCommand):
             template = 'emails/weekly_summary'
             message_body = render_to_string('{}.txt'.format(template), email_context)
             mail = EmailMessage(subject, message_body,
-                                "Sarcoma Central <support@rapidscience.org>",
+                                settings.DEFAULT_FROM_EMAIL,
                                 [user.email])
             mail.content_subtype = "html"
             mail.send()
