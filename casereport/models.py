@@ -384,9 +384,14 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         """ uses the current user to choose between retract_by_author and
             retract_by_admin
         """
-        self.workflow_state = WorkflowState.RETRACTED
-        res = "Retracted"
-        return res
+        # self.workflow_state = WorkflowState.RETRACTED
+        # res = "Retracted"
+        self.author_approved = True
+        self.admin_approved = False
+        emails.approved(self)
+
+        return "Retracted"
+
 
     # TODO: think hard about moving these out of the model and into WorkflowState
     def _get_displayname_for_fname(self, fname):
