@@ -25,7 +25,7 @@
 {% elif action.verb == 'declined' %}
     {#    only visible to the declined user's activity feed#}
     With apologies, the {{ action.action_object.project }} group is currently closed to new members.
-    <p>You may, however, create a new group (from the <a href="{% url "projects:projects_list" %}">All Groups</a> page) related to this topic and invite members from within or outside the Rapid Science network.
+    <p>You may, however, create a new group (from the <a href="{% url "projects:projects_list" %}">All Groups</a> page) related to this topic and invite members from within or outside the Sarcoma Central network.
     </p>
     If you have questions please contact us at &lt;<a href="mailto:support@rapidscience.org">support@rapidscience.org</a>&gt;
 {% else %}
