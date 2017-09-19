@@ -83,7 +83,7 @@ moderator] to join the [Group Name] group in Sarcoma Central network.\
 GROUP_APPROVAL_CHOICES = (
     (0, ('Open - All validated Sarcoma Central members can '
          'view activity and join to participate')),
-    (1, 'Closed - Moderator must approve / invite Sarcoma Central Members'))
+    (1, 'Closed - Moderator must approve / invite Sarcoma Central members'))
 
 
 class BaseGroupForm(forms.Form):
