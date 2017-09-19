@@ -94,7 +94,7 @@
              {% if casereport.get_viewers %}
              <ul class="jumpMenu">
                  {% for viewer in casereport.get_viewers %}
-                    {% if viewer != request.user %}
+                    {% if viewer != request.user and viewer.is_active %}
                      <li>
                         {% if not viewer.users %}<a href="{% url 'profile' viewer.id %}">{{ viewer.get_full_name }}</a>{% endif %}
                         {% if viewer.users %}<a href="{% url 'projects:projects_detail' viewer.id viewer.slug %}">{{ viewer }}</a>{% endif %}
