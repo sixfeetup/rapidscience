@@ -46,11 +46,11 @@
           {{ form.media }}
           {% csrf_token %}
           {% for field in form %}
-            {% if field.label == 'Members' %}
+            {% if field.name == 'members' %}
               <p class="section-label">Sharing</p>
               <div class="sharing-wrapper">
             {% endif %}
-            {% if field.label == 'Members' or field.label == 'My Groups'%}
+            {% if field.name == 'members' or field.name == 'groups'%}
               {% bootstrap_field field label_class="sub-label" %}
             {% else %}
               {% bootstrap_field field label_class="section-label" %}
