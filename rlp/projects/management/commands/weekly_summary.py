@@ -59,10 +59,6 @@ class Command(BaseCommand):
                 print("skipping ", user, ": email setting is {0}".format(user.email_prefs))
                 continue
             projects = user.active_projects()
-            stream_for_user_projects = activity_stream.filter(
-                target_content_type=ContentType.objects.get_for_model(Project),
-                target_object_id__in=list(projects.values_list('id', flat=True))
-            )
             email_context = {
                 'user': user,
                 'site': site,
@@ -79,7 +75,9 @@ class Command(BaseCommand):
                     cxt_label = 'document'
                     for doctype in docs_cts:
                         content_id_set = []
-                        all_content = stream_for_user_projects.filter(
+                        ct_shares = [x.id for x in user.get_shared_content(doctype.model_class()) if x]
+                        all_content = activity_stream.filter(
+                            action_object_object_id__in=ct_shares,
                             action_object_content_type=doctype)
                         for item in all_content:
                             if item.action_object_object_id in content_id_set:
@@ -89,7 +87,9 @@ class Command(BaseCommand):
                 else:
                     content_id_set = []
                     cxt_label = ctype.model
-                    all_content = stream_for_user_projects.filter(
+                    ct_shares = [x.id for x in user.get_shared_content(ctype.model_class()) if x]
+                    all_content = activity_stream.filter(
+                        action_object_object_id__in=ct_shares,
                         action_object_content_type=ctype)
                     for item in all_content:
                         if item.action_object_object_id in content_id_set:
