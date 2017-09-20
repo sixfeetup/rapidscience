@@ -251,10 +251,12 @@ def add_tags(obj, tags):
 FORMAT_NAMED = 'NAMED'
 FORMAT_SIMPLE = 'SIMPLE'
 
-def resolve_email_targets(target, exclude=None, fmt=FORMAT_NAMED, debug=False):
+
+def resolve_email_targets(target, exclude=None, fmt=FORMAT_NAMED, debug=False, force=False):
     """ Take a target comprised of users, projects, strings and return a set
         of email addresses in either x@domain.tld or Name <x@domain.tld> format
         with duplicates removed and known opt-out's honored.
+        force=True will ignore the user's email preferences and send the email
     """
     if exclude:
         print("exclude:", exclude)
@@ -295,7 +297,7 @@ def resolve_email_targets(target, exclude=None, fmt=FORMAT_NAMED, debug=False):
         NameAndAddress = namedtuple('NameAndAddress', "name address")
         for recipient in users_and_strings:
             if hasattr(recipient, "email_prefs"):
-                if not recipient.notify_immediately():
+                if not force and not recipient.notify_immediately():
                     continue  # skip the opted-out target
                 else:
                     naa = NameAndAddress(recipient.get_full_name(),

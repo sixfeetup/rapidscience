@@ -198,9 +198,10 @@ def invite_members(request, pk, slug):
 
             internal_users = form.cleaned_data['internal']
 
-            internal_addrs = resolve_email_targets(internal_users)
+            internal_addrs = resolve_email_targets(internal_users, force=True)
             external_addrs = resolve_email_targets(form.cleaned_data['external'],
-                                                   exclude=internal_users)
+                                                   exclude=internal_users,
+                                                   force=True)
 
             # Non-members - create user and send specific registration link
             emails.project_invite_nonmember(request, external_addrs, group, message)
@@ -304,13 +305,14 @@ class AddGroup(LoginRequiredMixin, FormView):
             state='moderator',
         )
         internal_users = form.cleaned_data['internal']
-        internal_addrs = resolve_email_targets(internal_users)
+        internal_addrs = resolve_email_targets(internal_users, force=True)
         message = form.cleaned_data['invitation_message']
         emails.project_invite_member(request, internal_addrs, new_group,
                                      message)
 
         external_addrs = resolve_email_targets(form.cleaned_data['external'],
-                                               exclude=internal_users)
+                                               exclude=internal_users,
+                                               force=True)
         emails.project_invite_nonmember(request, external_addrs, new_group,
                                         message)
         return redirect(new_group.get_absolute_url())
@@ -358,11 +360,12 @@ class EditGroup(LoginRequiredMixin, FormView):
 
             internal_users = [member for member in form.cleaned_data['internal']
                               if member not in project.active_members()]
-            internal_addrs = resolve_email_targets(internal_users)
+            internal_addrs = resolve_email_targets(internal_users, force=True)
             emails.project_invite_member(request, internal_addrs, project, message)
 
             external_addrs = resolve_email_targets(form.cleaned_data['external'],
-                                                   exclude=project.active_members())
+                                                   exclude=project.active_members(),
+                                                   force=True)
             emails.project_invite_nonmember(request, external_addrs, project, message)
 
             messages.info(request, "Invites Sent!")
