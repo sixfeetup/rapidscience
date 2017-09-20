@@ -87,3 +87,10 @@ def is_workflow_verb(verb):
             return v
 
     return ''
+
+
+@register.filter()
+def check_is_visible(viewer):
+    if hasattr(viewer, 'is_active'):
+        return viewer.is_active
+    return True
