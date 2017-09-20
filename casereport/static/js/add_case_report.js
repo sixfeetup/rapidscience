@@ -416,6 +416,11 @@ $(document).ready(function() {
             add_button.show();
         }
     });
+    
+    // open the first attachment field
+    if ($('.attachments-div .attachment').length == 0){
+        $('.add_att_button').trigger("click");
+    }
 
 });
 
