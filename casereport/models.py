@@ -285,6 +285,12 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         self.author_approved = True
         self.admin_approved = False
         emails.submitted(self)
+        # notify co-authors
+        for coauthor in self.co_author.all():
+            if coauthor.is_active:
+                emails.notify_coauthor(self, coauthor)
+            else:
+                emails.invite_coauthor(self, coauthor)
         return "Your Case Report has been submitted and will be reviewed by \
             our admin staff. \
             Please note case no. #%s for future reference." % self.id

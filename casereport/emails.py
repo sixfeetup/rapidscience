@@ -139,7 +139,8 @@ def invite_coauthor(casereport, user):
     subject = "{0} invites you to co-author a case report".format(author)
     template = 'casereport/emails/invite_coauthor'
     message_body = render_to_string('{}.txt'.format(template), email_context)
-    recipients = resolve_email_targets(user, exclude=casereport.primary_author)
+    recipients = resolve_email_targets(user, force=True,
+                                       exclude=casereport.primary_author)
     mail = EmailMessage(subject, message_body,
                         "Cases Central <edit@rapidscience.org>",
                         recipients)
@@ -158,7 +159,8 @@ def notify_coauthor(casereport, user):
     subject = "{0} invites you to co-author a case report".format(author)
     template = 'casereport/emails/notify_coauthor'
     message_body = render_to_string('{}.txt'.format(template), email_context)
-    recipients = resolve_email_targets(user, exclude=casereport.primary_author)
+    recipients = resolve_email_targets(user, force=True,
+                                       exclude=casereport.primary_author)
     mail = EmailMessage(subject, message_body,
                         "Cases Central <edit@rapidscience.org>",
                         recipients)

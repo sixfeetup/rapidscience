@@ -260,11 +260,6 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
                                 is_active=False)
                 coauthor.save()
                 case.co_author.add(coauthor)
-                coauthors_to_notify.add(coauthor)
-
-        for coauthor in resolve_email_targets(coauthors_to_notify,
-                                              exclude=case.primary_author):
-            emails.notify_coauthor(case, coauthor)
 
         case.save()
         
@@ -562,13 +557,11 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
         for auth in data.getlist('coauthors'):
             coauth_user = User.objects.get(pk=auth)
             if coauth_user not in current_authors:
-                #emails.notify_coauthor(case, coauth_user)
                 new_coauthors.add(coauth_user)
         for i in range(0, len(email)):
             try:
                 coauthor = User.objects.get(email=email[i])
                 if coauthor not in current_authors:
-                    #emails.notify_coauthor(case, coauthor)
                     new_coauthors.add(coauthor)
                     case.co_author.add(coauthor)
             except User.DoesNotExist:
@@ -576,11 +569,12 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
                                 is_active=False)
                 coauthor.save()
                 case.co_author.add(coauthor)
-                emails.invite_coauthor(case, coauthor)
+                if case.workflow_state != WorkflowState.DRAFT:
+                    emails.invite_coauthor(case, coauthor)
 
-        new_coauthor_emails = resolve_email_targets(new_coauthors)
-        for recipient in new_coauthor_emails:
-            emails.notify_coauthor(case, recipient)
+        for recipient in new_coauthors:
+            if case.workflow_state != WorkflowState.DRAFT:
+                emails.notify_coauthor(case, recipient)
 
         case.age = data['age']
         case.gender = data['gender']
