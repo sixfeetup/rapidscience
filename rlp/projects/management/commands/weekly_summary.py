@@ -33,16 +33,6 @@ class Command(BaseCommand):
         site = Site.objects.get_current()
         some_day_last_week = timezone.now() - timedelta(days=7)
         year, week, day = some_day_last_week.isocalendar()
-        # Exclude shared references since this doesn't make sense to show to the full audience
-        shared_ref_ct = ContentType.objects.get(app_label='bibliography',
-                                                model='referenceshare')
-        activity_stream = Action.objects.filter(
-            timestamp__gte=some_day_last_week,
-            timestamp__lte=timezone.now()).exclude(
-            action_object_content_type=shared_ref_ct)
-        # Bail early if there wasn't any activity last week
-        if not activity_stream.count():
-            return
         # define the content types
         casereport_ct = ContentType.objects.get(app_label='casereport',
                                                 model='casereport')
@@ -75,9 +65,9 @@ class Command(BaseCommand):
                     cxt_label = 'document'
                     for doctype in docs_cts:
                         content_id_set = []
-                        ct_shares = [x.id for x in user.get_shared_content(doctype.model_class()) if x]
-                        all_content = activity_stream.filter(
-                            action_object_object_id__in=ct_shares,
+                        all_content = user.get_activity_stream().filter(
+                            timestamp__gte=some_day_last_week,
+                            timestamp__lte=timezone.now(),
                             action_object_content_type=doctype)
                         for item in all_content:
                             if item.action_object_object_id in content_id_set:
@@ -87,9 +77,9 @@ class Command(BaseCommand):
                 else:
                     content_id_set = []
                     cxt_label = ctype.model
-                    ct_shares = [x.id for x in user.get_shared_content(ctype.model_class()) if x]
-                    all_content = activity_stream.filter(
-                        action_object_object_id__in=ct_shares,
+                    all_content = user.get_activity_stream().filter(
+                        timestamp__gte=some_day_last_week,
+                        timestamp__lte=timezone.now(),
                         action_object_content_type=ctype)
                     for item in all_content:
                         if item.action_object_object_id in content_id_set:
