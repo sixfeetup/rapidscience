@@ -2,6 +2,10 @@ You are invited by {{ casereport.primary_author.get_full_name }} to view and dis
 
 <p style="text-indent: 50px"><a href="https://{{ site }}{{ case_url }}">{{ casereport.title }}</a></p><br>
 
+{% if invite_msg %}
+<p>{{ invite_msg }}</p>
+{% endif %}
+
 You may view the case report in the <a href="https://{{ site }}{{ casescentral }}">Cases Central database</a>, and discuss it with your colleagues.<br><br>
 
 If you're not already a Rapid Science member, you must first <a href="https://{{ site }}{{ reg_link }}">register</a>.<br><br>

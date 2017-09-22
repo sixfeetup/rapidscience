@@ -276,9 +276,14 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         past_tense_verb = 'created'
         for group_id in data.getlist('groups'):
             group = Project.objects.get(id=group_id)
-            action.send(request.user, verb=past_tense_verb, action_object=case, target=group)
+            action.send(
+                request.user, verb=past_tense_verb,
+                description=data.get('comment'), action_object=case,
+                target=group)
         else:
-            action.send(request.user, verb=past_tense_verb, action_object=case)
+            action.send(
+                request.user, verb=past_tense_verb,
+                description=data.get('comment'), action_object=case)
         external = data.get('external').split(",")
         for address in external:
             if not address:
@@ -286,7 +291,9 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
             if not User.objects.filter(email=address):
                 new_user = User(email=address, is_active=False)
                 new_user.save()
-                case.share_with([new_user], shared_by=primary_author)
+                case.share_with(
+                    [new_user], shared_by=primary_author,
+                    comment=data.get('comment'))
 
 
         # eventually we' want this:
