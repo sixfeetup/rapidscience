@@ -16,6 +16,7 @@ from actstream import action
 from rlp.core.forms import member_choices, group_choices
 from rlp.core.utils import bookmark_and_notify, add_tags, fill_tags
 from rlp.discussions.models import ThreadedComment
+from rlp.projects.models import Project
 from . import choices
 from .forms import (
     AttachReferenceForm,
@@ -203,11 +204,18 @@ class ReferenceAttachView(LoginRequiredMixin, FormView):
         context['reference'] = ref
         context['user_reference'] = uref
         if self.request.method == 'GET':
+            try:
+                group = Project.objects.get(id=self.request.session.get('last_viewed_project'))
+            except Project.DoesNotExist:
+                group = []
             # populate initial data
             form = AttachReferenceForm()
             form.fields['description'].initial = uref.description
             form.fields['members'].choices = member_choices()
-            form.fields['groups'].choices = group_choices(self.request.user)
+            if group:
+                form.fields['groups'].choices = group_choices(self.request.user, exclude=[group])
+            else:
+                form.fields['groups'].choices = group_choices(self.request.user)
             fill_tags(uref, form)
             context['form'] = form
         return context

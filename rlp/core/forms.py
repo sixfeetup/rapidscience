@@ -29,7 +29,7 @@ def member_choices():
         yield (member.id, member.get_full_name())
 
 
-def group_choices(user):
+def group_choices(user, exclude=[]):
     '''
     return (ID, name) pairs for any group where
       * the user is in the group
@@ -37,7 +37,8 @@ def group_choices(user):
     if not user:
         return
     for group in user.active_projects():
-        yield (group.id, group.title)
+        if group not in exclude:
+            yield (group.id, group.title)
 
 
 member_choice_field = MemberListField(

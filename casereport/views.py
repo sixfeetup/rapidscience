@@ -160,7 +160,7 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
 
     def get_form(self, form_class):
         try:
-            group = Project.objects.get(id=self.request.GET.get('id'))
+            group = Project.objects.get(id=self.request.session.get('last_viewed_project'))
         except Project.DoesNotExist:
             group = []
         form = super(CaseReportFormView, self).get_form(form_class)
@@ -170,12 +170,13 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         if group and group.approval_required:
             form.fields['members'].hide_field = True
             form.fields['members'].choices = [(user.id, user.get_full_name())]
-            form.fields['groups'].choices = [(group.id, group.title)]
-            form.fields['groups'].initial = [group.id]
             form.fields['members'].widget.attrs['class'] = 'select2 hiddenField'
             form.fields['groups'].widget.attrs['class'] = 'select2 hiddenField'
             form.fields['external'].widget.attrs['class'] = 'hiddenField'
             form.fields['comment'].widget.attrs['class'] = 'hiddenField'
+        elif group:
+            form.fields['members'].choices = all_members
+            form.fields['groups'].choices = group_choices(user, exclude=[group])
         else:
             form.fields['members'].choices = all_members
             form.fields['groups'].choices = group_choices(user)
