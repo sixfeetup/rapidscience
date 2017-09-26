@@ -30,6 +30,8 @@ from .models import Project
 from .models import ProjectMembership
 from .shortcuts import group_invite_choices
 
+from actstream import action
+
 
 @never_cache
 def projects_list(request, template_name="projects/projects_list.html"):
@@ -210,6 +212,9 @@ def invite_members(request, pk, slug):
             emails.project_invite_member(request, internal_addrs, group, message)
 
             # message the results back
+            if not group.approval_required:
+                for invitee in User.objects.filter(id__in=internal_users):
+                    action.send(request.user, verb='invited', action_object=group, target= invitee)
             recipients = internal_addrs.union(external_addrs)
             count = len(recipients)
             messages.success(request, '{} member{} invited'.format(
