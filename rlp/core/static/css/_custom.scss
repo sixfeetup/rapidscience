@@ -1154,6 +1154,7 @@ a.comment-count.empty {
         background: rgb(238, 238, 238);
         padding: 20px 0;
         text-align: center;
+        z-index: 1;
     }
     .float-buttons .btn {
         font-size: 16px;
@@ -1170,6 +1171,7 @@ a.comment-count.empty {
     width: 100%;
     text-align: center;
     height: 100px;
+    z-index: 1;
     .btn {
         font-size: 16px;
     }

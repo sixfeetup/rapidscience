@@ -58,6 +58,7 @@ body{
 	padding: 30px 0;
 	text-align: center;
 	position: relative;
+	z-index: 1;
 }
 .action-buttons .btn {
 	font-size: 16px;

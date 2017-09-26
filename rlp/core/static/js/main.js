@@ -21,6 +21,11 @@ var selectedBookmarksFolderName; // will contain ID of selected bookmarks folder
             $(this).next('.character-count').text(length + '/' + maxLength);
         }
     });
+    
+    // add space to footer when .buttonbar is present
+    if ($('.buttonbar, .action-buttons, .float-buttons').length) {
+        $(".main-footer").css({"padding-bottom": "120px"});
+    }
 
     // var showChar = 170;
     // var ellipsestext = '&hellip;';
