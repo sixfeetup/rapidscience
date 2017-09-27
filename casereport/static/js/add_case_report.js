@@ -66,6 +66,11 @@ $(document).ready(function() {
         e.preventDefault(); $(this).parent('div').remove(); x--;
     })
     
+    $(".hiddenField").parents(".sharing-wrapper").hide();
+    if ($('.action-buttons').length) {
+        $(".main-footer").css({"padding-bottom": "120px"});
+    }
+    
     // sharing fields
     var sharing_fields = $("#sharing-field-members, #sharing-field-external, #sharing-field-groups, #sharing-field-comment")
     if ($(".sharing-wrapper .choices #share2").is(':checked')) {

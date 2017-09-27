@@ -226,8 +226,10 @@
                         <p class="helptext">{{ field.help_text|safe }}</p>
                         {% endif %}
                     </div>
+                    {% if field.name == 'to_dashboard' %}
+                        </div> <!-- end sharing-wrapper -->
+                    {% endif %}
                 {% endfor %}
-                </div>
 
                 <div class="submit-button">
                     <input id="save-button" class="btn btn-primary" type="submit" value="Save" />

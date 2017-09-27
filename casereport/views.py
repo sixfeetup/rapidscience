@@ -544,6 +544,12 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
             elif viewer._meta.model_name == 'project':
                 form.fields['groups'].initial.append(viewer.id)
                 cr_shared = (viewer.id == 1) and 'all' or 'pick'
+                # hide sharing fields if shared with closed group
+                if viewer.approval_required:
+                    form.fields['members'].widget.attrs['class'] = 'select2 hiddenField'
+                    form.fields['groups'].widget.attrs['class'] = 'select2 hiddenField'
+                    form.fields['external'].widget.attrs['class'] = 'hiddenField'
+                    form.fields['comment'].widget.attrs['class'] = 'hiddenField'
         fill_tags(casereport, form)
 
         return self.render_to_response(self.get_context_data(
