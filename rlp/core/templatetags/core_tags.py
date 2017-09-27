@@ -135,6 +135,8 @@ def display_shared_with(item, user=None):
             continue
         if v._meta.model_name == "user":
             url = reverse('profile', args=[v.id])
+            if v == user:
+                v = 'me'
             vlist.append('<a href="{0}">{1}</a>, '.format(url, v))
         elif v._meta.model_name == "project":
             if (v.approval_required and user in v.active_members()) or \
