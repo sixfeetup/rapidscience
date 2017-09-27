@@ -211,10 +211,16 @@ class ReferenceAttachView(LoginRequiredMixin, FormView):
             # populate initial data
             form = AttachReferenceForm()
             form.fields['description'].initial = uref.description
-            form.fields['members'].choices = member_choices()
-            if group:
+            if group and group.approval_required:
+                form.fields['members'].hide_field = True
+                form.fields['members'].choices = [(user.id, user.get_full_name())]
+                form.fields['members'].widget.attrs['class'] = 'select2 hiddenField'
+                form.fields['groups'].widget.attrs['class'] = 'select2 hiddenField'
+            elif group:
+                form.fields['members'].choices = member_choices()
                 form.fields['groups'].choices = group_choices(self.request.user, exclude=[group])
             else:
+                form.fields['members'].choices = member_choices()
                 form.fields['groups'].choices = group_choices(self.request.user)
             fill_tags(uref, form)
             context['form'] = form

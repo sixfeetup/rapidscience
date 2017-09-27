@@ -47,8 +47,8 @@
           {% csrf_token %}
           {% for field in form %}
             {% if field.name == 'members' %}
-              <p class="section-label">Sharing</p>
               <div class="sharing-wrapper">
+                  <p class="section-label">Sharing</p>
             {% endif %}
             {% if field.name == 'members' or field.name == 'groups'%}
               {% bootstrap_field field label_class="sub-label" %}
@@ -67,6 +67,14 @@
               Cancel
             </a>
           </div>
+          <script type="text/javascript">
+              (function($) { $(function() {
+                  $(".hiddenField").parents(".sharing-wrapper").hide();
+                  if ($('.action-buttons').length) {
+                      $(".main-footer").css({"padding-bottom": "120px"});
+                  }
+              }); })(jQuery);
+          </script>
         </form>
         {% endif %}
         </div>
