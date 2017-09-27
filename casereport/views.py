@@ -536,11 +536,14 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
         shared_with = casereport.get_viewers()
         form.fields['members'].initial = []
         form.fields['groups'].initial = []
+        cr_shared = 'none'
         for viewer in shared_with:
             if viewer._meta.model_name == 'user':
                 form.fields['members'].initial.append(viewer.id)
+                cr_shared = 'pick'
             elif viewer._meta.model_name == 'project':
                 form.fields['groups'].initial.append(viewer.id)
+                cr_shared = (viewer.id == 1) and 'all' or 'pick'
         fill_tags(casereport, form)
 
         return self.render_to_response(self.get_context_data(
@@ -549,7 +552,8 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
             casereport=casereport,
             subtypes=subtypes,
             aberrations=aberrations,
-            all_members=all_members), )
+            all_members=all_members,
+            cr_shared=cr_shared), )
 
     def post(self, request, case_id, *args, **kwargs):
         data = request.POST.copy()

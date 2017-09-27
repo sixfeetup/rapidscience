@@ -68,6 +68,9 @@ $(document).ready(function() {
     
     // sharing fields
     var sharing_fields = $("#sharing-field-members, #sharing-field-external, #sharing-field-groups, #sharing-field-comment")
+    if ($(".sharing-wrapper .choices #share2").is(':checked')) {
+        $(sharing_fields).show()
+    }
     $(".sharing-wrapper .choices input").click(function(){
         $(sharing_fields).hide()
         if ($(this).val() == 'share-all') {
