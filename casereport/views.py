@@ -532,6 +532,15 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
         form = self.form_class()
         form.fields['members'].choices = member_choices()
         form.fields['groups'].choices = group_choices(request.user)
+        # show who the case is already shared with
+        shared_with = casereport.get_viewers()
+        form.fields['members'].initial = []
+        form.fields['groups'].initial = []
+        for viewer in shared_with:
+            if viewer._meta.model_name == 'user':
+                form.fields['members'].initial.append(viewer.id)
+            elif viewer._meta.model_name == 'project':
+                form.fields['groups'].initial.append(viewer.id)
         fill_tags(casereport, form)
 
         return self.render_to_response(self.get_context_data(
