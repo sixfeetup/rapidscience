@@ -196,7 +196,10 @@ class ThreadedComment(Comment, SharedObjectMixin):
     def discussion_root(self):
         if self.thread_id == 0:
             return self
-        return ThreadedComment.objects.get(id=self.thread_id)
+        try:
+            return ThreadedComment.objects.get(id=self.thread_id)
+        except ThreadedComment.DoesNotExist:
+            return self
 
     @property
     def is_bookmarkable(self):
