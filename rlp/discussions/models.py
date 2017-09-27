@@ -198,6 +198,11 @@ class ThreadedComment(Comment, SharedObjectMixin):
             return self
         return ThreadedComment.objects.get(id=self.thread_id)
 
+    @property
+    def is_bookmarkable(self):
+        '''child comments are not bookmarkable'''
+        return bool(self.title)
+
     def get_viewers(self):
         '''override to get the viewers for the discussion'''
         top_comment = self.discussion_root
