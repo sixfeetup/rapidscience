@@ -37,9 +37,11 @@
 {% endif %}
 
 {%  if discussion_link %}
+    {% if action.verb != 'invited' %}
     <a class="comment-count {% if comment_count < 1 %}empty{% endif %}" type="button" title="Comments" href="{{ discussion_link }}">
         <i class="fa fa-comment" aria-hidden="true"></i><br />
         {%  if comment_count > 0 %} <span class="comment-count-text">{{ comment_count }}</span> {% endif %}
     </a>
+    {%  endif  %}
 {%  endif  %}
 <!-- end discussion_count_widget.html -->

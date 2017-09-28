@@ -214,7 +214,7 @@ def invite_members(request, pk, slug):
             # message the results back
             if not group.approval_required:
                 for invitee in User.objects.filter(id__in=internal_users):
-                    action.send(request.user, verb='invited', action_object=group, target= invitee)
+                    action.send(request.user, verb='invited', action_object=group, target= invitee, description=message)
             recipients = internal_addrs.union(external_addrs)
             count = len(recipients)
             messages.success(request, '{} member{} invited'.format(

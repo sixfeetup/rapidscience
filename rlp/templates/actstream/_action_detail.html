@@ -31,19 +31,12 @@
 {% elif action.verb == 'invited' %}
     {# visible on their Activity Feed if a member invites another existing member to an open group #}
     You are invited by <a href="{{ action.actor.get_absolute_url }}">{{ action.actor.get_full_name }}</a>  to join <a href="{{ action.action_object.get_absolute_url }}">{{ action.action_object.title }}</a> and participate in member discussions and file sharing.<br><br>
-    {% if message %}
-    <div style="margin-left: 20px;">
-    {{ message|safe }}
-    </div><br>
-    {% endif %}
 
-    The group’s moderator is {{ action.action_object.project_mods }}.<br><br>
+    {% if action.description %}<div class="more">{% autoescape off %}{{ action.description }}{% endautoescape %}</div>{% endif %}
+
+    The group’s {{action.action_object|show_mods}}.<br><br>
 
     To join the group, click <a href="{% url "projects:projects_join" pk=action.action_object.pk %}">Join</a>. You can also visit the <a href="{% url "projects:projects_list" %}">All Groups</a>  page to read more about the group and click the Join button there. As an open group, member access is immediate.<br><br>
-
-    Sincerely,<br><br>
-
-    The <a href="https://sarcoma.rapidscience.org/">Sarcoma Central</a> Team <a href="https://twitter.com/RapidScience/">@RapidScience</a><br><br>
 
 
 {% else %}
@@ -102,4 +95,6 @@
     {% endwith %}
 {% endif %}
 {# timestamp #}
-| {{ action.timestamp|date:"j M Y" }}
+{% if action.verb != 'invited' %}
+    | {{ action.timestamp|date:"j M Y" }}
+{% endif %}
