@@ -532,24 +532,14 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
         form = self.form_class()
         form.fields['members'].choices = member_choices()
         form.fields['groups'].choices = group_choices(request.user)
-        # show who the case is already shared with
-        shared_with = casereport.get_viewers()
-        form.fields['members'].initial = []
-        form.fields['groups'].initial = []
-        cr_shared = 'none'
+        # hide sharing fields if shared with closed group
+        shared_with = [x for x in casereport.get_viewers() if x._meta.model_name == 'project']
         for viewer in shared_with:
-            if viewer._meta.model_name == 'user':
-                form.fields['members'].initial.append(viewer.id)
-                cr_shared = 'pick'
-            elif viewer._meta.model_name == 'project':
-                form.fields['groups'].initial.append(viewer.id)
-                cr_shared = (viewer.id == 1) and 'all' or 'pick'
-                # hide sharing fields if shared with closed group
-                if viewer.approval_required:
-                    form.fields['members'].widget.attrs['class'] = 'select2 hiddenField'
-                    form.fields['groups'].widget.attrs['class'] = 'select2 hiddenField'
-                    form.fields['external'].widget.attrs['class'] = 'hiddenField'
-                    form.fields['comment'].widget.attrs['class'] = 'hiddenField'
+            if viewer.approval_required:
+                form.fields['members'].widget.attrs['class'] = 'select2 hiddenField'
+                form.fields['groups'].widget.attrs['class'] = 'select2 hiddenField'
+                form.fields['external'].widget.attrs['class'] = 'hiddenField'
+                form.fields['comment'].widget.attrs['class'] = 'hiddenField'
         fill_tags(casereport, form)
 
         return self.render_to_response(self.get_context_data(
@@ -558,8 +548,7 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
             casereport=casereport,
             subtypes=subtypes,
             aberrations=aberrations,
-            all_members=all_members,
-            cr_shared=cr_shared), )
+            all_members=all_members), )
 
     def post(self, request, case_id, *args, **kwargs):
         data = request.POST.copy()
