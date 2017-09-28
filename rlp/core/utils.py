@@ -193,7 +193,9 @@ def rollup(input, rollup_name, rollup_attr='target'):
                     getattr(i, rollup_name).append(val)
                 # and move any previous rollups into the new ia
                 if hasattr(n, rollup_name):
-                    getattr(i, rollup_name).extend(getattr(n, rollup_name))
+                    for el in getattr(n, rollup_name):
+                        if el not in getattr(i, rollup_name):
+                            getattr(i, rollup_name).append(el)
         else:
             yield i
             equivalent_ids = {same_action(i)}
