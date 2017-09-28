@@ -89,7 +89,9 @@
                  {% endif %}
              </ul>
              <hr />
-             <a class="share-link pull-right" href="/send/casereport/casereport/{{ casereport.id }}"><i class="fa fa-share"></i></a>
+             {% if casereport.primary_author ==  request.user %}
+                 <a class="share-link pull-right" href="/send/casereport/casereport/{{ casereport.id }}"><i class="fa fa-share"></i></a>
+             {% endif %}
              <h4>Sharing</h4>
              {% if casereport.get_viewers %}
              <ul class="jumpMenu">

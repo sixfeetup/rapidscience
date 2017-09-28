@@ -57,7 +57,9 @@
         <a href="#" class="bookmark-trigger" data-toggle="tooltip" title="Save Bookmark"><i class="fa fa-star" aria-hidden="true"></i></a>
         </form>
       {% endif %}
-      <a class="share-link" href="/send/casereport/casereport/{{ obj.id }}"><i class="fa fa-share"></i></a>
+      {% if obj.primary_author == request.user %}
+          <a class="share-link" href="/send/casereport/casereport/{{ obj.id }}"><i class="fa fa-share"></i></a>
+      {% endif %}
     {%  endif %}
     </div>
 </div>
