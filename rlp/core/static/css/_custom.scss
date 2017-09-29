@@ -89,11 +89,11 @@ h1.detail-view-heading {
                 border-right-color: #444;
             }
         }
-        
+
     }
     & > li + li {
         margin-left: 0px;
-    }   
+    }
     & > li:first-child {
         & > a {
             border-top-left-radius: 5px;
@@ -933,7 +933,7 @@ a.share-link:hover {
     font-size: 20px;
 }
 a.comment-count.empty {
-    color: #ebebeb;
+    color: #dddddd;
 }
 
 .comment-detail,
@@ -1311,6 +1311,7 @@ input#id_to_dashboard {
     hr {
         margin-top: 0;
         margin-bottom: 25px;
+        border-top: 1px solid #dddddd;
     }
 }
 
@@ -1362,7 +1363,7 @@ input#id_to_dashboard {
     margin-bottom: 10px;
     font-size: 20px;
     a {
-        color: #ebebeb;
+        color: #dddddd;
         &:hover,
         &.saved:hover {
             color: #256180;
