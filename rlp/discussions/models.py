@@ -154,11 +154,12 @@ class ThreadedComment(Comment, SharedObjectMixin):
             return 'Reply'
         return 'Comment'
 
-    @property
-    def is_reply(self):
-        if self.content_type.name.lower() == 'comment':
-            return True
-        return False
+    # this was redefined below
+    # @property
+    # def is_reply(self):
+    #     if self.content_type.name.lower() == 'comment':
+    #         return True
+    #     return False
 
     @property
     def is_discussion(self):
