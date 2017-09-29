@@ -361,7 +361,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
                 target=WorkflowState.AUTHOR_REVIEW)
     def _retract_by_author(self):  # starts with _ to hide from users
         self.author_approved = False
-        self.notify_datascience_team()
+        # self.notify_datascience_team()
         return '''moved to "Author Review"'''
 
     @transition(field=workflow_state,
@@ -394,7 +394,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         # res = "Retracted"
         self.author_approved = True
         self.admin_approved = False
-        emails.approved(self)
+        # emails.approved(self)
 
         return "Retracted"
 
