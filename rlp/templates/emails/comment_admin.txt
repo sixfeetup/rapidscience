@@ -4,7 +4,7 @@
 {{ comment|striptags }}
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-Follow the link above to join the conversation.
+Follow the link above to join the conversation.<br><br>
 
 Sincerely,<br><br>
 Editorial Team
