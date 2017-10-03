@@ -7,6 +7,7 @@
 {% block body_class %}search{% endblock %}
 
 {% block right_column %}
+{% if not tags %}
 <div class="box">
     <form  class="sub-menu" method="get" action="{% url 'haystack_search' %}{% if query %}?q={{ query }}{% endif %}" autocomplete="off">
         <div class="refine-search">
@@ -19,14 +20,20 @@
         </div>
     </form>
 </div>
+{% endif %}
 {% endblock right_column %}
 
 {% block main_content %}
     <div class="box main-content search-page plugin-form">
     <div class="">
+      {% if tags %}
+        <h2>Items tagged with:{% for tag in tags %} {{ tag.name }}{% endfor %}</h2>
+      {% else %}
         <h1>Search</h1>
+      {% endif %}
         {% if object_list %}<div class="result-count">{{ object_list|length }} result{% if object_list|length > 1 %}s{% endif %}</div>{% endif %}
     </div>
+    {% if not tags %}
     <form class="keywords" method="get" action="{% url 'haystack_search' %}{% if query %}?q={{ query }}{% endif %}" autocomplete="off">
         <div class="input-group">
             <input id="id_q" name="q" type="search" class="form-control clear-input" placeholder="Authors, institutions, drugs, biomarkers…" value="{{ query }}">
@@ -36,8 +43,11 @@
             </span>
         </div>
     </form>
+    {% endif %}
     {% if object_list %}
+      {% if not tags %}
         <p class="relevance"><em>Results are sorted by keyword relevance.</em></p>
+      {% endif %}
         {% include 'search/_results.html' %}
     {% else %}
       <p>
