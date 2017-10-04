@@ -122,16 +122,24 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
             template_name = 'comments/list.html'
         context['page_template'] = 'comments/list.html'
     elif tab == 'casereports':
-        reports = []
-        if (filter_form.is_valid() and not filter_form.cleaned_data.get(
-                'user_activity_only')) or not filter_form.is_valid():
-            reports += [r for r in request.user.get_bookmarked_content(
-                        CaseReport) if r.workflow_state == WorkflowState.LIVE]
-        reports += CaseReport.objects.filter(primary_author=request.user)
-        reps = (r for r in reports)
+        # only show CRs shared with the current group
+        # show all CRs created by the user, regardless of state
+        # only show live CRs that were not created by the user
+        reports = [r for r in project.get_bookmarked_content(CaseReport)]
+        display_cr = []
+        user_only = filter_form.is_valid() and filter_form.cleaned_data.get('user_activity_only')
+        for r in reports:
+            if user_only and r.primary_author == request.user:
+                display_cr.append(r)
+                continue
+            elif user_only and not r.primary_author == request.user:
+                continue
+            if r.primary_author == request.user:
+                display_cr.append(r)
+            elif r.workflow_state == WorkflowState.LIVE:
+                display_cr.append(r)
         context['case_reports'] = sorted(
-            (r for r in reps if
-             r.workflow_state == WorkflowState.LIVE),
+            display_cr,
             key=lambda c: c.sort_date(),
             reverse=True,
         )
