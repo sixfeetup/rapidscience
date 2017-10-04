@@ -5,10 +5,10 @@ from django.template.loader import render_to_string
 from haystack import indexes
 
 from .models import ThreadedComment
-from rlp.search.search_indexes import BaseIndex
+from rlp.search.search_indexes import TaggableBaseIndex
 
 
-class CommentIndex(BaseIndex, indexes.Indexable):
+class CommentIndex(TaggableBaseIndex, indexes.Indexable):
     def get_model(self):
         return ThreadedComment
 
