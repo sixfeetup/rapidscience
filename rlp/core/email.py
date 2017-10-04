@@ -109,7 +109,11 @@ def activity_mail(user, obj, target, request=None):
                     request.build_absolute_uri(reverse('dashboard')) \
                     or "https://" + settings.DOMAIN
 
-        template = 'core/emails/comment_activity_email'
+        if type == 'Discussion' and obj.title:
+            template = 'core/emails/newdiscussion_comment_activity_email'
+        else:
+            template = 'core/emails/comment_activity_email'
+
         context.update({
             "user_link": user_link,
             "root_obj": root_obj,

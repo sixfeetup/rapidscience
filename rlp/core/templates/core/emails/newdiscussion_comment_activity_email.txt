@@ -1,0 +1,15 @@
+<a href="{{ user_link }}">{{ user.get_full_name }}</a> shared this <a href="{{ link }}">{{ title }}</a>, with you:<br>
+
+{% if comment %}
+<div style="margin-left: 20px;">
+Comment: {{ comment|safe }}
+</div><br>
+{% endif %}
+
+You are invited to view and discuss it <a href="{{ link }}">here</a>.<br><br>
+
+This notification also appears on your <a href="{{ dash_link }}">Dashboard Activity Feed</a> where you can bookmark it in your personal or group folder(s).<br><br>
+
+Sincerely,<br><br>
+
+The <a href="https://sarcoma.rapidscience.org/">Sarcoma Central</a> Team <a href="https://twitter.com/RapidScience/">@RapidScience</a><br><br>
