@@ -131,7 +131,10 @@ def activity_mail(user, obj, target, request=None):
         "link": link,
         "site": settings.DOMAIN,
     })
-    subject = "{} shared a comment on {} at Sarcoma Central with you"
+    if type == 'Discussion' and obj.title:
+        subject = "{} shared a {} with you at Sarcoma Central"
+    else:
+        subject = "{} shared a comment on {} at Sarcoma Central with you"
     subject = subject.format(user.get_full_name(), type)
     message_body = render_to_string('{}.txt'.format(template), context)
     for member in recipients:
