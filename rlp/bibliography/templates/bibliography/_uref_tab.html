@@ -30,7 +30,7 @@
         | {{ ref.date_updated|date:"j M Y" }}
         {% if request.user == user or request.user.is_staff %}
             {% with edit_url=obj.get_edit_url %}
-              {% if edit_url %}| <a href="{{ edit_url }}">Edit</a>{% endif %}
+              {% if edit_url %}| <a href="{% url "bibliography:reference_edit" reference_pk=obj.pk uref_id=ref.id %}">Edit</a>{% endif %}
             {% endwith %}
         {% endif %}
         <br />

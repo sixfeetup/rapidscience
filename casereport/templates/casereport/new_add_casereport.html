@@ -268,8 +268,10 @@
     <script type="text/javascript">
     (function($) { $(function() {
         $('#button-cancel').click(function (event) {
-            event.preventDefault();
-            $('#modal-cancel').modal();
+            if ($("h1").text() == 'Submit Case') {
+                event.preventDefault();
+                $('#modal-cancel').modal();
+            }
         });
         $('#modal-cancel').on('show.bs.modal', function (event) {
             var modal = $(this);
