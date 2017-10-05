@@ -92,7 +92,29 @@ def approved(casereport):
     email_context = {
         'title': casereport.title,
         'link': casereport.get_absolute_url(),
-        'site': settings.DOMAIN
+        'site': settings.DOMAIN,
+    }
+    message_body = render_to_string('{}.txt'.format(template), email_context)
+    recipient = casereport.primary_author.email
+    # never used?
+    message = EmailMessage(subject,
+                           message_body,
+                           "Cases Central <edit@rapidscience.org>",
+                           ["Editorial team <edit@rapidscience.org>",])
+    message.content_subtype = 'html'
+    message.send()
+
+
+def revise(casereport, user):
+    subject = "Case Report Has Been Retracted"
+    template = 'casereport/emails/revise_to_admin'
+    email_context = {
+        "casereport": casereport,
+        'title': casereport.title,
+        'link': casereport.get_absolute_url(),
+        'site': settings.DOMAIN,
+        'number': casereport.pk,
+        'user': user,
     }
     message_body = render_to_string('{}.txt'.format(template), email_context)
     recipient = casereport.primary_author.email
