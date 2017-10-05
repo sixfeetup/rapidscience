@@ -1,9 +1,11 @@
-<a href="{{ user_link }}">{{ user.get_full_name }}</a> shared this <a href="{{ link }}">{{ title }}</a>, with you:<br>
+<a href="{{ user_link }}">{{ user.get_full_name }}</a> shared this {{ type }} with you:<br><br>
+
+<div style="margin-left: 20px;">
+{{ title }}<br><br>
+</div>
 
 {% if comment %}
-<div style="margin-left: 20px;">
-Comment: {{ comment|safe }}
-</div><br>
+Comment: {{ comment|striptags }}<br><br>
 {% endif %}
 
 You are invited to view and discuss it <a href="{{ link }}">here</a>.<br><br>
