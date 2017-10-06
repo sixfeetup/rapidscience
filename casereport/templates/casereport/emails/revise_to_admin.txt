@@ -1,0 +1,12 @@
+<a href="{{user.get_absolute_url }}">{{ user }}</a> has retracted [Case Report #<a href="https://{{ site }}{{ link }}">{{number}}</a>]:<br><br>
+<div style="margin-left: 20px;">
+{{ title|safe }}
+</div><br>
+Please follow up as necessary.
+
+Sincerely,<br><br>
+
+The <a href="https://sarcoma.rapidscience.org/">Sarcoma Central</a> Team <a href="https://twitter.com/RapidScience/">@RapidScience</a><br><br>
+
+
+

@@ -9,6 +9,8 @@ from rlp.accounts.models import User
 from rlp.core.email import send_transactional_mail, activity_mail
 from rlp.projects.models import Project
 
+from django.core.urlresolvers import reverse
+
 
 @receiver(comment_was_posted)
 def create_comment_activity(**kwargs):
@@ -98,7 +100,36 @@ def create_comment_activity(**kwargs):
                          target=interested_party)
 
         activity_mail(comment.user, comment, content.get_viewers(), request)
-
+    if content.__class__.__name__=='CaseReport':
+        # disc_root = obj.discussion_root
+        # root_obj = disc_root.content_object
+        user_url = request.build_absolute_uri(
+            reverse('profile', kwargs={'pk': request.user.pk}))
+        author = content.casereport.primary_author
+        author_link = request and request.build_absolute_uri(
+            reverse('profile',
+                    kwargs={'pk': author.id})) \
+                      or "https://" + settings.DOMAIN + \
+                         author.get_absolute_url()
+        mail_data = {
+            'user': request.user.get_full_name(),
+            'user_link': user_url,
+            'casereport': content.casereport,
+            'title': content.casereport.title,
+            'link': content.casereport.get_absolute_url(),
+            'comment': comment.comment,
+            'site': settings.DOMAIN,
+            'author': content.casereport.primary_author.get_full_name,
+            'author_link': author_link
+        }
+        for admin in User.objects.filter(is_staff=True):
+            send_transactional_mail(
+            admin.email,
+            'Member comment on case report',
+            'emails/comment_admin',
+            mail_data,
+            "Cases Central <edit@rapidscience.org>"
+            )
 
 @receiver(comment_was_posted)
 def review_notification(**kwargs):
@@ -110,10 +141,6 @@ def review_notification(**kwargs):
         return
     review = comment.content_object
     author = review.casereport.primary_author
-
-    # # short circuit if the author has opted out of receiving emails
-    # if author.opt_out_of_email:
-    #     return
 
     mail_data = {
         'user': author,

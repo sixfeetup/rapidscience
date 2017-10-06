@@ -38,6 +38,9 @@
                 {% else %}
                     <div class="fieldWrapper" id="wrapper-{{ field.auto_id }}">
                 {% endif %}
+                {% if field.name == 'first_name' %}
+                    <p> You are registering with Sarcoma Central, a channel on the Rapid Science collaboration platform. If you wish to create a new channel (i.e., research project) on the platform, please contact <a href="mailto:info@rapidscience.org">info@rapidscience.org</a></p>
+                {% endif %}
                 {% if request.user_email and 'email' in field.name %}
                     <div class="readonly">
                         {{ field.errors }}

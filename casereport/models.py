@@ -285,6 +285,12 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         self.author_approved = True
         self.admin_approved = False
         emails.submitted(self)
+        # notify co-authors
+        for coauthor in self.co_author.all():
+            if coauthor.is_active:
+                emails.notify_coauthor(self, coauthor)
+            else:
+                emails.invite_coauthor(self, coauthor)
         return "Your Case Report has been submitted and will be reviewed by \
             our admin staff. \
             Please note case no. #%s for future reference." % self.id
@@ -355,7 +361,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
                 target=WorkflowState.AUTHOR_REVIEW)
     def _retract_by_author(self):  # starts with _ to hide from users
         self.author_approved = False
-        self.notify_datascience_team()
+        # self.notify_datascience_team()
         return '''moved to "Author Review"'''
 
     @transition(field=workflow_state,
@@ -384,9 +390,15 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         """ uses the current user to choose between retract_by_author and
             retract_by_admin
         """
-        self.workflow_state = WorkflowState.RETRACTED
-        res = "Retracted"
-        return res
+        # self.workflow_state = WorkflowState.RETRACTED
+        # res = "Retracted"
+        user = CurrentUserMiddleware.get_user()
+        self.author_approved = True
+        self.admin_approved = False
+        emails.revise(self, user)
+
+        return "Retracted"
+
 
     # TODO: think hard about moving these out of the model and into WorkflowState
     def _get_displayname_for_fname(self, fname):

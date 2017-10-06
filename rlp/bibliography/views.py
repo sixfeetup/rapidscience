@@ -16,6 +16,7 @@ from actstream import action
 from rlp.core.forms import member_choices, group_choices
 from rlp.core.utils import bookmark_and_notify, add_tags, fill_tags
 from rlp.discussions.models import ThreadedComment
+from rlp.projects.models import Project
 from . import choices
 from .forms import (
     AttachReferenceForm,
@@ -203,11 +204,24 @@ class ReferenceAttachView(LoginRequiredMixin, FormView):
         context['reference'] = ref
         context['user_reference'] = uref
         if self.request.method == 'GET':
+            try:
+                group = Project.objects.get(id=self.request.session.get('last_viewed_project'))
+            except Project.DoesNotExist:
+                group = []
             # populate initial data
             form = AttachReferenceForm()
             form.fields['description'].initial = uref.description
-            form.fields['members'].choices = member_choices()
-            form.fields['groups'].choices = group_choices(self.request.user)
+            if group and group.approval_required:
+                form.fields['members'].hide_field = True
+                form.fields['members'].choices = [(user.id, user.get_full_name())]
+                form.fields['members'].widget.attrs['class'] = 'select2 hiddenField'
+                form.fields['groups'].widget.attrs['class'] = 'select2 hiddenField'
+            elif group:
+                form.fields['members'].choices = member_choices()
+                form.fields['groups'].choices = group_choices(self.request.user, exclude=[group])
+            else:
+                form.fields['members'].choices = member_choices()
+                form.fields['groups'].choices = group_choices(self.request.user)
             fill_tags(uref, form)
             context['form'] = form
         return context
@@ -305,7 +319,7 @@ def reference_share(request, reference_pk):
                 action.send(request.user, verb='shared', action_object=share, target=share.group)
             # Only email individuals who were specifically selected
             for user in recipients:
-                if not user.opt_out_of_email:
+                if user.notify_immediately:
                     send_transactional_mail(
                         user.email,
                         'A reference has been shared with you',

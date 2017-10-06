@@ -193,7 +193,9 @@ def rollup(input, rollup_name, rollup_attr='target'):
                     getattr(i, rollup_name).append(val)
                 # and move any previous rollups into the new ia
                 if hasattr(n, rollup_name):
-                    getattr(i, rollup_name).extend(getattr(n, rollup_name))
+                    for el in getattr(n, rollup_name):
+                        if el not in getattr(i, rollup_name):
+                            getattr(i, rollup_name).append(el)
         else:
             yield i
             equivalent_ids = {same_action(i)}
@@ -251,10 +253,12 @@ def add_tags(obj, tags):
 FORMAT_NAMED = 'NAMED'
 FORMAT_SIMPLE = 'SIMPLE'
 
-def resolve_email_targets(target, exclude=None, fmt=FORMAT_NAMED, debug=False):
+
+def resolve_email_targets(target, exclude=None, fmt=FORMAT_NAMED, debug=False, force=False):
     """ Take a target comprised of users, projects, strings and return a set
         of email addresses in either x@domain.tld or Name <x@domain.tld> format
         with duplicates removed and known opt-out's honored.
+        force=True will ignore the user's email preferences and send the email
     """
     if exclude:
         print("exclude:", exclude)
@@ -294,9 +298,9 @@ def resolve_email_targets(target, exclude=None, fmt=FORMAT_NAMED, debug=False):
         emails = set()
         NameAndAddress = namedtuple('NameAndAddress', "name address")
         for recipient in users_and_strings:
-            if hasattr(recipient, "opt_out_of_email"):
-                if recipient.opt_out_of_email:
-                    pass # skip the opted-out target
+            if hasattr(recipient, "email_prefs"):
+                if not force and not recipient.notify_immediately():
+                    continue  # skip the opted-out target
                 else:
                     naa = NameAndAddress(recipient.get_full_name(),
                                          recipient.email)
@@ -358,7 +362,7 @@ def test_resolve_email_targets():
     assert len(resolve_email_targets((u1, u1, p1, p1, s1, s1))) == len(resolve_email_targets((u1,p1,s1)))
 
     print(u1, "opting out")
-    u1.opt_out_of_email = True
+    u1.email_prefs = 'disabled'
     res = resolve_email_targets((u1, u1, p1, p1, s1, s1), exclude=["christine@sixfeetup.com", 'glenn@sixfeetup.com'], debug=True)
     pprint(res)
     assert u1 not in res, "opt-out failed"

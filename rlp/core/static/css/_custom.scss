@@ -933,7 +933,7 @@ a.share-link:hover {
     font-size: 20px;
 }
 a.comment-count.empty {
-    color: #ebebeb;
+    color: #dddddd;
 }
 
 .comment-detail,
@@ -1154,6 +1154,7 @@ a.comment-count.empty {
         background: rgb(238, 238, 238);
         padding: 20px 0;
         text-align: center;
+        z-index: 1;
     }
     .float-buttons .btn {
         font-size: 16px;
@@ -1170,6 +1171,7 @@ a.comment-count.empty {
     width: 100%;
     text-align: center;
     height: 100px;
+    z-index: 1;
     .btn {
         font-size: 16px;
     }
@@ -1309,6 +1311,7 @@ input#id_to_dashboard {
     hr {
         margin-top: 0;
         margin-bottom: 25px;
+        border-top: 1px solid #dddddd;
     }
 }
 
@@ -1360,7 +1363,7 @@ input#id_to_dashboard {
     margin-bottom: 10px;
     font-size: 20px;
     a {
-        color: #ebebeb;
+        color: #dddddd;
         &:hover,
         &.saved:hover {
             color: #256180;

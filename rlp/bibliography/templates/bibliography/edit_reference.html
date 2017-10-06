@@ -46,11 +46,11 @@
           {{ form.media }}
           {% csrf_token %}
           {% for field in form %}
-            {% if field.label == 'Members' %}
-              <p class="section-label">Sharing</p>
+            {% if field.name == 'members' %}
               <div class="sharing-wrapper">
+                  <p class="section-label">Sharing</p>
             {% endif %}
-            {% if field.label == 'Members' or field.label == 'My Groups'%}
+            {% if field.name == 'members' or field.name == 'groups'%}
               {% bootstrap_field field label_class="sub-label" %}
             {% else %}
               {% bootstrap_field field label_class="section-label" %}
@@ -63,10 +63,18 @@
             <button type="submit" class="btn btn-primary">
               Submit
             </button>
-            <a role="button" class="btn btn-default" href="{% url 'bibliography:reference_search' %}">
+            <a role="button" class="btn btn-default" onclick="history.back()">
               Cancel
             </a>
           </div>
+          <script type="text/javascript">
+              (function($) { $(function() {
+                  $(".hiddenField").parents(".sharing-wrapper").hide();
+                  if ($('.action-buttons').length) {
+                      $(".main-footer").css({"padding-bottom": "120px"});
+                  }
+              }); })(jQuery);
+          </script>
         </form>
         {% endif %}
         </div>

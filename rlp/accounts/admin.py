@@ -24,7 +24,7 @@ class CustomUserAdmin(UserAdmin):
         (_('Profile'), {
             'fields': (
                 'title', 'degrees', 'bio', 'research_interests', 'website', 'photo', 'institution',
-                'linkedin', 'twitter', 'opt_out_of_email'),
+                'linkedin', 'twitter', 'email_prefs'),
             'classes': ('collapse',)
         }),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
@@ -47,7 +47,7 @@ class CustomUserAdmin(UserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('email', 'first_name', 'last_name', 'is_active')
+    list_display = ('email', 'first_name', 'last_name', 'is_staff', 'email_setting', 'is_active')
     readonly_fields = ['date_joined', 'last_login']
     search_fields = (
         'email', 'first_name', 'last_name',

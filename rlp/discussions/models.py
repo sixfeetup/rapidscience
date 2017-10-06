@@ -154,11 +154,12 @@ class ThreadedComment(Comment, SharedObjectMixin):
             return 'Reply'
         return 'Comment'
 
-    @property
-    def is_reply(self):
-        if self.content_type.name.lower() == 'comment':
-            return True
-        return False
+    # this was redefined below
+    # @property
+    # def is_reply(self):
+    #     if self.content_type.name.lower() == 'comment':
+    #         return True
+    #     return False
 
     @property
     def is_discussion(self):
@@ -196,7 +197,15 @@ class ThreadedComment(Comment, SharedObjectMixin):
     def discussion_root(self):
         if self.thread_id == 0:
             return self
-        return ThreadedComment.objects.get(id=self.thread_id)
+        try:
+            return ThreadedComment.objects.get(id=self.thread_id)
+        except ThreadedComment.DoesNotExist:
+            return self
+
+    @property
+    def is_bookmarkable(self):
+        '''child comments are not bookmarkable'''
+        return bool(self.title)
 
     def get_viewers(self):
         '''override to get the viewers for the discussion'''

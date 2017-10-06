@@ -25,9 +25,20 @@
 {% elif action.verb == 'declined' %}
     {#    only visible to the declined user's activity feed#}
     With apologies, the {{ action.action_object.project }} group is currently closed to new members.
-    <p>You may, however, create a new group (from the <a href="{% url "projects:projects_list" %}">All Groups</a> page) related to this topic and invite members from within or outside the Rapid Science network.
+    <p>You may, however, create a new group (from the <a href="{% url "projects:projects_list" %}">All Groups</a> page) related to this topic and invite members from within or outside the Sarcoma Central network.
     </p>
     If you have questions please contact us at &lt;<a href="mailto:support@rapidscience.org">support@rapidscience.org</a>&gt;
+{% elif action.verb == 'invited' %}
+    {# visible on their Activity Feed if a member invites another existing member to an open group #}
+    You are invited by <a href="{{ action.actor.get_absolute_url }}">{{ action.actor.get_full_name }}</a>  to join <a href="{{ action.action_object.get_absolute_url }}">{{ action.action_object.title }}</a> and participate in member discussions and file sharing.<br><br>
+
+    {% if action.description %}<div class="more">{% autoescape off %}{{ action.description }}{% endautoescape %}</div>{% endif %}
+
+    The group’s {{action.action_object|show_mods}}.<br><br>
+
+    To join the group, click <a href="{% url "projects:projects_join" pk=action.action_object.pk %}">Join</a>. You can also visit the <a href="{% url "projects:projects_list" %}">All Groups</a>  page to read more about the group and click the Join button there. As an open group, member access is immediate.<br><br>
+
+
 {% else %}
 
     {{ action.action_object.display_type }}
@@ -45,10 +56,10 @@
     by <a href="{{ action.actor.get_absolute_url }}">{% if request.user == action.actor %} me {% else %} {{ action.actor.get_full_name }}{% endif %}</a>
 
     {# target #}
-    {% if action.verb == 'shared' %} with {% if action.target == request.user %} me {% else %}{{ action.target|link }}{% endif %}{% spaceless %}
+    {% if action.verb == 'shared' %} with {% if action.target == request.user %} me {% else %}{{ action.target|link }}{% endif %}
         {% if action.all_targets %}
             {% for target in action.all_targets|slice:"1:" %}{% if forloop.last %} and {%  else %}, {% endif %}{% if target == request.user %} me {% else %}{{ target|link }}{% endif %}{%  endfor %}
-        {% endif %}{% endspaceless %}
+        {% endif %}
     {% elif action.verb == 'added' or action.verb == 'uploaded' or action.verb == 'started' or action.verb == 'replied' or action.verb == 'created' or action.verb == 'posted' %}
         {% with all_targets=action.all_targets|omit:action.actor %}
             {% if all_targets %} to
@@ -84,4 +95,6 @@
     {% endwith %}
 {% endif %}
 {# timestamp #}
-| {{ action.timestamp|date:"j M Y" }}
+{% if action.verb != 'invited' %}
+    | {{ action.timestamp|date:"j M Y" }}
+{% endif %}

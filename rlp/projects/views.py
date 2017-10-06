@@ -30,6 +30,8 @@ from .models import Project
 from .models import ProjectMembership
 from .shortcuts import group_invite_choices
 
+from actstream import action
+
 
 @never_cache
 def projects_list(request, template_name="projects/projects_list.html"):
@@ -120,16 +122,24 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
             template_name = 'comments/list.html'
         context['page_template'] = 'comments/list.html'
     elif tab == 'casereports':
-        reports = []
-        if (filter_form.is_valid() and not filter_form.cleaned_data.get(
-                'user_activity_only')) or not filter_form.is_valid():
-            reports += [r for r in request.user.get_bookmarked_content(
-                        CaseReport) if r.workflow_state == WorkflowState.LIVE]
-        reports += CaseReport.objects.filter(primary_author=request.user)
-        reps = (r for r in reports)
+        # only show CRs shared with the current group
+        # show all CRs created by the user, regardless of state
+        # only show live CRs that were not created by the user
+        reports = [r for r in project.get_bookmarked_content(CaseReport)]
+        display_cr = []
+        user_only = filter_form.is_valid() and filter_form.cleaned_data.get('user_activity_only')
+        for r in reports:
+            if user_only and r.primary_author == request.user:
+                display_cr.append(r)
+                continue
+            elif user_only and not r.primary_author == request.user:
+                continue
+            if r.primary_author == request.user:
+                display_cr.append(r)
+            elif r.workflow_state == WorkflowState.LIVE:
+                display_cr.append(r)
         context['case_reports'] = sorted(
-            (r for r in reps if
-             r.workflow_state == WorkflowState.LIVE),
+            display_cr,
             key=lambda c: c.sort_date(),
             reverse=True,
         )
@@ -198,9 +208,10 @@ def invite_members(request, pk, slug):
 
             internal_users = form.cleaned_data['internal']
 
-            internal_addrs = resolve_email_targets(internal_users)
+            internal_addrs = resolve_email_targets(internal_users, force=True)
             external_addrs = resolve_email_targets(form.cleaned_data['external'],
-                                                   exclude=internal_users)
+                                                   exclude=internal_users,
+                                                   force=True)
 
             # Non-members - create user and send specific registration link
             emails.project_invite_nonmember(request, external_addrs, group, message)
@@ -209,6 +220,9 @@ def invite_members(request, pk, slug):
             emails.project_invite_member(request, internal_addrs, group, message)
 
             # message the results back
+            if not group.approval_required:
+                for invitee in User.objects.filter(id__in=internal_users):
+                    action.send(request.user, verb='invited', action_object=group, target= invitee, description=message)
             recipients = internal_addrs.union(external_addrs)
             count = len(recipients)
             messages.success(request, '{} member{} invited'.format(
@@ -304,13 +318,14 @@ class AddGroup(LoginRequiredMixin, FormView):
             state='moderator',
         )
         internal_users = form.cleaned_data['internal']
-        internal_addrs = resolve_email_targets(internal_users)
+        internal_addrs = resolve_email_targets(internal_users, force=True)
         message = form.cleaned_data['invitation_message']
         emails.project_invite_member(request, internal_addrs, new_group,
                                      message)
 
         external_addrs = resolve_email_targets(form.cleaned_data['external'],
-                                               exclude=internal_users)
+                                               exclude=internal_users,
+                                               force=True)
         emails.project_invite_nonmember(request, external_addrs, new_group,
                                         message)
         return redirect(new_group.get_absolute_url())
@@ -358,11 +373,12 @@ class EditGroup(LoginRequiredMixin, FormView):
 
             internal_users = [member for member in form.cleaned_data['internal']
                               if member not in project.active_members()]
-            internal_addrs = resolve_email_targets(internal_users)
+            internal_addrs = resolve_email_targets(internal_users, force=True)
             emails.project_invite_member(request, internal_addrs, project, message)
 
             external_addrs = resolve_email_targets(form.cleaned_data['external'],
-                                                   exclude=project.active_members())
+                                                   exclude=project.active_members(),
+                                                   force=True)
             emails.project_invite_nonmember(request, external_addrs, project, message)
 
             messages.info(request, "Invites Sent!")

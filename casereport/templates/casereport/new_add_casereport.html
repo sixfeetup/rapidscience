@@ -182,7 +182,7 @@
                 </div>
 
                 <a class="add_att_button" href="#"><i class="fa fa-plus"></i> <span class="add_att_button_text">Add another attachment</a></a>
-                    
+
                 <div id="consent-wrapper">
                     <p>HIPAA limits how health care providers may use individually
                         identifiable health information. The act does not restrict
@@ -199,15 +199,20 @@
                      <p>Please select the checkbox.</p>
                     </div>
                 </div>
-                
+
                 <!-- sharing -->
                 <div class="sharing-wrapper">
+                    <h4>Sharing</h4>
+                    <div class="choices">
+                        <input type="radio" name="sharing-options" value="share-all" id="share1">
+                          I would like to share this case report with all members of Sarcoma Central<br />
+                        <input type="radio" name="sharing-options" value="share-pick" id="share2">
+                          I would like to share with specific individuals and/or groups<br />
+                        <input type="radio" name="sharing-options" value="share-none" id="share3">
+                          I am not ready to share this case report at this time<br />
+                    </div>
                 {% for field in form %}
-                    <div class="fieldWrapper">
-                        {% if field.auto_id == 'id_members' %}
-                            <h4>Sharing</h4>
-                            <p>We encourage you to share all submissions with the Community Commons group – i.e., all validated members of Sarcoma Central.</p>
-                        {% endif %}
+                    <div class="fieldWrapper" id="sharing-field-{{ field.name }}">
                         {{ field.errors }}
                         {% if field.auto_id != 'id_approval' %}
                         <label for="{{ field.id_for_label }}">
@@ -219,8 +224,10 @@
                         <p class="helptext">{{ field.help_text|safe }}</p>
                         {% endif %}
                     </div>
+                    {% if field.name == 'to_dashboard' %}
+                        </div> <!-- end sharing-wrapper -->
+                    {% endif %}
                 {% endfor %}
-                </div>
 
                 <div class="submit-button">
                     <input id="save-button" class="btn btn-primary" type="submit" value="Save" />
@@ -232,10 +239,10 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-body">
-            <p>Are you sure you want to cancel this submission? The information will be permanently deleted.</p>
+            <p>Are you sure you want to cancel this submission? Any changes you may have made will be permanently deleted.</p>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-danger btn-confirm">Delete</button>
+            <button type="button" class="btn btn-danger btn-confirm">Delete changes</button>
             <button type="button" class="btn btn-primary" data-dismiss="modal">Return to form</button>
           </div>
         </div>
@@ -261,8 +268,10 @@
     <script type="text/javascript">
     (function($) { $(function() {
         $('#button-cancel').click(function (event) {
-            event.preventDefault();
-            $('#modal-cancel').modal();
+            if ($("h1").text() == 'Submit Case') {
+                event.preventDefault();
+                $('#modal-cancel').modal();
+            }
         });
         $('#modal-cancel').on('show.bs.modal', function (event) {
             var modal = $(this);

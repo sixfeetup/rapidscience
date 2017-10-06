@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 from django.utils.text import slugify
 
+from actstream.models import Action
 from rlp.core.utils import resolve_email_targets
 
 def publish_to_author(casereport):
@@ -91,7 +92,7 @@ def approved(casereport):
     email_context = {
         'title': casereport.title,
         'link': casereport.get_absolute_url(),
-        'site': settings.DOMAIN
+        'site': settings.DOMAIN,
     }
     message_body = render_to_string('{}.txt'.format(template), email_context)
     recipient = casereport.primary_author.email
@@ -104,11 +105,34 @@ def approved(casereport):
     message.send()
 
 
-def invite_people(casereport, email_addr):
+def revise(casereport, user):
+    subject = "Case Report Has Been Retracted"
+    template = 'casereport/emails/revise_to_admin'
+    email_context = {
+        "casereport": casereport,
+        'title': casereport.title,
+        'link': casereport.get_absolute_url(),
+        'site': settings.DOMAIN,
+        'number': casereport.pk,
+        'user': user,
+    }
+    message_body = render_to_string('{}.txt'.format(template), email_context)
+    recipient = casereport.primary_author.email
+    # never used?
+    message = EmailMessage(subject,
+                           message_body,
+                           "Cases Central <edit@rapidscience.org>",
+                           ["Editorial team <edit@rapidscience.org>",])
+    message.content_subtype = 'html'
+    message.send()
+
+
+def invite_people(casereport, email_addr, comment=''):
     slug = slugify(casereport.title)
     email_context = {
         'site': settings.DOMAIN,
         "casereport": casereport,
+        "invite_msg": comment,
         "casescentral": reverse('haystac'),
         "case_url": reverse(
             'casereport_detail',
@@ -139,7 +163,8 @@ def invite_coauthor(casereport, user):
     subject = "{0} invites you to co-author a case report".format(author)
     template = 'casereport/emails/invite_coauthor'
     message_body = render_to_string('{}.txt'.format(template), email_context)
-    recipients = resolve_email_targets(user, exclude=casereport.primary_author)
+    recipients = resolve_email_targets(user, force=True,
+                                       exclude=casereport.primary_author)
     mail = EmailMessage(subject, message_body,
                         "Cases Central <edit@rapidscience.org>",
                         recipients)
@@ -158,7 +183,8 @@ def notify_coauthor(casereport, user):
     subject = "{0} invites you to co-author a case report".format(author)
     template = 'casereport/emails/notify_coauthor'
     message_body = render_to_string('{}.txt'.format(template), email_context)
-    recipients = resolve_email_targets(user, exclude=casereport.primary_author)
+    recipients = resolve_email_targets(user, force=True,
+                                       exclude=casereport.primary_author)
     mail = EmailMessage(subject, message_body,
                         "Cases Central <edit@rapidscience.org>",
                         recipients)
@@ -166,11 +192,35 @@ def notify_coauthor(casereport, user):
     mail.send()
 
 
+def get_invite_comment(cr, viewer):
+    # find action for this share, so we can get the comment
+    actions = Action.objects.filter(
+        target_object_id=viewer.id,
+        action_object_content_type=85,
+        action_object_object_id=cr.id)
+    # loop through actions if multiple, get the latest comment
+    for action in actions.extra(order_by=['-timestamp']):
+        if not action.description:
+            continue
+        return action.description
+    return ''
+
+
 def cr_published_notifications(casereport):
     """When a case report has been published, send out
        the emails to those it has been shared with
     """
     shared_with = casereport.get_viewers()
-    for viewer in resolve_email_targets(shared_with,
-                                        exclude=casereport.primary_author):
-        invite_people(casereport,viewer)
+    for viewer in shared_with:
+        sendto = resolve_email_targets(viewer,
+                                       exclude=casereport.primary_author)
+        comment = get_invite_comment(casereport, viewer)
+        if sendto:
+            invite_people(casereport, sendto, comment=comment)
+    # specifically send to the non-members, who get an account
+    # created with the email digest option, so they are not
+    # returned in the resolve_email_targets()
+    for viewer in shared_with:
+        if hasattr(viewer, 'is_active') and not viewer.is_active:
+            comment = get_invite_comment(casereport, viewer)
+            invite_people(casereport, viewer.email, comment=comment)

@@ -1,0 +1,12 @@
+<a href="{{ user_link }}">{{ user }}</a> has commented on case report <a href="{{ link }}">{{ title }}</a>, authored by <a href="{{ author_link }}">{{ author }}</a> on Sarcoma Central:<br>
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+{{ comment|striptags }}
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Follow the link above to join the conversation.<br><br>
+
+Sincerely,<br><br>
+Editorial Team
+The <a href="https://sarcoma.rapidscience.org/">Sarcoma Central</a>
+<a href="https://twitter.com/RapidScience/">@RapidScience</a><br><br>

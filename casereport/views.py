@@ -160,7 +160,7 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
 
     def get_form(self, form_class):
         try:
-            group = Project.objects.get(id=self.request.GET.get('id'))
+            group = Project.objects.get(id=self.request.session.get('last_viewed_project'))
         except Project.DoesNotExist:
             group = []
         form = super(CaseReportFormView, self).get_form(form_class)
@@ -170,12 +170,13 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         if group and group.approval_required:
             form.fields['members'].hide_field = True
             form.fields['members'].choices = [(user.id, user.get_full_name())]
-            form.fields['groups'].choices = [(group.id, group.title)]
-            form.fields['groups'].initial = [group.id]
             form.fields['members'].widget.attrs['class'] = 'select2 hiddenField'
             form.fields['groups'].widget.attrs['class'] = 'select2 hiddenField'
             form.fields['external'].widget.attrs['class'] = 'hiddenField'
             form.fields['comment'].widget.attrs['class'] = 'hiddenField'
+        elif group:
+            form.fields['members'].choices = all_members
+            form.fields['groups'].choices = group_choices(user, exclude=[group])
         else:
             form.fields['members'].choices = all_members
             form.fields['groups'].choices = group_choices(user)
@@ -260,13 +261,12 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
                                 is_active=False)
                 coauthor.save()
                 case.co_author.add(coauthor)
-                coauthors_to_notify.add(coauthor)
-
-        for coauthor in resolve_email_targets(coauthors_to_notify,
-                                              exclude=case.primary_author):
-            emails.notify_coauthor(case, coauthor)
 
         case.save()
+        
+        if data.get('sharing-options') == 'share-all':
+            cc_group = Project.objects.get(title='Community Commons')
+            case.share_with([cc_group], shared_by=case.primary_author)
 
         bookmark_and_notify(
             case, self, self.request, 'casereport', 'casereport',
@@ -276,9 +276,14 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         past_tense_verb = 'created'
         for group_id in data.getlist('groups'):
             group = Project.objects.get(id=group_id)
-            action.send(request.user, verb=past_tense_verb, action_object=case, target=group)
+            action.send(
+                request.user, verb=past_tense_verb,
+                description=data.get('comment'), action_object=case,
+                target=group)
         else:
-            action.send(request.user, verb=past_tense_verb, action_object=case)
+            action.send(
+                request.user, verb=past_tense_verb,
+                description=data.get('comment'), action_object=case)
         external = data.get('external').split(",")
         for address in external:
             if not address:
@@ -286,7 +291,9 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
             if not User.objects.filter(email=address):
                 new_user = User(email=address, is_active=False)
                 new_user.save()
-                case.share_with([new_user], shared_by=primary_author)
+                case.share_with(
+                    [new_user], shared_by=primary_author,
+                    comment=data.get('comment'))
 
 
         # eventually we' want this:
@@ -525,6 +532,14 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
         form = self.form_class()
         form.fields['members'].choices = member_choices()
         form.fields['groups'].choices = group_choices(request.user)
+        # hide sharing fields if shared with closed group
+        shared_with = [x for x in casereport.get_viewers() if x._meta.model_name == 'project']
+        for viewer in shared_with:
+            if viewer.approval_required:
+                form.fields['members'].widget.attrs['class'] = 'select2 hiddenField'
+                form.fields['groups'].widget.attrs['class'] = 'select2 hiddenField'
+                form.fields['external'].widget.attrs['class'] = 'hiddenField'
+                form.fields['comment'].widget.attrs['class'] = 'hiddenField'
         fill_tags(casereport, form)
 
         return self.render_to_response(self.get_context_data(
@@ -558,13 +573,11 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
         for auth in data.getlist('coauthors'):
             coauth_user = User.objects.get(pk=auth)
             if coauth_user not in current_authors:
-                #emails.notify_coauthor(case, coauth_user)
                 new_coauthors.add(coauth_user)
         for i in range(0, len(email)):
             try:
                 coauthor = User.objects.get(email=email[i])
                 if coauthor not in current_authors:
-                    #emails.notify_coauthor(case, coauthor)
                     new_coauthors.add(coauthor)
                     case.co_author.add(coauthor)
             except User.DoesNotExist:
@@ -572,11 +585,12 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
                                 is_active=False)
                 coauthor.save()
                 case.co_author.add(coauthor)
-                emails.invite_coauthor(case, coauthor)
+                if case.workflow_state != WorkflowState.DRAFT:
+                    emails.invite_coauthor(case, coauthor)
 
-        new_coauthor_emails = resolve_email_targets(new_coauthors)
-        for recipient in new_coauthor_emails:
-            emails.notify_coauthor(case, recipient)
+        for recipient in new_coauthors:
+            if case.workflow_state != WorkflowState.DRAFT:
+                emails.notify_coauthor(case, recipient)
 
         case.age = data['age']
         case.gender = data['gender']
@@ -626,6 +640,10 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
         past_tense_verb = 'updated'
         for group in data.getlist('groups'):
             print( request.user, past_tense_verb, case, group )
+
+        if data.get('sharing-options') == 'share-all':
+            cc_group = Project.objects.get(title='Community Commons')
+            case.share_with([cc_group], shared_by=case.primary_author)
 
         external = data.get('external').split(",")
         for address in external:

@@ -145,7 +145,7 @@ $(document).ready(function() {
     });
 
 $(document).ready(function() {
-    if($('.sticky')) {
+    if($('.sticky').length) {
         $('body.casereport-view').scrollspy({ target: '.sticky' });
         $('.sticky').affix({
           offset: {

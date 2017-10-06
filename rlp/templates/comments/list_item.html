@@ -18,10 +18,35 @@
 
       {% if view == 'tab-content' %}
           <p class="small">
-              {% if crcomments != 'True' %}Posted by{% endif %}
-            <a href="{{ comment.user.get_absolute_url }}">
-              {% if request.user == comment.user %} me {% else %} {{ comment.user.get_full_name }} {% endif %}
-            </a>
+              {% if comment.title %}
+                {% if crcomments != 'True' %}Posted by {% endif %}
+                <a href="{{ comment.user.get_absolute_url }}">
+                  {% if request.user == comment.user %} me {% else %} {{ comment.user.get_full_name }} {% endif %}
+                </a>
+              {% else %}
+                {% if crcomments != 'True' %}Reply by {% endif %}
+                <a href="{{ comment.user.get_absolute_url }}">
+                  {% if request.user == comment.user %} me {% else %} {{ comment.user.get_full_name }} {% endif %}
+                </a>
+                {% if comment.is_reply or 'casereport' in comment.discussion_root.content_object.get_content_type or 'document' in comment.discussion_root.content_object.get_content_type or 'userreference' in comment.discussion_root.content_object.get_content_type or comment.is_editorial_note %}on{% endif %}
+                {% if 'casereport' in comment.discussion_root.content_object.get_content_type or 'document' in comment.discussion_root.content_object.get_content_type %}
+                <a href="{{ comment.discussion_root.content_object.get_absolute_url }}">
+                    {{ comment.discussion_root.content_object.title|truncatewords_html:10 }}
+                </a>
+                {% elif 'userreference' in comment.discussion_root.content_object.get_content_type %}
+                <a href="{{ comment.discussion_root.content_object.get_absolute_url }}">
+                    {{ comment.discussion_root.content_object.reference.title|truncatewords_html:10|striptags }}
+                </a>
+                {% elif comment.is_editorial_note %}
+                <a href="{{ comment.content_object.casereport.get_absolute_url }}">
+                    {{ comment.content_object.casereport.title|truncatewords_html:10 }}
+                </a>
+                {% else %}
+                <a href="{{ comment.discussion_root.get_absolute_url }}">
+                    {{ comment.discussion_root.title|truncatewords_html:10 }}
+                </a>
+                {% endif %}
+              {% endif %}
             | {{ comment.submit_date|date:"j M Y" }}
             {% if request.user.id == comment.user_id or request.user.is_staff %}
             | {% with edit_url=comment.get_edit_url %}

@@ -5,6 +5,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 
 from haystack.generic_views import SearchView as BaseSearchView
+from taggit.models import Tag
 
 from casereport.views import limit_casereport_results
 from .forms import ModelSearchForm
@@ -44,6 +45,8 @@ class SearchView(BaseSearchView):
         }
         utf8_get_dict.pop('page', '')
         context['query_string'] = urlencode(utf8_get_dict)
+        tag_ids = self.request.GET.getlist('tags')
+        context['tags'] = Tag.objects.filter(id__in=tag_ids)
         return context
 
     def get(self, request, *args, **kwargs):

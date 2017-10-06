@@ -10,9 +10,8 @@ Comment: {{ comment|striptags }}<br><br>
 
 You are invited to view and discuss it <a href="{{ link }}">here</a>.<br><br>
 
-This notification also appears on your Dashboard Activity Feed where you can bookmark it in your personal or group folder(s).<br><br>
+This notification also appears on your <a href="{{ dash_link }}">Dashboard Activity Feed</a> where you can bookmark it in your personal or group folder(s).<br><br>
 
 Sincerely,<br><br>
 
 The <a href="https://sarcoma.rapidscience.org/">Sarcoma Central</a> Team <a href="https://twitter.com/RapidScience/">@RapidScience</a><br><br>
-

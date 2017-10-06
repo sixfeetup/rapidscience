@@ -65,6 +65,22 @@ $(document).ready(function() {
     $(wrapper).on("click",".remove_field", function(e){ //user click on remove text
         e.preventDefault(); $(this).parent('div').remove(); x--;
     })
+    
+    $(".hiddenField").parents(".sharing-wrapper").hide();
+    if ($('.action-buttons').length) {
+        $(".main-footer").css({"padding-bottom": "120px"});
+    }
+    
+    // sharing fields
+    var sharing_fields = $("#sharing-field-members, #sharing-field-external, #sharing-field-groups, #sharing-field-comment")
+    $(".sharing-wrapper .choices input").click(function(){
+        $(sharing_fields).hide()
+        if ($(this).val() == 'share-all') {
+            $("#sharing-field-comment").show();
+        } else if ($(this).val() == 'share-pick') {
+            $(sharing_fields).show()
+        }
+    })
 });
 
 
@@ -405,6 +421,11 @@ $(document).ready(function() {
             add_button.show();
         }
     });
+    
+    // open the first attachment field
+    if ($('.attachments-div .attachment').length == 0){
+        $('.add_att_button').trigger("click");
+    }
 
 });
 

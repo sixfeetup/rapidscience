@@ -29,7 +29,7 @@ def member_choices():
         yield (member.id, member.get_full_name())
 
 
-def group_choices(user):
+def group_choices(user, exclude=[]):
     '''
     return (ID, name) pairs for any group where
       * the user is in the group
@@ -37,19 +37,20 @@ def group_choices(user):
     if not user:
         return
     for group in user.active_projects():
-        yield (group.id, group.title)
+        if group not in exclude:
+            yield (group.id, group.title)
 
 
 member_choice_field = MemberListField(
-    label='Members',
-    help_text='Type name; separate with commas',
+    label='Sarcoma Central Members',
+    help_text='Start typing or select member(s) in the list',
     choices=(),  # override this in the view with member_choices()
     required=False,
 )
 
 group_choice_field = GroupListField(
     label='Groups',
-    help_text='Type name; separate with commas',
+    help_text='Start typing or select group(s) in the list',
     choices=(),  # override this in the view with group_choices()
     required=False,
 )

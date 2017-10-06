@@ -34,13 +34,7 @@
               {% endif %}
           </span>
           {% endif %}
-          {% for tag in obj.tags.all %}
-            {% if tag.slug != '' %}
-            <a role="button" class="btn btn-tag btn-xs" href="{% url 'haystack_search' %}?tags={{ tag.id }}">
-              {{ tag.name }}
-            </a>
-            {% endif %}
-          {% endfor %}
+          {% display_tag_links obj %}
       </p>
     </div>
     <div class="col-md-1">
@@ -57,7 +51,9 @@
         <a href="#" class="bookmark-trigger" data-toggle="tooltip" title="Save Bookmark"><i class="fa fa-star" aria-hidden="true"></i></a>
         </form>
       {% endif %}
-      <a class="share-link" href="/send/casereport/casereport/{{ obj.id }}"><i class="fa fa-share"></i></a>
+      {% if obj.primary_author == request.user %}
+          <a class="share-link" href="/send/casereport/casereport/{{ obj.id }}"><i class="fa fa-share"></i></a>
+      {% endif %}
     {%  endif %}
     </div>
 </div>

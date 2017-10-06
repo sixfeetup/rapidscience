@@ -135,6 +135,8 @@ def display_shared_with(item, user=None):
             continue
         if v._meta.model_name == "user":
             url = reverse('profile', args=[v.id])
+            if v == user:
+                v = 'me'
             vlist.append('<a href="{0}">{1}</a>, '.format(url, v))
         elif v._meta.model_name == "project":
             if (v.approval_required and user in v.active_members()) or \
@@ -202,3 +204,20 @@ def user_can_link(context, shared_object ):
 @register.filter
 def omit(iterable, omittable):
     return [v for v in filter( lambda x: x != omittable,iterable)]
+
+
+@register.filter
+def show_mods(project):
+    mod = project.users.filter(projectmembership__state='moderator')
+    if len(mod) <= 2:
+        if len(mod) == 1:
+            pre_mod_text = "moderator is "
+        elif len(mod) == 2:
+            pre_mod_text = "moderators are "
+        mods = ' and '.join([x.get_full_name() for x in mod])
+        return pre_mod_text + mods
+    else:
+        pre_mod_text = "moderators are "
+        mods = ', '.join([x.get_full_name() for x in mod[:len(mod) - 1]])
+        umo = ''.join([x.get_full_name() for x in mod[len(mod)-1:]])
+        return pre_mod_text + mods + ' and ' + umo

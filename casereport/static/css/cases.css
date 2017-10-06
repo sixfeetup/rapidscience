@@ -58,6 +58,7 @@ body{
 	padding: 30px 0;
 	text-align: center;
 	position: relative;
+	z-index: 1;
 }
 .action-buttons .btn {
 	font-size: 16px;
@@ -1411,6 +1412,18 @@ input:focus + div.info {
     text-transform: uppercase;
     width: 50px;
 }
+/* add/edit cases sharing */
+.sharing-wrapper .choices {
+	font-size: 16px;
+}
+#sharing-field-members,
+#sharing-field-external,
+#sharing-field-groups,
+#sharing-field-comment {
+	display: none;
+}
+
+
 body.casereport-view {
     position: relative;
 }

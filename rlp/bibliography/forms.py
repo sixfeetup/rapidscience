@@ -204,7 +204,7 @@ class AttachReferenceForm(forms.Form):
     )
     tags = forms.ModelMultipleChoiceField(
         queryset=Tag.objects.order_by('slug'),
-        help_text='Separate tags with commas',
+        help_text='Start typing or select tag(s) in the list',
         required=False,
     )
     tags.widget.attrs['class'] = 'select2'
@@ -214,14 +214,14 @@ class AttachReferenceForm(forms.Form):
         help_text="Terms added here will be added as new tags in the system. \
                    Separate with commas.")
     members = MemberListField(
-        label='Members',
-        help_text='Separate names with commas',
+        label='Sarcoma Central Members',
+        help_text='Start typing or select member(s) in the list',
         choices=(),  # gets filled in by the view
         required=False,
     )
     groups = GroupListField(
         label='My Groups',
-        help_text='Separate names with commas',
+        help_text='Start typing or select group(s) in the list',
         choices=(),  # gets filled in by the view
         required=False,
     )
