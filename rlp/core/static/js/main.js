@@ -63,6 +63,12 @@ var selectedBookmarksFolderName; // will contain ID of selected bookmarks folder
 
     // hide hiddenField wrappers
     $(".hiddenField").parent(".fieldWrapper").hide();
+    
+    // Clear comment field
+    $(".comment-form button[type=reset]").click(function(){
+        form_id = $(this).parents("form").find('.django-ckeditor-widget').attr('data-field-id');
+        CKEDITOR.instances[form_id].setData('');
+    });
 
 }); })(jQuery);
 
