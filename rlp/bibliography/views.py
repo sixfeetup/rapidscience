@@ -239,6 +239,11 @@ class ReferenceAttachView(LoginRequiredMixin, FormView):
             uref.id = None
 
         uref.description = data.get('description')
+        initial_proj = self.request.session.get('last_viewed_project')
+        if initial_proj:
+            target = Project.objects.get(pk=initial_proj)
+            if target.approval_required:
+                uref.shareable = False
         uref.save()
 
         tags = {}

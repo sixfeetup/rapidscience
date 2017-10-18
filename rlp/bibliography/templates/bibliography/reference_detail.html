@@ -39,7 +39,9 @@
                   {% display_tag_links user_reference %}
               </div>
               <div class="col-md-1">
-                <a class="share-link" href="/send/bibliography/userreference/{{ user_reference.id }}"><i class="fa fa-share"></i></a>
+                {% if user_reference.shareable %}
+                    <a class="share-link" href="/send/bibliography/userreference/{{ user_reference.id }}"><i class="fa fa-share"></i></a>
+                {% endif %}
               </div>
             </div>
             <hr>

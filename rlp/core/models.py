@@ -97,6 +97,12 @@ class SharedObjectMixin(models.Model):
         content_type_field='target_type',
         object_id_field='target_id',
     )
+    # shareable is set to False when content is created from closed group
+    shareable = models.BooleanField(
+        editable=False,
+        blank=True,
+        default=True
+    )
     tags = TaggableManager(blank=True)
     mtags = TaggableManager(through=TaggedByManagedTag,
                             help_text="A Comma separated list of UNAPPROVED tags.",

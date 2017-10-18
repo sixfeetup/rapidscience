@@ -76,7 +76,9 @@
           <a href="#" class="bookmark-trigger" data-toggle="tooltip" title="Save Bookmark"><i class="fa fa-star" aria-hidden="true"></i></a>
           </form>
         {% endif %}
-        <a class="share-link" href="/send/documents/document/{{ obj.id }}"><i class="fa fa-share"></i></a>
+        {% if obj.shareable %}
+            <a class="share-link" href="/send/documents/document/{{ obj.id }}"><i class="fa fa-share"></i></a>
+        {% endif %}
     {% endif %}
   </div>
 </div>

@@ -69,7 +69,9 @@
           <a href="#" class="bookmark-trigger" data-toggle="tooltip" title="Save Bookmark"><i class="fa fa-star" aria-hidden="true"></i></a>
           </form>
         {% endif %}
-        <a class="share-link" href="/send/bibliography/userreference/{{ ref.id }}"><i class="fa fa-share"></i></a>
+        {% if ref.shareable %}
+            <a class="share-link" href="/send/bibliography/userreference/{{ ref.id }}"><i class="fa fa-share"></i></a>
+        {% endif %}
       {% endif %}
   </div>
 </div>

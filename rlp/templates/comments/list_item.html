@@ -97,7 +97,9 @@
           <a href="#" class="bookmark-trigger" data-toggle="tooltip" title="Save Bookmark"><i class="fa fa-star" aria-hidden="true"></i></a>
           </form>
         {% endif %}
-      <a class="share-link" href="/send/discussions/threadedcomment/{{ comment.id }}"><i class="fa fa-share"></i></a>
+        {% if comment.shareable %}
+            <a class="share-link" href="/send/discussions/threadedcomment/{{ comment.id }}"><i class="fa fa-share"></i></a>
+        {% endif %}
       {% endif %}
     {% endif %}
     </div>

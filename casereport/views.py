@@ -244,6 +244,11 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         update_treatments_from_request(case, data)
         if aberrations:
             case.aberrations.add(*aberrations)
+        initial_proj = request.session.get('last_viewed_project')
+        if initial_proj:
+            target = Project.objects.get(pk=initial_proj)
+            if target.approval_required:
+                case.shareable = False
 
         coauthors_to_notify = set()
 

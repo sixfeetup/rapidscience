@@ -89,7 +89,7 @@
                  {% endif %}
              </ul>
              <hr />
-             {% if casereport.primary_author ==  request.user %}
+             {% if casereport.primary_author ==  request.user and casereport.shareable %}
                  <a class="share-link pull-right" href="/send/casereport/casereport/{{ casereport.id }}"><i class="fa fa-share"></i></a>
              {% endif %}
              <h4>Sharing</h4>

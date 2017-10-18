@@ -196,6 +196,11 @@ class CreateDiscussion(LoginRequiredMixin, FormView):
             site_id=site.id,
             object_pk=site.id,
         )
+        initial_proj = self.request.session.get('last_viewed_project')
+        if initial_proj:
+            target = Project.objects.get(pk=initial_proj)
+            if target.approval_required:
+                new_discussion.shareable = False
         new_discussion.save()
         add_tags(new_discussion, tags)
 

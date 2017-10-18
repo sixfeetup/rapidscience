@@ -37,7 +37,9 @@
            <a href="{% url 'bibliography:reference_add' reference.id %}" title="Add" data-refid="{{ reference.id }}" class="add-reference-button"><i class="fa fa-plus-circle" aria-hidden="true"></i><a>
       {% else %}
         <a class="comment-count" href="{% url 'bibliography:reference_add' obj.pk %}"><i class="fa fa-comment" aria-hidden="true"></i></a>
-        <a class="share-link" href="/send/bibliography/reference/{{ obj.id }}"><i class="fa fa-share"></i></a>
+        {% if obj.shareable %}
+            <a class="share-link" href="/send/bibliography/reference/{{ obj.id }}"><i class="fa fa-share"></i></a>
+        {% endif %}
       {% endif %}
   {% if not search %}
   </div>

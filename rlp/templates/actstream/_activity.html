@@ -123,28 +123,30 @@
                                     <!-- SUPPRESSED BOOKMARK ICON because the user already the creator/poster -->
                                 {% endif %}
                             {% endif %}
-                            {% if model == 'file' or model == 'image' or model == 'link' or model == 'video' or model == 'document' %}
-                                <a class="share-link"
-                                   href="/send/documents/document/{{ obj.id }}"
-                                   title="Share"><i class="fa fa-share"></i></a>
-                            {% elif model == 'casereport' %}
-                                {% if obj.primary_author == request.user %}
+                            {% if obj.shareable %}
+                                {% if model == 'file' or model == 'image' or model == 'link' or model == 'video' or model == 'document' %}
                                     <a class="share-link"
-                                       href="/send/casereport/casereport/{{ obj.id }}"
+                                       href="/send/documents/document/{{ obj.id }}"
                                        title="Share"><i class="fa fa-share"></i></a>
-                                {% endif %}
-                            {% elif model == 'threadedcomment' %}
-                                {% if obj.discussion_root.is_discussion %}
+                                {% elif model == 'casereport' %}
+                                    {% if obj.primary_author == request.user %}
+                                        <a class="share-link"
+                                           href="/send/casereport/casereport/{{ obj.id }}"
+                                           title="Share"><i class="fa fa-share"></i></a>
+                                    {% endif %}
+                                {% elif model == 'threadedcomment' %}
+                                    {% if obj.discussion_root.is_discussion %}
+                                        <a class="share-link"
+                                           href="/send/discussions/threadedcomment/{{ obj.discussion_root.id }}"
+                                           title="Share"><i class="fa fa-share"></i></a>
+                                    {% endif %}
+                                {% elif model == 'userreference' %}
                                     <a class="share-link"
-                                       href="/send/discussions/threadedcomment/{{ obj.discussion_root.id }}"
+                                       href="/send/bibliography/userreference/{{ obj.id }}"
                                        title="Share"><i class="fa fa-share"></i></a>
+                                {% else %}
+                                    <!-- dont know what to do with model {{ model }} -->
                                 {% endif %}
-                            {% elif model == 'userreference' %}
-                                <a class="share-link"
-                                   href="/send/bibliography/userreference/{{ obj.id }}"
-                                   title="Share"><i class="fa fa-share"></i></a>
-                            {% else %}
-                                <!-- dont know what to do with model {{ model }} -->
                             {% endif %}
                         {% endif %}
 
