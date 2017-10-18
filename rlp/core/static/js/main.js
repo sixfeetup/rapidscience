@@ -21,7 +21,7 @@ var selectedBookmarksFolderName; // will contain ID of selected bookmarks folder
             $(this).next('.character-count').text(length + '/' + maxLength);
         }
     });
-    
+
     // add space to footer when .buttonbar is present
     if ($('.buttonbar, .action-buttons, .float-buttons').length) {
         $(".main-footer").css({"padding-bottom": "120px"});
@@ -63,7 +63,7 @@ var selectedBookmarksFolderName; // will contain ID of selected bookmarks folder
 
     // hide hiddenField wrappers
     $(".hiddenField").parent(".fieldWrapper").hide();
-    
+
     // Clear comment field
     $(".comment-form button[type=reset]").click(function(){
         form_id = $(this).parents("form").find('.django-ckeditor-widget').attr('data-field-id');
@@ -338,4 +338,10 @@ $(".clear-input+.glyphicon-remove").on('click', function(){
 // on submit of refine, copy potentially changed keywords from search input
 $(".sub-menu").on('submit', function(e) {
     $("#id_q_hidden").val($("#id_q").val());
-})
+});
+
+// Display text below "My Groups"
+
+(function($) { $(function() {
+  $("#id_groups").before("<p>Note: when an item is posted from a <i>Group Dashboard</i>, it is automatically shared with that Group.</p>");
+}); })(jQuery);
