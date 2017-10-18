@@ -8,6 +8,7 @@ from haystack.generic_views import SearchView as BaseSearchView
 from taggit.models import Tag
 
 from casereport.views import limit_casereport_results
+from rlp.managedtags.models import ManagedTag
 from .forms import ModelSearchForm
 
 
@@ -46,7 +47,11 @@ class SearchView(BaseSearchView):
         utf8_get_dict.pop('page', '')
         context['query_string'] = urlencode(utf8_get_dict)
         tag_ids = self.request.GET.getlist('tags')
-        context['tags'] = Tag.objects.filter(id__in=tag_ids)
+        mtag_ids = self.request.GET.getlist('mtags')
+        context['tags'] = (
+            list(Tag.objects.filter(id__in=tag_ids)) +
+            list(ManagedTag.objects.filter(id__in=mtag_ids))
+        )
         return context
 
     def get(self, request, *args, **kwargs):
