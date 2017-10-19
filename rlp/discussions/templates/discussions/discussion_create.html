@@ -15,6 +15,8 @@
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-xs-12 col-md-push-2">
+        <h5>Content posted here from a closed group can be shared only with members of that group. All other content, posted from your personal dashboard or an open group, can be shared with any individuals and with groups to which you belong. In addition, this content can be further shared by original recipients with groups to which they belong.</h5>
+
             {% for message in messages %}
                 <div class="alert alert-{{ message.tags }} alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>

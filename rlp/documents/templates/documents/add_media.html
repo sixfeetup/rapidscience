@@ -14,6 +14,8 @@
 <div class="container">
     <div class="row">
         <div class="col-md-6 col-md-push-3">
+        <h5>Content posted here from a closed group can be shared only with members of that group. All other content, posted from your personal dashboard or an open group, can be shared with any individuals and with groups to which you belong. In addition, this content can be further shared by original recipients with groups to which they belong.</h5>
+
 
 {% for message in messages %}
     <div class="alert alert-{{ message.tags }} alert-dismissible">
@@ -25,25 +27,25 @@
 <form class="rpds-form" method="post" enctype="multipart/form-data" action="">
   {{ form.media }}
   {% csrf_token %}
-  
+
   <div class="type-choices">
       <input name="filetype" id="file" type="radio" value="file" checked>
       <label for="file">Upload file</label>
 
       <input name="filetype" id="link" type="radio" value="link">
       <label for="link">Add link</label>
-      
+
       <input name="filetype" id="video" type="radio" value="video">
       <label for="video">Embed video</label>
   </div>
-  
+
   {% for field in form %}
       <div class="fieldWrapper" id="wrapper-{{ field.auto_id }}">
           {{ field.errors }}
           {% if field.auto_id == 'id_members' %}
             <h4>Sharing</h4>
           {% endif %}
-          
+
           {% if field.auto_id != 'id_copyright' and field.label %}
               <h4>
                   <label for="{{ field.id_for_label }}">
@@ -91,7 +93,7 @@
                 } else if (type == 'video') {
                     $("#wrapper-id_share_link").show();
                 }
-                
+
             })
         }); })(jQuery);
     </script>
