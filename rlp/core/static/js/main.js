@@ -340,8 +340,11 @@ $(".sub-menu").on('submit', function(e) {
     $("#id_q_hidden").val($("#id_q").val());
 });
 
-// Display text below "My Groups"
-
 (function($) { $(function() {
+  // Display text below "My Groups"
   $("#id_groups").before("<p>Note: when an item is posted from a <i>Group Dashboard</i>, it is automatically shared with that Group.</p>");
+
+  // don't allow browsers provide suggestions on 'New Tags'
+  $("#id_new_tags").attr("autocomplete", "off");
+
 }); })(jQuery);
