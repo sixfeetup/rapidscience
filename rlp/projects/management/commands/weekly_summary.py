@@ -79,7 +79,7 @@ class Command(BaseCommand):
                     # this *should* be temporary until we have an action
                     # for when a member joins a group. Until then, just
                     # show all new members
-                    cxt_label = ctype.model
+                    cxt_label = 'users'
                     members = Action.objects.filter(
                         timestamp__gte=some_day_last_week,
                         timestamp__lte=timezone.now(),

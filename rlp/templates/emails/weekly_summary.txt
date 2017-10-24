@@ -53,10 +53,10 @@ Here's a summary of content shared with you last week on Sarcoma Central, all of
   </ul>
 {% endif %}
 
-{% if user %}
-  <strong>{{ user|length }} New Member{{ user|length|pluralize }}</strong>
+{% if users %}
+  <strong>{{ users|length }} New Member{{ users|length|pluralize }}</strong>
   <ul>
-  {% for action in user %}
+  {% for action in users %}
     <li><a href="{{ action.action_object.get_absolute_url }}">{{ action.action_object.get_full_name }}</a></li>
   {% endfor %}
   </ul>
