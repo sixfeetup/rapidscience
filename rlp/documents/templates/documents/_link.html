@@ -1,7 +1,7 @@
 {% load core_tags %}
 {% user_can_link obj as can_link %}
 <h4>
-    {% if can_link %}<a href="{{ obj.get_absolute_url }}" target="_blank">{% endif %}
+    {% if can_link %}<a href="{{ obj.get_absolute_url }}">{% endif %}
         {{ obj.title }}
     {% if can_link %}</a>{% endif %}
 </h4>

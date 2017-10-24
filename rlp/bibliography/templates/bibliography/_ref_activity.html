@@ -6,8 +6,7 @@
     {{ ref.reference.parsed_data.authors }}. {% endif %}
 {% if ref.reference.get_source_url %}{% if not search %}
     {% if can_link %}
-        <a href="{{ ref.get_absolute_url }}"
-       {% if 'http' in ref.reference.get_source_url and not email %}target="_blank"{% endif %}>
+        <a href="{{ ref.get_absolute_url }}">
     {% endif %}
 {% endif %}{% endif %}
 {{ ref.reference.parsed_data.title|striptags }}

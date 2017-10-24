@@ -22,7 +22,7 @@
     {% if 'Link' in obj.display_type %}
         <h4>
             {% if can_link %}
-            <a href="{{ obj.get_absolute_url }}" target="_blank">
+            <a href="{{ obj.get_absolute_url }}">
             {% endif %}
         {% autoescape off %}{% if highlighted.title %}{{ highlighted.title.0 }}{% else %}{{ obj.title }}{% endif %}{% endautoescape %}
             {% if can_link %}
