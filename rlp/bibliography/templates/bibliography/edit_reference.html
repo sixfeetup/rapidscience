@@ -16,7 +16,7 @@
     <div class="row">
         <div class="col-md-6 col-xs-12 col-md-push-3">
 
-        <h2>{{ reference }}</h2>
+        <h2>{{ reference|safe }}</h2>
 
         <p>{% if reference.parsed_data.authors %}{{ reference.parsed_data.authors }}. {% endif %}
         {% if reference.parsed_data.container_title %}in <em>{{ reference.parsed_data.container_title }}</em>,{% endif %}
