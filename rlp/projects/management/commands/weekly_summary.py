@@ -41,6 +41,7 @@ class Command(BaseCommand):
         biblio_ct = ContentType.objects.get(app_label='bibliography',
                                             model='userreference')
         docs_cts = ContentType.objects.filter(app_label='documents')
+        member_ct = ContentType.objects.get(model='user')
         subject = "Weekly summary of new activity"
 
         # loop through users
@@ -58,7 +59,7 @@ class Command(BaseCommand):
             results = 0
             # loop through all content returned to strip out duplicates
             # (for when multiple actions happen on one pice of content)
-            for ctype in [comment_ct, casereport_ct, docs_cts, biblio_ct]:
+            for ctype in [comment_ct, casereport_ct, docs_cts, biblio_ct, member_ct]:
                 display_items = []  # items to display in the email
                 # docs_cts has multiple types we group together
                 if ctype == docs_cts:
@@ -76,6 +77,19 @@ class Command(BaseCommand):
                                 continue
                             content_id_set.append(item.action_object_object_id)
                             display_items.append(item)
+                elif ctype == member_ct:
+                    # this *should* be temporary until we have an action
+                    # for when a member joins a group. Until then, just
+                    # show all new members
+                    cxt_label = ctype.model
+                    members = Action.objects.filter(
+                        timestamp__gte=some_day_last_week,
+                        timestamp__lte=timezone.now(),
+                        action_object_content_type=ctype).order_by(
+                            'timestamp'
+                        ).reverse()
+                    for member in members:
+                        display_items.append(member)
                 else:
                     content_id_set = []
                     cxt_label = ctype.model
