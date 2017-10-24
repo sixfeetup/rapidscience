@@ -37,6 +37,10 @@
         <p class="initial"><a class="btn btn-primary" href="{{ obj.upload.url }}" target="_blank">
           Download
       </a></p>
+      {% elif document.polymorphic_ctype.model == 'link' %}
+        <p class="initial"><a class="btn btn-primary" href="{{ obj.url }}" target="_blank">
+          Open in separate tab
+      </a></p>
       {% elif document.polymorphic_ctype.model == 'image' %}
         <a href="{{ obj.upload.url }}" target="_blank">
           <img alt="{{ obj.title }}" src="{{ obj.upload.url }}" width="{% if obj.upload.width < 500 %}{{ obj.upload.width }}{% else %}500px{% endif %}">
