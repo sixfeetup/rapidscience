@@ -44,7 +44,11 @@
                 {% endif %}
               </div>
             </div>
+            <a class="btn btn-primary" href="{{ obj.get_source_url }}" target="_blank">
+              Open in separate tab
+            </a>
             <hr>
+
             {% render_comment_form for user_reference %}
             {% render_comment_list for user_reference %}
         </div>
