@@ -69,9 +69,7 @@ class Command(BaseCommand):
                         all_content = user.get_activity_stream().filter(
                             timestamp__gte=some_day_last_week,
                             timestamp__lte=timezone.now(),
-                            action_object_content_type=doctype).order_by(
-                                'timestamp'
-                            ).reverse()
+                            action_object_content_type=doctype)
                         for item in all_content:
                             if item.action_object_object_id in content_id_set:
                                 continue
@@ -85,9 +83,7 @@ class Command(BaseCommand):
                     members = Action.objects.filter(
                         timestamp__gte=some_day_last_week,
                         timestamp__lte=timezone.now(),
-                        action_object_content_type=ctype).order_by(
-                            'timestamp'
-                        ).reverse()
+                        action_object_content_type=ctype)
                     for member in members:
                         display_items.append(member)
                 else:
@@ -96,9 +92,7 @@ class Command(BaseCommand):
                     all_content = user.get_activity_stream().filter(
                         timestamp__gte=some_day_last_week,
                         timestamp__lte=timezone.now(),
-                        action_object_content_type=ctype).order_by(
-                            'timestamp'
-                        ).reverse()
+                        action_object_content_type=ctype)
                     for item in all_content:
                         if item.action_object_object_id in content_id_set:
                             continue
@@ -111,7 +105,12 @@ class Command(BaseCommand):
                             continue
                         display_items.append(item)
                 results += len(display_items)
-                email_context.update({cxt_label: display_items})
+                sorted_items = sorted(
+                    display_items,
+                    key=lambda c: c.timestamp,
+                    reverse=True,
+                )
+                email_context.update({cxt_label: sorted_items})
 
             if not results:
                 continue
