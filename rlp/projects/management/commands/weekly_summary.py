@@ -68,7 +68,9 @@ class Command(BaseCommand):
                         all_content = user.get_activity_stream().filter(
                             timestamp__gte=some_day_last_week,
                             timestamp__lte=timezone.now(),
-                            action_object_content_type=doctype)
+                            action_object_content_type=doctype).order_by(
+                                'timestamp'
+                            ).reverse()
                         for item in all_content:
                             if item.action_object_object_id in content_id_set:
                                 continue
@@ -80,7 +82,9 @@ class Command(BaseCommand):
                     all_content = user.get_activity_stream().filter(
                         timestamp__gte=some_day_last_week,
                         timestamp__lte=timezone.now(),
-                        action_object_content_type=ctype)
+                        action_object_content_type=ctype).order_by(
+                            'timestamp'
+                        ).reverse()
                     for item in all_content:
                         if item.action_object_object_id in content_id_set:
                             continue

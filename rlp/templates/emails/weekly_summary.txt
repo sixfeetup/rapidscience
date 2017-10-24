@@ -8,7 +8,7 @@ Here's a summary of content shared with you last week on Sarcoma Central, all of
   <strong>{{ threadedcomment|length }} Discussion{{ threadedcomment|length|pluralize }}</strong>
   <ul>
   {% for action in threadedcomment %}
-    <li>{{ action.actor.get_full_name }} posted: <a href="https://{{ site.domain }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.title|safe|truncatewords:30 }}</a></li>
+    <li>{{ action.actor.get_full_name }} posted: <a href="https://{{ site.domain }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.title|safe|truncatewords:30 }}</a> | {{ action.timestamp.date }}</li>
   {% endfor %}
     <li><a href="https://{{ site.domain }}{% url 'dashboard' %}">View more on your dashboard.</a></li>
   </ul>
@@ -18,7 +18,7 @@ Here's a summary of content shared with you last week on Sarcoma Central, all of
   <strong>{{ casereport|length }} Case Report{{ casereport|length|pluralize }}</strong>
   <ul>
   {% for action in casereport %}
-    <li>{{ action.actor.get_full_name }} added <a href="https://{{ site.domain }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.title }}</a></li>
+    <li>{{ action.actor.get_full_name }} added <a href="https://{{ site.domain }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.title }}</a> | {{ action.timestamp.date }}</li>
   {% endfor %}
     <li><a href="https://{{ site.domain }}{% url 'dashboard' %}">View more on your dashboard.</a></li>
   </ul>
@@ -28,7 +28,7 @@ Here's a summary of content shared with you last week on Sarcoma Central, all of
   <strong>{{ document|length }} Document{{ document|length|pluralize }}/Media</strong>
   <ul>
   {% for action in document %}
-    <li>{{ action.actor.get_full_name }} uploaded <a href="https://{{ site.domain }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.title }}</a></li>
+    <li>{{ action.actor.get_full_name }} uploaded <a href="https://{{ site.domain }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.title }}</a> | {{ action.timestamp.date }}</li>
   {% endfor %}
     <li><a href="https://{{ site.domain }}{% url 'dashboard' %}">View more on your dashboard.</a></li>
   </ul>
@@ -38,7 +38,7 @@ Here's a summary of content shared with you last week on Sarcoma Central, all of
   <strong>{{ userreference|length }} Bibliography</strong>
   <ul>
   {% for action in userreference %}
-    <li>{{ action.actor.get_full_name }} added <a href="https://{{ site.domain }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.reference.title }}</a></li>
+    <li>{{ action.actor.get_full_name }} added <a href="https://{{ site.domain }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.reference.title }}</a> | {{ action.timestamp.date }}</li>
   {% endfor %}
   <li><a href="https://{{ site.domain }}{% url 'dashboard' %}">View more on your dashboard.</a></li>
   </ul>
