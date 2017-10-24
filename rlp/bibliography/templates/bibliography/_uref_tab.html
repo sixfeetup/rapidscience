@@ -8,7 +8,7 @@
     <h4>{% if obj.parsed_data.authors %}{{ obj.parsed_data.authors }}. {% endif %}
         {% if obj.get_source_url %}
             {%  if can_link %}
-                <a href="{{ obj.get_source_url }}" {% if 'http' in obj.get_source_url and not email %}target="_blank"{% endif %}>{% endif %}
+                <a href="{{ ref.get_absolute_url }}" {% if 'http' in obj.get_source_url and not email %}target="_blank"{% endif %}>{% endif %}
             {% endif %}
         {% autoescape off %}{% if highlighted.title %}{{ highlighted.title.0 }}{% else %}{{ obj.parsed_data.title }}{% endif %}{% endautoescape %}
         {% if obj.get_source_url %}
