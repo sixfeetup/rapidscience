@@ -342,9 +342,11 @@ $(".sub-menu").on('submit', function(e) {
 
 (function($) { $(function() {
   // Display text below "My Groups"
-  $("#id_groups").before("<p>Note: when an item is posted from a <i>Group Dashboard</i>, it is automatically shared with that Group.</p>");
+  $("#id_register-email").before("<p class='helptext'> Use your professional email address when applicable</p>");
 
   // don't allow browsers provide suggestions on 'New Tags'
   $("#id_new_tags").attr("autocomplete", "off");
+
+  $("#id_groups").before("<p>Note: when an item is posted from a <i>Group Dashboard</i>, it is automatically shared with that Group.</p>");
 
 }); })(jQuery);
