@@ -15,6 +15,7 @@ from django.conf import settings
 
 from rlp.accounts.models import User
 from rlp.core.email import send_transactional_mail
+from rlp.core.utils import rollup
 from rlp.projects.models import Project
 
 
@@ -71,8 +72,8 @@ class Command(BaseCommand):
                             timestamp__lte=timezone.now(),
                             action_object_content_type=doctype)
                         for item in all_content:
-                            if item.action_object_object_id in content_id_set:
-                                continue
+                            # if item.action_object_object_id in content_id_set:
+                            #     continue
                             content_id_set.append(item.action_object_object_id)
                             display_items.append(item)
                 elif ctype == member_ct:
@@ -110,6 +111,9 @@ class Command(BaseCommand):
                     key=lambda c: c.timestamp,
                     reverse=True,
                 )
+                rolled = rollup(sorted_items, 'all_targets',
+                                rollup_attr='target')
+                email_context.update({'{0}_roll'.format(cxt_label): rolled})
                 email_context.update({cxt_label: sorted_items})
 
             if not results:

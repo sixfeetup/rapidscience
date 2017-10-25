@@ -17,6 +17,12 @@ Here's a summary of content shared with you last week on Sarcoma Central, all of
   </ul>
 {% endif %}
 
+<ul>
+{% for item in threadedcomment_roll %}
+  <li>{{ item }}</li>
+{% endfor %}
+</ul>
+
 {% if casereport %}
   <strong>{{ casereport|length }} Case Report{{ casereport|length|pluralize }}</strong>
   <ul>
@@ -29,17 +35,29 @@ Here's a summary of content shared with you last week on Sarcoma Central, all of
   </ul>
 {% endif %}
 
+<ul>
+{% for item in casereport_roll %}
+  <li>{{ item }}</li>
+{% endfor %}
+</ul>
+
 {% if document %}
   <strong>{{ document|length }} Document{{ document|length|pluralize }}/Media</strong>
   <ul>
   {% for action in document %}
-    <li>{{ action.actor.get_full_name }} uploaded <a href="https://{{ site.domain }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.title }}</a>
+    <li>{{ action.actor.get_full_name }} {{ action.verb }} <a href="https://{{ site.domain }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.title }}</a>
         {% setvar "0" as comment_count %}{%  get_threaded_comment_count for action.action_object as comment_count %}{% if comment_count %}({{ comment_count }} comment{{ comment_count|pluralize }}){% endif %}
     | {{ action.timestamp.date }}</li>
   {% endfor %}
     <li><a href="https://{{ site.domain }}{% url 'dashboard' %}">View more on your dashboard.</a></li>
   </ul>
 {% endif %}
+
+<ul>
+{% for item in document_roll %}
+  <li>{{ item }}</li>
+{% endfor %}
+</ul>
 
 {% if userreference %}
   <strong>{{ userreference|length }} Bibliography</strong>
@@ -53,6 +71,12 @@ Here's a summary of content shared with you last week on Sarcoma Central, all of
   </ul>
 {% endif %}
 
+<ul>
+{% for item in userreference_roll %}
+  <li>{{ item }}</li>
+{% endfor %}
+</ul>
+
 {% if users %}
   <strong>{{ users|length }} New Member{{ users|length|pluralize }}</strong>
   <ul>
@@ -61,6 +85,12 @@ Here's a summary of content shared with you last week on Sarcoma Central, all of
   {% endfor %}
   </ul>
 {% endif %}
+
+<ul>
+{% for item in user_roll %}
+  <li>{{ item }}</li>
+{% endfor %}
+</ul>
 
 Join the conversation! Connect with your colleagues in {% if user_groups|length == 1 %}{% for group in user_groups %}{{ group.title }}{% if not forloop.last %}, {% endif %}{% endfor %}.<br><br>{% elif user_groups|length == 2 %}{% for group in user_groups %}{% if forloop.last %}and {% endif %}{{ group.title }} {% endfor %}.<br><br>{% else %}{% for group in user_groups %}{% if forloop.last %}and {% endif %}{{ group.title }}{% if not forloop.last %}, {% endif %}{% endfor %}.<br><br>
 {% endif %}
