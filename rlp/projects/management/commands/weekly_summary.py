@@ -1,3 +1,4 @@
+from collections import Counter
 from datetime import timedelta
 import sys
 
@@ -101,6 +102,7 @@ class Command(BaseCommand):
                         content_id_set.append(item.action_object_object_id)
                         if ctype.model == 'threadedcomment':
                             if not item.action_object.title:
+                                # handle comments below
                                 comments.append(item)
                                 continue
                         # only include live case reports
@@ -115,7 +117,7 @@ class Command(BaseCommand):
                 )
                 email_context.update({cxt_label: sorted_items})
 
-            from collections import Counter
+            # combine comments for the same object
             comment_parents = []
             for comment in comments:
                 cid = comment.action_object_object_id
@@ -123,19 +125,27 @@ class Command(BaseCommand):
                 while parent._meta.model_name == 'threadedcomment':
                     # keep going up until we're at the top level item
                     parent = parent.content_object
+                ptype = parent._meta.model_name
+                if ptype == 'link' or ptype == 'file' or ptype == 'image':
+                    ptype = 'document'
+                try:
+                    # add to doc type for count
+                    email_context[ptype].append(comment)
+                except:
+                    pass
                 comment_parents.append(parent)
             commentcounter = Counter(comment_parents)
-            email_context.update({'all_comments': commentcounter})
             for comment in commentcounter:
-                # ctype = comment._meta.model_name
-                ctype = 'document'
-                if ctype == 'link' or ctype == 'file' or ctype == 'image':
-                    ctype = 'document'
-                try:
-                    email_context[ctype].append(comment)
-                except:
-                    import pdb; pdb.set_trace()
-                    continue
+                ptype = comment._meta.model_name
+                if ptype == 'link' or ptype == 'file' or ptype == 'image':
+                    ptype = 'document'
+                # add to doc type comments
+                type_key = '{0}_comments'.format(ptype)
+                if type_key in email_context:
+                    email_context[type_key].append((comment, commentcounter[comment]))
+                else:
+                    email_context[type_key] = [(comment, commentcounter[comment])]
+
             if not results:
                 continue
             template = 'emails/weekly_summary'

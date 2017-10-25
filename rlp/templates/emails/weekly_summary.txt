@@ -9,14 +9,15 @@ Here's a summary of content shared with you last week on Sarcoma Central, all of
   <strong>{{ threadedcomment|length }} Discussion{{ threadedcomment|length|pluralize }}</strong>
   <ul>
   {% for action in threadedcomment %}
-    <li>{{ action.actor.get_full_name }} posted: <a href="https://{{ site.domain }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.title|safe|truncatewords:30 }}</a>
-        {% setvar "0" as comment_count %}{%  get_threaded_comment_count for action.action_object as comment_count %}{% if comment_count %}({{ comment_count }} comment{{ comment_count|pluralize }}){% endif %}
-        | {{ action.timestamp.date }}</li>
+    {% if action.action_object.display_type != 'Reply' %}
+      <li>{{ action.actor.get_full_name }} posted: <a href="https://{{ site.domain }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.title|safe|truncatewords:30 }}</a>
+          {% setvar "0" as comment_count %}{%  get_threaded_comment_count for action.action_object as comment_count %}{% if comment_count %}({{ comment_count }} comment{{ comment_count|pluralize }}){% endif %}
+          | {{ action.timestamp.date }}</li>
+     {% endif %}
   {% endfor %}
-  {% for obj in all_comments %}
-    {% if obj.display_type == 'Threaded Comment' %}
-        <li>{{ all_comments|get_dict_item:obj }} new comment{{ count|length|pluralize }} on {{ obj.title }}{{ obj.reference.title }} ({{ obj.display_type }})</li>
-    {% endif %}
+  {% for obj in threadedcomment_comments %}
+      <li>{{ obj.1 }} new comment{{ count|length|pluralize }} on 
+        <a href="https://{{ site.domain }}{{ obj.0.get_absolute_url }}">{{ obj.0.title }}{{ obj.0.reference.title }}</a></li>
   {% endfor %}
     <li><a href="https://{{ site.domain }}{% url 'dashboard' %}">View more on your dashboard.</a></li>
   </ul>
@@ -26,14 +27,15 @@ Here's a summary of content shared with you last week on Sarcoma Central, all of
   <strong>{{ casereport|length }} Case Report{{ casereport|length|pluralize }}</strong>
   <ul>
   {% for action in casereport %}
-    <li>{{ action.actor.get_full_name }} added <a href="https://{{ site.domain }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.title }}</a>
-        {% setvar "0" as comment_count %}{%  get_threaded_comment_count for action.action_object as comment_count %}{% if comment_count %}({{ comment_count }} comment{{ comment_count|pluralize }}){% endif %}
-    | {{ action.timestamp.date }}</li>
-  {% endfor %}
-  {% for obj in all_comments %}
-    {% if obj.display_type == 'Case Report' %}
-        <li>{{ all_comments|get_dict_item:obj }} new comment{{ count|length|pluralize }} on {{ obj.title }}{{ obj.reference.title }} ({{ obj.display_type }})</li>
+    {% if action.action_object.display_type != 'Reply' %}
+      <li>{{ action.actor.get_full_name }} added <a href="https://{{ site.domain }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.title }}</a>
+          {% setvar "0" as comment_count %}{%  get_threaded_comment_count for action.action_object as comment_count %}{% if comment_count %}({{ comment_count }} comment{{ comment_count|pluralize }}){% endif %}
+      | {{ action.timestamp.date }}</li>
     {% endif %}
+  {% endfor %}
+  {% for obj in casereport_comments %}
+      <li>{{ obj.1 }} new comment{{ count|length|pluralize }} on 
+        <a href="https://{{ site.domain }}{{ obj.0.get_absolute_url }}">{{ obj.0.title }}{{ obj.0.reference.title }}</a></li>
   {% endfor %}
     <li><a href="https://{{ site.domain }}{% url 'dashboard' %}">View more on your dashboard.</a></li>
   </ul>
@@ -43,14 +45,15 @@ Here's a summary of content shared with you last week on Sarcoma Central, all of
   <strong>{{ document|length }} Document{{ document|length|pluralize }}/Media</strong>
   <ul>
   {% for action in document %}
-    <li>{{ action.actor.get_full_name }} uploaded <a href="https://{{ site.domain }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.title }}</a>
-        {% setvar "0" as comment_count %}{%  get_threaded_comment_count for action.action_object as comment_count %}{% if comment_count %}({{ comment_count }} comment{{ comment_count|pluralize }}){% endif %}
-    | {{ action.timestamp.date }}</li>
-  {% endfor %}
-  {% for obj in all_comments %}
-    {% if obj.display_type == 'Link' %}
-        <li>{{ all_comments|get_dict_item:obj }} new comment{{ count|length|pluralize }} on {{ obj.title }}{{ obj.reference.title }} ({{ obj.display_type }})</li>
+    {% if action.action_object.display_type != 'Reply' %}
+      <li>{{ action.actor.get_full_name }} uploaded <a href="https://{{ site.domain }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.title }}</a>
+          {% setvar "0" as comment_count %}{%  get_threaded_comment_count for action.action_object as comment_count %}{% if comment_count %}({{ comment_count }} comment{{ comment_count|pluralize }}){% endif %}
+      | {{ action.timestamp.date }}</li>
     {% endif %}
+  {% endfor %}
+  {% for obj in document_comments %}
+      <li>{{ obj.1 }} new comment{{ count|length|pluralize }} on 
+        <a href="https://{{ site.domain }}{{ obj.0.get_absolute_url }}">{{ obj.0.title }}{{ obj.0.reference.title }}</a></li>
   {% endfor %}
     <li><a href="https://{{ site.domain }}{% url 'dashboard' %}">View more on your dashboard.</a></li>
   </ul>
@@ -60,24 +63,19 @@ Here's a summary of content shared with you last week on Sarcoma Central, all of
   <strong>{{ userreference|length }} Bibliography</strong>
   <ul>
   {% for action in userreference %}
-    <li>{{ action.actor.get_full_name }} added <a href="https://{{ site.domain }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.reference.title }}</a>
-        {% setvar "0" as comment_count %}{%  get_threaded_comment_count for action.action_object as comment_count %}{% if comment_count %}({{ comment_count }} comment{{ comment_count|pluralize }}){% endif %}
-    | {{ action.timestamp.date }}</li>
-  {% endfor %}
-  {% for obj in all_comments %}
-    {% if obj.display_type == 'Reference' %}
-        <li>{{ all_comments|get_dict_item:obj }} new comment{{ count|length|pluralize }} on {{ obj.title }}{{ obj.reference.title }} ({{ obj.display_type }})</li>
+    {% if action.action_object.display_type != 'Reply' %}
+      <li>{{ action.actor.get_full_name }} added <a href="https://{{ site.domain }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.reference.title }}</a>
+          {% setvar "0" as comment_count %}{%  get_threaded_comment_count for action.action_object as comment_count %}{% if comment_count %}({{ comment_count }} comment{{ comment_count|pluralize }}){% endif %}
+      | {{ action.timestamp.date }}</li>
     {% endif %}
+  {% endfor %}
+  {% for obj in userreference_comments %}
+      <li>{{ obj.1 }} new comment{{ count|length|pluralize }} on 
+        <a href="https://{{ site.domain }}{{ obj.0.get_absolute_url }}">{{ obj.0.title }}{{ obj.0.reference.title }}</a></li>
   {% endfor %}
   <li><a href="https://{{ site.domain }}{% url 'dashboard' %}">View more on your dashboard.</a></li>
   </ul>
 {% endif %}
-
----
-{% for obj in all_comments %}
-      <li>{{ obj }}{{ all_comments|get_dict_item:obj }} new comment{{ count|length|pluralize }} on {{ obj.title }}{{ obj.reference.title }} ({{ obj.display_type }})</li>
-{% endfor %}
----
 
 {% if users %}
   <strong>{{ users|length }} New Member{{ users|length|pluralize }}</strong>
