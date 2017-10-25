@@ -5,6 +5,7 @@ from rlp.search.search_indexes import BaseIndex, TaggableBaseIndex
 
 
 class ReferenceIndex(TaggableBaseIndex, indexes.Indexable):
+    text = indexes.CharField(document=True, use_template=True)
 
     def prepare_title(self, obj):
         return "{}".format(obj.reference.title)

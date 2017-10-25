@@ -36,6 +36,12 @@ sarcoma
 {% for m in object.aberrations.all %}
     {{m.name}}
 {% endfor %}
+{% for m in object.tags.all %}
+    {{ m.slug }}
+{% endfor %}
+{% for m in object.mtags.all %}
+    {{ m.slug }}
+{% endfor %}
 
 {% for treatment in object.get_treatments %}
     {{ treatment.name }}
