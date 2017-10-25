@@ -65,6 +65,9 @@ def acceptance_to_newuser(request, user):
         'groups_link': request.build_absolute_uri(reverse(
                     'projects:projects_list',
                 )),
+        'login_url': request.build_absolute_uri(reverse('login')),
+
+
     }
     template = 'registration/emails/acceptance_to_newuser'
     message = render_to_string('{}.txt'.format(template), email_context)

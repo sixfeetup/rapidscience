@@ -2,21 +2,20 @@ Hello {{ name }},<br><br>
 
 Welcome to Sarcoma Central.<br><br>
 
-To get started, log in using your email address and password.<br><br>
+To get started, <a href="{{ login_url }}">log in</a> now.</p> using your email address and password.<br><br>
 
-You will land on your personal dashboard -- a <em>private space</em> for your content and messages.<br><br>
+You will land on your personal dashboard -- a <em>private space</em> for your content and messages. You'll see content shared with you and the groups you belong to.<br><br>
 
-Members can view your profile. Please take time to complete your profile (“edit profile” by clicking your name) -- i.e., post a brief bio, your research interests, and photo to foster interaction and trust.<br><br>
+Members can view your profile. Please take time to complete the details (“edit profile” by clicking your name) -- i.e., post a brief bio, your research interests, and photo to foster interaction and trust.<br><br>
 
 All members of Sarcoma Central are members of the <a href="{{ commons_link }}">Community Commons</a> group. You will see the latest activity on that page and a members list.<br><br>
 
 Visit the <a href="{{ groups_link }}">All Groups</a> page and consider joining open groups or requesting access to closed groups. You can also start your own group and invite colleagues to join.<br><br>
 
-You can start discussions and post documents, case reports, and references from your personal dashboard (for sharing with multiple groups and members) or from a group dashboard (for interaction with that group).<br><br>
+You can start discussions and post documents, case reports, and references from your personal dashboard (<em>for sharing with multiple groups and members</em>) or from a group dashboard (<em>for interaction with that group</em>).<br><br>
 
-If you have questions or technical difficulties, or ideas regarding how the site can facilitate your work, please contact us at <a href="mailto:support@rapidscience.org">support@rapidscience.org</a>.<br><br>
+Take a look at our <a href="http://www.rapidscience.org/collaboration-platform/">short video demonstrating key features</a> on the site. If you have questions or technical difficulties, or ideas regarding how the site can facilitate your work, please contact us at <a href="mailto:support@rapidscience.org">support@rapidscience.org</a>.<br><br>
 
-Happy collaborating!<br><br>
 
 Sincerely,<br><br>
 
