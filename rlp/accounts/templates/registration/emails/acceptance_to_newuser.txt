@@ -2,7 +2,7 @@ Hello {{ name }},<br><br>
 
 Welcome to Sarcoma Central.<br><br>
 
-To get started, <a href="{{ login_url }}">log in</a> now.</p> using your email address and password.<br><br>
+To get started, <a href="{{ login_url }}">log in</a> using your email address and password.<br><br>
 
 You will land on your personal dashboard -- a <em>private space</em> for your content and messages. You'll see content shared with you and the groups you belong to.<br><br>
 
