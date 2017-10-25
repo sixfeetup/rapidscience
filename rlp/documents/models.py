@@ -81,7 +81,7 @@ class Document(PolymorphicModel, SharedObjectMixin):
 
 
 class File(Document):
-    upload = models.FileField(upload_to="docs/%Y/%m/%d")
+    upload = models.FileField(upload_to="docs/%Y/%m/%d", max_length=250)
 
 
 class Image(Document):
