@@ -15,6 +15,7 @@ from django.conf import settings
 
 from rlp.accounts.models import User
 from rlp.core.email import send_transactional_mail
+from rlp.discussions.models import ThreadedComment
 from rlp.projects.models import Project
 
 
@@ -57,6 +58,7 @@ class Command(BaseCommand):
             }
 
             results = 0
+            comments = []
             # loop through all content returned to strip out duplicates
             # (for when multiple actions happen on one pice of content)
             for ctype in [comment_ct, casereport_ct, docs_cts, biblio_ct, member_ct]:
@@ -97,9 +99,10 @@ class Command(BaseCommand):
                         if item.action_object_object_id in content_id_set:
                             continue
                         content_id_set.append(item.action_object_object_id)
-                        # only include top level discussions
-                        if ctype.model == 'threadedcomment' and not item.action_object.title:
-                            continue
+                        if ctype.model == 'threadedcomment':
+                            if not item.action_object.title:
+                                comments.append(item)
+                                continue
                         # only include live case reports
                         if ctype.model == 'casereport' and item.action_object.workflow_state != 'live':
                             continue
@@ -112,6 +115,27 @@ class Command(BaseCommand):
                 )
                 email_context.update({cxt_label: sorted_items})
 
+            from collections import Counter
+            comment_parents = []
+            for comment in comments:
+                cid = comment.action_object_object_id
+                parent = ThreadedComment.objects.get(pk=cid).content_object
+                while parent._meta.model_name == 'threadedcomment':
+                    # keep going up until we're at the top level item
+                    parent = parent.content_object
+                comment_parents.append(parent)
+            commentcounter = Counter(comment_parents)
+            email_context.update({'all_comments': commentcounter})
+            for comment in commentcounter:
+                # ctype = comment._meta.model_name
+                ctype = 'document'
+                if ctype == 'link' or ctype == 'file' or ctype == 'image':
+                    ctype = 'document'
+                try:
+                    email_context[ctype].append(comment)
+                except:
+                    import pdb; pdb.set_trace()
+                    continue
             if not results:
                 continue
             template = 'emails/weekly_summary'

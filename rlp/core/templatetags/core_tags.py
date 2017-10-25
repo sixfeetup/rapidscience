@@ -36,6 +36,11 @@ def blog_widget(context):
     }
 
 
+@register.filter
+def get_dict_item(dictionary, key):
+    return dictionary.get(key)
+
+
 class SetVarNode(template.Node):
     def __init__(self, new_val, var_name):
         self.new_val = new_val
