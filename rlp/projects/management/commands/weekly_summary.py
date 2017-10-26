@@ -4,7 +4,6 @@ import sys
 
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.sites.models import Site
 from django.core.mail import EmailMessage
 from django.core.mail import mail_admins
 from django.core.management.base import BaseCommand
@@ -13,13 +12,8 @@ from django.utils import timezone
 
 from actstream.models import Action
 
-from django.conf import settings
-
 from rlp.accounts.models import User
-from rlp.core.email import send_transactional_mail
-from rlp.core.utils import rollup
 from rlp.discussions.models import ThreadedComment
-from rlp.projects.models import Project
 
 
 class Command(BaseCommand):
@@ -34,7 +28,6 @@ class Command(BaseCommand):
             raise
     
     def process(self):
-        site = Site.objects.get_current()
         some_day_last_week = timezone.now() - timedelta(days=7)
         year, week, day = some_day_last_week.isocalendar()
         # define the content types
@@ -56,7 +49,7 @@ class Command(BaseCommand):
             projects = user.active_projects()
             email_context = {
                 'user': user,
-                'site': site,
+                'site': settings.DOMAIN,
                 'user_groups': projects
             }
 
@@ -151,7 +144,6 @@ class Command(BaseCommand):
             if not results:
                 continue
             template = 'emails/weekly_summary'
-            email_context['site'] = settings.DOMAIN
             message_body = render_to_string('{}.txt'.format(template), email_context)
             mail = EmailMessage(subject, message_body,
                                 settings.DEFAULT_FROM_EMAIL,
