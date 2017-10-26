@@ -10,7 +10,7 @@ from rlp.discussions.models import ThreadedComment
 
 
 class Document(PolymorphicModel, SharedObjectMixin):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=400)
     description = models.TextField()
     date_added = models.DateTimeField(auto_now_add=True, db_index=True)
     date_updated = models.DateTimeField(auto_now=True)
