@@ -1,3 +1,4 @@
+{% include 'search/_text.txt' %}
 {% if obj.reference.parsed_data.authors %}{{ obj.reference.parsed_data.authors }}. {% endif %}{{ obj.reference.parsed_data.title|striptags }}{% if obj.reference.get_source_url %} ({{ obj.reference.get_source_url }}){% endif %},
 {% if obj.reference.parsed_data.container_title %}in {{ obj.reference.parsed_data.container_title }},{% endif %}
 {% if obj.reference.parsed_data.page %}pp {{ obj.reference.parsed_data.page }}.{% endif %}

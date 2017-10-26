@@ -15,6 +15,7 @@ CLABEL = "Please check this box if you are not the copyright owner of \
 
 class AddMediaForm(forms.Form):
     upload = forms.FileField(
+        max_length=250,
         required=False,
         help_text="PDF, Word Doc, Google Doc file types; max file size 2MB")
     url = forms.URLField(required=False)

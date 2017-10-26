@@ -1,3 +1,4 @@
+from collections import Counter
 from datetime import timedelta
 import sys
 
@@ -16,6 +17,7 @@ from django.conf import settings
 from rlp.accounts.models import User
 from rlp.core.email import send_transactional_mail
 from rlp.core.utils import rollup
+from rlp.discussions.models import ThreadedComment
 from rlp.projects.models import Project
 
 
@@ -58,6 +60,7 @@ class Command(BaseCommand):
             }
 
             results = 0
+            comments = []
             # loop through all content returned to strip out duplicates
             # (for when multiple actions happen on one pice of content)
             for ctype in [comment_ct, casereport_ct, docs_cts, biblio_ct, member_ct]:
@@ -98,9 +101,11 @@ class Command(BaseCommand):
                         if item.action_object_object_id in content_id_set:
                             continue
                         content_id_set.append(item.action_object_object_id)
-                        # only include top level discussions
-                        if ctype.model == 'threadedcomment' and not item.action_object.title:
-                            continue
+                        if ctype.model == 'threadedcomment':
+                            if not item.action_object.title:
+                                # handle comments below
+                                comments.append(item)
+                                continue
                         # only include live case reports
                         if ctype.model == 'casereport' and item.action_object.workflow_state != 'live':
                             continue
@@ -115,6 +120,35 @@ class Command(BaseCommand):
                                 rollup_attr='target')
                 email_context.update({'{0}_roll'.format(cxt_label): rolled})
                 email_context.update({cxt_label: sorted_items})
+
+            # combine comments for the same object
+            comment_parents = []
+            for comment in comments:
+                cid = comment.action_object_object_id
+                parent = ThreadedComment.objects.get(pk=cid).content_object
+                while parent._meta.model_name == 'threadedcomment':
+                    # keep going up until we're at the top level item
+                    parent = parent.content_object
+                ptype = parent._meta.model_name
+                if ptype == 'link' or ptype == 'file' or ptype == 'image':
+                    ptype = 'document'
+                try:
+                    # add to doc type for count
+                    email_context[ptype].append(comment)
+                except:
+                    pass
+                comment_parents.append(parent)
+            commentcounter = Counter(comment_parents)
+            for comment in commentcounter:
+                ptype = comment._meta.model_name
+                if ptype == 'link' or ptype == 'file' or ptype == 'image':
+                    ptype = 'document'
+                # add to doc type comments
+                type_key = '{0}_comments'.format(ptype)
+                if type_key in email_context:
+                    email_context[type_key].append((comment, commentcounter[comment]))
+                else:
+                    email_context[type_key] = [(comment, commentcounter[comment])]
 
             if not results:
                 continue

@@ -9,11 +9,17 @@ from rlp.search.search_indexes import TaggableBaseIndex
 
 
 class CommentIndex(TaggableBaseIndex, indexes.Indexable):
+    text = indexes.CharField(document=True, use_template=True)
+    comment = indexes.CharField()
+
     def get_model(self):
         return ThreadedComment
 
+    def prepare_text(self, obj):
+        searchstring = render_to_string(
+            'search/indexes/discussions/threadedcomment_text.txt',
+            {'object': obj, })
+        return searchstring
+
     def prepare_title(self, obj):
-        action = obj.action_object_actions.first()
-        title = render_to_string('actstream/_action_detail.html', context={'action': action})
-        title = bleach.clean(title, strip=True, tags=[])
-        return title
+        return obj.title

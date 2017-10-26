@@ -1,8 +1,9 @@
+from django.template.loader import render_to_string
 from haystack import indexes
 
 
 class BaseIndex(indexes.SearchIndex):
-    text = indexes.CharField(document=True, use_template=True)
+    text = indexes.CharField(document=True)
     title = indexes.CharField()
     link = indexes.CharField()
 
@@ -11,6 +12,12 @@ class BaseIndex(indexes.SearchIndex):
 
     def prepare_link(self, obj):
         return obj.get_absolute_url()
+
+    def prepare_text(self, obj):
+        searchstring = render_to_string(
+            'search/_text.txt',
+            {'object': obj, })
+        return searchstring
 
 
 class TaggableBaseIndex(BaseIndex):
