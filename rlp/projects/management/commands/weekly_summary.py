@@ -119,6 +119,8 @@ class Command(BaseCommand):
                 parent = ThreadedComment.objects.get(pk=cid).content_object
                 while parent._meta.model_name == 'threadedcomment':
                     # keep going up until we're at the top level item
+                    if parent.content_object._meta.model_name == 'site':
+                        break
                     parent = parent.content_object
                 ptype = parent._meta.model_name
                 if ptype == 'link' or ptype == 'file' or ptype == 'image':
