@@ -3,118 +3,130 @@
 
 {% block content %}
 Hi {{ user.get_full_name }},<br><br>
-Here's a summary of content shared with you last week on Sarcoma Central, all of which appears on <a href="https://{{ site.domain }}{% url 'dashboard' %}">your dashboard</a>:<br><br>
+Here's a summary of content shared with you last week on Sarcoma Central, all of which appears on <a href="https://{{ site }}{% url 'dashboard' %}">your dashboard</a>:<br><br>
 
-{% if threadedcomment %}
-  <strong>{{ threadedcomment|length }} Discussion{{ threadedcomment|length|pluralize }}</strong>
-  <ul>
-  {% for action in threadedcomment %}
-    {% if action.action_object.display_type != 'Reply' %}
-      <li>{{ action.actor.get_full_name }} posted: <a href="https://{{ site.domain }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.title|safe|truncatewords:30 }}</a>
-          {% setvar "0" as comment_count %}{%  get_threaded_comment_count for action.action_object as comment_count %}{% if comment_count %}({{ comment_count }} comment{{ comment_count|pluralize }}){% endif %}
-          | {{ action.timestamp.date }}</li>
-     {% endif %}
-  {% endfor %}
-  {% for obj in threadedcomment_comments %}
-      <li>{{ obj.1 }} new comment{{ count|length|pluralize }} on 
-        <a href="https://{{ site.domain }}{{ obj.0.get_absolute_url }}">{{ obj.0.title }}{{ obj.0.reference.title }}</a></li>
-  {% endfor %}
-    <li><a href="https://{{ site.domain }}{% url 'dashboard' %}">View more on your dashboard.</a></li>
-  </ul>
-{% endif %}
-
-<ul>
-{% for item in threadedcomment_roll %}
-  <li>{{ item }}</li>
-{% endfor %}
-</ul>
 
 {% if casereport %}
-  <strong>{{ casereport|length }} Case Report{{ casereport|length|pluralize }}</strong>
+  <strong>{{ casereport|length }} Case Report{{ casereport|length|pluralize }}/ Comments</strong>
   <ul>
   {% for action in casereport %}
     {% if action.action_object.display_type != 'Reply' %}
-      <li>{{ action.actor.get_full_name }} added <a href="https://{{ site.domain }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.title }}</a>
-          {% setvar "0" as comment_count %}{%  get_threaded_comment_count for action.action_object as comment_count %}{% if comment_count %}({{ comment_count }} comment{{ comment_count|pluralize }}){% endif %}
-      | {{ action.timestamp.date }}</li>
+      <li>
+          Case Report {{ action.verb }} 
+          by <a href="https://{{ site }}{{ action.actor.get_absolute_url }}">{{ action.actor.get_full_name }}</a>
+          {% if action.target %}
+              to <a href="https://{{ site }}{{ action.target.get_absolute_url }}">{{ action.target }}</a>
+          {% endif %}
+          | {{ action.timestamp.date }}<br />
+          <div style="padding-left: 40px">
+              <a href="https://{{ site }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.title }}</a>
+                  {% setvar "0" as comment_count %}{%  get_threaded_comment_count for action.action_object as comment_count %}{% if comment_count %}({{ comment_count }} comment{{ comment_count|pluralize }}){% endif %}
+          </div>
+      </li>
     {% endif %}
   {% endfor %}
   {% for obj in casereport_comments %}
       <li>{{ obj.1 }} new comment{{ count|length|pluralize }} on 
-        <a href="https://{{ site.domain }}{{ obj.0.get_absolute_url }}">{{ obj.0.title }}{{ obj.0.reference.title }}</a></li>
+        <a href="https://{{ site }}{{ obj.0.get_absolute_url }}">{{ obj.0.title }}{{ obj.0.reference.title }}</a></li>
   {% endfor %}
-    <li><a href="https://{{ site.domain }}{% url 'dashboard' %}">View more on your dashboard.</a></li>
+    <li><a href="https://{{ site }}{% url 'dashboard' %}">View more on your dashboard.</a></li>
   </ul>
 {% endif %}
 
-<ul>
-{% for item in casereport_roll %}
-  <li>{{ item }}</li>
-{% endfor %}
-</ul>
+
+
+{% if threadedcomment %}
+  <strong>{{ threadedcomment|length }} Discussion{{ threadedcomment|length|pluralize }}/ Comments</strong>
+  <ul>
+  {% for action in threadedcomment %}
+    {% if action.action_object.display_type != 'Reply' %}
+        <li>
+            Discussion {{ action.verb }} 
+            by <a href="https://{{ site }}{{ action.actor.get_absolute_url }}">{{ action.actor.get_full_name }}</a>
+            {% if action.target %}
+                to <a href="https://{{ site }}{{ action.target.get_absolute_url }}">{{ action.target }}</a>
+            {% endif %}
+            | {{ action.timestamp.date }}<br />
+            <div style="padding-left: 40px">
+                <a href="https://{{ site }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.title }}</a>
+                    {% setvar "0" as comment_count %}{%  get_threaded_comment_count for action.action_object as comment_count %}{% if comment_count %}({{ comment_count }} comment{{ comment_count|pluralize }}){% endif %}
+            </div>
+        </li>
+     {% endif %}
+  {% endfor %}
+  {% for obj in threadedcomment_comments %}
+      <li>{{ obj.1 }} new comment{{ count|length|pluralize }} on 
+        <a href="https://{{ site }}{{ obj.0.get_absolute_url }}">{{ obj.0.title }}{{ obj.0.reference.title }}</a></li>
+  {% endfor %}
+    <li><a href="https://{{ site }}{% url 'dashboard' %}">View more on your dashboard.</a></li>
+  </ul>
+{% endif %}
+
 
 {% if document %}
-  <strong>{{ document|length }} Document{{ document|length|pluralize }}/Media</strong>
+  <strong>{{ document|length }} Document{{ document|length|pluralize }} & Media/ Comments</strong>
   <ul>
   {% for action in document %}
     {% if action.action_object.display_type != 'Reply' %}
-      <li>{{ action.actor.get_full_name }} uploaded <a href="https://{{ site.domain }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.title }}</a>
-          {% setvar "0" as comment_count %}{%  get_threaded_comment_count for action.action_object as comment_count %}{% if comment_count %}({{ comment_count }} comment{{ comment_count|pluralize }}){% endif %}
-      | {{ action.timestamp.date }}</li>
+        <li>
+            {{ action.action_object.display_type }} {{ action.verb }} 
+            by <a href="https://{{ site }}{{ action.actor.get_absolute_url }}">{{ action.actor.get_full_name }}</a>
+            {% if action.target %}
+                to <a href="https://{{ site }}{{ action.target.get_absolute_url }}">{{ action.target }}</a>
+            {% endif %}
+            | {{ action.timestamp.date }}<br />
+            <div style="padding-left: 40px">
+                <a href="https://{{ site }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.title }}</a>
+                    {% setvar "0" as comment_count %}{%  get_threaded_comment_count for action.action_object as comment_count %}{% if comment_count %}({{ comment_count }} comment{{ comment_count|pluralize }}){% endif %}
+            </div>
+        </li>
     {% endif %}
   {% endfor %}
   {% for obj in document_comments %}
       <li>{{ obj.1 }} new comment{{ count|length|pluralize }} on 
-        <a href="https://{{ site.domain }}{{ obj.0.get_absolute_url }}">{{ obj.0.title }}{{ obj.0.reference.title }}</a></li>
+        <a href="https://{{ site }}{{ obj.0.get_absolute_url }}">{{ obj.0.title }}{{ obj.0.reference.title }}</a></li>
   {% endfor %}
-    <li><a href="https://{{ site.domain }}{% url 'dashboard' %}">View more on your dashboard.</a></li>
+    <li><a href="https://{{ site }}{% url 'dashboard' %}">View more on your dashboard.</a></li>
   </ul>
 {% endif %}
 
-<ul>
-{% for item in document_roll %}
-  <li>{{ item }}</li>
-{% endfor %}
-</ul>
 
 {% if userreference %}
-  <strong>{{ userreference|length }} Bibliography</strong>
+  <strong>{{ userreference|length }} References/ Comments</strong>
   <ul>
   {% for action in userreference %}
     {% if action.action_object.display_type != 'Reply' %}
-      <li>{{ action.actor.get_full_name }} added <a href="https://{{ site.domain }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.reference.title }}</a>
-          {% setvar "0" as comment_count %}{%  get_threaded_comment_count for action.action_object as comment_count %}{% if comment_count %}({{ comment_count }} comment{{ comment_count|pluralize }}){% endif %}
-      | {{ action.timestamp.date }}</li>
+        <li>
+            Reference {{ action.verb }} 
+            by <a href="https://{{ site }}{{ action.actor.get_absolute_url }}">{{ action.actor.get_full_name }}</a>
+            {% if action.target %}
+                to <a href="https://{{ site }}{{ action.target.get_absolute_url }}">{{ action.target }}</a>
+            {% endif %}
+            | {{ action.timestamp.date }}<br />
+            <div style="padding-left: 40px">
+                <a href="https://{{ site }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.reference.title }}</a>
+                    {% setvar "0" as comment_count %}{%  get_threaded_comment_count for action.action_object as comment_count %}{% if comment_count %}({{ comment_count }} comment{{ comment_count|pluralize }}){% endif %}
+            </div>
+        </li>
     {% endif %}
   {% endfor %}
   {% for obj in userreference_comments %}
       <li>{{ obj.1 }} new comment{{ count|length|pluralize }} on 
-        <a href="https://{{ site.domain }}{{ obj.0.get_absolute_url }}">{{ obj.0.title }}{{ obj.0.reference.title }}</a></li>
+        <a href="https://{{ site }}{{ obj.0.get_absolute_url }}">{{ obj.0.title }}{{ obj.0.reference.title }}</a></li>
   {% endfor %}
-  <li><a href="https://{{ site.domain }}{% url 'dashboard' %}">View more on your dashboard.</a></li>
+  <li><a href="https://{{ site }}{% url 'dashboard' %}">View more on your dashboard.</a></li>
   </ul>
 {% endif %}
 
-<ul>
-{% for item in userreference_roll %}
-  <li>{{ item }}</li>
-{% endfor %}
-</ul>
 
 {% if users %}
   <strong>{{ users|length }} New Member{{ users|length|pluralize }}</strong>
   <ul>
   {% for action in users %}
-    <li><a href="{{ action.action_object.get_absolute_url }}">{{ action.action_object.get_full_name }}</a></li>
+    <li><a href="https://{{ site }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.get_full_name }}</a></li>
   {% endfor %}
   </ul>
 {% endif %}
-
-<ul>
-{% for item in user_roll %}
-  <li>{{ item }}</li>
-{% endfor %}
-</ul>
 
 Join the conversation! Connect with your colleagues in {% if user_groups|length == 1 %}{% for group in user_groups %}{{ group.title }}{% if not forloop.last %}, {% endif %}{% endfor %}.<br><br>{% elif user_groups|length == 2 %}{% for group in user_groups %}{% if forloop.last %}and {% endif %}{{ group.title }} {% endfor %}.<br><br>{% else %}{% for group in user_groups %}{% if forloop.last %}and {% endif %}{{ group.title }}{% if not forloop.last %}, {% endif %}{% endfor %}.<br><br>
 {% endif %}

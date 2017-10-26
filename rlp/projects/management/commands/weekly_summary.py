@@ -2,6 +2,7 @@ from collections import Counter
 from datetime import timedelta
 import sys
 
+from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
 from django.core.mail import EmailMessage
@@ -31,7 +32,7 @@ class Command(BaseCommand):
             message = "{}".format(err)
             mail_admins(subject, message)
             raise
-
+    
     def process(self):
         site = Site.objects.get_current()
         some_day_last_week = timezone.now() - timedelta(days=7)
@@ -75,8 +76,8 @@ class Command(BaseCommand):
                             timestamp__lte=timezone.now(),
                             action_object_content_type=doctype)
                         for item in all_content:
-                            # if item.action_object_object_id in content_id_set:
-                            #     continue
+                            if item.action_object_object_id in content_id_set:
+                                continue
                             content_id_set.append(item.action_object_object_id)
                             display_items.append(item)
                 elif ctype == member_ct:
@@ -116,9 +117,6 @@ class Command(BaseCommand):
                     key=lambda c: c.timestamp,
                     reverse=True,
                 )
-                rolled = rollup(sorted_items, 'all_targets',
-                                rollup_attr='target')
-                email_context.update({'{0}_roll'.format(cxt_label): rolled})
                 email_context.update({cxt_label: sorted_items})
 
             # combine comments for the same object
@@ -153,6 +151,7 @@ class Command(BaseCommand):
             if not results:
                 continue
             template = 'emails/weekly_summary'
+            email_context['site'] = settings.DOMAIN
             message_body = render_to_string('{}.txt'.format(template), email_context)
             mail = EmailMessage(subject, message_body,
                                 settings.DEFAULT_FROM_EMAIL,
