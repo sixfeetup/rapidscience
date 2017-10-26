@@ -51,6 +51,12 @@ class AddMediaForm(forms.Form):
         widget=forms.HiddenInput,
         initial=True,
     )
+    doc_type = forms.CharField(
+        label='',
+        required=False,
+        widget=forms.HiddenInput,
+        initial='file',
+    )
 
 
 class BaseDocumentForm(forms.ModelForm):

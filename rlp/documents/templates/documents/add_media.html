@@ -80,21 +80,32 @@
 
 {% block js-footer %}
     <script type="text/javascript">
+        function display_type_fields(type) {
+            $("#wrapper-id_upload").hide();
+            $("#wrapper-id_url").hide();
+            $("#wrapper-id_share_link").hide();
+            if (type == 'file') {
+                $("#wrapper-id_upload").show();
+            } else if (type == 'link') {
+                $("#wrapper-id_url").show();
+            } else if (type == 'video') {
+                $("#wrapper-id_share_link").show();
+            }
+        }
+
         (function($) { $(function() {
+            // on page load
+            ftype = $("#id_doc_type").val()
+            display_type_fields(ftype);
+            $(".type-choices [value="+ftype+"]").click();
+            
+            // on click
             $(".type-choices input").click(function(){
                 type = $(this).attr('value');
-                $("#wrapper-id_upload").hide();
-                $("#wrapper-id_url").hide();
-                $("#wrapper-id_share_link").hide();
-                if (type == 'file') {
-                    $("#wrapper-id_upload").show();
-                } else if (type == 'link') {
-                    $("#wrapper-id_url").show();
-                } else if (type == 'video') {
-                    $("#wrapper-id_share_link").show();
-                }
-
-            })
+                $("#id_doc_type").val(type);
+                display_type_fields(type)
+            });
+            
         }); })(jQuery);
     </script>
 {% endblock js-footer %}
