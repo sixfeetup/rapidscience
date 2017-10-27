@@ -14,7 +14,7 @@
             {% if can_link %}</a>{% endif %}
         {% endif %}{% endif %},
 {% if ref.reference.parsed_data.container_title %}in
-    <em>{{ ref.reference.parsed_data.container_title }}</em>,{% endif %}
+    <em>{% autoescape off %}{{ ref.reference.parsed_data.container_title }}{% endautoescape %}</em>,{% endif %}
 {% if ref.reference.parsed_data.page %}pp {{ ref.reference.parsed_data.page }}
     .{% endif %}
 {% if ref.reference.parsed_data.publication_date %}
