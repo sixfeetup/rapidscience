@@ -129,8 +129,7 @@ Join the conversation!
 {% if user_groups|length == 1 %}
     Connect with your colleagues in
     {% for group in user_groups %}
-        <a href="https://{{ site }}{{ group.get_absolute_url }}">{{ group.title }}</a>
-        {% if not forloop.last %}, {% endif %}
+        <a href="https://{{ site }}{{ group.get_absolute_url }}">{{ group.title }}</a>{% if not forloop.last %}, {% endif %}
     {% endfor %}
 {% elif user_groups|length == 2 %}
     Connect with your colleagues in
@@ -142,8 +141,7 @@ Join the conversation!
 {% else %}
     Connect with your colleagues in
     {% for group in user_groups %}
-        {% if forloop.last %}and {% endif %}<a href="https://{{ site }}{{ group.get_absolute_url }}">{{ group.title }}</a>
-        {% if not forloop.last %}, {% endif %}
+        {% if forloop.last %}and {% endif %}<a href="https://{{ site }}{{ group.get_absolute_url }}">{{ group.title }}</a>{% if not forloop.last %}, {% endif %}
     {% endfor %}
 {% endif %}
 -- or <a href="https://{{ site }}{% url 'projects:projects_add' %}">create a new group</a>.<br><br>
