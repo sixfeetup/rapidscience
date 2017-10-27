@@ -7,7 +7,7 @@
         <a href="{{ obj.get_source_url }}" {% if 'http' in obj.get_source_url and not email %}target="_blank"{% endif %}>{% endif %}
         {% autoescape off %}{% if highlighted.title %}{{ highlighted.title.0 }}{% else %}{{ obj.parsed_data.title }}{% endif %}{% endautoescape %}
         {% if obj.get_source_url %}</a>{% endif %},
-        {% if obj.parsed_data.container_title %}in <em>{{ obj.parsed_data.container_title }}</em>,{% endif %}
+        {% if obj.parsed_data.container_title %}in <em>{% autoescape off %}{{ obj.parsed_data.container_title }}{% endautoescape %}</em>,{% endif %}
         {% if obj.parsed_data.page %}pp {{ obj.parsed_data.page }}.{% endif %}
         {% if obj.parsed_data.publication_date %}{{ obj.parsed_data.publication_date }};{% endif %}
         {{ obj.parsed_data.publisher }} {{ obj.parsed_data.journal_title }}

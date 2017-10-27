@@ -1,5 +1,5 @@
 {% if obj.parsed_data.authors %}{{ obj.parsed_data.authors }}. {% endif %}{{ obj.parsed_data.title|striptags }}{% if obj.get_source_url %} ({{ obj.get_source_url }}){% endif %},
-{% if obj.parsed_data.container_title %}in {{ obj.parsed_data.container_title }},{% endif %}
+{% if obj.parsed_data.container_title %}in {% autoescape off %}{{ obj.parsed_data.container_title }}{% endautoescape %},{% endif %}
 {% if obj.parsed_data.page %}pp {{ obj.parsed_data.page }}.{% endif %}
 {% if obj.parsed_data.publication_date %}{{ obj.parsed_data.publication_date }};{% endif %}
 {{ obj.parsed_data.publisher }} {{ obj.parsed_data.journal_title }}

@@ -102,7 +102,7 @@ This content was shared with you last week on Sarcoma Central
             {% endif %}
             | {{ action.timestamp.date }}<br />
             <div style="padding-left: 40px">
-                <a href="https://{{ site }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.reference.title }}</a>
+                <a href="https://{{ site }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.reference.title|safe }}</a>
                     {% setvar "0" as comment_count %}{%  get_threaded_comment_count for action.action_object as comment_count %}{% if comment_count %}({{ comment_count }} comment{{ comment_count|pluralize }}){% endif %}
             </div>
         </li>
@@ -110,7 +110,7 @@ This content was shared with you last week on Sarcoma Central
   {% endfor %}
   {% for obj in userreference_comments %}
       <li>{{ obj.1 }} new comment{{ count|length|pluralize }} on 
-        <a href="https://{{ site }}{{ obj.0.get_absolute_url }}">{{ obj.0.title }}{{ obj.0.reference.title }}</a></li>
+        <a href="https://{{ site }}{{ obj.0.get_absolute_url }}">{{ obj.0.title|safe }}{{ obj.0.reference.title|safe }}</a></li>
   {% endfor %}
   </ul>
 {% endif %}
