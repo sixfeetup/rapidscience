@@ -148,7 +148,7 @@ class Command(BaseCommand):
             template = 'emails/weekly_summary'
             message_body = render_to_string('{}.txt'.format(template), email_context)
             mail = EmailMessage(subject, message_body,
-                                settings.DEFAULT_FROM_EMAIL,
+                                "info@rapidscience.org",
                                 [user.email])
             mail.content_subtype = "html"
             mail.send()

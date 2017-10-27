@@ -8,7 +8,7 @@ This content was shared with you last week on Sarcoma Central
 
 
 {% if casereport %}
-  <strong>{{ casereport|length }} Case Report{{ casereport|length|pluralize }}/ Comments</strong>
+  <strong>{{ casereport|length }} Case Report{{ casereport|length|pluralize }}/Comments:</strong>
   <ul>
   {% for action in casereport %}
     {% if action.action_object.display_type != 'Reply' %}
@@ -36,7 +36,7 @@ This content was shared with you last week on Sarcoma Central
 
 
 {% if threadedcomment %}
-  <strong>{{ threadedcomment|length }} Discussion{{ threadedcomment|length|pluralize }}/ Comments</strong>
+  <strong>{{ threadedcomment|length }} Discussion{{ threadedcomment|length|pluralize }}/Comments:</strong>
   <ul>
   {% for action in threadedcomment %}
     {% if action.action_object.display_type != 'Reply' %}
@@ -63,7 +63,7 @@ This content was shared with you last week on Sarcoma Central
 
 
 {% if document %}
-  <strong>{{ document|length }} Document{{ document|length|pluralize }} & Media/ Comments</strong>
+  <strong>{{ document|length }} Document{{ document|length|pluralize }} & Media/Comments:</strong>
   <ul>
   {% for action in document %}
     {% if action.action_object.display_type != 'Reply' %}
@@ -90,7 +90,7 @@ This content was shared with you last week on Sarcoma Central
 
 
 {% if userreference %}
-  <strong>{{ userreference|length }} References/ Comments</strong>
+  <strong>{{ userreference|length }} References/Comments:</strong>
   <ul>
   {% for action in userreference %}
     {% if action.action_object.display_type != 'Reply' %}
@@ -117,13 +117,15 @@ This content was shared with you last week on Sarcoma Central
 
 
 {% if users %}
-  <strong>{{ users|length }} New Member{{ users|length|pluralize }}</strong>
+  <strong>{{ users|length }} New Member{{ users|length|pluralize }}:</strong>
   <ul>
   {% for action in users %}
     <li><a href="https://{{ site }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.get_full_name }}</a></li>
   {% endfor %}
   </ul>
 {% endif %}
+
+<a href="https://{{ site }}{% url 'dashboard' %}">View more on your dashboard</a><br /><br />
 
 Join the conversation!
 {% if user_groups|length == 1 %}
@@ -150,5 +152,6 @@ Join the conversation!
 The Sarcoma Central Team <a href="https://twitter.com/RapidScience">@RapidScience</a><br><br>
 
 Respond or send questions/concerns to <a href="mailto:info@rapidscience.org">info@rapidscience.org</a>.
-You can change your email preferences in your Profile.
+You can change your email preferences in your
+<a href="https://{{ site }}{% url 'profile' user.pk %}">Profile</a>.
 {% endblock content %}
