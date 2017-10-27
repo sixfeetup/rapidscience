@@ -3,7 +3,8 @@
 
 {% block content %}
 Hi {{ user.get_full_name }},<br><br>
-Here's a summary of content shared with you last week on Sarcoma Central, all of which appears on <a href="https://{{ site }}{% url 'dashboard' %}">your dashboard</a>:<br><br>
+This content was shared with you last week on Sarcoma Central 
+(see <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashboard</a>):<br><br>
 
 
 {% if casereport %}
@@ -29,7 +30,6 @@ Here's a summary of content shared with you last week on Sarcoma Central, all of
       <li>{{ obj.1 }} new comment{{ count|length|pluralize }} on 
         <a href="https://{{ site }}{{ obj.0.get_absolute_url }}">{{ obj.0.title }}{{ obj.0.reference.title }}</a></li>
   {% endfor %}
-    <li><a href="https://{{ site }}{% url 'dashboard' %}">View more on your dashboard.</a></li>
   </ul>
 {% endif %}
 
@@ -58,7 +58,6 @@ Here's a summary of content shared with you last week on Sarcoma Central, all of
       <li>{{ obj.1 }} new comment{{ count|length|pluralize }} on 
         <a href="https://{{ site }}{{ obj.0.get_absolute_url }}">{{ obj.0.title }}{{ obj.0.reference.title }}</a></li>
   {% endfor %}
-    <li><a href="https://{{ site }}{% url 'dashboard' %}">View more on your dashboard.</a></li>
   </ul>
 {% endif %}
 
@@ -86,7 +85,6 @@ Here's a summary of content shared with you last week on Sarcoma Central, all of
       <li>{{ obj.1 }} new comment{{ count|length|pluralize }} on 
         <a href="https://{{ site }}{{ obj.0.get_absolute_url }}">{{ obj.0.title }}{{ obj.0.reference.title }}</a></li>
   {% endfor %}
-    <li><a href="https://{{ site }}{% url 'dashboard' %}">View more on your dashboard.</a></li>
   </ul>
 {% endif %}
 
@@ -114,7 +112,6 @@ Here's a summary of content shared with you last week on Sarcoma Central, all of
       <li>{{ obj.1 }} new comment{{ count|length|pluralize }} on 
         <a href="https://{{ site }}{{ obj.0.get_absolute_url }}">{{ obj.0.title }}{{ obj.0.reference.title }}</a></li>
   {% endfor %}
-  <li><a href="https://{{ site }}{% url 'dashboard' %}">View more on your dashboard.</a></li>
   </ul>
 {% endif %}
 
@@ -128,11 +125,32 @@ Here's a summary of content shared with you last week on Sarcoma Central, all of
   </ul>
 {% endif %}
 
-Join the conversation! Connect with your colleagues in {% if user_groups|length == 1 %}{% for group in user_groups %}{{ group.title }}{% if not forloop.last %}, {% endif %}{% endfor %}.<br><br>{% elif user_groups|length == 2 %}{% for group in user_groups %}{% if forloop.last %}and {% endif %}{{ group.title }} {% endfor %}.<br><br>{% else %}{% for group in user_groups %}{% if forloop.last %}and {% endif %}{{ group.title }}{% if not forloop.last %}, {% endif %}{% endfor %}.<br><br>
+Join the conversation!
+{% if user_groups|length == 1 %}
+    Connect with your colleagues in
+    {% for group in user_groups %}
+        <a href="https://{{ site }}{{ group.get_absolute_url }}">{{ group.title }}</a>
+        {% if not forloop.last %}, {% endif %}
+    {% endfor %}
+{% elif user_groups|length == 2 %}
+    Connect with your colleagues in
+    {% for group in user_groups %}
+        {% if forloop.last %}and {% endif %}<a href="https://{{ site }}{{ group.get_absolute_url }}">{{ group.title }}</a>
+    {% endfor %}
+{% elif user_groups|length == 0 %}
+    <a href="https://{{ site }}{% url 'projects:projects_list' %}">Join a new group</a> 
+{% else %}
+    Connect with your colleagues in
+    {% for group in user_groups %}
+        {% if forloop.last %}and {% endif %}<a href="https://{{ site }}{{ group.get_absolute_url }}">{{ group.title }}</a>
+        {% if not forloop.last %}, {% endif %}
+    {% endfor %}
 {% endif %}
+-- or <a href="https://{{ site }}{% url 'projects:projects_add' %}">create a new group</a>.<br><br>
 
 
-The Sarcoma Central Team<br><br>
+The Sarcoma Central Team <a href="https://twitter.com/RapidScience">@RapidScience</a><br><br>
 
 Respond or send questions/concerns to <a href="mailto:info@rapidscience.org">info@rapidscience.org</a>.
+You can change your email preferences in your Profile.
 {% endblock content %}
