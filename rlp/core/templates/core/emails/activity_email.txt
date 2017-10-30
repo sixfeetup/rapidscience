@@ -1,12 +1,13 @@
 <a href="https://{{ site }}{{ user.get_absolute_url }}">{{ user.get_full_name }}</a> shared this {{ type }} with you:<br><br>
 
 <div style="margin-left: 20px;">
-{{ title }}<br><br>
+<em>{{ title|safe |striptags }}</em> <br><br>
 </div>
 
 {% if comment %}
-Comment: {{ comment|striptags }}<br><br>
+ <div style="margin-left: 20px;"> Comment: {{ comment|safe |striptags }}<br><br> </div>
 {% endif %}
+
 
 You are invited to view and discuss it <a href="{{ link }}">here</a>.<br><br>
 
@@ -15,4 +16,5 @@ This notification also appears on your Dashboard Activity Feed where you can boo
 Sincerely,<br><br>
 
 The <a href="https://sarcoma.rapidscience.org/">Sarcoma Central</a> Team <a href="https://twitter.com/RapidScience/">@RapidScience</a><br><br>
+
 
