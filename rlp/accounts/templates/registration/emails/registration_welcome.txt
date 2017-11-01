@@ -1,6 +1,6 @@
 {% load cms_tags %}
 
-Hello {{ name }},
+Hello {{ name }},<br><br>
 
 Welcome to Sarcoma Central.<br><br>
 
