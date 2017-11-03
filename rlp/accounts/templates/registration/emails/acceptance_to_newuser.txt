@@ -2,7 +2,7 @@ Hello {{ name }},<br><br>
 
 Welcome to Sarcoma Central.<br><br>
 
-To get started, log in at <a href="{{ login_url }}">sarcoma.rapidscience.org </a> using your email address and password.<br><br>
+To get started, log in at <a href="{{ login_url }}">sarcoma.rapidscience.org</a> using your email address and password.<br><br>
 
 You will land on your personal dashboard -- a private space for your content and messages. You'll see content shared with you and the groups you belong to.<br><br>
 
@@ -14,7 +14,7 @@ Visit the All Groups page and consider joining open groups or requesting access 
 
 You can start discussions and post documents, case reports, and references from your personal dashboard (for sharing with multiple groups and members) or from a group dashboard (for interaction only with that group).<br><br>
 
-Take a look at our <a href="http://www.rapidscience.org/collaboration-platform/">short video demonstrating key features</a> on the site, and see <a href="http://www.rapidscience.org/collaboration-platform/faqs/" target="_blank"> Frequently Asked Questions </a> for details about joining and forming groups, posting and sharing content, security and permissions, and submitting anonymized patient data. If you have questions or technical difficulties, or ideas regarding how the site can facilitate your work, please contact us at <a href="mailto:support@rapidscience.org">support@rapidscience.org</a>.<br><br>
+Take a look at our <a href="http://www.rapidscience.org/collaboration-platform/">short video demonstrating key features</a> on the site, and see <a href="http://www.rapidscience.org/collaboration-platform/faqs/" target="_blank">Frequently Asked Questions</a> for details about joining and forming groups, posting and sharing content, security and permissions, and submitting anonymized patient data. If you have questions or technical difficulties, or ideas regarding how the site can facilitate your work, please contact us at <a href="mailto:support@rapidscience.org">support@rapidscience.org</a>.<br><br>
 
 
 Sincerely,<br><br>
