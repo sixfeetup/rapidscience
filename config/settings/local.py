@@ -16,12 +16,15 @@ SECRET_KEY = env('DJANGO_SECRET_KEY', default='4xbsp-seh4t#8a&eg87z-@1-z+r!=(qm8
 
 # Mail settings
 # ------------------------------------------------------------------------------
+EMAIL_BACKEND= 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST='localhost'
+EMAIL_PORT=1025
 
-EMAIL_PORT = 1025
-
-EMAIL_HOST = 'localhost'
-EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND',
-                    default='django.core.mail.backends.console.EmailBackend')
+# EMAIL_PORT = 1025
+#
+# EMAIL_HOST = 'localhost'
+# EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND',
+#                     default='django.core.mail.backends.console.EmailBackend')
 
 # django-debug-toolbar
 # ------------------------------------------------------------------------------

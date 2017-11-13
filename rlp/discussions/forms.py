@@ -90,7 +90,7 @@ group_field = GroupListField(
 
 
 class NewDiscussionForm(forms.Form):
-    discussion_title = forms.CharField(label='Title', required=True)
+    discussion_title = forms.CharField(label='Discussion Title', required=True)
     discussion_body = forms.CharField(widget=CKEditorWidget(),)
     members = internal_member_field
     groups = group_field
