@@ -81,10 +81,10 @@
                  {% if casereport.additional_comment %}
                      <li><a href="#section-comments">Additional Comments</a></li>
                  {% endif %}
-                 {% if casereport.free_text %}
+                 {% if casereport.free_text and casereport.workflow_state != 'live'  %}
                     <li><a href="#section-freetext">Free Text</a></li>
                  {% endif %}
-                 {% if casereport.casefile_f %}
+                 {% if casereport.casefile_f and casereport.workflow_state != 'live'  %}
                     <li><a href="#section-uploadedfile">Uploaded File</a></li>
                  {% endif %}
              </ul>
@@ -215,14 +215,14 @@
       </div>
       {% endif %}
 
-      {% if casereport.free_text %}
+      {% if casereport.free_text and casereport.workflow_state != 'live'  %}
       <div id="section-freetext">
           <h4>Free Text</h4>
           <p>{{ casereport.free_text }}</p>
       </div>
       {% endif %}
 
-      {% if casereport.casefile_f %}
+      {% if casereport.casefile_f and casereport.workflow_state != 'live' %}
       <div id="section-uploadedfile">
           <h4>Uploaded File</h4>
           <p>{{ casereport.casefile_f.name }} ({{ casereport.casefile_f.size|filesizeformat }})<br />
