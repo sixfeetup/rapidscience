@@ -2,6 +2,9 @@
 {#object#}
 {% if action.verb == 'approved' %}
     <!-- SUPPRESSED in favor of joined and declined actions which are more targeted -->
+    {% if action.action_object_content_type.model == 'casereport' %}
+        Case Report submitted by <a href="{{ action.actor.get_absolute_url }}">{% if request.user == action.actor %} me {% else %} {{ action.actor.get_full_name }}{% endif %}</a>
+    {% endif %}
 {% elif action.verb == 'joined' %}
     {# could be in the user's activity feed or the group's activity feed #}
     {% if action.actor == request.user %}
