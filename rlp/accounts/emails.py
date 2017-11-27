@@ -107,3 +107,27 @@ def send_welcome(request, user):
                         to,)
     mail.content_subtype = "html"
     mail.send()
+
+
+def accepted_members_notification_to_admin(request, user, key):
+    subject = "New registration from automatically accepted user"
+    email_context = {
+        'name': user.get_full_name(),
+        'email': user.email,
+        'link': request.build_absolute_uri(reverse(
+            'registration_activate',
+            kwargs={
+                'activation_key': key,
+            },
+        )),
+    }
+    template = 'registration/emails/accepted_members_notification_to_admin'
+    message = render_to_string('{}.txt'.format(template), email_context)
+    to = (settings.DEFAULT_FROM_EMAIL,)
+    mail = EmailMessage(subject,
+                        message,
+                        settings.DEFAULT_FROM_EMAIL_RAPID_SCIENCE,
+                        to,
+                        cc=settings.BCC_LIST)
+    mail.content_subtype = "html"
+    mail.send()

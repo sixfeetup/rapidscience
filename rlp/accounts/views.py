@@ -241,6 +241,7 @@ class Register(SessionWizardView):
                     auto_group.add_member(user)
                 # display a welcome message
                 messages.success(request, WELCOME_MESSAGE)
+                emails.accepted_members_notification_to_admin(self.request, user)
         with transaction.atomic():
             user.is_active = True
             user.save()
