@@ -205,6 +205,12 @@
                 <!-- sharing -->
                 <div class="sharing-wrapper">
                     <h4>Sharing</h4>
+                             <ul class="jumpMenu">
+                             <p>This Case Report has been shared with:
+                                 {% for viewer in viewers %}{% if forloop.first %}{% elif forloop.last %}, and {% else %}, {% endif %}{{viewer}}{% endfor %}.
+                             </p>
+                             </ul>
+
                         <p>Note: only the author(s) are permitted to share this case report.</p>
                     <div class="choices">
                         <input type="radio" name="sharing-options" value="share-all" id="share1">

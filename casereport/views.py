@@ -268,7 +268,7 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
                 case.co_author.add(coauthor)
 
         case.save()
-        
+
         if data.get('sharing-options') == 'share-all':
             cc_group = Project.objects.get(title='Community Commons')
             case.share_with([cc_group], shared_by=case.primary_author)
@@ -537,6 +537,7 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
         form = self.form_class()
         form.fields['members'].choices = member_choices()
         form.fields['groups'].choices = group_choices(request.user)
+        viewers = casereport.get_viewers()
         # hide sharing fields if shared with closed group
         shared_with = [x for x in casereport.get_viewers() if x._meta.model_name == 'project']
         for viewer in shared_with:
@@ -553,7 +554,9 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
             casereport=casereport,
             subtypes=subtypes,
             aberrations=aberrations,
-            all_members=all_members), )
+            all_members=all_members,
+            viewers=viewers),
+            )
 
     def post(self, request, case_id, *args, **kwargs):
         data = request.POST.copy()
