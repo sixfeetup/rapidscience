@@ -26,7 +26,7 @@ class Command(BaseCommand):
             message = "{}".format(err)
             mail_admins(subject, message)
             raise
-    
+
     def process(self):
         some_day_last_week = timezone.now() - timedelta(days=7)
         year, week, day = some_day_last_week.isocalendar()
@@ -148,7 +148,7 @@ class Command(BaseCommand):
             template = 'emails/weekly_summary'
             message_body = render_to_string('{}.txt'.format(template), email_context)
             mail = EmailMessage(subject, message_body,
-                                "info@rapidscience.org",
+                                "Sarcoma Central <info@rapidscience.org>",
                                 [user.email])
             mail.content_subtype = "html"
             mail.send()
