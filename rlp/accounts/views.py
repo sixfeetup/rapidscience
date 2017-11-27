@@ -231,7 +231,16 @@ class Register(SessionWizardView):
             sync_user.send(sender=user.__class__, user=user)
         return redirect('projects:projects_list')
 
-    def process_registration(self, form, user):
+    def process_registration(self, form, user, request):
+        # Add the auto opt-in code for user that skip the login screen
+        # check for first login
+        if request.method == "POST":
+            first_login = (UserLogin.objects.filter(user=user).count() == 0)
+            if first_login:
+                for auto_group in Project.objects.filter(auto_opt_in=True):
+                    auto_group.add_member(user)
+                # display a welcome message
+                messages.success(request, WELCOME_MESSAGE)
         with transaction.atomic():
             user.is_active = True
             user.save()
