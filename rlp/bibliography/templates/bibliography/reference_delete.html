@@ -1,20 +1,25 @@
-{% extends 'home.html' %}
+{% extends 'base.html' %}
 
-{% block main_content %}
-<h4>{{ obj.title }}</h4>
-<form method="post" action="">
-  {% csrf_token %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-8 col-md-push-2">
+      <h1>{{ obj.title }}</h1>
+      <form method="post" action="">
+        {% csrf_token %}
 
-  <div class="alert alert-danger alert-dismissable">
-    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&#215;</button>
-    Are you sure you want to remove this reference?
-    If you do, all comments/replies will also be deleted.
+        <div class="alert alert-danger">
+          Are you sure you want to remove this reference?
+          If you do, all comments/replies will also be deleted.
+        </div>
+        <button class="btn btn-primary" type="submit">
+          Delete
+        </button>
+        <a role="button" class="btn btn-default" href="{{ user_reference.get_absolute_url }}">
+          Cancel
+        </a>
+      </form>
+    </div>
   </div>
-  <button class="btn btn-primary" type="submit">
-    Delete
-  </button>
-  <a role="button" class="btn btn-default" href="{{ user_reference.get_absolute_url }}">
-    Cancel
-  </a>
-</form>
-{% endblock main_content %}
+</div>
+{% endblock content %}
