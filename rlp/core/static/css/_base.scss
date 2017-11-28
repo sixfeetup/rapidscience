@@ -261,7 +261,7 @@ small {
       font-size: 32px;
       font-weight: 600;
       &.group-header {
-        line-height: 124px;
+        margin-top: 45px;
       }
     }
     span {
@@ -295,6 +295,13 @@ small {
       right: 0;
       left: 0;
     }
+  }
+  .group-header-status {
+    border-radius: 5px;
+    background-color: #444;
+    color: #fff;
+    display: inline-block;
+    padding: 7px 10px;
   }
   .profile-image {
     padding-top: 40px;
