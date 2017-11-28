@@ -1,5 +1,10 @@
 {% load core_tags %}
 {#object#}
+{% if action.action_object.shareable %}
+  <i class="fa fa-unlock" aria-hidden="true"></i>
+{% else %}
+  <i class="fa fa-lock" aria-hidden="true"></i>
+{% endif %}
 {% if action.verb == 'approved' %}
     <!-- SUPPRESSED in favor of joined and declined actions which are more targeted -->
     {% if action.action_object_content_type.model == 'casereport' %}

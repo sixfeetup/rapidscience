@@ -21,6 +21,12 @@
                       {% if obj.parsed_data.doi %}DOI: {{ obj.parsed_data.doi }}{% endif %} {% if obj.parsed_data.pubmed_id %}PMID: {{ obj.parsed_data.pubmed_id }}{% endif %}
                   </h1>
                   <p class="small">
+                    {% if user_reference.shareable %}
+                      <i class="fa fa-unlock" aria-hidden="true"></i>
+                    {% else %}
+                      <i class="fa fa-lock" aria-hidden="true"></i>
+                    {% endif %}
+
                     {% if user_reference.user %}
                         Posted by
                         <a href="{{ user_reference.user.get_absolute_url }}">{% if request.user == user_reference.user %} me {% else %} {{ user_reference.user.get_full_name }}{% endif %}</a>

@@ -42,6 +42,11 @@
                     </div>
                     <h1>{{ casereport.title }}</h1>
                     <p class="case-meta">
+                        {% if casereport.shareable %}
+                          <i class="fa fa-unlock" aria-hidden="true"></i>
+                        {% else %}
+                          <i class="fa fa-lock" aria-hidden="true"></i>
+                        {% endif %}
                         Case ID: {{ casereport.id }} |
                         Submitted: {{ casereport.created_on|date:"M d, Y" }} |
                         Last revision: {{ casereport.modified_on|date:"M d, Y" }}

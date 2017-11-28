@@ -19,6 +19,11 @@
         <div class="col-md-7 col-xs-10 col-md-push-2">
             {% if comment.title %}<h1>{{ comment.title }}</h1>{% endif %}
             <p class="small">
+              {% if comment.shareable %}
+                <i class="fa fa-unlock" aria-hidden="true"></i>
+              {% else %}
+                <i class="fa fa-lock" aria-hidden="true"></i>
+              {% endif %}
               Posted by
               <a href="{{ comment.user.get_absolute_url }}">
               {% if comment.user = request.user %}me{% else %}{{ comment.user.get_full_name }}{% endif %}

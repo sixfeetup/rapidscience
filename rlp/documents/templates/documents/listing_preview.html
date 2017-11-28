@@ -41,6 +41,11 @@
         </h4>
     {% endif %}
     <p class="small">
+        {% if obj.shareable %}
+          <i class="fa fa-unlock" aria-hidden="true"></i>
+        {% else %}
+          <i class="fa fa-lock" aria-hidden="true"></i>
+        {% endif %}
         Posted by
       <a href="{{ obj.owner.get_absolute_url }}">
         {% if request.user == obj.owner %} me {% else %} {{ obj.owner.get_full_name }} {% endif %}
