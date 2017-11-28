@@ -377,11 +377,53 @@ small {
   }
 
  .add-links {
+    color: #fff;
     font-size: 14px;
     margin-top: 1.2em;
     position: relative;
     left: -10px;
+    > div,
+    > ul {
+      background-color: rgba(0, 0, 0, 0.5);
+      margin-bottom: 1px;
+    }
+    .add-links-info {
+      cursor: pointer;
+      font-size: 14px;
+      padding: 15px 15px 10px;
+      text-transform: uppercase;
+    }
+    .add-links-info-text {
+      background-color: #444;
+      display: none;
+      cursor: pointer;
+      font-size: 12px;
+      height: 100%;
+      left: 0;
+      padding: 24px 15px;
+      position: absolute;
+      top: 0;
+    }
+    .circle-i {
+      border: 2px solid #fff;
+      border-radius: 10px;
+      display: block;
+      float: right;
+      font-size: 12px;
+      height: 20px;
+      line-height: 17px;
+      text-align: center;
+      text-transform: lowercase;
+      width: 20px;
+    }
+    ul {
+      margin-left: 0;
+      padding: 15px 15px 4px;
+      width: 100%;
+    }
     li {
+      float: left;
+      width: 50%;
       margin-bottom: .8em;
       .fa {
         padding-right: 10px;
@@ -389,7 +431,6 @@ small {
     }
     a {
       text-decoration: none;
-      font-weight: bold;
     }
     a:active,
     a:hover {

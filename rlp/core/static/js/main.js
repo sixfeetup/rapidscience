@@ -350,4 +350,12 @@ $(".sub-menu").on('submit', function(e) {
   // Display text below "My Groups"
   $("#id_groups").before("<p>Note: when an item is posted from a <i>Group Dashboard</i>, it is automatically shared with that Group.</p>");
 
+  // Display help text over header add links
+  $(".add-links-info").on('click', function(){
+    $(".add-links-info-text").fadeIn(300);
+  });
+  $(".add-links-info-text").on('click', function(){
+    $(this).fadeOut(300);
+  });
+
 }); })(jQuery);

@@ -14,7 +14,7 @@
           <img class="img-circle" height="90px" width="90px" src="{% static 'img/user.jpg' %}">
         {% endif %}
       </div>
-      <div class="col-md-8">
+      <div class="col-md-7">
         <h1>{{ user.get_full_name }}{% if user.degrees %}, {{ user.degrees }}{% endif %}</h1>
 
         <p>
@@ -22,13 +22,17 @@
           {% if user.institution %}{{ user.institution }}{% endif %}
         </p>
       </div>
-      <div class="col-md-3">
-          <ul class="fa-ul add-links">
-              <li><a href="{% url 'discussion-create' %}"><i class="fa-li fa fa-plus-circle"></i>Discussion</a></li>
-              <li><a href="{% url 'crdb:add_casereport' %}"><i class="fa-li fa fa-plus-circle"></i>Case Report</a></li>
-              <li><a href="{% url 'documents:add_media' %}"><i class="fa-li fa fa-plus-circle"></i>Document / Media</a></li>
-              <li><a href="{% url 'bibliography:reference_search' %}"><i class="fa-li fa fa-plus-circle"></i>Reference</a></li>
-          </ul>
+      <div class="col-md-4">
+          <div class="add-links">
+              <div class="add-links-info">Share with members or groups<div class="circle-i">i</div></div>
+              <ul class="fa-ul clearfix">
+                  <li><a href="{% url 'discussion-create' %}"><i class="fa fa-plus-circle"></i>Discussion</a></li>
+                  <li><a href="{% url 'crdb:add_casereport' %}"><i class="fa fa-plus-circle"></i>Case Report</a></li>
+                  <li><a href="{% url 'documents:add_media' %}"><i class="fa fa-plus-circle"></i>Document / Media</a></li>
+                  <li><a href="{% url 'bibliography:reference_search' %}"><i class="fa fa-plus-circle"></i>Reference</a></li>
+              </ul>
+              <div class="add-links-info-text">Content posted from your dashboard is "open" and can be shared with all members of Sarcoma Central and/or groups you belong to. Those with access can share it further. You can join or create a closed group if strict privacy is required.</div>
+          </div>
       </div>
     </div>
   </div>
