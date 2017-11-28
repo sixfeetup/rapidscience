@@ -19,33 +19,45 @@
                 <div class="col-md-8">
                     <h1 class="group-header"><a href="{{ project.get_absolute_url }}">{{ project.title }}</a></h1>
                 </div>
-                <div class="col-md-3 col-md-push-1">
-                    <ul class="fa-ul add-links">
-                        {% if request.user in project.active_members %}
-                            <li><a href="{% url 'discussion-create' %}">
-                                <i class="fa-li fa fa-plus-circle" aria-hidden="true"></i> Discussion
-                            </a></li>
-                            <li><a href="{% url 'crdb:add_casereport' %}">
-                                <i class="fa-li fa fa-plus-circle" aria-hidden="true"></i> Case Report
-                            </a></li>
-                            <li><a href="{% url 'documents:add_media' %}">
-                                <i class="fa-li fa fa-plus-circle" aria-hidden="true"></i> Document / Media
-                            </a></li>
-                            <li><a href="{% url 'bibliography:reference_search' %}">
-                                <i class="fa-li fa fa-plus-circle" aria-hidden="true"></i> Reference
-                            </a></li>
-                        {%  else %}
-                            {%  comment %} TODO: make this a component:  join_botton {% endcomment %}
-                            {% if request.user.is_anonymous %}
-                                <a class="join-button" href="{% url 'register'  %}"> <i class="fa fa-plus"></i> Register to Join </a>
-                            {%  elif request.user in project.pending_members %}
-                                <span class="join-button"> Membership Pending </span>
-                            {% else %}
-                                <a class="join-button" href="{% url 'projects:projects_join' project.id %}"> <i class="fa fa-plus"></i> Join </a>
-                            {% endif %}
-                        {%  endif %}
-                    </ul>
-                </div>
+                {% if request.user in project.active_members %}
+                  <div class="col-md-4">
+                    <div class="add-links">
+                      <div class="add-links-info">Share with members or groups<div class="circle-i">i</div></div>
+                      <ul class="fa-ul clearfix">
+                        <li><a href="{% url 'discussion-create' %}">
+                            <i class="fa fa-plus-circle" aria-hidden="true"></i> Discussion
+                        </a></li>
+                        <li><a href="{% url 'crdb:add_casereport' %}">
+                            <i class="fa fa-plus-circle" aria-hidden="true"></i> Case Report
+                        </a></li>
+                        <li><a href="{% url 'documents:add_media' %}">
+                            <i class="fa fa-plus-circle" aria-hidden="true"></i> Document / Media
+                        </a></li>
+                        <li><a href="{% url 'bibliography:reference_search' %}">
+                            <i class="fa fa-plus-circle" aria-hidden="true"></i> Reference
+                        </a></li>
+                      </ul>
+                      <div class="add-links-info-text">
+                        {% if project.approval_required %}
+                          Content posted from this group is "closed" and will be shared only with members of the group. To share with additional groups or individuals, post from your dashboard or from an open group you belong to.
+                        {% else %}
+                          Content posted from this group is "open". It will be shared automatically with members of the group and you can also share it with other members of Sarcoma Central and/or additional groups you belong to. Those with access can share it further.
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                {%  else %}
+                  <div class="col-md-3 col-md-push-1">
+                    {%  comment %} TODO: make this a component:  join_botton {% endcomment %}
+                    {% if request.user.is_anonymous %}
+                        <a class="join-button" href="{% url 'register'  %}"> <i class="fa fa-plus"></i> Register to Join </a>
+                    {%  elif request.user in project.pending_members %}
+                        <span class="join-button"> Membership Pending </span></p>
+                    {% else %}
+                        <a class="join-button" href="{% url 'projects:projects_join' project.id %}"> <i class="fa fa-plus"></i> Join </a>
+                    {% endif %}
+                  </div>
+                {%  endif %}
             </div>
         </div>
     </div>
