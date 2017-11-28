@@ -29,7 +29,7 @@
         {% else %}
           <i class="fa fa-lock" aria-hidden="true"></i>
         {% endif %}
-        Posted by
+        {{ obj.display_type }} posted by
         <a href="{{ obj.owner.get_absolute_url }}">{% if request.user == obj.owner %} me {% else %} {{ obj.owner.get_full_name }}{% endif %}</a>
         | {{ obj.date_updated|date:"j M Y" }}
         {% if request.user == obj.owner or request.user.is_staff %} | <a href="{% url 'documents:document_edit' obj.id %}">Edit</a> | <a href="{% url 'documents:document_delete' obj.id %}">Delete</a>{% endif %}

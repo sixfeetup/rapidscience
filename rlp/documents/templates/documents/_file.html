@@ -10,7 +10,7 @@
 
 {% if action.verb == 'shared' %}
     <p class="small meta">
-        Posted by
+        {{ obj.display_type }} posted by
         <a href="{% url 'profile' obj.owner_id  %}">{{ obj.owner }}</a>
         | {{ obj.date_updated|date:"j M Y" }}<br />
       {% display_shared_with obj request.user %}

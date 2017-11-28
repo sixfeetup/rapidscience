@@ -24,7 +24,7 @@
                 <i class="fa fa-lock" aria-hidden="true"></i>
               {% endif %}
               {% if comment.title %}
-                {% if crcomments != 'True' %}Posted by {% endif %}
+                {% if crcomments != 'True' %}Discussion posted by {% endif %}
                 <a href="{{ comment.user.get_absolute_url }}">
                   {% if request.user == comment.user %} me {% else %} {{ comment.user.get_full_name }} {% endif %}
                 </a>

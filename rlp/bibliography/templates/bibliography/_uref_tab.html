@@ -24,7 +24,7 @@
           <i class="fa fa-lock" aria-hidden="true"></i>
         {% endif %}
         {% if user.id %}
-            Posted by
+            Reference posted by
             <a href="{% url 'profile' user.id  %}">{% if user == request.user %}me{% else %}{{ user.get_full_name }}{% endif %}</a>
         {% endif %}
         | {{ ref.date_updated|date:"j M Y" }}

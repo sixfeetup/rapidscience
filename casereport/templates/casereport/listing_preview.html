@@ -17,7 +17,7 @@
           {% else %}
             <i class="fa fa-lock" aria-hidden="true"></i>
           {% endif %}
-          Posted by <a href="{% url "profile" obj.primary_author.id %}">{% if request.user == obj.primary_author %} me {% else %} {{ obj.primary_author }} {% endif %}</a>
+          Case Report posted by <a href="{% url "profile" obj.primary_author.id %}">{% if request.user == obj.primary_author %} me {% else %} {{ obj.primary_author }} {% endif %}</a>
         | {{ obj.date_updated|date:"j M Y" }}<br />
         {% display_shared_with obj request.user %}
       </p>
