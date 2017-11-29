@@ -354,7 +354,7 @@ class ActivationView(TemplateView):
                     user.save()
                     # Notify the user they can now login and complete their profile
                     emails.acceptance_to_newuser(self.request, user)
-                    messages.success(self.request, "{} is now approved to complete their registration.".format(
+                    messages.success(self.request, "{} has been approved as a member of Sarcoma Central.".format(
                         user.get_full_name()))
             # return so we don't accidentally pick up the following message.
             return
