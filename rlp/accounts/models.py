@@ -140,7 +140,10 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
         swappable = 'AUTH_USER_MODEL'
 
     def __str__(self):
-        return "{0} {1}".format(self.first_name, self.last_name)
+        if self.first_name or self.last_name:
+            return "{0} {1}".format(self.first_name, self.last_name)
+        else:
+            return self.email
 
     @property
     def display_type(self):

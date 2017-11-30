@@ -206,8 +206,13 @@
                 <div class="sharing-wrapper">
                     <h4>Sharing</h4>
                              <ul class="jumpMenu">
-                             <p>This Case Report has been shared with:
-                                 {% for viewer in viewers %}{% if forloop.first %}{% elif forloop.last %}, and {% else %}, {% endif %}{{viewer}}{% endfor %}.
+                             {% if viewers %}
+                                 <p>This Case Report has been shared with:
+                                    {% for viewer in viewers %}{% if forloop.first %}{% elif forloop.last %}, and {% else %}, {% endif %}{{viewer}}{% endfor %}.
+                                 </p>
+                             {% else %}
+                                 <p>This Case Report has not been shared.</p>
+                             {% endif %}
                              </p>
                              </ul>
 
