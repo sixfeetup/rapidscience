@@ -240,8 +240,13 @@ class Register(SessionWizardView):
                 for auto_group in Project.objects.filter(auto_opt_in=True):
                     auto_group.add_member(user)
                 # display a welcome message
+                key = signing.dumps(
+                    obj=getattr(user, user.USERNAME_FIELD),
+                    salt=REGISTRATION_SALT
+                )
                 messages.success(self.request, WELCOME_MESSAGE)
-                emails.accepted_members_notification_to_admin(self.request, user)
+                # notify admin about new members
+                emails.accepted_members_notification_to_admin(self.request, user, key)
         with transaction.atomic():
             user.is_active = True
             user.save()
