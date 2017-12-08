@@ -128,7 +128,7 @@
                                     <a class="share-link"
                                        href="/send/documents/document/{{ obj.id }}"
                                        title="Share"><i class="fa fa-share"></i></a>
-                                {% elif model == 'casereport' %}
+                                {% elif model == 'casereport' and not action.verb|is_workflow_verb %}
                                     {% if obj.primary_author == request.user %}
                                         <a class="share-link"
                                            href="/send/casereport/casereport/{{ obj.id }}"

@@ -1,9 +1,11 @@
-{% load core_tags %}
+{% load core_tags casereport_tags %}
 {#object#}
-{% if action.action_object.shareable %}
-  <i class="fa fa-unlock" aria-hidden="true"></i>
-{% else %}
-  <i class="fa fa-lock" aria-hidden="true"></i>
+{% if not action.verb|is_workflow_verb and not action.action_object.is_editorial_note %}
+    {% if action.action_object.shareable %}
+      <i class="fa fa-unlock" aria-hidden="true"></i>
+    {% else %}
+      <i class="fa fa-lock" aria-hidden="true"></i>
+    {% endif %}
 {% endif %}
 {% if action.verb == 'approved' %}
     <!-- SUPPRESSED in favor of joined and declined actions which are more targeted -->
