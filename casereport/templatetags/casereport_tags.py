@@ -94,3 +94,22 @@ def check_is_visible(viewer):
     if hasattr(viewer, 'is_active'):
         return viewer.is_active
     return True
+
+
+@register.simple_tag
+def check_sharing(viewers, value):
+    share_all = False
+    for viewer in viewers:
+        if viewer.pk == 1:
+            share_all = True
+    if value == 'share-none':
+        if not viewers:
+            return "checked='checked'"
+    elif value == 'share-all':
+        if share_all:
+            return "checked='checked'"
+    elif value == 'share-pick':
+        if viewers and not share_all:
+            return "checked='checked'"
+    return ""
+    

@@ -249,31 +249,37 @@ function validate(ev) {
     var e = $('.radiobut:checked').length > 0;
     if (e != true) {
         $(".radiobut").focus();
-        $(".choose-message").show();
+        $(".radio-box .choose-message").show();
+        return false;
+    }
+    
+    if(subtype == '' && subtypeOther == '') {
+        caseform.subtype.focus()
+        $(".required-message").show();
+        $(".subtype-message").show();
+    return false;
+    }$(".subtype-message").hide();
+    $(".choose-message").hide();
+    if (!$('#consent').prop('checked')) {
+        $(".agree-message").show();
+        window.location = '#consent-wrapper';
+        $('#consent').focus();
         return false;
     } else {
-        if(subtype == '' && subtypeOther == '') {
-            caseform.subtype.focus()
-            $(".required-message").show();
-            $(".subtype-message").show();
+        $(".agree-message").hide();
+    }
+    var sharing = $("input[name='sharing-options']:checked").val();
+    if (!sharing) {
+        $("input[name='sharing-options']").focus();
+        $(".choices .choose-message").show();
         return false;
-        }$(".subtype-message").hide();
-        $(".choose-message").hide();
-        if (!$('#consent').prop('checked')) {
-            $(".agree-message").show();
-            window.location = '#consent-wrapper';
-            $('#consent').focus();
-            return false;
-        } else {
-            $(".agree-message").hide();
-        }
-        if ($("#id_radio3").is(':checked')) {
-            return file_validate();
-        } else if ($("#id_radio1").is(':checked')) {
-            return manual_validate();
-        } else {
-            return freetext_validate();
-        }
+    }
+    if ($("#id_radio3").is(':checked')) {
+        return file_validate();
+    } else if ($("#id_radio1").is(':checked')) {
+        return manual_validate();
+    } else {
+        return freetext_validate();
     }
 }
 

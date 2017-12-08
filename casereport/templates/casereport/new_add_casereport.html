@@ -1,4 +1,5 @@
 {% extends "casereport/search/search.html" %}
+{% load casereport_tags %}
 {% load static %}
 
 {% block css %}
@@ -218,12 +219,23 @@
 
                         <p>Note: only the author(s) are permitted to share this case report.</p>
                     <div class="choices">
-                        <input type="radio" name="sharing-options" value="share-all" id="share1">
+                        <input type="radio" name="sharing-options" value="share-all" id="share1"
+                               {% check_sharing viewers 'share-all' %}>
                           I would like to share this case report with all members of Sarcoma Central<br />
-                        <input type="radio" name="sharing-options" value="share-pick" id="share2">
+                        <input type="radio" name="sharing-options" value="share-pick" id="share2"
+                               {% check_sharing viewers 'share-pick' %}>
                           I would like to share with specific individuals and/or groups<br />
-                        <input type="radio" name="sharing-options" value="share-none" id="share3">
-                          I am not ready to share this case report at this time<br />
+                        {% if casereport %}
+                            <input type="radio" name="sharing-options" value="share-none" id="share3"
+                                   {% check_sharing viewers 'share-none' %}>
+                              I am not ready to share this case report at this time<br />
+                        {% else %}
+                            <input type="radio" name="sharing-options" value="share-none" id="share3">
+                              I am not ready to share this case report at this time<br />
+                        {% endif %}
+                        <div class="choose-message">
+                            <p>Please choose one of the sharing options.</p>
+                        </div>
                     </div>
                 {% for field in form %}
                     <div class="fieldWrapper" id="sharing-field-{{ field.name }}">
