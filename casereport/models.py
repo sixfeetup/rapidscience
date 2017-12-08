@@ -323,7 +323,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         # ensure admin
         if not user:
             user = CurrentUserMiddleware.get_user()
-        return user.is_staff and self.author_approved
+        return user.is_staff
 
     @transition(field=workflow_state,
                 source=[WorkflowState.ADMIN_REVIEW, ],
