@@ -123,7 +123,7 @@
 
       <div class="author-list" id="section-primary">
           <h4>Primary Author/Contact</h4>
-          <p><strong>{{ casereport.primary_author }}
+          <p><strong><a href="{%  url 'profile' casereport.primary_author.id  %}">{{ casereport.primary_author }}</a>
              {% if casereport.primary_author.institution or casereport.primary_author.institution.city or casereport.primary_author.institution.country %} | {% endif %}
              {% if casereport.primary_author.institution %} {{ casereport.primary_author.institution }}, {% endif %}
              {% if casereport.primary_author.institution.city %}{{ casereport.primary_author.institution.city }} | {% endif %}
