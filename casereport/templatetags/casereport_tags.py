@@ -4,8 +4,9 @@ import re
 import urllib.parse
 import mimetypes
 
-
 from django import template
+
+from casereport.utils import past_tense_verb
 
 register = template.Library()
 
@@ -112,4 +113,9 @@ def check_sharing(viewers, value):
         if viewers and not share_all:
             return "checked='checked'"
     return ""
-    
+
+
+@register.filter(name='describe_transition')
+def describe_transition(transition):
+    '''generate a past-tense display name for each CaseReport transition'''
+    return past_tense_verb(transition)

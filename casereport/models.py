@@ -28,6 +28,8 @@ from rlp.accounts.models import User
 from rlp.discussions.models import ThreadedComment
 from rlp.core.models import SharedObjectMixin
 
+from .utils import past_tense_verb
+
 
 __author__ = 'yaseen'
 
@@ -421,20 +423,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         return displayname.lower().replace(' ', '_')
 
     def _get_past_tense_for_action(self, action):
-        # k:v are button value ( derived from transition method name ):verb
-        lookups = {
-            'submit': 'submitted',
-            'send back': 'sent back',
-            'author review edit': 're-edited',
-            'revise': 'pulled for revision',
-        }
-        verb = action.lower()
-        if verb in lookups:
-            return lookups[verb]
-        print("action %s not in lookups for past tense verbs" % (verb,))
-        if verb.endswith("e"):
-            return verb + "d"
-        return verb + "ed"
+        return past_tense_verb(action)
 
     def get_next_actions_for_user(self, user=None):
         if not user:
