@@ -1,0 +1,7 @@
+The case report “{{ casereport.title }}” has been created. Another notification will be sent out when the author submits it for review.<br><br>
+
+Sincerely,<br><br>
+
+Editorial Team
+<a href="https://sarcoma.rapidscience.org/">Sarcoma Central</a><br>
+<a href="https://twitter.com/RapidScience/">@RapidScience</a>

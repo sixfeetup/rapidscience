@@ -50,6 +50,22 @@ def publish_to_group(casereport, groups):
         mail.send()
 
 
+def created(casereport):
+    email_context = {
+        "casereport": casereport
+    }
+    subject = 'A case report has been created'
+    template = 'casereport/emails/casereport_created'
+    message_body = render_to_string('{}.txt'.format(template), email_context)
+    mail = EmailMessage(
+        subject, message_body,
+        'Cases Central <edit@rapidscience.org>',
+        ['edit@rapidscience.org'],
+    )
+    mail.content_subtype = 'html'
+    mail.send()
+
+
 def submitted(casereport):
     email_context = {
         "casereport": casereport,
