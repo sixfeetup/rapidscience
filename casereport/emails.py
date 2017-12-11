@@ -52,7 +52,9 @@ def publish_to_group(casereport, groups):
 
 def submitted(casereport):
     email_context = {
-        "casereport": casereport
+        "casereport": casereport,
+        'link': casereport.get_absolute_url(),
+        'site': settings.DOMAIN,
     }
     author_email_addresses = [casereport.primary_author.email,]
     #resolve_email_targets(casereport.primary_author)
