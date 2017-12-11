@@ -1,10 +1,12 @@
 {% load core_tags casereport_tags %}
 {#object#}
 {% if not action.verb|is_workflow_verb and not action.action_object.is_editorial_note %}
-    {% if action.action_object.shareable %}
-      <i class="fa fa-unlock" aria-hidden="true"></i>
-    {% else %}
-      <i class="fa fa-lock" aria-hidden="true"></i>
+    {% if action.action_object_content_type.model == 'threadedcomment' and action.action_object.is_discussion or action.action_object_content_type.model != 'threadedcomment'%}
+        {% if action.action_object.shareable %}
+          <i class="fa fa-unlock" aria-hidden="true"></i>
+        {% else %}
+          <i class="fa fa-lock" aria-hidden="true"></i>
+        {% endif %}
     {% endif %}
 {% endif %}
 {% if action.verb == 'approved' %}
