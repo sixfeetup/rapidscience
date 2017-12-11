@@ -134,7 +134,7 @@
                                            href="/send/casereport/casereport/{{ obj.id }}"
                                            title="Share"><i class="fa fa-share"></i></a>
                                     {% endif %}
-                                {% elif model == 'threadedcomment' %}
+                                {% elif model == 'threadedcomment' and obj.is_discussion %}
                                     {% if obj.discussion_root.is_discussion %}
                                         <a class="share-link"
                                            href="/send/discussions/threadedcomment/{{ obj.discussion_root.id }}"
