@@ -22,6 +22,7 @@ from django.utils.encoding import python_2_unicode_compatible
 
 from djangocms_text_ckeditor.fields import HTMLField
 from django_fsm import FSMField, transition, signals as fsm_signals
+from django_fsm_log.decorators import fsm_log_by
 
 from rlp.accounts.models import User
 from rlp.discussions.models import ThreadedComment
@@ -233,28 +234,31 @@ class CaseReport(CRDBBase, SharedObjectMixin):
             return True
         return False
 
+    @fsm_log_by
     @transition(field=workflow_state,
                 source=[WorkflowState.DRAFT],
                 permission=can_edit,
                 target=WorkflowState.DRAFT
                 )
-    def edit(self):
+    def edit(self, by=None):
         pass
 
+    @fsm_log_by
     @transition(field=workflow_state,
                 source=[WorkflowState.AUTHOR_REVIEW, WorkflowState.RETRACTED],
                 permission=can_edit,
                 target=WorkflowState.AUTHOR_REVIEW
                 )
-    def author_review_edit(self):
+    def author_review_edit(self, by=None):
         pass
 
+    @fsm_log_by
     @transition(field=workflow_state,
                 source=[WorkflowState.ADMIN_REVIEW],
                 permission=can_edit,
                 target=WorkflowState.ADMIN_REVIEW
                 )
-    def admin_edit(self):
+    def admin_edit(self, by=None):
         pass
 
     def can_submit(self, user=None):
@@ -263,11 +267,12 @@ class CaseReport(CRDBBase, SharedObjectMixin):
             user = CurrentUserMiddleware.get_user()
         return user.email == self.primary_author.email  # and self.author_approved
 
+    @fsm_log_by
     @transition(field=workflow_state,
                 source=[WorkflowState.AUTHOR_REVIEW,],
                 permission=can_submit,
                 target=WorkflowState.ADMIN_REVIEW)
-    def approve(self):
+    def approve(self, by=None):
         ''' send to admins with approval '''
         self.author_approved = True
         self.admin_approved = False
@@ -276,11 +281,12 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         return "Thank you for approving your Case Report for posting in our \
             database! We will contact you when it goes live."
 
+    @fsm_log_by
     @transition(field=workflow_state,
                 source=[WorkflowState.DRAFT, ],
                 permission=can_submit,
                 target=WorkflowState.ADMIN_REVIEW)
-    def submit(self):
+    def submit(self, by=None):
         ''' send to admin without approval '''
         self.author_approved = True
         self.admin_approved = False
@@ -304,12 +310,13 @@ class CaseReport(CRDBBase, SharedObjectMixin):
             return True
         return False
 
+    @fsm_log_by
     @transition(field=workflow_state,
                 source=[WorkflowState.ADMIN_REVIEW, ],
                 permission=can_reject,
                 target=WorkflowState.AUTHOR_REVIEW,
                 )
-    def send_back(self):
+    def send_back(self, by=None):
         """ send the CR back to the author
         """
         self.admin_approved = False
@@ -325,11 +332,12 @@ class CaseReport(CRDBBase, SharedObjectMixin):
             user = CurrentUserMiddleware.get_user()
         return user.is_staff
 
+    @fsm_log_by
     @transition(field=workflow_state,
                 source=[WorkflowState.ADMIN_REVIEW, ],
                 permission=can_publish,
                 target=WorkflowState.LIVE)
-    def publish(self):
+    def publish(self, by=None):
         self.admin_approved = True
         author = User.objects.get(email__exact=self.primary_author.email)
         self.share_with(self.co_author.all(), shared_by=author)
@@ -355,20 +363,22 @@ class CaseReport(CRDBBase, SharedObjectMixin):
             user = CurrentUserMiddleware.get_user()
         return user.is_staff
 
+    @fsm_log_by
     @transition(field=workflow_state,
                 source=[WorkflowState.RETRACTED],
                 permission=can_retract_as_author,
                 target=WorkflowState.AUTHOR_REVIEW)
-    def _retract_by_author(self):  # starts with _ to hide from users
+    def _retract_by_author(self, by=None):  # starts with _ to hide from users
         self.author_approved = False
         # self.notify_datascience_team()
         return '''moved to "Author Review"'''
 
+    @fsm_log_by
     @transition(field=workflow_state,
                 source=[WorkflowState.RETRACTED],
                 permission=can_retract_as_admin,
                 target=WorkflowState.ADMIN_REVIEW)
-    def _retract_by_admin(self):  # starts with _ to hide from users
+    def _retract_by_admin(self, by=None):  # starts with _ to hide from users
         """ unpublish """
         self.admin_approved = False
         self.notify_datascience_team()
@@ -382,11 +392,12 @@ class CaseReport(CRDBBase, SharedObjectMixin):
             user = CurrentUserMiddleware.get_user()
         return self.can_retract_as_author(user) or self.can_retract_as_admin(user)
 
+    @fsm_log_by
     @transition(field=workflow_state,
                 source=[WorkflowState.LIVE],
                 permission=can_retract,
                 target=WorkflowState.RETRACTED)
-    def revise(self):
+    def revise(self, by=None):
         """ uses the current user to choose between retract_by_author and
             retract_by_admin
         """
@@ -444,7 +455,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         past_tense_verb = self._get_past_tense_for_action(action_name)
 
         transition_function = getattr(self, self._get_fname_for_displayname(action_name))
-        res = transition_function()
+        res = transition_function(by=user)
 
         # RETRACTED is a transitory state. If we have landed in that state,
         # then we must determine which fork in the workflow to take.
@@ -452,10 +463,10 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         # messages and actions getting recorded.
         if self.workflow_state == WorkflowState.RETRACTED:
             if self.can_retract_as_author():
-                res = self._retract_by_author()
+                res = self._retract_by_author(by=user)
                 past_tense_verb = res
             elif self.can_retract_as_admin():
-                res = self._retract_by_admin()
+                res = self._retract_by_admin(by=user)
                 past_tense_verb = res
             else:
                 raise PermissionError("permission denied")
