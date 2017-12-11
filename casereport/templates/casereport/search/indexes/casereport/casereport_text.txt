@@ -17,11 +17,11 @@ sarcoma
 {{object.attachment2_description}}
 {{object.attachment3_title}}
 {{object.attachment3_description}}
-{{ object.primary_author.name }}
+{{ object.primary_author }}
 {{ object.primary_author.email }}
 {{ object.primary_author.institution.name }}
 {% for coauthor in object.co_author.all %}
-    {{ coauthor.name }}
+    {{ coauthor }}
     {{ coauthor.email }}
     {% if forloop.last %}
         {{ coauthor.institution.name }}
