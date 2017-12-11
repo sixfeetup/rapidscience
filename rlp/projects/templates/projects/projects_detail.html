@@ -29,7 +29,13 @@
                 {% if request.user in project.active_members %}
                   <div class="col-md-4">
                     <div class="add-links">
-                      <div class="add-links-info">Share with members or groups<div class="circle-i">i</div></div>
+                      <div class="add-links-info">
+                          {% if project.approval_required %}
+                            Share only with this group
+                          {% else %}
+                            Share with this group and others
+                          {% endif %}
+                          <div class="circle-i">i</div></div>
                       <ul class="fa-ul clearfix">
                         <li><a href="{% url 'discussion-create' %}">
                             <i class="fa fa-plus-circle" aria-hidden="true"></i> Discussion
@@ -48,7 +54,7 @@
                         {% if project.approval_required %}
                           Content posted from this group is "closed" and will be shared only with members of the group. To share with additional groups or individuals, post from your dashboard or from an open group you belong to.
                         {% else %}
-                          Content posted from this group is "open". It will be shared automatically with members of the group and you can also share it with other members of Sarcoma Central and/or additional groups you belong to. Those with access can share it further.
+                          Content posted from this group is "open." It will be shared automatically with members of the group and you can also share it with other members of Sarcoma Central and/or additional groups you belong to. Those with access can share it further.
                         {% endif %}
                       </div>
                     </div>
