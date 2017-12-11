@@ -124,8 +124,15 @@ def approved(casereport):
 
 
 def revise(casereport, user):
-    subject = "Case Report Has Been Retracted"
-    template = 'casereport/emails/revise_to_admin'
+    if user.is_superuser:
+        template = 'casereport/emails/revise_to_author.txt'
+        subject = 'Your case report is being edited'
+        user = casereport.primary_author
+        recipient = user.email
+    else:
+        template = 'casereport/emails/revise_to_admin.txt'
+        subject = 'Case Report Has Been Retracted'
+        recipient = 'Editorial team <edit@rapidscience.org>'
     email_context = {
         "casereport": casereport,
         'title': casereport.title,
@@ -134,13 +141,13 @@ def revise(casereport, user):
         'number': casereport.pk,
         'user': user,
     }
-    message_body = render_to_string('{}.txt'.format(template), email_context)
-    recipient = casereport.primary_author.email
-    # never used?
-    message = EmailMessage(subject,
-                           message_body,
-                           "Cases Central <edit@rapidscience.org>",
-                           ["Editorial team <edit@rapidscience.org>",])
+    message_body = render_to_string(template, email_context)
+    message = EmailMessage(
+        subject,
+        message_body,
+        'Cases Central <edit@rapidscience.org>',
+        [recipient],
+    )
     message.content_subtype = 'html'
     message.send()
 

@@ -390,8 +390,6 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         """ uses the current user to choose between retract_by_author and
             retract_by_admin
         """
-        # self.workflow_state = WorkflowState.RETRACTED
-        # res = "Retracted"
         user = CurrentUserMiddleware.get_user()
         self.author_approved = True
         self.admin_approved = False
