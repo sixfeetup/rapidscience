@@ -84,6 +84,7 @@ INSTALLED_APPS = (
     'djangocms_blog',
     'djangocms_column',
     'django_fsm',
+    'django_fsm_log',
     'djangocms_link',
     'djangocms_text_ckeditor',
     'django_comments',
