@@ -85,7 +85,10 @@
           } else {
               $("[id^='wrapper-id_register-institution_']").slideUp()
           }
-      })
+      });
+      if ($("#id_register-new_institution").is(':checked')) {
+          $("[id^='wrapper-id_register-institution_']").show()
+      }
   }); })(jQuery);
 </script>
 {% endblock %}

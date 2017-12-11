@@ -443,6 +443,9 @@ body.search .box.main-content {
     display: none;
     padding-left: 25px;
 }
+label[for='id_register-institution']::after {
+    content: ' *';
+}
 
 // references
 

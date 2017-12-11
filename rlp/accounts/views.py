@@ -273,6 +273,13 @@ class Register(SessionWizardView):
                     'form': form,
                 },
             )
+        # Return error if no institution
+        if not form.data['register-institution'] and not form.data['register-institution_name']:
+            messages.error(
+                self.request,
+                "Please enter an institution")
+            context = self.get_context_data(form=form, **kwargs)
+            return self.render_to_response(context)
         # Either save form or update existing unregistered user
         skip_approval = False
         try:
