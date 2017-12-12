@@ -422,9 +422,6 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         """
         return displayname.lower().replace(' ', '_')
 
-    def _get_past_tense_for_action(self, action):
-        return past_tense_verb(action)
-
     def get_next_actions_for_user(self, user=None):
         if not user:
             user = CurrentUserMiddleware.get_user()
@@ -441,7 +438,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         if not action_name in self.get_next_actions_for_user(user=user):
             raise KeyError(action_name)
 
-        past_tense_verb = self._get_past_tense_for_action(action_name)
+        verb = past_tense_verb(action_name)
 
         transition_function = getattr(self, self._get_fname_for_displayname(action_name))
         res = transition_function(by=user)
@@ -453,18 +450,18 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         if self.workflow_state == WorkflowState.RETRACTED:
             if self.can_retract_as_author():
                 res = self._retract_by_author(by=user)
-                past_tense_verb = res
+                verb = res
             elif self.can_retract_as_admin():
                 res = self._retract_by_admin(by=user)
-                past_tense_verb = res
+                verb = res
             else:
                 raise PermissionError("permission denied")
 
 
         if group:
-            action.send(user, verb=past_tense_verb, action_object=self, target=group)
+            action.send(user, verb=verb, action_object=self, target=group)
         else:
-            action.send(user, verb=past_tense_verb, action_object=self)
+            action.send(user, verb=verb, action_object=self)
 
         return res
 
