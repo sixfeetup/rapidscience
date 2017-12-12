@@ -1,10 +1,19 @@
 {% extends 'base.html' %}{% load bootstrap3 %}
 
 {% block content %}
+<div class="bannerTitle">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 col-md-push-2">
+                <h1>{% if document %}Edit{% else %}Upload{% endif %} Document</h1>
+                {% include 'core/_origin.html' %}
+            </div>
+        </div>
+    </div>
+</div>
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-md-push-2">
-<h2>{% if document %}Edit{% else %}Upload{% endif %} Document</h2>
 
 <form method="post" enctype="multipart/form-data" action="">
   {{ form.media }}

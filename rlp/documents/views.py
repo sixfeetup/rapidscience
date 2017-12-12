@@ -27,6 +27,16 @@ class AddMedia(FormView):
     template_name = 'documents/add_media.html'
     success_url = '/'
 
+    def get_context_data(self, **kwargs):
+        context = super(AddMedia, self).get_context_data(**kwargs)
+        initial_proj = self.request.session.get('last_viewed_project')
+        if initial_proj:
+            context['origin'] = Project.objects.get(pk=initial_proj)
+        else:
+            context['origin'] = self.request.user
+        return context
+
+
     def get_form(self, form_class):
         form = super(AddMedia, self).get_form(form_class)
         try:
@@ -151,6 +161,11 @@ def add_document(request, add_form=None, doc_pk=None, template_name='documents/a
         'document': document,
         'tab': 'documents',
     }
+    initial_proj = request.session.get('last_viewed_project')
+    if initial_proj:
+        context['origin'] = Project.objects.get(pk=initial_proj)
+    else:
+        context['origin'] = request.user
     return render(request, template_name, context)
 
 
@@ -210,6 +225,11 @@ def add_link(request, add_form=None, doc_pk=None, template_name='documents/add_l
         'document': document,
         'tab': 'documents',
     }
+    initial_proj = request.session.get('last_viewed_project')
+    if initial_proj:
+        context['origin'] = Project.objects.get(pk=initial_proj)
+    else:
+        context['origin'] = request.user
     return render(request, template_name, context)
 
 
@@ -269,6 +289,11 @@ def add_video(request, add_form=None, doc_pk=None, template_name='documents/add_
         'document': document,
         'tab': 'documents',
     }
+    initial_proj = request.session.get('last_viewed_project')
+    if initial_proj:
+        context['origin'] = Project.objects.get(pk=initial_proj)
+    else:
+        context['origin'] = request.user
     return render(request, template_name, context)
 
 
