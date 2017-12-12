@@ -107,6 +107,12 @@ class SharedObjectMixin(models.Model):
     mtags = TaggableManager(through=TaggedByManagedTag,
                             help_text="A Comma separated list of UNAPPROVED tags.",
                             blank=True)
+    origin_type = models.ForeignKey(ContentType,
+                                    on_delete=models.CASCADE,
+                                    null=True,
+                                    blank=True)
+    origin_id = models.PositiveIntegerField(default=0)
+    origin = GenericForeignKey('origin_type', 'origin_id')
 
     @property
     def is_bookmarkable(self):
