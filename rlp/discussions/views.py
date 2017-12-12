@@ -98,6 +98,11 @@ def comment_edit(request, comment_pk, template_name='discussions/comment_edit.ht
         'form': form,
         'tab': 'discussions',
     }
+    initial_proj = request.session.get('last_viewed_project')
+    if initial_proj:
+        context['origin'] = Project.objects.get(pk=initial_proj)
+    else:
+        context['origin'] = request.user
     return render(request, template_name, context)
 
 
@@ -147,6 +152,15 @@ class CreateDiscussion(LoginRequiredMixin, FormView):
     form_class = NewDiscussionForm
     success_url = '/'
     template_name = 'discussions/discussion_create.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(CreateDiscussion, self).get_context_data(**kwargs)
+        initial_proj = self.request.session.get('last_viewed_project')
+        if initial_proj:
+            context['origin'] = Project.objects.get(pk=initial_proj)
+        else:
+            context['origin'] = self.request.user
+        return context
 
     def get_form(self, form_class):
         form = super(CreateDiscussion, self).get_form(form_class)
