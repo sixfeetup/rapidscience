@@ -43,12 +43,18 @@ def reference_search(request, template_name='bibliography/reference_search.html'
             messages.warning(request, "No results found for {}".format(query))
     else:
         form = SearchForm()
+
     context = {
         'form': form,
         'tab': 'bibliography',
         'results': results,
         'query': query
     }
+    initial_proj = request.session.get('last_viewed_project')
+    if initial_proj:
+        context['origin'] = Project.objects.get(pk=initial_proj)
+    else:
+        context['origin'] = request.user
     return render(request, template_name, context)
 
 
@@ -197,9 +203,11 @@ class ReferenceAttachView(LoginRequiredMixin, FormView):
 
         if uref_id:
             uref = UserReference.objects.get(id=uref_id)
+            context['origin'] = uref.origin
         else:
             uref = UserReference(reference=ref, user=user)
             uref.id = -1 # fake, so that the tag lookup in the templates doesnt fail.
+
 
         context['reference'] = ref
         context['user_reference'] = uref
@@ -232,18 +240,23 @@ class ReferenceAttachView(LoginRequiredMixin, FormView):
         ref = Reference.objects.get(pk=self.kwargs['reference_pk'])
         uref_id = self.kwargs.get('uref_id',None)
 
+        initial_proj = self.request.session.get('last_viewed_project')
+        if initial_proj:
+            target = Project.objects.get(pk=initial_proj)
+
         if uref_id:
             uref = UserReference.objects.get(id=uref_id, reference=ref, user=user)
         else:
             uref = UserReference(reference=ref, user=user)
             uref.id = None
+            if initial_proj:
+                uref.origin = target
+            else:
+                uref.origin = user
 
         uref.description = data.get('description')
-        initial_proj = self.request.session.get('last_viewed_project')
-        if initial_proj:
-            target = Project.objects.get(pk=initial_proj)
-            if target.approval_required:
-                uref.shareable = False
+        if initial_proj and target.approval_required:
+            uref.shareable = False
         uref.save()
 
         tags = {}
