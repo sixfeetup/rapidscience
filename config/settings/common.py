@@ -525,4 +525,4 @@ TYPE_DISPLAY_NAMES = {
     ('bibliography', 'reference'): 'Bibliography',
     ('casereport', 'casereport'): 'Case Reports',
 }
-DOMAIN = 'sarcoma.rapidscience.org'
+DOMAIN = env('DOMAIN', default='sarcoma.rapidscience.org')
