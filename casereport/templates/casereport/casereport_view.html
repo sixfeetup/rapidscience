@@ -48,7 +48,16 @@
                           <i class="fa fa-lock" aria-hidden="true"></i>
                         {% endif %}
                         Case ID: {{ casereport.id }} |
-                        Created: {{ casereport.created_on|date:"M d, Y" }} |
+                        {% if casereport.workflow_state == 'draft' %}
+                            Created:
+                        {% elif casereport.workflow_state == 'processing' %}
+                            Submitted:
+                        {% elif casereport.workflow_state == 'author review' %}
+                            Placed under revision:
+                        {% elif casereport.workflow_state == 'live' %}
+                            Posted:
+                        {% endif %}
+                        {{ casereport.created_on|date:"M d, Y" }} |
                         Last revision: {{ casereport.modified_on|date:"M d, Y" }}
                     </p>
                 </div>
