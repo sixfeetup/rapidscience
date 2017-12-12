@@ -18,10 +18,12 @@
 
       {% if view == 'tab-content' %}
           <p class="small">
-              {% if comment.shareable %}
-                <i class="fa fa-unlock" aria-hidden="true"></i>
-              {% else %}
-                <i class="fa fa-lock" aria-hidden="true"></i>
+              {% if comment.is_discussion %}
+                  {% if comment.shareable %}
+                    <i class="fa fa-unlock" aria-hidden="true"></i>
+                  {% else %}
+                    <i class="fa fa-lock" aria-hidden="true"></i>
+                  {% endif %}
               {% endif %}
               {% if comment.title %}
                 {% if crcomments != 'True' %}Discussion posted by {% endif %}
