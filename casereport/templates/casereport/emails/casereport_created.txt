@@ -1,4 +1,4 @@
-The case report “{{ casereport.title }}” has been created. Another notification will be sent out when the author submits it for review.<br><br>
+The case report <a href={{ link }}>{{ casereport.title }}</a> has been created. Another notification will be sent out when the author submits it for review.<br><br>
 
 Sincerely,<br><br>
 

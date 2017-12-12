@@ -52,11 +52,15 @@ def publish_to_group(casereport, groups):
 
 def created(casereport):
     email_context = {
-        "casereport": casereport
+        'casereport': casereport,
+        'link': 'https://{}{}'.format(
+            settings.DOMAIN,
+            casereport.get_absolute_url(),
+        )
     }
     subject = 'A case report has been created'
-    template = 'casereport/emails/casereport_created'
-    message_body = render_to_string('{}.txt'.format(template), email_context)
+    template = 'casereport/emails/casereport_created.txt'
+    message_body = render_to_string(template, email_context)
     mail = EmailMessage(
         subject, message_body,
         'Cases Central <edit@rapidscience.org>',

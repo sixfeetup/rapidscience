@@ -1,5 +1,5 @@
 <p>Dear {{ user }},</p>
-<p>The case report you submitted to Cases Central, “{{ casereport.title }}” is being edited by our editors. You will get notified when the changes are ready for your review.</p>
+<p>The case report you submitted to Cases Central, <a href="https://{{ site }}{{ link }}">{{ casereport.title }}</a> is being edited by our editors. You will get notified when the changes are ready for your review.</p>
 <p>We appreciate your time and effort on this project.</p>
 
 <p>Sincerely,</p>
