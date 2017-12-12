@@ -240,6 +240,18 @@ class UserProfileForm(forms.ModelForm):
     def clean_email(self):
         return self.cleaned_data.get("email").lower()
 
+    def clean(self):
+        cleaned_data = super().clean()
+        institution = cleaned_data.get("institution")
+        institution_name = cleaned_data.get("institution_name")
+
+        if not institution and not institution_name:
+            msg = forms.ValidationError(
+                  "Please select an institution or enter a new one by using "
+                  "the checkbox below."
+                  )
+            self.add_error('institution', msg)
+
 
 class PasswordResetForm(DJPasswordResetForm):
     error_messages = {
