@@ -151,8 +151,15 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         aberrations = MolecularAbberation.objects.all()
         all_members = User.objects.all()
         form = self.get_form()
+        initial_proj = self.request.session.get('last_viewed_project')
+        if initial_proj:
+            origin = Project.objects.get(pk=initial_proj)
+        else:
+            origin = self.request.user
+
         return self.render_to_response(self.get_context_data(
             heading=heading,
+            origin=origin,
             form=form,
             subtypes=subtypes,
             aberrations=aberrations,
@@ -547,9 +554,15 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
                 form.fields['external'].widget.attrs['class'] = 'hiddenField'
                 form.fields['comment'].widget.attrs['class'] = 'hiddenField'
         fill_tags(casereport, form)
+        initial_proj = self.request.session.get('last_viewed_project')
+        if initial_proj:
+            origin = Project.objects.get(pk=initial_proj)
+        else:
+            origin = self.request.user
 
         return self.render_to_response(self.get_context_data(
             heading=heading,
+            origin=origin,
             form=form,
             casereport=casereport,
             subtypes=subtypes,

@@ -1329,18 +1329,17 @@ input:focus + div.info {
 }
 .case-submit-hero {
 	background-color: rgb(238, 238, 238);
-    height: 100px;
 }
 .case-submit-hero .container {
     background-image: url('../images/cases-central-bkgd.jpg');
     background-position: bottom right;
     background-size: auto 150px;
     background-repeat: no-repeat;
+    height: 100px;
 }
 .case-submit-hero h1 {
     text-transform: none;
-    margin: 0;
-    line-height: 100px;
+    margin: 25px 0 0;
 }
 
 #caseform .radio-box {
