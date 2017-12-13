@@ -1,6 +1,6 @@
 def past_tense_verb(action):
     action_map = {
-        'edit': 'edited',
+        'author_review_edit': 'edited',
         'submit': 'submitted',
         'send_back': 'sent back',
         'admin_edit': 'pulled for revision',
