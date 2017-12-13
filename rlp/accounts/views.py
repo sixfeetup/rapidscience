@@ -426,6 +426,15 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
             # otherwise, use the user's own AF stream.
             activity_stream = request.user.get_activity_stream()
 
+        stream = []
+        if request.user.can_access_all_projects:
+            for item in activity_stream:
+                if item.verb != 'unpublished' or \
+                        (item.verb == 'unpublished' and
+                            int(item.actor_object_id) != request.user.id):
+                                stream.append(item)
+            activity_stream = stream
+
         if filter_form.is_valid() and filter_form.cleaned_data.get(
             'content_type'):
             activity_stream = activity_stream.filter(

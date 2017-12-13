@@ -383,7 +383,6 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     def _retract_by_admin(self, by=None):  # starts with _ to hide from users
         """ unpublish """
         self.admin_approved = False
-        self.notify_datascience_team()
         user = CurrentUserMiddleware.get_user()
         author = User.objects.get(email__exact=self.primary_author.email)
         action.send(user, verb='unpublished', action_object=self, target=author)
