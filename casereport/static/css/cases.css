@@ -1185,6 +1185,16 @@ input:focus + div.info {
 .headingBanner .notes-trigger {
 	font-weight: normal;
 }
+.headingBanner .watermark {
+    color: #0000001a;
+    font-size: 100px;
+    font-weight: bold;
+    left: 50%;
+    position: absolute;
+    top: -10px;
+    text-transform: uppercase;
+    transform: rotateZ(-10deg) translateX(-50%);
+}
 #editorial-notes {
 	display: none;
 	width: 600px;
