@@ -660,6 +660,11 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
         tags['new'] = request.POST.getlist('new_tags', [])
         add_tags(case, tags)
 
+        if 'save-final' in data:
+            # send to admins for review immediately
+            msg = case.approve(by=request.user)
+        else:
+            msg = 'Edits saved!'
         case.save()
         bookmark_and_notify(
             case, self, self.request, 'casereport', 'casereport',
@@ -682,7 +687,7 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
                 new_user.save()
                 case.share_with([new_user], shared_by=case.primary_author)
 
-        messages.success(request, "Edits saved!")
+        messages.success(request, msg)
         return redirect(reverse('casereport_detail', args=(case.id, case.title)))
 
 
