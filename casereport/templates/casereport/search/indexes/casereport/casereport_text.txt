@@ -20,8 +20,11 @@ sarcoma
 {{ object.primary_author }}
 {{ object.primary_author.email }}
 {{ object.primary_author.institution.name }}
+{{ object.primary_author.institution.city }}
+{{ object.primary_author.institution.state }}
+{{ object.primary_author.institution.country }}
 {% for coauthor in object.co_author.all %}
-    {{ coauthor }}
+    {{ coauthor }}{% if coauthor.degrees %}, {{ coauthor.degrees }}{% endif %}
     {{ coauthor.email }}
     {% if forloop.last %}
         {{ coauthor.institution.name }}
