@@ -1,8 +1,11 @@
 def past_tense_verb(action):
     action_map = {
+        'edit': 'edited',
         'submit': 'submitted',
-        'send back': 'sent back',
-        'author review edit': 're-edited',
+        'send_back': 'sent back',
+        'admin_edit': 'pulled for revision',
+        '_retract_by_author': 'pulled for revision',
+        '_retract_by_admin': 'pulled for revision',
         'revise': 'pulled for revision',
     }
     verb = action.lower()

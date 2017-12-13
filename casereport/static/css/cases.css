@@ -646,7 +646,8 @@ margin-bottom: 30px;}
 #section-pathology,
 #section-treatment,
 #section-comments,
-#section-attachments {
+#section-attachments,
+#section-history {
 	margin-top: -50px;
 	padding-top: 50px;
     margin-bottom: 20px;
@@ -1452,4 +1453,11 @@ body.casereport-view {
     background-color: #eee;
     color: rgb(55, 146, 191);
     cursor: pointer;
+}
+
+#section-history table th {
+    color: #000;
+}
+#section-history h4 {
+    margin-top: 2em;
 }

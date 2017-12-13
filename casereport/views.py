@@ -25,6 +25,7 @@ try:
     from django.urls import reverse
 except ImportError as old_django:
     from django.core.urlresolvers import reverse
+from django_fsm_log.models import StateLog
 from taggit.models import Tag
 
 from casereport import emails
@@ -73,6 +74,11 @@ class CaseReportDetailView(LoginRequiredMixin, TemplateView):
         user_can_comment = casereport.is_shared_with_user(request.user) or request.user == casereport.primary_author
         comment_list = casereport.discussions.all()
         review_allowed = is_review_allowed(self.request.user, casereport)
+        casereport_history = StateLog.objects.filter(
+            object_id=case_id).order_by('timestamp').reverse()
+        for entry in casereport_history:
+            user = User.objects.get(pk=entry.by_id)
+            entry.user = user
         return self.render_to_response(
             dict(
                 casereport=casereport,
@@ -82,6 +88,7 @@ class CaseReportDetailView(LoginRequiredMixin, TemplateView):
                 user_interaction=user_can_comment,
                 review_allowed=review_allowed,
                 last_viewed_path=last_viewed_path,
+                casereport_history=casereport_history,
             )
         )
 

@@ -270,6 +270,30 @@
         {% include 'discussions/threadedcomment/list.html' %}
       {% endwith %}
          <div class="visualClear"><!-- --></div>
+
+      {% if casereport_history %}
+      <div id="section-history">
+          <h4>History</h4>
+          <table class="table">
+            <thead>
+              <tr>
+                  <th>Timestamp</th>
+                  <th>User</th>
+                  <th>Transition</th>
+                  <th>Destination State</th>
+              </tr>
+            </thead>
+          {% for entry in casereport_history %}
+              <tr>
+                  <td>{{ entry.timestamp|date:"M d, Y g:i a" }}</td>
+                  <td><a href="{% url 'profile' entry.by_id %}">{{ entry.user }}</a></td>
+                  <td>{{ entry.transition|describe_transition|title }}</td>
+                  <td>{{ entry.state|title }}</td>
+              </tr>
+          {% endfor %}
+          </table>
+      </div>
+      {% endif %}
     </div>
 
  </div><!--tab content-end-->
