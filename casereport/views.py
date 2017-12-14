@@ -261,8 +261,11 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         initial_proj = request.session.get('last_viewed_project')
         if initial_proj:
             target = Project.objects.get(pk=initial_proj)
+            case.origin = target
             if target.approval_required:
                 case.shareable = False
+        else:
+            case.origin = request.user
 
         coauthors_to_notify = set()
 
@@ -561,11 +564,8 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
                 form.fields['external'].widget.attrs['class'] = 'hiddenField'
                 form.fields['comment'].widget.attrs['class'] = 'hiddenField'
         fill_tags(casereport, form)
-        initial_proj = self.request.session.get('last_viewed_project')
-        if initial_proj:
-            origin = Project.objects.get(pk=initial_proj)
-        else:
-            origin = self.request.user
+        if casereport.origin:
+            origin = casereport.origin
 
         return self.render_to_response(self.get_context_data(
             heading=heading,
