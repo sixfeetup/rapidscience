@@ -212,7 +212,7 @@ class Register(SessionWizardView):
     def process_approval(self, form, user):
         with transaction.atomic():
             data = self.request.POST.copy()
-            if 'register-new_institution' in data:
+            if 'register-new_institution' in data and data['register-institution_name']:
                 new_inst = Institution()
                 new_inst.name = data['register-institution_name']
                 new_inst.city = data['register-institution_city']
@@ -221,7 +221,7 @@ class Register(SessionWizardView):
                 new_inst.website = data['register-institution_website']
                 new_inst.save()
             # Either save form or update existing unregistered user
-            if 'register-new_institution' in data:
+            if 'register-new_institution' in data and data['register-institution_name']:
                 user.institution = new_inst
             user.save()
             messages.success(self.request, PENDING_REGISTRATION_MESSAGE)
@@ -273,13 +273,6 @@ class Register(SessionWizardView):
                     'form': form,
                 },
             )
-        # Return error if no institution
-        if not form.data['register-institution'] and not form.data['register-institution_name']:
-            messages.error(
-                self.request,
-                "Please enter an institution")
-            context = self.get_context_data(form=form, **kwargs)
-            return self.render_to_response(context)
         # Either save form or update existing unregistered user
         skip_approval = False
         try:

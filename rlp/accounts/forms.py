@@ -74,6 +74,17 @@ class UserCreationForm(forms.ModelForm):
         validate_password(password2)
         return password2
 
+    def clean(self):
+        institution = self.cleaned_data.get("institution")
+        institution_name = self.cleaned_data.get("institution_name")
+
+        if not institution and not institution_name:
+            msg = forms.ValidationError(
+                  "Please select an institution or enter a new one by using "
+                  "the checkbox below."
+                  )
+            self.add_error('institution', msg)
+
     def save(self, commit=True):
         # Save the provided password in hashed format
         user = super().save(commit=False)
