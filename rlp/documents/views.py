@@ -123,6 +123,12 @@ def add_document(request, add_form=None, doc_pk=None, template_name='documents/a
             with transaction.atomic():
                 document = form.save(commit=False)
                 document.owner = request.user
+                initial_proj = request.session.get('last_viewed_project')
+                if not doc_pk:
+                    if initial_proj:
+                        document.origin = Project.objects.get(pk=initial_proj)
+                    else:
+                        document.origin = request.user
                 document.save()
                 add_tags(document, tags)
                 if doc_pk:
@@ -135,7 +141,6 @@ def add_document(request, add_form=None, doc_pk=None, template_name='documents/a
                     )
                     message = "Your upload was successful!"
                     # Send email notification
-                    initial_proj = request.session.get('last_viewed_project')
                     if initial_proj:
                         target = Project.objects.get(pk=initial_proj)
                         activity_mail(request.user, document, target, request)
@@ -161,11 +166,14 @@ def add_document(request, add_form=None, doc_pk=None, template_name='documents/a
         'document': document,
         'tab': 'documents',
     }
-    initial_proj = request.session.get('last_viewed_project')
-    if initial_proj:
-        context['origin'] = Project.objects.get(pk=initial_proj)
+    if doc_pk:
+        context['origin'] = document.origin
     else:
-        context['origin'] = request.user
+        initial_proj = request.session.get('last_viewed_project')
+        if initial_proj:
+            context['origin'] = Project.objects.get(pk=initial_proj)
+        else:
+            context['origin'] = request.user
     return render(request, template_name, context)
 
 
@@ -188,6 +196,12 @@ def add_link(request, add_form=None, doc_pk=None, template_name='documents/add_l
             with transaction.atomic():
                 link = form.save(commit=False)
                 link.owner = request.user
+                initial_proj = request.session.get('last_viewed_project')
+                if not doc_pk:
+                    if initial_proj:
+                        link.origin = Project.objects.get(pk=initial_proj)
+                    else:
+                        link.origin = request.user
                 link.save()
                 add_tags(link, tags)
                 if doc_pk:
@@ -200,7 +214,6 @@ def add_link(request, add_form=None, doc_pk=None, template_name='documents/add_l
                     )
                     message = "Your link was successfully added!"
                     # Send email notification
-                    initial_proj = request.session.get('last_viewed_project')
                     if initial_proj:
                         target = Project.objects.get(pk=initial_proj)
                         activity_mail(request.user, link, target, request)
@@ -225,11 +238,14 @@ def add_link(request, add_form=None, doc_pk=None, template_name='documents/add_l
         'document': document,
         'tab': 'documents',
     }
-    initial_proj = request.session.get('last_viewed_project')
-    if initial_proj:
-        context['origin'] = Project.objects.get(pk=initial_proj)
+    if doc_pk:
+        context['origin'] = document.origin
     else:
-        context['origin'] = request.user
+        initial_proj = request.session.get('last_viewed_project')
+        if initial_proj:
+            context['origin'] = Project.objects.get(pk=initial_proj)
+        else:
+            context['origin'] = request.user
     return render(request, template_name, context)
 
 
@@ -252,6 +268,12 @@ def add_video(request, add_form=None, doc_pk=None, template_name='documents/add_
             with transaction.atomic():
                 video = form.save(commit=False)
                 video.owner = request.user
+                initial_proj = request.session.get('last_viewed_project')
+                if not doc_pk:
+                    if initial_proj:
+                        video.origin = Project.objects.get(pk=initial_proj)
+                    else:
+                        video.origin = request.user
                 video.save()
                 add_tags(video, tags)
                 if doc_pk:
@@ -264,7 +286,6 @@ def add_video(request, add_form=None, doc_pk=None, template_name='documents/add_
                     )
                     message = "Your video was successfully added!"
                     # Send email notification
-                    initial_proj = request.session.get('last_viewed_project')
                     if initial_proj:
                         target = Project.objects.get(pk=initial_proj)
                         activity_mail(request.user, video, target, request)
@@ -289,11 +310,14 @@ def add_video(request, add_form=None, doc_pk=None, template_name='documents/add_
         'document': document,
         'tab': 'documents',
     }
-    initial_proj = request.session.get('last_viewed_project')
-    if initial_proj:
-        context['origin'] = Project.objects.get(pk=initial_proj)
+    if doc_pk:
+        context['origin'] = document.origin
     else:
-        context['origin'] = request.user
+        initial_proj = request.session.get('last_viewed_project')
+        if initial_proj:
+            context['origin'] = Project.objects.get(pk=initial_proj)
+        else:
+            context['origin'] = request.user
     return render(request, template_name, context)
 
 

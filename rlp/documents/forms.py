@@ -81,6 +81,7 @@ class BaseDocumentForm(forms.ModelForm):
         model = Document
         exclude = [
             'owner', 'date_added', 'date_updated', 'project', 'tags',
+            'origin_id', 'origin_type',
         ]
 
 
@@ -97,6 +98,7 @@ class ImageForm(BaseDocumentForm):
         model = Image
         exclude = [
             'owner', 'date_added', 'date_updated', 'project', 'height', 'width', 'tags',
+            'origin_id', 'origin_type',
         ]
 
 
