@@ -565,7 +565,7 @@ def profile_edit(request, template_name='accounts/profile_edit.html'):
         data = request.POST.copy()
 
         if form.is_valid():
-            if 'new_institution' in data:
+            if 'new_institution' in data and data['institution_name']:
                 new_inst = Institution()
                 new_inst.name = data['institution_name']
                 new_inst.city = data['institution_city']
