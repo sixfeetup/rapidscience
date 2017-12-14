@@ -318,6 +318,9 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
                     comment=data.get('comment'))
 
 
+        if 'save-final' in data:
+            # send to admins for review immediately
+            case.submit(by=request.user)
         # eventually we' want this:
         # #messages.success(self.request, "Saved!")
         # return redirect(reverse('casereport_detail', args=(case.id, case.title)))
