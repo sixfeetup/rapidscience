@@ -1471,3 +1471,8 @@ body.casereport-view {
 #section-history h4 {
     margin-top: 2em;
 }
+
+.discreet {
+    color: #666;
+    font-size: 14px;
+}
