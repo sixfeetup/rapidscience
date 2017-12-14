@@ -98,11 +98,8 @@ def comment_edit(request, comment_pk, template_name='discussions/comment_edit.ht
         'form': form,
         'tab': 'discussions',
     }
-    initial_proj = request.session.get('last_viewed_project')
-    if initial_proj:
-        context['origin'] = Project.objects.get(pk=initial_proj)
-    else:
-        context['origin'] = request.user
+    if comment.origin:
+        context['origin'] = comment.origin
     return render(request, template_name, context)
 
 
@@ -213,8 +210,11 @@ class CreateDiscussion(LoginRequiredMixin, FormView):
         initial_proj = self.request.session.get('last_viewed_project')
         if initial_proj:
             target = Project.objects.get(pk=initial_proj)
+            new_discussion.origin = target
             if target.approval_required:
                 new_discussion.shareable = False
+        else:
+            new_discussion.origin = self.request.user
         new_discussion.save()
         add_tags(new_discussion, tags)
 
