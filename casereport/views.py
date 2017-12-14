@@ -337,8 +337,13 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         copied = []
         copied.append(author_alt)
         copied = copied + [i.email for i in coauthors] + [settings.DEFAULT_FROM_EMAIL]
-        message = render_to_string('casereport/case_submit_email.html', {'name': recipient.get_name(),
-                                                              'DOMAIN': settings.CRDB_DOMAIN})
+        message = render_to_string(
+            'casereport/case_submit_email.html',
+            {
+                'name': recipient.get_full_name(),
+                'DOMAIN': settings.CRDB_DOMAIN,
+            }
+        )
         msg = EmailMessage(settings.CASE_SUBMIT, message, settings.CRDB_SERVER_EMAIL, [recipient.email],
                            headers=Headers, cc=copied, bcc=settings.CRDB_BCC_LIST)
         msg.content_subtype = "html"
