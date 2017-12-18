@@ -678,7 +678,10 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
 
         if 'save-final' in data:
             # send to admins for review immediately
-            msg = case.approve(by=request.user)
+            if case.workflow_state == WorkflowState.DRAFT:
+                msg = case.submit(by=request.user)
+            else:
+                msg = case.approve(by=request.user)
         else:
             msg = 'Edits saved!'
         case.save()
