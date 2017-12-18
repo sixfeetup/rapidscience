@@ -159,7 +159,9 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         all_members = User.objects.all()
         form = self.get_form()
         initial_proj = self.request.session.get('last_viewed_project')
-        if initial_proj:
+        if initial_proj == -1:
+            origin = 'casescentral'
+        elif initial_proj:
             origin = Project.objects.get(pk=initial_proj)
         else:
             origin = self.request.user
@@ -259,7 +261,9 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         if aberrations:
             case.aberrations.add(*aberrations)
         initial_proj = request.session.get('last_viewed_project')
-        if initial_proj:
+        if initial_proj == -1:
+            case.origin_id = -1
+        elif initial_proj:
             target = Project.objects.get(pk=initial_proj)
             case.origin = target
             if target.approval_required:
@@ -437,7 +441,7 @@ class MyFacetedSearchView(FacetedSearchView):
         else:
             self.template = 'casereport/search/search.html'
         # if Cases Central was viewed, prevent adding things to a group
-        request.session['last_viewed_project'] = None
+        request.session['last_viewed_project'] = -1
         return super(MyFacetedSearchView, self).__call__(request)
 
     def get_results(self):
@@ -572,8 +576,12 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
                 form.fields['external'].widget.attrs['class'] = 'hiddenField'
                 form.fields['comment'].widget.attrs['class'] = 'hiddenField'
         fill_tags(casereport, form)
-        if casereport.origin:
+        if casereport.origin_id > 0:
             origin = casereport.origin
+        elif casereport.origin_id == -1:
+            origin = 'casescentral'
+        else:
+            origin = None
 
         return self.render_to_response(self.get_context_data(
             heading=heading,

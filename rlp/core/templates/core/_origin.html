@@ -1,13 +1,17 @@
 {% if origin %}
     <p>Posted from
-        {% if origin.email %}
-            my Dashboard <i class="fa fa-unlock" aria-hidden="true"></i>
-        {%  else %}
-            {{ origin }}
-            {% if origin.approval_required %}
-              <i class="fa fa-lock" aria-hidden="true"></i>
-            {% else %}
-              <i class="fa fa-unlock" aria-hidden="true"></i>
+        {% if origin == 'casescentral' %}
+            Cases Central <i class="fa fa-unlock" aria-hidden="true"></i>
+        {% else %}
+            {% if origin.email %}
+                my Dashboard <i class="fa fa-unlock" aria-hidden="true"></i>
+            {%  else %}
+                {{ origin }}
+                {% if origin.approval_required %}
+                  <i class="fa fa-lock" aria-hidden="true"></i>
+                {% else %}
+                  <i class="fa fa-unlock" aria-hidden="true"></i>
+                {% endif %}
             {% endif %}
         {% endif %}
     </p>

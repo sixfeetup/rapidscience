@@ -110,8 +110,9 @@ class SharedObjectMixin(models.Model):
     origin_type = models.ForeignKey(ContentType,
                                     on_delete=models.CASCADE,
                                     null=True,
-                                    blank=True)
-    origin_id = models.PositiveIntegerField(default=0)
+                                    blank=True,
+                                    editable=False)
+    origin_id = models.IntegerField(default=0, editable=False)
     origin = GenericForeignKey('origin_type', 'origin_id')
 
     @property
