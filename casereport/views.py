@@ -26,11 +26,10 @@ try:
 except ImportError as old_django:
     from django.core.urlresolvers import reverse
 from django_fsm_log.models import StateLog
-from taggit.models import Tag
 
 from casereport import emails
 from casereport.api import TreatmentInstanceResource
-from casereport.constants import SARCOMA_TYPE, WorkflowState
+from casereport.constants import WorkflowState
 from casereport.forms import CaseForm
 from casereport.forms import MultiFacetedSearchForm
 from casereport.havoc_interface import havoc_results
@@ -46,13 +45,13 @@ from .models import (
 from rlp.accounts.models import User
 from rlp.core.forms import member_choices
 from rlp.core.forms import group_choices
-from rlp.core.utils import bookmark_and_notify, add_tags, fill_tags, \
-    resolve_email_targets
+from rlp.core.utils import bookmark_and_notify, add_tags, fill_tags
 from rlp.core.utils import enforce_sharedobject_permissions
 from rlp.projects.models import Project
 from functools import partial
 
 __author__ = 'yaseen'
+s2hidden = 'select2 hiddenField'
 
 
 def is_review_allowed(user, casereport):
@@ -62,7 +61,11 @@ def is_review_allowed(user, casereport):
     )
 
 
-@partial(enforce_sharedobject_permissions, obj_class=CaseReport, id_name='case_id')
+@partial(
+    enforce_sharedobject_permissions,
+    obj_class=CaseReport,
+    id_name='case_id',
+)
 class CaseReportDetailView(LoginRequiredMixin, TemplateView):
     template_name = 'casereport/casereport_view.html'
 
@@ -71,7 +74,10 @@ class CaseReportDetailView(LoginRequiredMixin, TemplateView):
         treatments = Treatment.objects.filter(casereport_f_id=case_id)
         testevents = casereport.event_set.select_related('testevent')
         last_viewed_path = request.session.get('last_viewed_path')
-        user_can_comment = casereport.is_shared_with_user(request.user) or request.user == casereport.primary_author
+        user_can_comment = (
+            casereport.is_shared_with_user(request.user) or
+            request.user == casereport.primary_author
+        )
         comment_list = casereport.discussions.all()
         review_allowed = is_review_allowed(self.request.user, casereport)
         casereport_history = StateLog.objects.filter(
@@ -92,7 +98,8 @@ class CaseReportDetailView(LoginRequiredMixin, TemplateView):
             )
         )
 
-def workflow_transition( request, casereport_id):
+
+def workflow_transition(request, casereport_id):
     casereport = CaseReport.objects.get(id=casereport_id)
 
     action = request.GET.get('action')
@@ -104,9 +111,16 @@ def workflow_transition( request, casereport_id):
 
     # hack to allow edit actions to use an interstitial form
     if "Edit" in action:
-        return HttpResponseRedirect(reverse('edit', kwargs={'case_id':casereport.id}))
+        return HttpResponseRedirect(reverse(
+            'edit',
+            kwargs={'case_id': casereport.id},
+        ))
 
-    return HttpResponseRedirect(reverse('casereport_detail', kwargs={'case_id':casereport.id, 'title_slug':casereport.title}))
+    return HttpResponseRedirect(reverse(
+        'casereport_detail',
+        kwargs={'case_id': casereport.id, 'title_slug': casereport.title},
+    ))
+
 
 def update_treatments_from_request(case, data):
     """Loop through treatments on the add/edit form,
@@ -176,23 +190,30 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
 
     def get_form(self, form_class):
         try:
-            group = Project.objects.get(id=self.request.session.get('last_viewed_project'))
+            group = Project.objects.get(
+                id=self.request.session.get('last_viewed_project'),
+            )
         except Project.DoesNotExist:
             group = []
         form = super(CaseReportFormView, self).get_form(form_class)
         user = self.request.user
-        all_members = ((member.id, member.get_full_name()) for member in User.objects.all())
+        all_members = (
+            (member.id, member.get_full_name())
+            for member in User.objects.all()
+        )
         # form.fields['tags'].queryset = Tag.objects.order_by('slug')
         if group and group.approval_required:
             form.fields['members'].hide_field = True
             form.fields['members'].choices = [(user.id, user.get_full_name())]
-            form.fields['members'].widget.attrs['class'] = 'select2 hiddenField'
-            form.fields['groups'].widget.attrs['class'] = 'select2 hiddenField'
+            form.fields['members'].widget.attrs['class'] = s2hidden
+            form.fields['groups'].widget.attrs['class'] = s2hidden
             form.fields['external'].widget.attrs['class'] = 'hiddenField'
             form.fields['comment'].widget.attrs['class'] = 'hiddenField'
         elif group:
             form.fields['members'].choices = all_members
-            form.fields['groups'].choices = group_choices(user, exclude=[group])
+            form.fields['groups'].choices = group_choices(
+                user, exclude=[group],
+            )
         else:
             form.fields['members'].choices = all_members
             form.fields['groups'].choices = group_choices(user)
@@ -234,22 +255,24 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         consent = data.get('consent')
         details = data.get('details')
 
-        case = CaseReport(title=title, age=age, gender=gender,
-                          casefile_f=document, subtype=subtype,
-                          subtype_other=subtype_other, presentation=presentation,
-                          aberrations_other=aberrations_other,
-                          biomarkers=biomarkers, pathology=pathology,
-                          additional_comment=additional_comment,
-                          primary_author=primary_author,
-                          free_text=details, consent=consent,
-                          attachment1=attachment1,
-                          attachment2=attachment2, attachment3=attachment3,
-                          attachment1_title=attachment1_title,
-                          attachment2_title=attachment2_title,
-                          attachment3_title=attachment3_title,
-                          attachment1_description=attachment1_description,
-                          attachment2_description=attachment2_description,
-                          attachment3_description=attachment3_description)
+        case = CaseReport(
+            title=title, age=age, gender=gender,
+            casefile_f=document, subtype=subtype,
+            subtype_other=subtype_other, presentation=presentation,
+            aberrations_other=aberrations_other,
+            biomarkers=biomarkers, pathology=pathology,
+            additional_comment=additional_comment,
+            primary_author=primary_author,
+            free_text=details, consent=consent,
+            attachment1=attachment1,
+            attachment2=attachment2, attachment3=attachment3,
+            attachment1_title=attachment1_title,
+            attachment2_title=attachment2_title,
+            attachment3_title=attachment3_title,
+            attachment1_description=attachment1_description,
+            attachment2_description=attachment2_description,
+            attachment3_description=attachment3_description,
+        )
         case.save()
         tags = {}
         tags['ids'] = request.POST.getlist('tags', [])
@@ -321,13 +344,14 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
                     [new_user], shared_by=primary_author,
                     comment=data.get('comment'))
 
-
         if 'save-final' in data:
             # send to admins for review immediately
             case.submit(by=request.user)
         # eventually we' want this:
         # #messages.success(self.request, "Saved!")
-        # return redirect(reverse('casereport_detail', args=(case.id, case.title)))
+        # return redirect(reverse(
+        #     'casereport_detail', args=(case.id, case.title),
+        # ))
         if case.workflow_state == WorkflowState.DRAFT:
             messages.success(self.request, "Your case report has been " +
                              "successfully saved. To send to the editorial" +
@@ -344,7 +368,11 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         recipient = author
         copied = []
         copied.append(author_alt)
-        copied = copied + [i.email for i in coauthors] + [settings.DEFAULT_FROM_EMAIL]
+        copied = (
+            copied +
+            [i.email for i in coauthors] +
+            [settings.DEFAULT_FROM_EMAIL]
+        )
         message = render_to_string(
             'casereport/case_submit_email.html',
             {
@@ -352,8 +380,11 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
                 'DOMAIN': settings.CRDB_DOMAIN,
             }
         )
-        msg = EmailMessage(settings.CASE_SUBMIT, message, settings.CRDB_SERVER_EMAIL, [recipient.email],
-                           headers=Headers, cc=copied, bcc=settings.CRDB_BCC_LIST)
+        msg = EmailMessage(
+            settings.CASE_SUBMIT, message, settings.CRDB_SERVER_EMAIL,
+            [recipient.email], headers=Headers, cc=copied,
+            bcc=settings.CRDB_BCC_LIST,
+        )
         msg.content_subtype = "html"
         msg.send()
 
@@ -375,7 +406,10 @@ class AutoCompleteView(FormView):
     def get(self, request, *args, **kwargs):
         data = request.GET
         q = data.get("term")
-        results = havoc_results(api='concepts', vocab='hgnc', term=q+'%', partial=True)
+        results = havoc_results(
+            api='concepts', vocab='hgnc',
+            term=q+'%', partial=True,
+        )
         results = json.dumps(results)
         mimetype = 'application/json'
         return HttpResponse(results, mimetype)
@@ -394,7 +428,9 @@ class FormTypeView(TemplateView):
 
             self.template_name = 'casereport/free-text.html'
             return self.render_to_response(dict(subtypes=subtypes))
-        return self.render_to_response(dict(subtypes=subtypes, aberrations=aberrations))
+        return self.render_to_response(
+            dict(subtypes=subtypes, aberrations=aberrations),
+        )
 
 
 def limit_casereport_results(queryset, user):
@@ -419,7 +455,10 @@ def limit_casereport_results(queryset, user):
             if item.workflow_state == WorkflowState.LIVE:
                 shared_pks.update([item.pk, ])
     user = User.objects.get(email=user.email)
-    authored_pks = set({cr.pk for cr in CaseReport.objects.filter(primary_author=user)})
+    authored_pks = {
+        cr.pk for cr
+        in CaseReport.objects.filter(primary_author=user)
+    }
     shared_pks.update(authored_pks)
 
     for result in queryset:
@@ -432,8 +471,12 @@ def limit_casereport_results(queryset, user):
 
 class MyFacetedSearchView(FacetedSearchView):
     def __init__(self, *args, **kwargs):
-        sqs = SearchQuerySet().using('casescentral').models(CaseReport).highlight(fragsize=200)
-        kwargs.update({'form_class': MultiFacetedSearchForm, 'searchqueryset': sqs})
+        sqs = SearchQuerySet().using(
+            'casescentral',
+        ).models(CaseReport).highlight(fragsize=200)
+        kwargs.update(
+            {'form_class': MultiFacetedSearchForm, 'searchqueryset': sqs}
+        )
         super(MyFacetedSearchView, self).__init__(*args, **kwargs)
 
     def __call__(self, request):
@@ -471,10 +514,13 @@ class MyFacetedSearchView(FacetedSearchView):
         data = self.request.GET.copy()
         sortby = data.get('sortby', 'relevance')
         sortorder = data.get('sortorder', 'desc')
-        if self.request.session.get('last_viewed_path',None):
+        if self.request.session.get('last_viewed_path', None):
             del(self.request.session['last_viewed_path'])
         else:
-            print("casereport.views.create_response tried to delete last_viewed_path that did not exist.")
+            print(
+                "casereport.views.create_response tried to delete"
+                " last_viewed_path that did not exist."
+            )
         context = {
             'query': self.query,
             'form': self.form,
@@ -485,9 +531,12 @@ class MyFacetedSearchView(FacetedSearchView):
             'sortorder': sortorder,
         }
 
-        if not self.results and hasattr(self.results, 'query') and self.results.query.backend.include_spelling:
+        if (not self.results and hasattr(self.results, 'query')
+           and self.results.query.backend.include_spelling):
             try:
-                context['suggestions'] = self.form.get_suggestion()[1]['suggestion']
+                context['suggestions'] = (
+                    self.form.get_suggestion()[1]['suggestion']
+                )
             except:
                 context['suggestions'] = []
 
@@ -504,8 +553,13 @@ class MyFacetedSearchView(FacetedSearchView):
         if self.request.is_ajax():
             if 'casereport' in self.request.META['HTTP_REFERER'] or cap_only:
                 newcap = CaseReportFormView().get_new_captcha()
-                return HttpResponse(json.dumps(newcap), content_type='application/json')
-            return render_to_response(dict(captchaform=captchaform, countries=COUNTRIES))
+                return HttpResponse(
+                    json.dumps(newcap),
+                    content_type='application/json',
+                )
+            return render_to_response(dict(
+                captchaform=captchaform, countries=COUNTRIES,
+            ))
 
         context['captchaform'] = captchaform
         context['countries'] = COUNTRIES
@@ -550,7 +604,9 @@ def downloadfile(request, file_id):
     casefile = CaseFile.objects.get(id=file_id)
     source = casefile.document
     response = HttpResponse(source, content_type='application/force-download')
-    response['Content-Disposition'] = 'attachment; filename="%s"' %casefile.document
+    response['Content-Disposition'] = (
+        'attachment; filename="%s"' % casefile.document
+    )
     return response
 
 
@@ -569,11 +625,14 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
         form.fields['groups'].choices = group_choices(request.user)
         viewers = casereport.get_viewers()
         # hide sharing fields if shared with closed group
-        shared_with = [x for x in casereport.get_viewers() if x._meta.model_name == 'project']
+        shared_with = [
+            x for x in casereport.get_viewers()
+            if x._meta.model_name == 'project'
+        ]
         for viewer in shared_with:
             if viewer.approval_required:
-                form.fields['members'].widget.attrs['class'] = 'select2 hiddenField'
-                form.fields['groups'].widget.attrs['class'] = 'select2 hiddenField'
+                form.fields['members'].widget.attrs['class'] = s2hidden
+                form.fields['groups'].widget.attrs['class'] = s2hidden
                 form.fields['external'].widget.attrs['class'] = 'hiddenField'
                 form.fields['comment'].widget.attrs['class'] = 'hiddenField'
         fill_tags(casereport, form)
@@ -655,22 +714,31 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
         case.consent = data['consent']
         # attachments & files
         if 'attachment1_title' in data:
-            case.attachment1 = request.FILES.get('attachment1') or case.attachment1
+            case.attachment1 = (
+                request.FILES.get('attachment1') or case.attachment1
+            )
             case.attachment1_title = data['attachment1_title']
             case.attachment1_description = data['attachment1_description']
         if 'attachment2_title' in data:
-            case.attachment2 = request.FILES.get('attachment2') or case.attachment2
+            case.attachment2 = (
+                request.FILES.get('attachment2') or case.attachment2
+            )
             case.attachment2_title = data['attachment2_title']
             case.attachment2_description = data['attachment2_description']
         if 'attachment3_title' in data:
-            case.attachment3 = request.FILES.get('attachment3') or case.attachment3
+            case.attachment3 = (
+                request.FILES.get('attachment3') or case.attachment3
+            )
             case.attachment3_title = data['attachment3_title']
             case.attachment3_description = data['attachment3_description']
         if 'uploadfile' in request.FILES:
-            case.casefile_f = request.FILES.get('uploadfile') or case.casefile_f
+            case.casefile_f = (
+                request.FILES.get('uploadfile') or case.casefile_f
+            )
 
         # any edit by an admin needs to clear the author approved.
-        if request.user.is_staff and request.user.email != case.primary_author.email:
+        if (request.user.is_staff
+           and request.user.email != case.primary_author.email):
             case.author_approved = False
         tags = {}
         tags['ids'] = request.POST.getlist('tags', [])
@@ -692,7 +760,7 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
 
         past_tense_verb = 'updated'
         for group in data.getlist('groups'):
-            print( request.user, past_tense_verb, case, group )
+            print(request.user, past_tense_verb, case, group)
 
         if data.get('sharing-options') == 'share-all':
             cc_group = Project.objects.get(title='Community Commons')
@@ -708,7 +776,9 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
                 case.share_with([new_user], shared_by=case.primary_author)
 
         messages.success(request, msg)
-        return redirect(reverse('casereport_detail', args=(case.id, case.title)))
+        return redirect(reverse(
+            'casereport_detail', args=(case.id, case.title),
+        ))
 
 
 class ReviewDetailView(LoginRequiredMixin, DetailView):
