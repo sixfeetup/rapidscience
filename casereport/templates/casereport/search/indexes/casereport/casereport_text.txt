@@ -17,7 +17,7 @@ sarcoma
 {{object.attachment2_description}}
 {{object.attachment3_title}}
 {{object.attachment3_description}}
-{{ object.primary_author }}
+{{ object.primary_author }}{% if object.primary_author.degrees %}, {{ object.primary_author.degrees }}{% endif %}
 {{ object.primary_author.email }}
 {{ object.primary_author.institution.name }}
 {{ object.primary_author.institution.city }}
