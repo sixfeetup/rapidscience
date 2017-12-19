@@ -376,7 +376,11 @@ function freetext_validate(){
 
 }
 
-$('.submit-button input[type=submit]').click(function(e){
+$('#save-draft').click(function(e){
+    e.preventDefault()
+    validate(e)
+});
+$('#save-final').click(function(e){
     e.preventDefault()
     validate(e)
 });
