@@ -77,7 +77,7 @@ def bookmark_and_notify(
     '''
     from rlp.core.views import SendToView
     initial_proj = request.session.get('last_viewed_project')
-    if initial_proj != -1:
+    if initial_proj and initial_proj != -1:
         project_type = ContentType.objects.get_by_natural_key(
             'projects', 'project',
         )
