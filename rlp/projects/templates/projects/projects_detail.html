@@ -88,6 +88,7 @@
   </div>
   {% show_project_members project %}
 
+{% if request.user in project.active_members %}
   <div class="cc-box">
       <img src="{% static "images/logo-CC.png" %}" class="img-responsive"/>
       <p>Submit and search the database of case reports, N of 1 studies, and clinical trial summaries.</p>
@@ -100,6 +101,7 @@
           </div>
       </div>
   </div>
+{% endif %}
 
   <div class="overlay-form" id="project-invite">
     <form method="post" action="{% url 'projects:projects_invite' project.pk project.slug %}">
