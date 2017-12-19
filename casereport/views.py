@@ -334,8 +334,9 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
                              " team, please click the “submit” button below.")
             return redirect(case.get_absolute_url())
         else:
+            coauthors = User.objects.filter(id__in=coauthor_ids)
             self.template_name = 'casereport/add_casereport_success.html'
-            self.case_success_mail(primary_author, coauthor_ids, author_alt)
+            self.case_success_mail(primary_author, coauthors, author_alt)
             return self.render_to_response({'casereport': case})
 
     def case_success_mail(self, author, coauthors, author_alt):
