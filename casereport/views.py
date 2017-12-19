@@ -201,7 +201,7 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
     def post(self, request, *args, **kwargs):
         data = request.POST.copy()
         title = data.get('casetitle')
-        coauthors = data.getlist('coauthors', None)
+        coauthor_ids = data.getlist('coauthors', None)
         email = data.getlist('coauthor_email')
         name = data.getlist('coauthor_name')
         alt_email = data.get('author', None)
@@ -273,7 +273,7 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
 
         coauthors_to_notify = set()
 
-        for auth in coauthors:
+        for auth in coauthor_ids:
             coauth_user = User.objects.get(pk=auth)
             case.co_author.add(auth)
             coauthors_to_notify.add(coauth_user)
@@ -335,7 +335,7 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
             return redirect(case.get_absolute_url())
         else:
             self.template_name = 'casereport/add_casereport_success.html'
-            self.case_success_mail(primary_author, coauthors, author_alt)
+            self.case_success_mail(primary_author, coauthor_ids, author_alt)
             return self.render_to_response({'casereport': case})
 
     def case_success_mail(self, author, coauthors, author_alt):
