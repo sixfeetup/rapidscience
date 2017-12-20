@@ -1186,7 +1186,7 @@ input:focus + div.info {
 	font-weight: normal;
 }
 .headingBanner .watermark {
-    color: #0000001a;
+    color: rgba(0,0,0,0.15);
     font-size: 100px;
     font-weight: bold;
     left: 50%;
