@@ -66,7 +66,7 @@ $(document).ready(function() {
         e.preventDefault(); $(this).parent('div').remove(); x--;
     })
     
-    $(".hiddenField").parents(".sharing-wrapper").hide();
+    $(".hiddenField").parents(".sharing-wrapper").hide().find("#share3").prop('checked', true);
     if ($('.action-buttons').length) {
         $(".main-footer").css({"padding-bottom": "120px"});
     }
