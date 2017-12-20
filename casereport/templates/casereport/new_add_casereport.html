@@ -257,9 +257,10 @@
                 {% endfor %}
 
                 <div class="submit-button">
-                    <button type="submit" class="btn btn-primary" id="save-draft" name="save-draft" value="draft">{% if user.is_staff %}Save{% else %}Save as Draft{% endif %}</button>
+                    <input type="hidden" id="save-final" name="save-final" value="" />
+                    <button type="submit" class="btn btn-primary" id="draftsave">{% if user.is_staff %}Save{% else %}Save as Draft{% endif %}</button>
                     {% if not user.is_staff %}
-                    <button type="submit" class="btn btn-primary" id="save-final" name="save-final" value="final">Save and Submit</button>
+                    <button type="submit" class="btn btn-primary" id="finalsave">Save and Submit</button>
                     {% endif %}
                     <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-default" id="button-cancel">Cancel</a>
 

@@ -376,11 +376,13 @@ function freetext_validate(){
 
 }
 
-$('#save-draft').click(function(e){
+$('#draftsave').click(function(e){
+    $("#save-final").val('');
     e.preventDefault()
     validate(e)
 });
-$('#save-final').click(function(e){
+$('#finalsave').click(function(e){
+    $("#save-final").val('True');
     e.preventDefault()
     validate(e)
 });

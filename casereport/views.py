@@ -344,7 +344,7 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
                     [new_user], shared_by=primary_author,
                     comment=data.get('comment'))
 
-        if 'save-final' in data:
+        if data.get('save-final'):
             # send to admins for review immediately
             case.submit(by=request.user)
         # eventually we' want this:
@@ -745,7 +745,7 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
         tags['new'] = request.POST.getlist('new_tags', [])
         add_tags(case, tags)
 
-        if 'save-final' in data:
+        if data.get('save-final'):
             # send to admins for review immediately
             if case.workflow_state == WorkflowState.DRAFT:
                 msg = case.submit(by=request.user)
