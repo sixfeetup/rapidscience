@@ -1,7 +1,7 @@
 Dear {{ casereport.primary_author.get_full_name }},<br><br>
 
 Congratulations – your case report, {{ casereport.title }}, is now live at Sarcoma Central. To view it,
-<a href="http://sarcoma.rapidscience.org{{ casereport.get_absolute_url }}">click here</a>.<br><br>
+<a href="https://{{ site }}{{ casereport.get_absolute_url }}">click here</a>.<br><br>
 
 Members of the community with whom it is shared have received notification that
 they can view and discuss the report. You can view a list of these authorized

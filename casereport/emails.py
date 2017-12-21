@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.contrib.sites.models import Site
 from django.core.mail import EmailMessage
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
@@ -14,6 +13,7 @@ def publish_to_author(casereport):
     if not targets:
         return
     email_context = {
+        "site": settings.DOMAIN,
         "casereport": casereport
     }
     subject = "Your case report is live!"
@@ -185,6 +185,7 @@ def invite_coauthor(casereport, user):
     """Invite a co-author that is not currently a site member
     """
     email_context = {
+        "site": settings.DOMAIN,
         "casereport": casereport,
         "user": user
     }

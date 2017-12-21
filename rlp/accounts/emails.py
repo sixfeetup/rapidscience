@@ -1,4 +1,3 @@
-from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
@@ -66,8 +65,7 @@ def acceptance_to_newuser(request, user):
                     'projects:projects_list',
                 )),
         'login_url': request.build_absolute_uri(reverse('login')),
-
-
+        'site': settings.DOMAIN,
     }
     template = 'registration/emails/acceptance_to_newuser'
     message = render_to_string('{}.txt'.format(template), email_context)
@@ -96,7 +94,7 @@ def send_welcome(request, user):
                     'projects:projects_list',
                 )),
         'login_url': request.build_absolute_uri(reverse('login')),
-
+        'site': settings.DOMAIN,
     }
     template = 'registration/emails/registration_welcome'
     message = render_to_string('{}.txt'.format(template), email_context)

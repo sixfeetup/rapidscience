@@ -4,7 +4,7 @@ Hello {{ name }},<br><br>
 
 Welcome to Sarcoma Central.<br><br>
 
-Upon registration at <a href="https://sarcoma.rapidscience.org/">sarcoma.rapidscience.org</a>, you landed on your personal dashboard -- a private space for your content and messages. You'll see content shared with you and the groups you belong to.<br><br>
+Upon registration at <a href="https://{{ site }}">{{ site }}</a>, you landed on your personal dashboard -- a private space for your content and messages. You'll see content shared with you and the groups you belong to.<br><br>
 
 Members can view your profile. Please take time to complete the details (“edit profile” by clicking your name) -- i.e., post a brief bio, your research interests, and photo to foster interaction and trust.<br><br>
 
