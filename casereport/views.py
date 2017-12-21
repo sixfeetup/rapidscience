@@ -359,35 +359,7 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
                              " team, please click the “submit” button below.")
             return redirect(case.get_absolute_url())
         else:
-            coauthors = User.objects.filter(id__in=coauthor_ids)
-            self.template_name = 'casereport/add_casereport_success.html'
-            self.case_success_mail(primary_author, coauthors, author_alt)
             return self.render_to_response({'casereport': case})
-
-    def case_success_mail(self, author, coauthors, author_alt):
-        Headers = {'Reply-To': settings.CRDB_SERVER_EMAIL}
-        recipient = author
-        copied = []
-        copied.append(author_alt)
-        copied = (
-            copied +
-            [i.email for i in coauthors] +
-            [settings.DEFAULT_FROM_EMAIL]
-        )
-        message = render_to_string(
-            'casereport/case_submit_email.html',
-            {
-                'name': recipient.get_full_name(),
-                'DOMAIN': settings.CRDB_DOMAIN,
-            }
-        )
-        msg = EmailMessage(
-            settings.CASE_SUBMIT, message, settings.CRDB_SERVER_EMAIL,
-            [recipient.email], headers=Headers, cc=copied,
-            bcc=settings.CRDB_BCC_LIST,
-        )
-        msg.content_subtype = "html"
-        msg.send()
 
     def validate_captcha(self, data):
         form = self.form_class(data)
