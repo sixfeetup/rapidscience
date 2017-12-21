@@ -272,7 +272,7 @@
       {% endwith %}
          <div class="visualClear"><!-- --></div>
 
-      {% if casereport_history %}
+      {% if casereport_history and user.is_staff or casereport_history and user.is_superuser %}
       <div id="section-history">
           <h4>History</h4>
           <p class="discreet"><em>Times are UTC timezone.</em></p>
