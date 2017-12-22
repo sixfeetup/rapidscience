@@ -346,6 +346,10 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
 
         if data.get('save-final'):
             # send to admins for review immediately
+            messages.success(
+                self.request,
+                "Your case report has been successfully submitted.",
+            )
             case.submit(by=request.user)
             case.save()
         # eventually we' want this:
