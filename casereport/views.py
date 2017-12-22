@@ -357,9 +357,7 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
             messages.success(self.request, "Your case report has been " +
                              "successfully saved. To send to the editorial" +
                              " team, please click the “submit” button below.")
-            return redirect(case.get_absolute_url())
-        else:
-            return self.render_to_response({'casereport': case})
+        return redirect(case.get_absolute_url())
 
     def validate_captcha(self, data):
         form = self.form_class(data)
