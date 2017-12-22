@@ -49,7 +49,7 @@ def create_comment_activity(**kwargs):
             comment.user.bookmark(content)
 
         last_proj = request.session.get('last_viewed_project')
-        if last_proj:
+        if last_proj and last_proj != -1:
             group = Project.objects.get(id=last_proj)
             if not content.is_bookmarked_to(group):
                 group.bookmark(content)
