@@ -507,10 +507,10 @@ CASE_SUBMIT = 'Your case report submission'
 NEW_CASE = "New Case Report"
 CASE_READY_SUBJECT = "A new case awaits your approval"
 CASE_APPROVED_SUBJECT = "Case Approved"
-DEFAULT_FROM_EMAIL = "Sarcoma Central <support@rapidscience.org>"
-DEFAULT_FROM_EMAIL_RAPID_SCIENCE = "Rapid Science <support@rapidscience.org>"
+DEFAULT_FROM_EMAIL = "Sarcoma Central <support@mg.rapidscience.org>"
+DEFAULT_FROM_EMAIL_RAPID_SCIENCE = "Rapid Science <support@mg.rapidscience.org>"
 RSADMIN_EMAIL = env('RSADMIN_EMAIL', default='admin@sixfeetup.com')
-DATA_SCIENCE_TEAM = ['edit@rapidscience.org',]
+DATA_SCIENCE_TEAM = ['edit@mg.rapidscience.org',]
 BCC_LIST = ['sg@rapidscience.org',]
 EDITED = "Case Report Edited"
 
