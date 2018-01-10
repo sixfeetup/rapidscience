@@ -2,7 +2,7 @@
 
 {% lazy_paginate activity_stream %}
 {% for action in activity_stream %}
-    {% with obj=action.action_object model=action.action_object_content_type.model content_type=action.action_object_content_type.id %}
+    {% with obj=action.action_object frozen=action.data.frozen model=action.action_object_content_type.model content_type=action.action_object_content_type.id %}
         <div class="activity-stream activity-{{ model }} verb-{{ action.verb }}">
             {% if obj %}
                 <div class="row">
@@ -62,16 +62,17 @@
                                             <span class="btn btn-tag btn-xs cr-workflow">
                                                 <i class="{{ obj.get_workflow_icon }}"
                                                    aria-hidden="true"></i>
-                                                {% if obj.workflow_state == 'live' %}
+                                                {% firstof frozen.workflow_state obj.workflow_state as cr_workflow_state %}
+                                                {% if cr_workflow_state == 'live' %}
                                                     Posted
-                                                {% elif obj.workflow_state == 'draft' %}
+                                                {% elif cr_workflow_state == 'draft' %}
                                                     Draft
-                                                {% elif obj.workflow_state == 'author review' %}
+                                                {% elif cr_workflow_state == 'author review' %}
                                                     Author Review
-                                                {% elif obj.workflow_state == 'processing' %}
+                                                {% elif cr_workflow_state == 'processing' %}
                                                     Submitted
                                                 {% else %}
-                                                    {{ obj.workflow_state }}
+                                                    {{ cr_workflow_state }}
                                                 {% endif %}
                                             </span>
                                         {% endif %}
