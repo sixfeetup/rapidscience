@@ -65,12 +65,12 @@ $(document).ready(function() {
     $(wrapper).on("click",".remove_field", function(e){ //user click on remove text
         e.preventDefault(); $(this).parent('div').remove(); x--;
     })
-    
+
     $(".hiddenField").parents(".sharing-wrapper").hide().find("#share3").prop('checked', true);
     if ($('.action-buttons').length) {
         $(".main-footer").css({"padding-bottom": "120px"});
     }
-    
+
     // sharing fields
     var sharing_fields = $("#sharing-field-members, #sharing-field-external, #sharing-field-groups, #sharing-field-comment")
     $(".sharing-wrapper .choices input").click(function(){
@@ -138,14 +138,14 @@ function captcha(){
         $(".manual-form").hide();
         $(".free-text").hide();
         $(".file-form").hide();
-        
+
         if (type == 'M') {
             $(".manual-form").show();
         } else if (type == 'T') {
             $(".free-text").show();
         } else if (type == 'F') {
             $(".file-form").show();
-        } 
+        }
 
     });
 
@@ -197,7 +197,7 @@ $(document).ready(function() {
     var max_fields      = 20; //maximum input boxes allowed
     var coauthor_wrapper         = $(".coauthor-div"); //Fields wrapper
     var add_button      = $(".add_coauthor_button"); //Add button ID
-    
+
     var x = $(".coauthor-div .row.coauthor").length; //initlal text box count
     $(add_button).click(function(e){ //on add input button click
         e.preventDefault();
@@ -214,7 +214,7 @@ $(document).ready(function() {
                 '<label for="coauthor_email' + x + '">Email Address</label>' +
                 '<input name="coauthor_email" type="EMAIL" class="form-control" id="coauthor_email' + x + '" placeholder="Email">'+
                 '<div class="helpText">' +
-                    'You must use an institutional email address' +
+                    'Please use an institutional email address' +
                 '</div>' +
                 '</div><div class="col-md-1"><a href="#" class="remove_coauthor">✕</a></div></div>'
             );
@@ -252,7 +252,7 @@ function validate(ev) {
         $(".radio-box .choose-message").show();
         return false;
     }
-    
+
     if(subtype == '' && subtypeOther == '') {
         caseform.subtype.focus()
         $(".required-message").show();
@@ -433,7 +433,7 @@ $(document).ready(function() {
             add_button.show();
         }
     });
-    
+
     // open the first attachment field
     if ($('.attachments-div .attachment').length == 0){
         $('.add_att_button').trigger("click");
