@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from access_tokens import tokens
-from actstream import action
+from actstream import action as actstream_action
 from casereport import emails
 from casereport.constants import GENDER, WorkflowState
 from casereport.constants import TYPE
@@ -33,6 +33,19 @@ from .utils import past_tense_verb
 
 __author__ = 'yaseen'
 
+
+class ActionWrapper(object):
+    def send(self, sender, **kwargs):
+        obj = kwargs.get('action_object', None)
+        data = False
+        if obj:
+            if hasattr(obj, 'to_dict'):
+                data = obj.to_dict()
+        kwargs['frozen'] = data
+        return actstream_action.send(sender, **kwargs)
+
+
+action = ActionWrapper()
 
 @python_2_unicode_compatible
 class CRDBBase(models.Model):
@@ -210,6 +223,17 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     def __str__(self):
         return self.title if self.title else '---'
 
+    def to_dict(self):
+        return {
+            'model': 'CaseReport',
+            'id': self.id,
+            'title': self.title,
+            'author_approved': self.author_approved,
+            'admin_approved': self.admin_approved,
+            'date_published': self.date_published.strftime("%m/%d/%Y") if self.date_published else None,
+            'workflow_state': self.workflow_state,
+        }
+
     def sort_date(self):
         if self.date_published:
             return self.date_published
@@ -278,7 +302,10 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         ''' send to admins with approval '''
         self.author_approved = True
         self.admin_approved = False
-        emails.approved(self)
+        try:
+            emails.approved(self)
+        except Exception as mail_err:
+            print(mail_err)
 
         return "Thank you for approving your Case Report for posting in our \
             database! We will contact you when it goes live."
@@ -405,8 +432,10 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         user = CurrentUserMiddleware.get_user()
         self.author_approved = True
         self.admin_approved = False
-        emails.revise(self, user)
-
+        try:
+            emails.revise(self, user)
+        except Exception as mail_err:
+            print(mail_err)
         return "Retracted"
 
 
