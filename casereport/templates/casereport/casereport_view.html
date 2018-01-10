@@ -262,11 +262,13 @@
       </div>
       {% endif %}
       <!-- comments -->
-      <div class="add-comment">
-          {% if user_interaction %}
-            {% render_comment_form for casereport %}
-          {% endif %}
-      </div>
+      {% if casereport.workflow_state == 'live' %}
+        <div class="add-comment">
+            {% if user_interaction %}
+              {% render_comment_form for casereport %}
+            {% endif %}
+        </div>
+      {% endif %}
       {% with expand_comments='True' %}
         {% include 'discussions/threadedcomment/list.html' %}
       {% endwith %}
