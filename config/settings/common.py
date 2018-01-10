@@ -346,7 +346,7 @@ CACHES['default']['KEY_PREFIX'] = SITE_PREFIX
 ACTSTREAM_SETTINGS = {
     'MANAGER': 'actstream.managers.ActionManager',
     'FETCH_RELATIONS': False,
-    'USE_JSONFIELD': False,
+    'USE_JSONFIELD': True,
 }
 
 BOOTSTRAP3 ={
