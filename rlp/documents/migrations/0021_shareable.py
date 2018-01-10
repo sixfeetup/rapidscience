@@ -34,5 +34,5 @@ class Migration(migrations.Migration):
             name='shareable',
             field=models.BooleanField(default=True, editable=False),
         ),
-        migrations.RunPython(set_shareable),
+        # migrations.RunPython(set_shareable),
     ]
