@@ -3,6 +3,7 @@ def past_tense_verb(action):
         'author_review_edit': 'edited',
         'submit': 'submitted',
         'send_back': 'sent back',
+        'send back': 'sent back',
         'admin_edit': 'pulled for revision',
         '_retract_by_author': 'pulled for revision',
         '_retract_by_admin': 'pulled for revision',
