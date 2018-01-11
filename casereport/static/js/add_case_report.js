@@ -230,7 +230,7 @@ $(document).ready(function() {
     $(coauthor_wrapper).on("click",".remove_coauthor", function(e){ //user click on remove text
         e.preventDefault(); $(this).parents('.row.coauthor').remove();
         if ($('.row.coauthor').length == 0) {
-            $(".add_coauthor_button_text").text('Add co-author(s)');
+            $(".add_coauthor_button_text").text('Add a non-member as a co-author(s)');
         }
         if ($('.row.coauthor').length <= max_fields) {
             $(".add_coauthor_button").show();
