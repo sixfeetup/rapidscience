@@ -233,6 +233,7 @@
       {% if casereport.free_text and casereport.workflow_state != 'live'  %}
       <div id="section-freetext">
           <h4>Free Text</h4>
+          <p class="cr_help">For reference during editorial workflow</p>
           <p>{{ casereport.free_text }}</p>
       </div>
       {% endif %}
