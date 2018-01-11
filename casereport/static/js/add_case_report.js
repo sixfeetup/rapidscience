@@ -205,13 +205,13 @@ $(document).ready(function() {
             x++; //text box increment
             $(coauthor_wrapper).append(
                 '<div class="row coauthor"><div class="form-group col-md-6">' +
-                '<label for="coauthor_name' + x + '">Name</label>' +
+                '<label for="coauthor_name' + x + '">Add Co-Author Name (If Non-Member)</label>' +
                 '<input name="coauthor_name" type="text" class="form-control" id="coauthor_name' + x + '" placeholder="First and Last Name">'+
                 '<div class="helpText">' +
                     'ex: John Smith, MD, PhD' +
                 '</div>' +
                 '</div><div class="form-group col-md-5">' +
-                '<label for="coauthor_email' + x + '">Email Address</label>' +
+                '<label for="coauthor_email' + x + '">Add Co-Author Email (If Non-Member)</label>' +
                 '<input name="coauthor_email" type="EMAIL" class="form-control" id="coauthor_email' + x + '" placeholder="Email">'+
                 '<div class="helpText">' +
                     'Please use an institutional email address' +
