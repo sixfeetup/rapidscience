@@ -2,7 +2,7 @@
 {% lazy_paginate object_list %}
 {% for result in object_list %}
   {% if  'accounts.' in result.content_type %}
-    {% include "search/_result_item.html" with label=result.verbose_name title=result.title link=result.link description=result.text highlighted=result.highlighted %}
+    {% include "accounts/_accounts_result_item.html" with label=result.verbose_name title=result.title link=result.link description=result.text highlighted=result.highlighted %}
   {% elif 'discussions.' in result.content_type %}
     {% include 'comments/list_item.html' with view='tab-content' comment=result.object highlighted=result.highlighted %}
   {% elif 'casereport.' in result.content_type %}
