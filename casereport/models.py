@@ -338,26 +338,29 @@ class CaseReport(CRDBBase, SharedObjectMixin):
                 permission=can_submit,
                 target=WorkflowState.ADMIN_REVIEW)
     def submit(self, by=None):
-        ''' send to admin without approval '''
+        """ send to admin without approval """
         self.author_approved = True
         self.admin_approved = False
-        emails.submitted(self)
-        # notify co-authors
-        for coauthor in self.co_author.all():
-            if coauthor.is_active:
-                emails.notify_coauthor(self, coauthor)
-            else:
-                emails.invite_coauthor(self, coauthor)
+        try:
+            emails.submitted(self)
+
+            # notify co-authors
+            for coauthor in self.co_author.all():
+                if coauthor.is_active:
+                    emails.notify_coauthor(self, coauthor)
+                else:
+                    emails.invite_coauthor(self, coauthor)
+        except ConnectionRefusedError:
+            print("cannot connect to email")
         return "Your Case Report has been submitted and will be reviewed by \
             our admin staff. \
             Please note case no. #%s for future reference." % self.id
-
 
     def can_reject(self, user=None):
         if not user:
             user = CurrentUserMiddleware.get_user()
         if user.is_staff \
-            and self.workflow_state in (WorkflowState.ADMIN_REVIEW,):
+           and self.workflow_state in (WorkflowState.ADMIN_REVIEW,):
             return True
         return False
 
@@ -371,7 +374,10 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         """ send the CR back to the author
         """
         self.admin_approved = False
-        emails.send_back(self)
+        try:
+            emails.send_back(self)
+        except ConnectionRefusedError:
+            pass
         user = CurrentUserMiddleware.get_user()
         author = User.objects.get(email__exact=self.primary_author.email)
         action.send(user, verb='sent back', action_object=self, target=author)
@@ -394,9 +400,15 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         self.share_with(self.co_author.all(), shared_by=author)
         if not self.date_published:
             # only send these emails on first publish
-            emails.cr_published_notifications(self)
+            try:
+                emails.cr_published_notifications(self)
+            except ConnectionRefusedError:
+                pass
         self.date_published = datetime.now()
-        emails.publish_to_author(self)
+        try:
+            emails.publish_to_author(self)
+        except ConnectionRefusedError:
+            pass
         user = CurrentUserMiddleware.get_user()
         action.send(user, verb='published', action_object=self, target=author)
         # TODO: put pushed into each shared with group activity feed?

@@ -14,8 +14,10 @@ def casereport_saved(sender, **kwargs):
     if not kwargs.get('created'):
         return
     report = kwargs.get('instance')
-    created(report)
-
+    try:
+        created(report)
+    except ConnectionRefusedError:
+        print("cannot connect to mail server")
 
 @receiver(post_save, sender=User)
 def author_updated(sender, **kwargs):
