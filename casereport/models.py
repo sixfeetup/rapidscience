@@ -2,34 +2,30 @@ from datetime import datetime
 
 from access_tokens import tokens
 from actstream import action as actstream_action
-from casereport import emails
-from casereport.constants import GENDER, WorkflowState
-from casereport.constants import TYPE
-from casereport.constants import PERFORMANCE_STATUS
-from casereport.constants import OBJECTIVE_RESPONSES
-from casereport.constants import TREATMENT_INTENT
-from casereport.constants import INDEXES
-from casereport.middleware import CurrentUserMiddleware
-
-from django_countries.fields import CountryField
-from django.db import models
-from django.core.mail import EmailMessage
-from django.core.urlresolvers import reverse
-from django.template.loader import render_to_string
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
+from django.core.mail import EmailMessage
+from django.core.urlresolvers import reverse
+from django.db import models
+from django.template.loader import render_to_string
 from django.utils.encoding import python_2_unicode_compatible
-
-from djangocms_text_ckeditor.fields import HTMLField
-from django_fsm import FSMField, transition, signals as fsm_signals
+from django_countries.fields import CountryField
+from django_fsm import signals as fsm_signals
+from django_fsm import FSMField, transition
 from django_fsm_log.decorators import fsm_log_by
+from django_fsm_log.models import StateLog
+from djangocms_text_ckeditor.fields import HTMLField
 
+from casereport import emails
+from casereport.constants import (GENDER, OBJECTIVE_RESPONSES,
+                                  PERFORMANCE_STATUS, TREATMENT_INTENT, TYPE,
+                                  WorkflowState)
+from casereport.middleware import CurrentUserMiddleware
 from rlp.accounts.models import User
-from rlp.discussions.models import ThreadedComment
 from rlp.core.models import SharedObjectMixin
+from rlp.discussions.models import ThreadedComment
 
 from .utils import past_tense_verb
-
 
 __author__ = 'yaseen'
 
@@ -46,6 +42,7 @@ class ActionWrapper(object):
 
 
 action = ActionWrapper()
+
 
 @python_2_unicode_compatible
 class CRDBBase(models.Model):
@@ -177,7 +174,8 @@ class CaseReport(CRDBBase, SharedObjectMixin):
                                blank=True,
                                verbose_name='Alternative Correspondence ' +
                                             'Email Address')
-    subtype = models.ForeignKey(SubtypeOption, models.SET_NULL, null=True, blank=True)
+    subtype = models.ForeignKey(SubtypeOption, models.SET_NULL,
+                                null=True, blank=True)
     subtype_other = models.CharField(max_length=200, null=True, blank=True)
     presentation = models.TextField(null=True, blank=True)
     aberrations = models.ManyToManyField(MolecularAbberation, blank=True)
@@ -252,11 +250,13 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     def can_edit(self, user=None):
         if not user:
             user = CurrentUserMiddleware.get_user()
-        if self.workflow_state in (
-        WorkflowState.DRAFT,WorkflowState.RETRACTED, WorkflowState.AUTHOR_REVIEW) and user.email == self.primary_author.email:
+        if self.workflow_state in (WorkflowState.DRAFT,
+                                   WorkflowState.RETRACTED,
+                                   WorkflowState.AUTHOR_REVIEW) and \
+           user.email == self.primary_author.email:
             return True
-        if self.workflow_state in (
-        WorkflowState.ADMIN_REVIEW,) and user.is_staff:
+        if self.workflow_state in (WorkflowState.ADMIN_REVIEW,) and \
+           user.is_staff:
             return True
         return False
 
@@ -291,15 +291,15 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         # ensure author
         if not user:
             user = CurrentUserMiddleware.get_user()
-        return user.email == self.primary_author.email  # and self.author_approved
+        return user.email == self.primary_author.email
 
     @fsm_log_by
     @transition(field=workflow_state,
-                source=[WorkflowState.AUTHOR_REVIEW,],
+                source=[WorkflowState.AUTHOR_REVIEW, ],
                 permission=can_submit,
                 target=WorkflowState.ADMIN_REVIEW)
     def approve(self, by=None):
-        ''' send to admins with approval '''
+        """ send to admins with approval """
         self.author_approved = True
         self.admin_approved = False
         try:
@@ -443,7 +443,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     def _get_displayname_for_fname(self, fname):
         """ turn a Transition name into its associated method name.
         """
-        return fname.title().replace('_',' ')
+        return fname.title().replace('_', ' ')
 
     def _get_fname_for_displayname(self, displayname):
         """ turn a transition method name into its assocated Display Name.
@@ -832,7 +832,7 @@ class ResultValueEvent(CRDBBase):
 
 @python_2_unicode_compatible
 class DiagnosisEvent(Event):
-    test = models.ForeignKey(TestEvent, null=True, blank=True)  # FK (Test Event)
+    test = models.ForeignKey(TestEvent, null=True, blank=True)
     specimen = models.CharField(max_length=255, null=True, blank=True)
     symptoms = models.TextField(null=True, blank=True)
     body_part = models.CharField(max_length=255, null=True, blank=True)
