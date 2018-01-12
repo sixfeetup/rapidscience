@@ -4,7 +4,7 @@
             Cases Central <i class="fa fa-unlock" title="This item has been shared outside of closed groups." aria-hidden="true"></i>
         {% else %}
             {% if origin.email %}
-                my Dashboard <i class="fa fa-unlock" title="This item is only shared with members of this closed group." aria-hidden="true"></i>
+                my Dashboard <i class="fa fa-unlock" title="This item has been shared outside of closed groups." aria-hidden="true"></i>
             {%  else %}
                 {{ origin }}
                 {% if origin.approval_required %}
