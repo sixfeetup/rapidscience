@@ -62,6 +62,7 @@
                                             <span class="btn btn-tag btn-xs cr-workflow">
                                                 <i class="{{ obj.get_workflow_icon }}"
                                                    aria-hidden="true"></i>
+{#                                            (frozen.state:{{ frozen.workflow_state }}, statelog_state:{{ frozen.statelog_state }}, last_transition:{{ frozen.transition }}, live.state:{{ obj.workflow_state }})#}
                                                 {% firstof frozen.workflow_state obj.workflow_state as cr_workflow_state %}
                                                 {% if cr_workflow_state == 'live' %}
                                                     Posted
