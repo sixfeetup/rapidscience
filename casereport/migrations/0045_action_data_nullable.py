@@ -57,3 +57,10 @@ class Migration(migrations.Migration):
             app_label="actstream",
         ),
     ]
+
+# if you run into actstream creating migrations over and over
+# it is related to this casereport/migrations/0045_action_data_nullable.py
+# the 0001 migration called the action migration Action
+# but 0002 and forward called it 'action' to remove it.
+# putting the column back awakend this bug.   it looks like django 1.10
+# solves this.
