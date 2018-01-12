@@ -1,6 +1,6 @@
 import json
 
-from actstream import action
+from casereport.models import action
 from ajax_select import registry
 from captcha.helpers import captcha_image_url
 from captcha.models import CaptchaStore
@@ -102,15 +102,17 @@ class CaseReportDetailView(LoginRequiredMixin, TemplateView):
 def workflow_transition(request, casereport_id):
     casereport = CaseReport.objects.get(id=casereport_id)
 
-    action = request.GET.get('action')
-    msg = casereport.take_action_for_user(action, request.user)
+    form_action = request.GET.get('action')
+    msg = casereport.take_action_for_user(form_action, request.user)
     casereport.save()
+
+    action.really_send()
 
     if msg:
         messages.success(request, msg)
 
     # hack to allow edit actions to use an interstitial form
-    if "Edit" in action:
+    if "Edit" in form_action:
         return HttpResponseRedirect(reverse(
             'edit',
             kwargs={'case_id': casereport.id},

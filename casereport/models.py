@@ -1,3 +1,4 @@
+from collections import namedtuple
 from datetime import datetime
 
 from access_tokens import tokens
@@ -29,16 +30,29 @@ from .utils import past_tense_verb
 
 __author__ = 'yaseen'
 
+ACTION_QUEUE = []
+QueuedAction = namedtuple('QueuedAction', 'sender kwargs')
+
 
 class ActionWrapper(object):
-    def send(self, sender, **kwargs):
-        obj = kwargs.get('action_object', None)
-        data = False
-        if obj:
-            if hasattr(obj, 'to_dict'):
-                data = obj.to_dict()
-        kwargs['frozen'] = data
-        return actstream_action.send(sender, **kwargs)
+    @staticmethod
+    def send(sender, **kwargs):
+        global ACTION_QUEUE
+        ACTION_QUEUE.append(QueuedAction(sender=sender, kwargs=kwargs))
+
+    @staticmethod
+    def really_send():
+        global ACTION_QUEUE
+        while ACTION_QUEUE:
+            qa = ACTION_QUEUE.pop(0)
+
+            obj = qa.kwargs.get('action_object', None)
+            data = False
+            if obj:
+                if hasattr(obj, 'to_dict'):
+                    data = obj.to_dict()
+            qa.kwargs['frozen'] = data
+            actstream_action.send(qa.sender, **qa.kwargs)
 
 
 action = ActionWrapper()
@@ -222,14 +236,22 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         return self.title if self.title else '---'
 
     def to_dict(self):
+        # this gets us the latest state change, but it doesn't yet
+        # have the state change we are undergoing
+        # so we have to save the "previous_statelog_id"
+        sl = StateLog.objects.for_(self).order_by('-timestamp')[0]
         return {
             'model': 'CaseReport',
             'id': self.id,
             'title': self.title,
             'author_approved': self.author_approved,
             'admin_approved': self.admin_approved,
-            'date_published': self.date_published.strftime("%m/%d/%Y") if self.date_published else None,
+            'date_published': self.date_published.strftime("%m/%d/%Y")
+            if self.date_published else None,
             'workflow_state': self.workflow_state,
+            'transition': sl.transition,  # these are redundant but included
+            'statelog_state': sl.state,   # for debugging
+            'previous_statelog_id': sl.id,
         }
 
     def sort_date(self):
