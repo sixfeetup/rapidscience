@@ -506,7 +506,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         if not user:
             user = CurrentUserMiddleware.get_user()
 
-        if not action_name in self.get_next_actions_for_user(user=user):
+        if action_name not in self.get_next_actions_for_user(user=user):
             raise KeyError(action_name)
 
         verb = past_tense_verb(action_name)
