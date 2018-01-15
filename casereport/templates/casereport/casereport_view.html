@@ -241,6 +241,7 @@
       {% if casereport.casefile_f and casereport.workflow_state != 'live' %}
       <div id="section-uploadedfile">
           <h4>Uploaded File</h4>
+          <p class="cr_help">For reference during editorial workflow</p>
           <p>{{ casereport.casefile_f.name }} ({{ casereport.casefile_f.size|filesizeformat }})<br />
               <a href="{{ casereport.casefile_f.url }}" target="_blank" class="btn btn-primary download">Download file</a>
           </p>
