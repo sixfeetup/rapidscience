@@ -1,4 +1,4 @@
-from actstream import action
+# from actstream import action
 from actstream.models import Action
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.fields import GenericRelation
@@ -173,6 +173,8 @@ class SharedObjectMixin(models.Model):
         ))
 
     def share_with(self, viewers, shared_by, comment=None):
+        from casereport.models import action
+        # NB: action.send merely queues
         # add an entry to the target viewer's activity stream
         for viewer in viewers:
             # ghf - need to create Actions to go along with this.

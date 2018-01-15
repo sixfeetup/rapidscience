@@ -35,6 +35,11 @@ QueuedAction = namedtuple('QueuedAction', 'sender kwargs')
 
 
 class ActionWrapper(object):
+    """ stand-in for actstream.action which queues the actions
+        and records the object's state if it has a to_dict member.
+
+        Remember to call action.really_send to record these actions.
+    """
     @staticmethod
     def send(sender, **kwargs):
         global ACTION_QUEUE
@@ -239,7 +244,10 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         # this gets us the latest state change, but it doesn't yet
         # have the state change we are undergoing
         # so we have to save the "previous_statelog_id"
-        sl = StateLog.objects.for_(self).order_by('-timestamp')[0]
+        try:
+            sl = StateLog.objects.for_(self).order_by('-timestamp')[0]
+        except IndexError as too_new:
+            sl = None
         return {
             'model': 'CaseReport',
             'id': self.id,
@@ -249,9 +257,10 @@ class CaseReport(CRDBBase, SharedObjectMixin):
             'date_published': self.date_published.strftime("%m/%d/%Y")
             if self.date_published else None,
             'workflow_state': self.workflow_state,
-            'transition': sl.transition,  # these are redundant but included
-            'statelog_state': sl.state,   # for debugging
-            'previous_statelog_id': sl.id,
+            # these are slightly redundant but included for debugging
+            'statelog_transition': sl.transition if sl else None,
+            'statelog_state': sl.state if sl else None,
+            'statelog_id': sl.id if sl else None,
         }
 
     def sort_date(self):

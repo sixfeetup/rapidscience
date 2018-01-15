@@ -349,6 +349,9 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
                     [new_user], shared_by=primary_author,
                     comment=data.get('comment'))
 
+        # record DRAFT related actions:
+        action.really_send()
+
         if data.get('save-final'):
             # send to admins for review immediately
             messages.success(
@@ -356,7 +359,7 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
                 "Your case report has been successfully submitted.",
             )
             # case.submit(by=request.user)
-            case.take_action_for_user("submit", request.user)
+            case.take_action_for_user("Submit", request.user)
             case.save()
         # eventually we' want this:
         # #messages.success(self.request, "Saved!")
