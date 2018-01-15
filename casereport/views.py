@@ -275,8 +275,11 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
             attachment2_description=attachment2_description,
             attachment3_description=attachment3_description,
         )
+
+        # workflow_state be DRAFT here, as the default
         case.save()
-        tags = {}
+
+        tags = dict()
         tags['ids'] = request.POST.getlist('tags', [])
         tags['new'] = request.POST.getlist('new_tags', [])
         add_tags(case, tags)
@@ -352,7 +355,8 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
                 self.request,
                 "Your case report has been successfully submitted.",
             )
-            case.submit(by=request.user)
+            # case.submit(by=request.user)
+            case.take_action_for_user("submit", request.user)
             case.save()
         # eventually we' want this:
         # #messages.success(self.request, "Saved!")
@@ -363,6 +367,10 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
             messages.success(self.request, "Your case report has been " +
                              "successfully saved. To send to the editorial" +
                              " team, please click the “submit” button below.")
+
+        # record accumulated activity stream actions
+        action.really_send()
+
         return redirect(case.get_absolute_url())
 
     def validate_captcha(self, data):
@@ -753,6 +761,9 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
                 case.share_with([new_user], shared_by=case.primary_author)
 
         messages.success(request, msg)
+
+        action.really_send()
+
         return redirect(reverse(
             'casereport_detail', args=(case.id, case.title),
         ))
