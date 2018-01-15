@@ -108,5 +108,10 @@
 {% endif %}
 {# timestamp #}
 {% if action.verb != 'invited' %}
+    {%  if action.verb == 'shared' %}
+      {% if action.data.frozen.workflow_state == 'draft' or action.data.frozen.workflow_state == 'processing' %}
+        pending publication
+      {% endif %}
+    {% endif %}
     | {{ action.timestamp|date:"j M Y" }}
 {% endif %}
