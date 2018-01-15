@@ -96,7 +96,8 @@
                   form = $(data).find('.edit-reference-form');
                   $(form).attr('action', formUrl);
                   $(reference).after(form);
-                  $(".select2").select2()
+                  $(".select2").select2();
+                  $("#id_groups").before("<p>Note: when an item is posted from a <i>Group Dashboard</i>, it is automatically shared with that Group.</p>");
                 },
                 error: function() {
                   console.log('Error occurred.');
