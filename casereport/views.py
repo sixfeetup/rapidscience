@@ -327,7 +327,7 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
             comment=data.get('comment') or None,
         )
 
-        past_tense_verb = 'created'
+        past_tense_verb = 'saved as draft'
         for group_id in data.getlist('groups'):
             group = Project.objects.get(id=group_id)
             action.send(

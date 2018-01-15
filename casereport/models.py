@@ -443,7 +443,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     def _retract_by_author(self, by=None):  # starts with _ to hide from users
         self.author_approved = False
         # self.notify_datascience_team()
-        return '''moved to "Author Review"'''
+        return '''pulled back'''
 
     @fsm_log_by
     @transition(field=workflow_state,
@@ -456,7 +456,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         user = CurrentUserMiddleware.get_user()
         author = User.objects.get(email__exact=self.primary_author.email)
         action.send(user, verb='unpublished', action_object=self, target=author)
-        return '''moved to "Admin Review"'''
+        return '''pulled back'''
 
     def can_retract(self, user=None):
         if not user:
@@ -520,11 +520,11 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         # messages and actions getting recorded.
         if self.workflow_state == WorkflowState.RETRACTED:
             if self.can_retract_as_author():
-                res = self._retract_by_author(by=user)
-                verb = res
+                verb = self._retract_by_author(by=user)
+                res = "Case report has been pulled back"
             elif self.can_retract_as_admin():
-                res = self._retract_by_admin(by=user)
-                verb = res
+                verb = self._retract_by_admin(by=user)
+                res = "Case report has been pulled back"
             else:
                 raise PermissionError("permission denied")
 
