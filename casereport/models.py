@@ -408,6 +408,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         author = User.objects.get(email__exact=self.primary_author.email)
         self.share_with(self.co_author.all(), shared_by=author)
         if not self.date_published:
+            self.share_with(self.get_viewers(), shared_by=self.primary_author)
             # only send these emails on first publish
             try:
                 emails.cr_published_notifications(self)
@@ -420,7 +421,6 @@ class CaseReport(CRDBBase, SharedObjectMixin):
             pass
         user = CurrentUserMiddleware.get_user()
         action.send(user, verb='published', action_object=self, target=author)
-        # TODO: put pushed into each shared with group activity feed?
         return "This case report has been published!"
 
     def can_retract_as_author(self, user=None):
