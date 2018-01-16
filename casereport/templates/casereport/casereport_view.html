@@ -119,6 +119,20 @@
                     {% endif %}
                  {% endfor %}
              </ul>
+             {% elif casereport.get_nonpublished_shares %}
+               <ul class="jumpMenu">
+                 {% for share in casereport.get_nonpublished_shares %}
+                   {% with viewer=share.target %}
+                    {% if viewer != request.user and viewer|check_is_visible %}
+                     <li>
+                        {% if not viewer.users %}<a href="{% url 'profile' viewer.id %}">{{ viewer.get_full_name }}</a>{% endif %}
+                        {% if viewer.users %}<a href="{% url 'projects:projects_detail' viewer.id viewer.slug %}">{{ viewer }}</a>{% endif %}
+{#                        pending#}
+                     </li>
+                    {% endif %}
+                   {% endwith %}
+                 {% endfor %}
+               </ul>
              {% endif %}
            </div>
          </div>

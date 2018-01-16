@@ -263,6 +263,20 @@ class CaseReport(CRDBBase, SharedObjectMixin):
             'statelog_id': sl.id if sl else None,
         }
 
+    def share_with(self, viewers, shared_by,
+                   comment=None,
+                   publicly=True,
+                   force_public=False):
+        """ share with viewers by shared_by
+            This accepts publicly only for the interface.
+            Instead, this marks the shares as Private if the CR is not LIVE
+        """
+        public_sharing = force_public or self.workflow_state == WorkflowState.LIVE
+        return super(CaseReport,self).share_with(viewers,
+                                                 shared_by,
+                                                 comment=comment,
+                                                 publicly=public_sharing)
+
     def sort_date(self):
         if self.date_published:
             return self.date_published
@@ -407,8 +421,13 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         self.admin_approved = True
         author = User.objects.get(email__exact=self.primary_author.email)
         self.share_with(self.co_author.all(), shared_by=author)
+
+        # re-share publicly with the author's private shares
+        targets = [s.target for s in self.get_nonpublished_shares()]
+        # remember, we're still in the source state
+        self.share_with(targets, shared_by=self.primary_author, force_public=True)
+
         if not self.date_published:
-            self.share_with(self.get_viewers(), shared_by=self.primary_author)
             # only send these emails on first publish
             try:
                 emails.cr_published_notifications(self)

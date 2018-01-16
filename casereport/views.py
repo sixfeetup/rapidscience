@@ -103,7 +103,12 @@ def workflow_transition(request, casereport_id):
     casereport = CaseReport.objects.get(id=casereport_id)
 
     form_action = request.GET.get('action')
-    msg = casereport.take_action_for_user(form_action, request.user)
+    # if form_action == 'Publish':
+    #     user = casereport.primary_author
+    # else:
+    user = request.user
+
+    msg = casereport.take_action_for_user(form_action, user)
     casereport.save()
 
     action.really_send()

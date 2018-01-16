@@ -60,15 +60,28 @@
         <!-- verb suppressed to read like Comment by ... -->
     {% elif action.verb == 'sent back' %}
         {{ action.verb|verb_alias }} to the author
+    {% elif action.verb == 'published' %}
+         <!-- posted or shared depending... -->
+         {% if action.action_object.get_nonpublished_shares %}
+           shared
+         {% else %}
+           posted
+         {% endif %}
     {% else %}
       {{ action.verb|verb_alias }}<!-- (aliased from {{ action.verb }}) -->
     {% endif %}
 
     {# actor #}
-    by <a href="{{ action.actor.get_absolute_url }}">{% if request.user == action.actor %} me {% else %} {{ action.actor.get_full_name }}{% endif %}</a>
-
+    by {%  if action.verb == 'published' %}
+          <!-- swapping author for admin -->
+          {%  with author=action.action_object.primary_author %}
+          <a href="{{ author.get_absolute_url }}">{% if request.user == author %} me {% else %} {{ author.get_full_name }}{% endif %}</a>
+          {% endwith %}
+       {% else %}
+          <a href="{{ action.actor.get_absolute_url }}">{% if request.user == action.actor %} me {% else %} {{ action.actor.get_full_name }}{% endif %}</a>
+       {% endif %}
     {# target #}
-    {% if action.verb == 'shared' %} with {% if action.target == request.user %} me {% else %}{{ action.target|link }}{% endif %}
+    {% if action.verb == 'shared' or action.verb == 'published' %} with {% if action.target == request.user %} me {% else %}{{ action.target|link }}{% endif %}
         {% if action.all_targets %}
             {% for target in action.all_targets|slice:"1:" %}{% if forloop.last %} and {%  else %}, {% endif %}{% if target == request.user %} me {% else %}{{ target|link }}{% endif %}{%  endfor %}
         {% endif %}
@@ -108,10 +121,10 @@
 {% endif %}
 {# timestamp #}
 {% if action.verb != 'invited' %}
-    {%  if action.verb == 'shared' %}
-      {% if action.data.frozen.workflow_state == 'draft' or action.data.frozen.workflow_state == 'processing' %}
-        pending publication
-      {% endif %}
-    {% endif %}
+{#    {%  if action.verb == 'shared' %}#}
+{#      {% if action.data.frozen.workflow_state == 'draft' or action.data.frozen.workflow_state == 'processing' %}#}
+{#        pending publication#}
+{#      {% endif %}#}
+{#    {% endif %}#}
     | {{ action.timestamp|date:"j M Y" }}
 {% endif %}
