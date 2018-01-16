@@ -1,5 +1,5 @@
 
-<div class="file-form"{% if not casereport.get_treatments and casereport.casefile_f %}{% if casereport.workflow_state == 'author review' or casereport.workflow_state == 'draft' %} style="display: block;"{% endif %}{% endif %}>
+<div class="file-form"{% if casereport.workflow_state == 'author review' and casereport.casefile_f %} style="display: block;"{% endif %}>
 
     <h4><label for="uploadfile">Upload Case</label></h4>
     {% if casereport.casefile_f %}

@@ -133,22 +133,27 @@ function captcha(){
 
 }
 
-    $(".radiobut").click(function(){
-        type = $(this).val();
-        $(".manual-form").hide();
-        $(".free-text").hide();
-        $(".file-form").hide();
+    $(document).ready(function() {
+        $(".radiobut").click(function(){
+            type = $(this).val();
+            $(".manual-form").hide();
+            $(".free-text").hide();
+            $(".file-form").hide();
 
-        if (type == 'M') {
-            $(".manual-form").show();
-        } else if (type == 'T') {
-            $(".free-text").show();
-        } else if (type == 'F') {
-            $(".file-form").show();
+            if (type == 'M') {
+                $(".manual-form").show();
+            } else if (type == 'T') {
+                $(".free-text").show();
+            } else if (type == 'F') {
+                $(".file-form").show();
+            }
+        });
+        var mode = $("#caseform").data('mode');
+        console.log("mode: '" + mode + "'");
+        if (mode) {
+            $(".radiobut[value=" + mode + "]").trigger("click");
         }
-
     });
-
 
 
     $(document).ready(function() {

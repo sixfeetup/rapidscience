@@ -1,5 +1,5 @@
-<div class="free-text"{% if not casereport.get_treatments and casereport.free_text != '' %}{% if casereport.workflow_state == 'author review' or casereport.workflow_state == 'draft' %} style="display: block;"{% endif %}{% endif %}>
-        <div class="form-group">
+<div class="free-text"{% if casereport.workflow_state == 'author review' and casereport.free_text %} style="display: block;"{% endif %}>
+          <div class="form-group">
           <label for="details">Case Details:</label>
           <textarea name="details" id="details" class="form-control editor" rows="15" cols="73">{{ casereport.free_text }}</textarea>
           <div class="helpText">Include presentation, pathology, treatments, outcome, objective response</div>

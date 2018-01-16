@@ -18,6 +18,7 @@
 </div>
 
 <form id="caseform" name="caseform" class="rpds-form" action="" method="post"
+      data-mode="{% if casereport.get_treatments %}M{% elif not casereport.get_treatments and casereport.free_text %}T{% elif not casereport.get_treatments and casereport.casefile_f %}F{% endif %}"
       enctype="multipart/form-data">
     {% csrf_token %}
 
@@ -89,7 +90,7 @@
 
               <a class="add_coauthor_button" href="#"><i class="fa fa-plus"></i> <span class="add_coauthor_button_text">Add a non-member as a co-author</a></a>
 
-        <div class="form-group radio-box"{% if casereport.workflow_state != None %} style="display: none;"{% endif %}>
+        <div class="form-group radio-box"{% if casereport.workflow_state != 'draft' and casereport.workflow_state != 'processing' and casereport.workflow_state != None %} style="display: none;"{% endif %}>
         <input checked="checked"  id="id_radio1" type="radio"  class="radiobut" name="entry-type" value="M" />
         <label for="id_radio1">Use Template</label>
         <input id="id_radio2" type="radio" class="radiobut"  name="entry-type" value="T" />
