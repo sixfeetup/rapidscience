@@ -80,20 +80,12 @@
           {%  with author=action.action_object.primary_author %}
           <a href="{{ author.get_absolute_url }}">{% if request.user == author %} me {% else %} {{ author.get_full_name }}{% endif %}</a>
           {% endwith %}
-{#       {% else %}#}
-{#          <a href="{{ action.actor.get_absolute_url }}">{% if request.user == action.actor %} me {% else %} {{ action.actor.get_full_name }}{% endif %}</a>#}
-{#       {% endif %}#}
-    {# target #}
-      {% if action.action_object.get_viewers %} with
-        {% with viewers=action.action_object.get_viewers %}
-        {% for viewer in viewers %}
-          {% if viewer == request.user %} me
-          {% else %}{{ viewer|link }}
-          {% endif %}
-          {% if not forloop.last %}{% ifequal forloop.revcounter 2 %} and {% else %}, {% endifequal %}{% else %}{% endif %}
-        {% endfor %}
-        {% endwith %}
+
+{# with targets #}
+      {% if action.action_object.get_viewers %}
+        {% display_shared_with action.action_object request.user "with {0}." %}
       {% endif %}
+{# to targets #}
     {% elif action.verb == 'added' or action.verb == 'uploaded' or action.verb == 'started' or action.verb == 'replied' or action.verb == 'created' or action.verb == 'posted' %}
         {% with all_targets=action.all_targets|omit:action.actor %}
             {% if all_targets %} to

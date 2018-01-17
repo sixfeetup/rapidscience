@@ -124,7 +124,7 @@ def display_tag_links( tagged_item ):
 
 
 @register.simple_tag
-def display_shared_with(item, user=None):
+def display_shared_with(item, user=None, fmt=r'Shared with {0}'):
     # Display 'Shared with...' text if shared with more than the current user
     try:
         viewers = item.get_viewers()
@@ -139,6 +139,8 @@ def display_shared_with(item, user=None):
         if hasattr(item, "user") and v == item.user:
             continue
         if v._meta.model_name == "user":
+            if not v.is_active:
+                continue
             url = reverse('profile', args=[v.id])
             if v == user:
                 v = 'me'
@@ -161,7 +163,7 @@ def display_shared_with(item, user=None):
             vlist.insert(-1, ' and ')
 
         combined_viewers = "".join(vlist)
-        return mark_safe('Shared with {0}'.format(combined_viewers))
+        return mark_safe(fmt.format(combined_viewers))
     else:
         return ''
 
