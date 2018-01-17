@@ -46,7 +46,7 @@
                                 {% endif %}
                                 {% include 'bibliography/_ref_activity.html' with ref=obj %}
                             {% elif model == "casereport" %}
-                                {% if action.description %}
+                                {% if action.description and frozen.workflow_state == 'live' %}
                                     <blockquote>
                                         <p>{{ action.description }}</p>
                                     </blockquote>
