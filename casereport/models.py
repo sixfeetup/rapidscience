@@ -423,9 +423,14 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         self.share_with(self.co_author.all(), shared_by=author)
 
         # re-share publicly with the author's private shares
-        targets = [s.target for s in self.get_nonpublished_shares()]
-        # remember, we're still in the source state
-        self.share_with(targets, shared_by=self.primary_author, force_public=True)
+        # remember, we're still in the source state so our state is not yet LIVE
+        for npshare in self.get_nonpublished_shares():
+            target = npshare.target
+            invite_msg = npshare.description
+            self.share_with([target],
+                            shared_by=self.primary_author,
+                            comment=invite_msg,
+                            force_public=True)
 
         if not self.date_published:
             # only send these emails on first publish
