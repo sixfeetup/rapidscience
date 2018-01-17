@@ -43,7 +43,7 @@ def activity_mail(user, obj, target, request=None):
         return
     context = {}
     comment = ""
-    link = ""
+    link = "https://" + settings.DOMAIN + obj.get_absolute_url()
     template = 'core/emails/activity_email'
 
     recipients = resolve_email_targets(target, exclude=user)
