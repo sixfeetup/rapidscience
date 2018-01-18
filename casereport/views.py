@@ -616,7 +616,9 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
         form = self.form_class()
         form.fields['members'].choices = member_choices()
         form.fields['groups'].choices = group_choices(request.user)
-        viewers = casereport.get_viewers()
+
+        # de-duped list of pending and published shares
+        viewers = list(set(list(casereport.get_viewers()) + [x.target for x in casereport.get_nonpublished_shares()]))
         # hide sharing fields if shared with closed group
         shared_with = [
             x for x in casereport.get_viewers()
