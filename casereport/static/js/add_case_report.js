@@ -292,7 +292,7 @@ function validate(ev) {
 function file_validate() {
     var uploadfile = $('#uploadfile').val();
 
-    if(uploadfile == '') {
+    if(uploadfile == '' && !casefile_exists) {
     caseform.uploadfile.focus();
     $(".required-message").show();
     $(".file-message").show();
