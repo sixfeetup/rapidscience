@@ -1,6 +1,6 @@
 import json
 
-from actstream import action
+from casereport.models import action
 from ajax_select import registry
 from captcha.helpers import captcha_image_url
 from captcha.models import CaptchaStore
@@ -102,15 +102,22 @@ class CaseReportDetailView(LoginRequiredMixin, TemplateView):
 def workflow_transition(request, casereport_id):
     casereport = CaseReport.objects.get(id=casereport_id)
 
-    action = request.GET.get('action')
-    msg = casereport.take_action_for_user(action, request.user)
+    form_action = request.GET.get('action')
+    # if form_action == 'Publish':
+    #     user = casereport.primary_author
+    # else:
+    user = request.user
+
+    msg = casereport.take_action_for_user(form_action, user)
     casereport.save()
+
+    action.really_send()
 
     if msg:
         messages.success(request, msg)
 
     # hack to allow edit actions to use an interstitial form
-    if "Edit" in action:
+    if "Edit" in form_action:
         return HttpResponseRedirect(reverse(
             'edit',
             kwargs={'case_id': casereport.id},
@@ -273,8 +280,11 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
             attachment2_description=attachment2_description,
             attachment3_description=attachment3_description,
         )
+
+        # workflow_state be DRAFT here, as the default
         case.save()
-        tags = {}
+
+        tags = dict()
         tags['ids'] = request.POST.getlist('tags', [])
         tags['new'] = request.POST.getlist('new_tags', [])
         add_tags(case, tags)
@@ -322,7 +332,7 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
             comment=data.get('comment') or None,
         )
 
-        past_tense_verb = 'created'
+        past_tense_verb = 'saved as draft'
         for group_id in data.getlist('groups'):
             group = Project.objects.get(id=group_id)
             action.send(
@@ -344,13 +354,17 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
                     [new_user], shared_by=primary_author,
                     comment=data.get('comment'))
 
+        # record DRAFT related actions:
+        action.really_send()
+
         if data.get('save-final'):
             # send to admins for review immediately
             messages.success(
                 self.request,
                 "Your case report has been successfully submitted.",
             )
-            case.submit(by=request.user)
+            # case.submit(by=request.user)
+            case.take_action_for_user("Submit", request.user)
             case.save()
         # eventually we' want this:
         # #messages.success(self.request, "Saved!")
@@ -361,6 +375,10 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
             messages.success(self.request, "Your case report has been " +
                              "successfully saved. To send to the editorial" +
                              " team, please click the “submit” button below.")
+
+        # record accumulated activity stream actions
+        action.really_send()
+
         return redirect(case.get_absolute_url())
 
     def validate_captcha(self, data):
@@ -598,7 +616,9 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
         form = self.form_class()
         form.fields['members'].choices = member_choices()
         form.fields['groups'].choices = group_choices(request.user)
-        viewers = casereport.get_viewers()
+
+        # de-duped list of pending and published shares
+        viewers = list(set(list(casereport.get_viewers()) + [x.target for x in casereport.get_nonpublished_shares()]))
         # hide sharing fields if shared with closed group
         shared_with = [
             x for x in casereport.get_viewers()
@@ -751,6 +771,9 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
                 case.share_with([new_user], shared_by=case.primary_author)
 
         messages.success(request, msg)
+
+        action.really_send()
+
         return redirect(reverse(
             'casereport_detail', args=(case.id, case.title),
         ))

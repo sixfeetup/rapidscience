@@ -667,6 +667,12 @@ margin-bottom: 30px;}
 #section-freetext p {
 	white-space: pre-line
 }
+.cr_help {
+	font-size: 14px;
+	line-height: 18px;
+	font-style: italic;
+	color: #999999;
+}
 .treatment-list-inner,.procedures-list-inner,.diagnosis-section-inner{
     padding-bottom: 10px;
     margin-left: 0px !important;

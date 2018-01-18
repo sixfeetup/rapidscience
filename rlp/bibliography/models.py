@@ -3,12 +3,11 @@ import re
 
 from django.utils.safestring import mark_safe
 from simplejson import JSONDecodeError
-
 import requests
 
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
-from django.contrib.postgres.fields import JSONField
+from jsonfield_compat.fields import JSONField
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.db import models

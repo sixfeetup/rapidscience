@@ -20,9 +20,9 @@
                     <h1 class="group-header"><a href="{{ project.get_absolute_url }}">{{ project.title }}</a></h1>
                     <div class="group-header-status">
                       {% if project.approval_required %}
-                        <i class="fa fa-lock" aria-hidden="true"></i> Closed
+                        <i class="fa fa-lock" title="This item is only shared with members of this closed group." aria-hidden="true"></i> Closed
                       {% else %}
-                        <i class="fa fa-unlock" aria-hidden="true"></i> Open
+                        <i class="fa fa-unlock" title="This item has been shared outside of closed groups." aria-hidden="true"></i> Open
                       {% endif %}
                     </div>
                 </div>

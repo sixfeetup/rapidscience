@@ -3,16 +3,17 @@
 {% if not action.verb|is_workflow_verb and not action.action_object.is_editorial_note %}
     {% if action.action_object_content_type.model == 'threadedcomment' and action.action_object.is_discussion or action.action_object_content_type.model != 'threadedcomment'%}
         {% if action.action_object.shareable %}
-          <i class="fa fa-unlock" aria-hidden="true"></i>
+          <i class="fa fa-unlock" title="This item has been shared outside of closed groups." aria-hidden="true"></i>
         {% else %}
-          <i class="fa fa-lock" aria-hidden="true"></i>
+          <i class="fa fa-lock" title="This item is only shared with members of this closed group." aria-hidden="true"></i>
         {% endif %}
     {% endif %}
 {% endif %}
 {% if action.verb == 'approved' %}
     <!-- SUPPRESSED in favor of joined and declined actions which are more targeted -->
     {% if action.action_object_content_type.model == 'casereport' %}
-        Case Report submitted by <a href="{{ action.actor.get_absolute_url }}">{% if request.user == action.actor %} me {% else %} {{ action.actor.get_full_name }}{% endif %}</a>
+        Case Report submitted
+{#      by <a href="{{ action.actor.get_absolute_url }}">{% if request.user == action.actor %} me {% else %} {{ action.actor.get_full_name }}{% endif %}</a>#}
     {% endif %}
 {% elif action.verb == 'joined' %}
     {# could be in the user's activity feed or the group's activity feed #}
@@ -60,18 +61,31 @@
         <!-- verb suppressed to read like Comment by ... -->
     {% elif action.verb == 'sent back' %}
         {{ action.verb|verb_alias }} to the author
+    {% elif action.verb == 'published' %}
+         <!-- posted or shared depending... -->
+         {% if action.action_object.get_nonpublished_shares %}
+           shared
+         {% else %}
+           posted
+         {% endif %}
     {% else %}
       {{ action.verb|verb_alias }}<!-- (aliased from {{ action.verb }}) -->
     {% endif %}
 
-    {# actor #}
-    by <a href="{{ action.actor.get_absolute_url }}">{% if request.user == action.actor %} me {% else %} {{ action.actor.get_full_name }}{% endif %}</a>
+{% endif %}
+{# actor #}
+    by
+    {%  if action.verb == 'published' %}
+          <!-- swapping author for admin -->
+          {%  with author=action.action_object.primary_author %}
+          <a href="{{ author.get_absolute_url }}">{% if request.user == author %} me {% else %} {{ author.get_full_name }}{% endif %}</a>
+          {% endwith %}
 
-    {# target #}
-    {% if action.verb == 'shared' %} with {% if action.target == request.user %} me {% else %}{{ action.target|link }}{% endif %}
-        {% if action.all_targets %}
-            {% for target in action.all_targets|slice:"1:" %}{% if forloop.last %} and {%  else %}, {% endif %}{% if target == request.user %} me {% else %}{{ target|link }}{% endif %}{%  endfor %}
-        {% endif %}
+{# with targets #}
+      {% if action.action_object.get_viewers %}
+        {% display_shared_with action.action_object request.user "with {0}." %}
+      {% endif %}
+{# to targets #}
     {% elif action.verb == 'added' or action.verb == 'uploaded' or action.verb == 'started' or action.verb == 'replied' or action.verb == 'created' or action.verb == 'posted' %}
         {% with all_targets=action.all_targets|omit:action.actor %}
             {% if all_targets %} to
@@ -79,8 +93,10 @@
                 -->{% for target in all_targets|slice:"1:" %}{% if forloop.last %} and {%  else %}, {% endif %}{{ target|link }}{%  endfor %}
             {% endif %}
         {% endwith %}
+     {% else %}
+        <a href="{{ action.actor.get_absolute_url }}">{% if request.user == action.actor %} me {% else %} {{ action.actor.get_full_name }}{% endif %}</a>
     {% endif %}
-{% endif %}
+{#{% endif %}#}
 {% if action.action_object_content_type.model == 'threadedcomment' and action.verb != 'started' and action.verb != 'shared' %}
     {%  with comment=action.action_object parent_user=action.action_object.get_parent.user %}
         {% if comment.is_reply or 'casereport' in comment.discussion_root.content_object.get_content_type or 'document' in comment.discussion_root.content_object.get_content_type or 'userreference' in comment.discussion_root.content_object.get_content_type or comment.is_editorial_note %}on{% endif %}
@@ -108,5 +124,10 @@
 {% endif %}
 {# timestamp #}
 {% if action.verb != 'invited' %}
+{#    {%  if action.verb == 'shared' %}#}
+{#      {% if action.data.frozen.workflow_state == 'draft' or action.data.frozen.workflow_state == 'processing' %}#}
+{#        pending publication#}
+{#      {% endif %}#}
+{#    {% endif %}#}
     | {{ action.timestamp|date:"j M Y" }}
 {% endif %}

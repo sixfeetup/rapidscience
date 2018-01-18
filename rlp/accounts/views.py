@@ -414,10 +414,13 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
             # we'll start with public actions
             # that arent between a user and themself.
             # You could argue that these should be public=False.
-            activity_stream = Action.objects.filter(public=True)
+            activity_stream = Action.objects.all()
         else:
             # otherwise, use the user's own AF stream.
             activity_stream = request.user.get_activity_stream()
+
+        # suppress private shares
+        activity_stream = activity_stream.filter(public=True)
 
         stream = []
         if request.user.can_access_all_projects:

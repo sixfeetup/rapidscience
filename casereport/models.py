@@ -1,37 +1,66 @@
+from collections import namedtuple
 from datetime import datetime
 
 from access_tokens import tokens
-from actstream import action
-from casereport import emails
-from casereport.constants import GENDER, WorkflowState
-from casereport.constants import TYPE
-from casereport.constants import PERFORMANCE_STATUS
-from casereport.constants import OBJECTIVE_RESPONSES
-from casereport.constants import TREATMENT_INTENT
-from casereport.constants import INDEXES
-from casereport.middleware import CurrentUserMiddleware
-
-from django_countries.fields import CountryField
-from django.db import models
-from django.core.mail import EmailMessage
-from django.core.urlresolvers import reverse
-from django.template.loader import render_to_string
+from actstream import action as actstream_action
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
+from django.core.mail import EmailMessage
+from django.core.urlresolvers import reverse
+from django.db import models
+from django.template.loader import render_to_string
 from django.utils.encoding import python_2_unicode_compatible
-
-from djangocms_text_ckeditor.fields import HTMLField
-from django_fsm import FSMField, transition, signals as fsm_signals
+from django_countries.fields import CountryField
+from django_fsm import signals as fsm_signals
+from django_fsm import FSMField, transition
 from django_fsm_log.decorators import fsm_log_by
+from django_fsm_log.models import StateLog
+from djangocms_text_ckeditor.fields import HTMLField
 
+from casereport import emails
+from casereport.constants import (GENDER, OBJECTIVE_RESPONSES,
+                                  PERFORMANCE_STATUS, TREATMENT_INTENT, TYPE,
+                                  WorkflowState)
+from casereport.middleware import CurrentUserMiddleware
 from rlp.accounts.models import User
-from rlp.discussions.models import ThreadedComment
 from rlp.core.models import SharedObjectMixin
+from rlp.discussions.models import ThreadedComment
 
 from .utils import past_tense_verb
 
-
 __author__ = 'yaseen'
+
+ACTION_QUEUE = []
+QueuedAction = namedtuple('QueuedAction', 'sender kwargs')
+
+
+class ActionWrapper(object):
+    """ stand-in for actstream.action which queues the actions
+        and records the object's state if it has a to_dict member.
+
+        Remember to call action.really_send to record these actions.
+    """
+    @staticmethod
+    def send(sender, **kwargs):
+        global ACTION_QUEUE
+        ACTION_QUEUE.append(QueuedAction(sender=sender, kwargs=kwargs))
+
+    @staticmethod
+    def really_send():
+        global ACTION_QUEUE
+        while ACTION_QUEUE:
+            qa = ACTION_QUEUE.pop(0)
+
+            obj = qa.kwargs.get('action_object', None)
+            data = False
+            if obj:
+                if hasattr(obj, 'to_dict'):
+                    data = obj.to_dict()
+            qa.kwargs['frozen'] = data
+            actstream_action.send(qa.sender, **qa.kwargs)
+
+
+action = ActionWrapper()
 
 
 @python_2_unicode_compatible
@@ -164,7 +193,8 @@ class CaseReport(CRDBBase, SharedObjectMixin):
                                blank=True,
                                verbose_name='Alternative Correspondence ' +
                                             'Email Address')
-    subtype = models.ForeignKey(SubtypeOption, models.SET_NULL, null=True, blank=True)
+    subtype = models.ForeignKey(SubtypeOption, models.SET_NULL,
+                                null=True, blank=True)
     subtype_other = models.CharField(max_length=200, null=True, blank=True)
     presentation = models.TextField(null=True, blank=True)
     aberrations = models.ManyToManyField(MolecularAbberation, blank=True)
@@ -210,6 +240,43 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     def __str__(self):
         return self.title if self.title else '---'
 
+    def to_dict(self):
+        # this gets us the latest state change, but it doesn't yet
+        # have the state change we are undergoing
+        # so we have to save the "previous_statelog_id"
+        try:
+            sl = StateLog.objects.for_(self).order_by('-timestamp')[0]
+        except IndexError as too_new:
+            sl = None
+        return {
+            'model': 'CaseReport',
+            'id': self.id,
+            'title': self.title,
+            'author_approved': self.author_approved,
+            'admin_approved': self.admin_approved,
+            'date_published': self.date_published.strftime("%m/%d/%Y")
+            if self.date_published else None,
+            'workflow_state': self.workflow_state,
+            # these are slightly redundant but included for debugging
+            'statelog_transition': sl.transition if sl else None,
+            'statelog_state': sl.state if sl else None,
+            'statelog_id': sl.id if sl else None,
+        }
+
+    def share_with(self, viewers, shared_by,
+                   comment=None,
+                   publicly=True,
+                   force_public=False):
+        """ share with viewers by shared_by
+            This accepts publicly only for the interface.
+            Instead, this marks the shares as Private if the CR is not LIVE
+        """
+        public_sharing = force_public or self.workflow_state == WorkflowState.LIVE
+        return super(CaseReport,self).share_with(viewers,
+                                                 shared_by,
+                                                 comment=comment,
+                                                 publicly=public_sharing)
+
     def sort_date(self):
         if self.date_published:
             return self.date_published
@@ -228,11 +295,13 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     def can_edit(self, user=None):
         if not user:
             user = CurrentUserMiddleware.get_user()
-        if self.workflow_state in (
-        WorkflowState.DRAFT,WorkflowState.RETRACTED, WorkflowState.AUTHOR_REVIEW) and user.email == self.primary_author.email:
+        if self.workflow_state in (WorkflowState.DRAFT,
+                                   WorkflowState.RETRACTED,
+                                   WorkflowState.AUTHOR_REVIEW) and \
+           user.email == self.primary_author.email:
             return True
-        if self.workflow_state in (
-        WorkflowState.ADMIN_REVIEW,) and user.is_staff:
+        if self.workflow_state in (WorkflowState.ADMIN_REVIEW,) and \
+           user.is_staff:
             return True
         return False
 
@@ -267,18 +336,21 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         # ensure author
         if not user:
             user = CurrentUserMiddleware.get_user()
-        return user.email == self.primary_author.email  # and self.author_approved
+        return user.email == self.primary_author.email
 
     @fsm_log_by
     @transition(field=workflow_state,
-                source=[WorkflowState.AUTHOR_REVIEW,],
+                source=[WorkflowState.AUTHOR_REVIEW, ],
                 permission=can_submit,
                 target=WorkflowState.ADMIN_REVIEW)
     def approve(self, by=None):
-        ''' send to admins with approval '''
+        """ send to admins with approval """
         self.author_approved = True
         self.admin_approved = False
-        emails.approved(self)
+        try:
+            emails.approved(self)
+        except Exception as mail_err:
+            print(mail_err)
 
         return "Thank you for approving your Case Report for posting in our \
             database! We will contact you when it goes live."
@@ -289,26 +361,29 @@ class CaseReport(CRDBBase, SharedObjectMixin):
                 permission=can_submit,
                 target=WorkflowState.ADMIN_REVIEW)
     def submit(self, by=None):
-        ''' send to admin without approval '''
+        """ send to admin without approval """
         self.author_approved = True
         self.admin_approved = False
-        emails.submitted(self)
-        # notify co-authors
-        for coauthor in self.co_author.all():
-            if coauthor.is_active:
-                emails.notify_coauthor(self, coauthor)
-            else:
-                emails.invite_coauthor(self, coauthor)
+        try:
+            emails.submitted(self)
+
+            # notify co-authors
+            for coauthor in self.co_author.all():
+                if coauthor.is_active:
+                    emails.notify_coauthor(self, coauthor)
+                else:
+                    emails.invite_coauthor(self, coauthor)
+        except ConnectionRefusedError:
+            print("cannot connect to email")
         return "Your Case Report has been submitted and will be reviewed by \
             our admin staff. \
             Please note case no. #%s for future reference." % self.id
-
 
     def can_reject(self, user=None):
         if not user:
             user = CurrentUserMiddleware.get_user()
         if user.is_staff \
-            and self.workflow_state in (WorkflowState.ADMIN_REVIEW,):
+           and self.workflow_state in (WorkflowState.ADMIN_REVIEW,):
             return True
         return False
 
@@ -322,7 +397,10 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         """ send the CR back to the author
         """
         self.admin_approved = False
-        emails.send_back(self)
+        try:
+            emails.send_back(self)
+        except ConnectionRefusedError:
+            pass
         user = CurrentUserMiddleware.get_user()
         author = User.objects.get(email__exact=self.primary_author.email)
         action.send(user, verb='sent back', action_object=self, target=author)
@@ -343,14 +421,30 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         self.admin_approved = True
         author = User.objects.get(email__exact=self.primary_author.email)
         self.share_with(self.co_author.all(), shared_by=author)
+
+        # re-share publicly with the author's private shares
+        # remember, we're still in the source state so our state is not yet LIVE
+        for npshare in self.get_nonpublished_shares():
+            target = npshare.target
+            invite_msg = npshare.description
+            self.share_with([target],
+                            shared_by=self.primary_author,
+                            comment=invite_msg,
+                            force_public=True)
+
         if not self.date_published:
             # only send these emails on first publish
-            emails.cr_published_notifications(self)
+            try:
+                emails.cr_published_notifications(self)
+            except ConnectionRefusedError:
+                pass
         self.date_published = datetime.now()
-        emails.publish_to_author(self)
+        try:
+            emails.publish_to_author(self)
+        except ConnectionRefusedError:
+            pass
         user = CurrentUserMiddleware.get_user()
         action.send(user, verb='published', action_object=self, target=author)
-        # TODO: put pushed into each shared with group activity feed?
         return "This case report has been published!"
 
     def can_retract_as_author(self, user=None):
@@ -373,7 +467,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     def _retract_by_author(self, by=None):  # starts with _ to hide from users
         self.author_approved = False
         # self.notify_datascience_team()
-        return '''moved to "Author Review"'''
+        return '''pulled back'''
 
     @fsm_log_by
     @transition(field=workflow_state,
@@ -386,7 +480,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         user = CurrentUserMiddleware.get_user()
         author = User.objects.get(email__exact=self.primary_author.email)
         action.send(user, verb='unpublished', action_object=self, target=author)
-        return '''moved to "Admin Review"'''
+        return '''pulled back'''
 
     def can_retract(self, user=None):
         if not user:
@@ -405,8 +499,10 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         user = CurrentUserMiddleware.get_user()
         self.author_approved = True
         self.admin_approved = False
-        emails.revise(self, user)
-
+        try:
+            emails.revise(self, user)
+        except Exception as mail_err:
+            print(mail_err)
         return "Retracted"
 
 
@@ -414,7 +510,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     def _get_displayname_for_fname(self, fname):
         """ turn a Transition name into its associated method name.
         """
-        return fname.title().replace('_',' ')
+        return fname.title().replace('_', ' ')
 
     def _get_fname_for_displayname(self, displayname):
         """ turn a transition method name into its assocated Display Name.
@@ -434,7 +530,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         if not user:
             user = CurrentUserMiddleware.get_user()
 
-        if not action_name in self.get_next_actions_for_user(user=user):
+        if action_name not in self.get_next_actions_for_user(user=user):
             raise KeyError(action_name)
 
         verb = past_tense_verb(action_name)
@@ -448,11 +544,11 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         # messages and actions getting recorded.
         if self.workflow_state == WorkflowState.RETRACTED:
             if self.can_retract_as_author():
-                res = self._retract_by_author(by=user)
-                verb = res
+                verb = self._retract_by_author(by=user)
+                res = "Case report has been pulled back"
             elif self.can_retract_as_admin():
-                res = self._retract_by_admin(by=user)
-                verb = res
+                verb = self._retract_by_admin(by=user)
+                res = "Case report has been pulled back"
             else:
                 raise PermissionError("permission denied")
 
@@ -803,7 +899,7 @@ class ResultValueEvent(CRDBBase):
 
 @python_2_unicode_compatible
 class DiagnosisEvent(Event):
-    test = models.ForeignKey(TestEvent, null=True, blank=True)  # FK (Test Event)
+    test = models.ForeignKey(TestEvent, null=True, blank=True)
     specimen = models.CharField(max_length=255, null=True, blank=True)
     symptoms = models.TextField(null=True, blank=True)
     body_part = models.CharField(max_length=255, null=True, blank=True)

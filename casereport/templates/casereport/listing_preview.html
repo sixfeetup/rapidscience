@@ -13,9 +13,9 @@
       </h4>
       <p class="small">
           {% if obj.shareable %}
-            <i class="fa fa-unlock" aria-hidden="true"></i>
+            <i class="fa fa-unlock" title="This item has been shared outside of closed groups." aria-hidden="true"></i>
           {% else %}
-            <i class="fa fa-lock" aria-hidden="true"></i>
+            <i class="fa fa-lock" title="This item is only shared with members of this closed group." aria-hidden="true"></i>
           {% endif %}
           Case Report posted by <a href="{% url "profile" obj.primary_author.id %}">{% if request.user == obj.primary_author %} me {% else %} {{ obj.primary_author }} {% endif %}</a>
         | {{ obj.date_updated|date:"j M Y" }}<br />

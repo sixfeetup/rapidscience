@@ -65,12 +65,12 @@ $(document).ready(function() {
     $(wrapper).on("click",".remove_field", function(e){ //user click on remove text
         e.preventDefault(); $(this).parent('div').remove(); x--;
     })
-    
+
     $(".hiddenField").parents(".sharing-wrapper").hide().find("#share3").prop('checked', true);
     if ($('.action-buttons').length) {
         $(".main-footer").css({"padding-bottom": "120px"});
     }
-    
+
     // sharing fields
     var sharing_fields = $("#sharing-field-members, #sharing-field-external, #sharing-field-groups, #sharing-field-comment")
     $(".sharing-wrapper .choices input").click(function(){
@@ -133,22 +133,27 @@ function captcha(){
 
 }
 
-    $(".radiobut").click(function(){
-        type = $(this).val();
-        $(".manual-form").hide();
-        $(".free-text").hide();
-        $(".file-form").hide();
-        
-        if (type == 'M') {
-            $(".manual-form").show();
-        } else if (type == 'T') {
-            $(".free-text").show();
-        } else if (type == 'F') {
-            $(".file-form").show();
-        } 
+    $(document).ready(function() {
+        $(".radiobut").click(function(){
+            type = $(this).val();
+            $(".manual-form").hide();
+            $(".free-text").hide();
+            $(".file-form").hide();
 
+            if (type == 'M') {
+                $(".manual-form").show();
+            } else if (type == 'T') {
+                $(".free-text").show();
+            } else if (type == 'F') {
+                $(".file-form").show();
+            }
+        });
+        var mode = $("#caseform").data('mode');
+        console.log("mode: '" + mode + "'");
+        if (mode) {
+            $(".radiobut[value=" + mode + "]").trigger("click");
+        }
     });
-
 
 
     $(document).ready(function() {
@@ -197,7 +202,7 @@ $(document).ready(function() {
     var max_fields      = 20; //maximum input boxes allowed
     var coauthor_wrapper         = $(".coauthor-div"); //Fields wrapper
     var add_button      = $(".add_coauthor_button"); //Add button ID
-    
+
     var x = $(".coauthor-div .row.coauthor").length; //initlal text box count
     $(add_button).click(function(e){ //on add input button click
         e.preventDefault();
@@ -205,16 +210,16 @@ $(document).ready(function() {
             x++; //text box increment
             $(coauthor_wrapper).append(
                 '<div class="row coauthor"><div class="form-group col-md-6">' +
-                '<label for="coauthor_name' + x + '">Name</label>' +
+                '<label for="coauthor_name' + x + '">Add Co-Author Name (If Non-Member)</label>' +
                 '<input name="coauthor_name" type="text" class="form-control" id="coauthor_name' + x + '" placeholder="First and Last Name">'+
                 '<div class="helpText">' +
                     'ex: John Smith, MD, PhD' +
                 '</div>' +
                 '</div><div class="form-group col-md-5">' +
-                '<label for="coauthor_email' + x + '">Email Address</label>' +
+                '<label for="coauthor_email' + x + '">Add Co-Author Email (If Non-Member)</label>' +
                 '<input name="coauthor_email" type="EMAIL" class="form-control" id="coauthor_email' + x + '" placeholder="Email">'+
                 '<div class="helpText">' +
-                    'You must use an institutional email address' +
+                    'Please use an institutional email address' +
                 '</div>' +
                 '</div><div class="col-md-1"><a href="#" class="remove_coauthor">✕</a></div></div>'
             );
@@ -230,7 +235,7 @@ $(document).ready(function() {
     $(coauthor_wrapper).on("click",".remove_coauthor", function(e){ //user click on remove text
         e.preventDefault(); $(this).parents('.row.coauthor').remove();
         if ($('.row.coauthor').length == 0) {
-            $(".add_coauthor_button_text").text('Add co-author(s)');
+            $(".add_coauthor_button_text").text('Add a non-member as a co-author(s)');
         }
         if ($('.row.coauthor').length <= max_fields) {
             $(".add_coauthor_button").show();
@@ -252,7 +257,7 @@ function validate(ev) {
         $(".radio-box .choose-message").show();
         return false;
     }
-    
+
     if(subtype == '' && subtypeOther == '') {
         caseform.subtype.focus()
         $(".required-message").show();
@@ -287,7 +292,7 @@ function validate(ev) {
 function file_validate() {
     var uploadfile = $('#uploadfile').val();
 
-    if(uploadfile == '') {
+    if(uploadfile == '' && !casefile_exists) {
     caseform.uploadfile.focus();
     $(".required-message").show();
     $(".file-message").show();
@@ -433,7 +438,7 @@ $(document).ready(function() {
             add_button.show();
         }
     });
-    
+
     // open the first attachment field
     if ($('.attachments-div .attachment').length == 0){
         $('.add_att_button').trigger("click");

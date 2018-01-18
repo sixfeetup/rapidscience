@@ -44,9 +44,9 @@
                     <h1>{{ casereport.title }}</h1>
                     <p class="case-meta">
                         {% if casereport.shareable %}
-                          <i class="fa fa-unlock" aria-hidden="true"></i>
+                          <i class="fa fa-unlock" title="This item has been shared outside of closed groups." aria-hidden="true"></i>
                         {% else %}
-                          <i class="fa fa-lock" aria-hidden="true"></i>
+                          <i class="fa fa-lock" title="This item is only shared with members of this closed group." aria-hidden="true"></i>
                         {% endif %}
                         Case ID: {{ casereport.id }} |
                         {% if casereport.workflow_state == 'draft' %}
@@ -119,6 +119,20 @@
                     {% endif %}
                  {% endfor %}
              </ul>
+             {% elif casereport.get_nonpublished_shares %}
+               <ul class="jumpMenu">
+                 {% for share in casereport.get_nonpublished_shares %}
+                   {% with viewer=share.target %}
+                    {% if viewer != request.user and viewer|check_is_visible %}
+                     <li>
+                        {% if not viewer.users %}<a href="{% url 'profile' viewer.id %}">{{ viewer.get_full_name }}</a>{% endif %}
+                        {% if viewer.users %}<a href="{% url 'projects:projects_detail' viewer.id viewer.slug %}">{{ viewer }}</a>{% endif %}
+{#                        pending#}
+                     </li>
+                    {% endif %}
+                   {% endwith %}
+                 {% endfor %}
+               </ul>
              {% endif %}
            </div>
          </div>
@@ -233,6 +247,7 @@
       {% if casereport.free_text and casereport.workflow_state != 'live'  %}
       <div id="section-freetext">
           <h4>Free Text</h4>
+          <p class="cr_help">For reference during editorial workflow</p>
           <p>{{ casereport.free_text }}</p>
       </div>
       {% endif %}
@@ -240,6 +255,7 @@
       {% if casereport.casefile_f and casereport.workflow_state != 'live' %}
       <div id="section-uploadedfile">
           <h4>Uploaded File</h4>
+          <p class="cr_help">For reference during editorial workflow</p>
           <p>{{ casereport.casefile_f.name }} ({{ casereport.casefile_f.size|filesizeformat }})<br />
               <a href="{{ casereport.casefile_f.url }}" target="_blank" class="btn btn-primary download">Download file</a>
           </p>

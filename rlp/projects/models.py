@@ -81,6 +81,7 @@ class Project(SEOMixin, SharesContentMixin):
             # action_object__workflow_state = 'live'
             # because django orm has no dynamic reverse relation
             casereport_ids = activity_stream_queryset.filter(
+                public=True,
                 action_object_content_type=casereport_ct,
                 verb__exact = 'shared',
                 target_content_type_id=my_ct,

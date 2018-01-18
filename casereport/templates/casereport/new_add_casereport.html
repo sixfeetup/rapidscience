@@ -18,6 +18,7 @@
 </div>
 
 <form id="caseform" name="caseform" class="rpds-form" action="" method="post"
+      data-mode="{% if casereport.get_treatments %}M{% elif not casereport.get_treatments and casereport.free_text %}T{% elif not casereport.get_treatments and casereport.casefile_f %}F{% endif %}"
       enctype="multipart/form-data">
     {% csrf_token %}
 
@@ -34,7 +35,7 @@
   <div class="container">
       <div class="inside-wrapper">
       <div class="form submit-form">
-      <h5>Content posted here from a closed group can be shared only with members of that group. All other content, posted from your personal dashboard or an open group, can be shared with any individuals and with groups to which you belong. In addition, this content can be further shared by original recipients with groups to which they belong.</h5>
+      <h5>Case Reports contain confidential information and can be shared only by the author. Members who receive access to a case report are not permitted to share it with other members or with colleagues outside of Sarcoma Central.</h5>
 
 
                 <h4><label for="casetitle">Case Title</label></h4>
@@ -74,8 +75,9 @@
               </div>
 
               <h4>Co-Authors</h4>
-              <div class="helpText">Only coauthors who are members of Sarcoma Central will be able edit or comment on this case report. You may invite colleagues to register from the Community Commons group page.</div>
+              <div class="helpText">Co-authors who are not members of Sarcoma Central cannot access this case report. You may designate existing Sarcoma Central members as co-authors, or add co-authors manually below.</div>
               <div class="coauthor-div">
+                  <label for="coauthors">Designate Sarcoma Central Members as Co-Authors</label>
                   <select name="coauthors" class="form-control select2" id="coauthors" multiple="multiple" size="5">
                       {% for item in all_members %}
                           <option value="{{ item.id }}"
@@ -86,7 +88,7 @@
                   </select>
               </div>
 
-              <a class="add_coauthor_button" href="#"><i class="fa fa-plus"></i> <span class="add_coauthor_button_text">Add a non-members as a co-author(s)</a></a>
+              <a class="add_coauthor_button" href="#"><i class="fa fa-plus"></i> <span class="add_coauthor_button_text">Add a non-member as a co-author</a></a>
 
         <div class="form-group radio-box"{% if casereport.workflow_state != None %} style="display: none;"{% endif %}>
         <input checked="checked"  id="id_radio1" type="radio"  class="radiobut" name="entry-type" value="M" />

@@ -146,10 +146,16 @@ def rollup(input, rollup_name, rollup_attr='target'):
             return -1
 
     def similar_action(action):
+        actor = action.actor_object_id
+        if action.verb == 'published':
+            # swap the admin for author
+            actor = str(action.action_object.primary_author.id)
+        verb = 'combined' if action.verb in COMBINABLE_VERBS else action.verb
+
         return str(
             (
-                action.actor_object_id,
-                'combined' if action.verb in COMBINABLE_VERBS else action.verb,
+                actor,
+                verb,
                 action.action_object_content_type,
                 action.action_object_object_id
             )

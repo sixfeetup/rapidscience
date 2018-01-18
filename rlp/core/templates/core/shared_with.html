@@ -1,0 +1,5 @@
+{% load core_tags %}
+{% get_shares_as_links for item as shares_as_links user=user %}
+{% if shares_as_links %}Shared with: {{ shares_as_links }}
+{% else %}<!-- no shares -->
+{% endif %}

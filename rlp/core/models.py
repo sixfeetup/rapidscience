@@ -1,4 +1,4 @@
-from actstream import action
+# from actstream import action
 from actstream.models import Action
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.fields import GenericRelation
@@ -119,6 +119,15 @@ class SharedObjectMixin(models.Model):
     def is_bookmarkable(self):
         return True
 
+    def get_nonpublished_shares(self):
+        my_type = ContentType.objects.get_for_model(self)
+        shares = Action.objects.filter(
+            action_object_object_id=self.id,
+            action_object_content_type=my_type,
+            verb__exact='shared',
+            public=False,
+        ).exclude(target_object_id__isnull=True)
+        return shares
 
     def get_viewers(self):
         my_type = ContentType.objects.get_for_model(self)
@@ -126,6 +135,7 @@ class SharedObjectMixin(models.Model):
             action_object_object_id=self.id,
             action_object_content_type=my_type,
             verb__exact='shared',
+            public=True,
         )
         return {s.target for s in shares if s.target}
 
@@ -172,11 +182,13 @@ class SharedObjectMixin(models.Model):
             viewer_type_id=viewer_type.id,
         ))
 
-    def share_with(self, viewers, shared_by, comment=None):
+    def share_with(self, viewers, shared_by, comment=None, publicly=True):
+        from casereport.models import action
+        # NB: action.send merely queues
         # add an entry to the target viewer's activity stream
         for viewer in viewers:
             # ghf - need to create Actions to go along with this.
-            is_public = True
+            is_public = publicly
             if shared_by == viewer:
                 is_public = False
             action.send(

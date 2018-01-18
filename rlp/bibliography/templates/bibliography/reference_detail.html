@@ -22,9 +22,9 @@
                   </h1>
                   <p class="small">
                     {% if user_reference.shareable %}
-                      <i class="fa fa-unlock" aria-hidden="true"></i>
+                      <i class="fa fa-unlock" title="This item has been shared outside of closed groups." aria-hidden="true"></i>
                     {% else %}
-                      <i class="fa fa-lock" aria-hidden="true"></i>
+                      <i class="fa fa-lock" title="This item is only shared with members of this closed group." aria-hidden="true"></i>
                     {% endif %}
 
                     {% if user_reference.user %}

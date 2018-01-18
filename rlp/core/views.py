@@ -8,7 +8,7 @@ from django.views.decorators.cache import never_cache
 from django.views.generic import View
 
 from casereport.constants import WorkflowState
-from casereport.models import CaseReport
+from casereport.models import CaseReport, action
 from rlp.core.email import activity_mail
 from rlp.core.forms import get_sendto_form
 
@@ -96,6 +96,7 @@ class SendToView(LoginRequiredMixin, View):
                 else:
                     request.user.bookmark(shared_content)
 
+            action.really_send()  # TODO: make this a decorator?
             if 'referrer' in request.session:
                 url = request.session['referrer']
                 if url:
