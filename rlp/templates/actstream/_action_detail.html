@@ -73,6 +73,7 @@
     {% endif %}
 
 {% endif %}
+{% if action.verb != 'joined' %}
 {# actor #}
 by
     {% if action.verb == 'published' %}
@@ -96,7 +97,7 @@ by
     {% else %}
         <a href="{{ action.actor.get_absolute_url }}">{% if request.user == action.actor %} me {% else %} {{ action.actor.get_full_name }}{% endif %}</a>
     {% endif %}
-{#{% endif %}#}
+{% endif %}
 {% if action.action_object_content_type.model == 'threadedcomment' and action.verb != 'started' and action.verb != 'shared' %}
     {%  with comment=action.action_object parent_user=action.action_object.get_parent.user %}
         {% if comment.is_reply or 'casereport' in comment.discussion_root.content_object.get_content_type or 'document' in comment.discussion_root.content_object.get_content_type or 'userreference' in comment.discussion_root.content_object.get_content_type or comment.is_editorial_note %}on{% endif %}
