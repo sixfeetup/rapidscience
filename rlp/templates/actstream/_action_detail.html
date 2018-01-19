@@ -79,19 +79,31 @@ by
     {% if action.verb == 'published' %}
           <!-- swapping author for admin -->
           {%  with author=action.action_object.primary_author %}
-          <a href="{{ author.get_absolute_url }}">{% if request.user == author %} me {% else %} {{ author.get_full_name }}{% endif %}</a>
+              <a href="{{ author.get_absolute_url }}">{% if request.user == author %} me {% else %} {{ author.get_full_name }}{% endif %}</a>
           {% endwith %}
 
-          {# with targets #}
-          {% if action.action_object.get_viewers %}
+         {# with targets #}
+         {% if action.action_object.get_viewers %}
               {% display_shared_with action.action_object request.user "with {0}." %}
           {% endif %}
-{# to targets #}
     {% elif action.verb == 'added' or action.verb == 'uploaded' or action.verb == 'started' or action.verb == 'replied' or action.verb == 'created' or action.verb == 'posted' %}
+          {%  with author=action.actor %}
+          <a href="{{ author.get_absolute_url }}">{% if request.user == author %} me {% else %} {{ author.get_full_name }}{% endif %}</a>
+          {% endwith %}
+       {# to targets #}
         {% with all_targets=action.all_targets|omit:action.actor %}
             {% if all_targets %} to
                 {{ all_targets.0|link }}<!-- no space
                 -->{% for target in all_targets|slice:"1:" %}{% if forloop.last %} and {%  else %}, {% endif %}{{ target|link }}{%  endfor %}
+            {% endif %}
+        {% endwith %}
+    {% elif action.verb == 'shared' %}
+        <a href="{{ action.actor.get_absolute_url }}">{% if request.user == action.actor %} me {% else %} {{ action.actor.get_full_name }}{% endif %}</a>
+        {# for references, etc    the target is the share, and there may or may not be more in the all_targets #}
+        with {{ action.target|link }}
+        {% with all_targets=action.all_targets|omit:action.target %}
+            {% if all_targets %}
+                {% for target in all_targets %}{% if forloop.last %} and {%  else %}, {% endif %}{{ target|link }}{%  endfor %}
             {% endif %}
         {% endwith %}
     {% else %}
