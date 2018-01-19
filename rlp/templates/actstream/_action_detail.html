@@ -74,17 +74,17 @@
 
 {% endif %}
 {# actor #}
-    by
-    {%  if action.verb == 'published' %}
+by
+    {% if action.verb == 'published' %}
           <!-- swapping author for admin -->
           {%  with author=action.action_object.primary_author %}
           <a href="{{ author.get_absolute_url }}">{% if request.user == author %} me {% else %} {{ author.get_full_name }}{% endif %}</a>
           {% endwith %}
 
-{# with targets #}
-      {% if action.action_object.get_viewers %}
-        {% display_shared_with action.action_object request.user "with {0}." %}
-      {% endif %}
+          {# with targets #}
+          {% if action.action_object.get_viewers %}
+              {% display_shared_with action.action_object request.user "with {0}." %}
+          {% endif %}
 {# to targets #}
     {% elif action.verb == 'added' or action.verb == 'uploaded' or action.verb == 'started' or action.verb == 'replied' or action.verb == 'created' or action.verb == 'posted' %}
         {% with all_targets=action.all_targets|omit:action.actor %}
@@ -93,7 +93,7 @@
                 -->{% for target in all_targets|slice:"1:" %}{% if forloop.last %} and {%  else %}, {% endif %}{{ target|link }}{%  endfor %}
             {% endif %}
         {% endwith %}
-     {% else %}
+    {% else %}
         <a href="{{ action.actor.get_absolute_url }}">{% if request.user == action.actor %} me {% else %} {{ action.actor.get_full_name }}{% endif %}</a>
     {% endif %}
 {#{% endif %}#}
