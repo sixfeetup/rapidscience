@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.shortcuts import get_current_site
 from django.core import signing
+from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render, resolve_url
@@ -453,8 +454,18 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
             )
 
         # roll up similar entries, and drop duplicate ones
-        activity_stream = list(rollup(activity_stream, 'all_targets',
-                                      rollup_attr='target'))
+        # this can be expensive, so try to cache it
+        # however caching objects like this may not work with memcache
+        # because they wont serialize/deserialize
+        def rolled_up():
+            res = list(rollup(activity_stream,
+                               'all_targets',
+                               rollup_attr='target'))
+            return res
+        af_key = "af3:%s" % activity_stream[0].id
+        activity_stream = cache.get_or_set(af_key,
+                                           rolled_up,
+                                           60*5)
 
         context.update({
             'activity_stream': activity_stream,
