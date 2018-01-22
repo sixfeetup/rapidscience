@@ -24,8 +24,6 @@ class CommentIndex(TaggableBaseIndex, indexes.Indexable):
 
     def index_queryset(self, using=None):
         """ limit discussion object to non-editorial
-
-            * returns a generator, not technically a queryset
         """
         qs = super(CommentIndex, self).index_queryset(using=using)
         # can;t do this because it's a property
