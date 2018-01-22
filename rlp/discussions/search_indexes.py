@@ -1,11 +1,9 @@
-import bleach
-
 from django.template.loader import render_to_string
-
 from haystack import indexes
 
-from .models import ThreadedComment
 from rlp.search.search_indexes import TaggableBaseIndex
+
+from .models import ThreadedComment
 
 
 class CommentIndex(TaggableBaseIndex, indexes.Indexable):
@@ -23,3 +21,14 @@ class CommentIndex(TaggableBaseIndex, indexes.Indexable):
 
     def prepare_title(self, obj):
         return obj.title
+
+    def index_queryset(self, using=None):
+        """ limit discussion object to non-editorial
+
+            * returns a generator, not technically a queryset
+        """
+        qs = super(CommentIndex, self).index_queryset(using=using)
+        # can;t do this because it's a property
+        # qs = qs.exclude(is_editorial_note=True)
+        qs = qs.exclude(id__in=(o.id for o in qs if o.is_editorial_note))
+        return qs
