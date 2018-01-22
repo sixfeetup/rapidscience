@@ -5,6 +5,7 @@ from haystack import routers
 import casereport.search_indexes
 from casereport.constants import WorkflowState
 from casereport.models import CaseReport
+from rlp.discussions.models import ThreadedComment
 
 
 class CaseReportRouter(routers.BaseRouter):
@@ -17,6 +18,14 @@ class CaseReportRouter(routers.BaseRouter):
                 if obj.workflow_state == WorkflowState.LIVE:
                     return ['default', 'casescentral']
                 return 'casescentral'
+            elif isinstance(obj, ThreadedComment):
+                if obj.is_editorial_note:
+                    return None
+                elif obj.is_removed:
+                    return None
+                elif not obj.is_public:
+                    return None
+
         except KeyError as no_instance:
             index = hints['index']
             if isinstance(index, casereport.search_indexes.CaseReportIndex):

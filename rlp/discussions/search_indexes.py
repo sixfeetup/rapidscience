@@ -26,6 +26,8 @@ class CommentIndex(TaggableBaseIndex, indexes.Indexable):
         """ limit discussion object to non-editorial
         """
         qs = super(CommentIndex, self).index_queryset(using=using)
+        qs = qs.filter(is_public=True, is_removed=False)
+
         # can;t do this because it's a property
         # qs = qs.exclude(is_editorial_note=True)
         qs = qs.exclude(id__in=(o.id for o in qs if o.is_editorial_note))
