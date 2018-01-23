@@ -3,6 +3,7 @@
 <div class="row comment-item">
     <div class="col-md-11">
       <h4>
+{#      {{ result.object.get_author|capfirst }}{% if result.object.primary_author.institution.country %},  {{ result.object.primary_author.institution.country }}{% endif %}#}
           {%  if can_link %}
           <a href="{% url 'casereport_detail' case_id=obj.id title_slug=obj.title|slugify %}">
           {% endif %}

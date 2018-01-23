@@ -12,8 +12,8 @@
   {% elif 'documents.' in result.content_type %}
     {% include 'documents/listing_preview.html' with obj=result.object highlighted=result.highlighted %}
   {% elif 'userreference' in result.content_type %}
-{#    {% include 'bibliography/_uref_tab.html' with obj=result.object.reference ref=result.object user=result.object.user highlighted=result.highlighted %}#}
-      {% include 'bibliography/_reference.html' with obj=result.object.reference user=result.object.user highlighted=result.highlighted %}
+    {% include 'bibliography/_uref_tab.html' with obj=result.object.reference ref=result.object user=result.object.user highlighted=result.highlighted %}
+{#      {% include 'bibliography/_reference.html' with obj=result.object.reference user=result.object.user highlighted=result.highlighted %} #}
   {% elif 'bibliography.' in result.content_type %}
 {#    {% include 'bibliography/_ref_tab.html' with obj=result.object user=result.object.current_user_reference.user highlighted=result.highlighted %}#}
       {% include 'bibliography/_reference.html' with obj=result.object user=result.object.current_user_reference.user highlighted=result.highlighted %}
