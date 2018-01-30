@@ -111,14 +111,14 @@ def create_comment_activity(**kwargs):
                     kwargs={'pk': author.id})) \
                       or "https://" + settings.DOMAIN + \
                          author.get_absolute_url()
+        cr_link = "https://" + settings.DOMAIN + content.casereport.get_absolute_url()
         mail_data = {
             'user': request.user.get_full_name(),
             'user_link': user_url,
             'casereport': content.casereport,
             'title': content.casereport.title,
-            'link': content.casereport.get_absolute_url(),
+            'link': cr_link,
             'comment': comment.comment,
-            'site': settings.DOMAIN,
             'author': content.casereport.primary_author.get_full_name,
             'author_link': author_link
         }
@@ -141,12 +141,13 @@ def review_notification(**kwargs):
         return
     review = comment.content_object
     author = review.casereport.primary_author
+    site_url = "https://" + settings.DOMAIN
 
     mail_data = {
         'user': author,
         'casereport': review.casereport,
         'comment': comment.comment,
-        'site': settings.DOMAIN
+        'site_url': site_url,
     }
     send_transactional_mail(
         author.email,

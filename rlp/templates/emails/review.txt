@@ -9,7 +9,7 @@ An editorial comment has been posted on this case report at Sarcoma Central:
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 You can respond to this message in the Editorial Notes dialog box at the top right of your case report.
-https://{{ site }}{{ casereport.get_absolute_url }}
+{{ site_url }}{{ casereport.get_absolute_url }}
 
 Sincerely,<br><br>
 
