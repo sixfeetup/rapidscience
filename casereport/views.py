@@ -759,7 +759,8 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
 
         if data.get('sharing-options') == 'share-all':
             cc_group = Project.objects.get(title='Community Commons')
-            case.share_with([cc_group], shared_by=case.primary_author)
+            if cc_group not in case.get_viewers():
+                case.share_with([cc_group], shared_by=case.primary_author)
 
         external = data.get('external').split(",")
         for address in external:
