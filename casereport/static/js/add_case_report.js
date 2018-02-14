@@ -378,12 +378,12 @@ $(document).ready(function() {
             x++; //text box increment
             $(att_wrapper).append(
                 '<div class="attachment row"><div class="col-md-11">'+
-                    '<div class="figure">Fig ' + x + '</div>'+
+                    '<div class="figure">File ' + x + '</div>'+
                     '<div class="form-control">'+
                         '<input type="file" name="attachment' + x + '" id="attachment' + x + '" onchange="checkfile(this);">'+
                     '</div>'+
                     '<div class="helpText">JPG, PDF, PNG, TIFF file types; max file size 2MB; minimum width 770px'+
-                                          '<br/>Be sure to explicitly cite this figure\'s name in relevant text above</div>'+
+                                          '<br/>Be sure to explicitly cite this file\'s name in relevant text below</div>'+
                     '<label for="attachment' + x + '_title">Title</label>'+
                     '<input id="attachment' + x + '_title" name="attachment' + x + '_title" class="form-control attachment' + x + '_title">'+
                     '<label for="attachment1_description">Description</label>'+
