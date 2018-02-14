@@ -57,25 +57,23 @@
 
               <div class="form-group">
               <input type="hidden" id="treatment_pk" name="treatment_pk" value="{{ treatment.pk }}" />
-              <label for="treatment_name_{{forloop.counter}}" class="required">Treatment Name</label>
+              <label for="treatment_name_{{forloop.counter}}">Treatment Name</label>
               <input id="treatment_name_{{forloop.counter}}" name="treatment_name" class="form-control treatment_name"
                      type="text" value="{{ treatment.name }}">
                <div class="treatment-name-message">
-                 <p>This field is required.</p>
                </div>
               </div>
 
               <div class="form-group">
-              <label for="treatment_duration_{{forloop.counter}}" class="required">Dates/Duration</label>
+              <label for="treatment_duration_{{forloop.counter}}">Dates/Duration</label>
               <input id="treatment_duration_{{forloop.counter}}" name="treatment_duration" class="form-control treatment_name"
                      type="text" value="{{ treatment.duration }}">
                <div class="treatment-duration-message">
-                 <p>This field is required.</p>
                </div>
               </div>
 
               <div class="form-group">
-              <label for="treatment_type_{{forloop.counter}}" class="required">Treatment Type</label>
+              <label for="treatment_type_{{forloop.counter}}">Treatment Type</label>
               <select id="treatment_type_{{forloop.counter}}" name="treatment_type" class="form-control treatment_type">
                   <option value="" selected></option>
                   <option value="Chemoradiotherapy" {% if 'Chemoradiotherapy' == treatment.treatment_type %}selected{% endif %}>
@@ -94,7 +92,6 @@
                       Targeted Therapy</option>
               </select>
                <div class="treatment-type-message">
-                 <p>Select a treatment type.</p>
                </div>
               </div>
 
@@ -142,25 +139,23 @@
 
               <div class="form-group">
               <input type="hidden" id="treatment_pk" name="treatment_pk" value="" />
-              <label for="treatment_name_1" class="required">Treatment Name</label>
+              <label for="treatment_name_1">Treatment Name</label>
               <input id="treatment_name_1" name="treatment_name" class="form-control treatment_name"
                      type="text" value="{{ treatment.name }}">
                <div class="treatment-name-message">
-                 <p>This field is required.</p>
                </div>
               </div>
 
               <div class="form-group">
-              <label for="treatment_duration_1" class="required">Dates/Duration</label>
+              <label for="treatment_duration_1">Dates/Duration</label>
               <input id="treatment_duration_1" name="treatment_duration" class="form-control treatment_name"
                      type="text" value="{{ treatment.duration }}">
                <div class="treatment-duration-message">
-                 <p>This field is required.</p>
                </div>
               </div>
 
               <div class="form-group">
-              <label for="treatment_type_1" class="required">Treatment Type</label>
+              <label for="treatment_type_1">Treatment Type</label>
               <select id="treatment_type_1" name="treatment_type" class="form-control treatment_type">
                   <option value="" selected></option>
                   <option value="Chemoradiotherapy" {% if 'Chemoradiotherapy' == treatment.treatment_type %}selected{% endif %}>
@@ -179,7 +174,6 @@
                       Targeted Therapy</option>
               </select>
                <div class="treatment-type-message">
-                 <p>Select a treatment type.</p>
                </div>
               </div>
 

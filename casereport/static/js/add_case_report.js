@@ -304,9 +304,6 @@ function file_validate() {
 function manual_validate() {
     var age = $('#age').val();
     var gender = $('#gender').val();
-    var treatment_names = $('input[name=treatment_name]');
-    var treatment_durations = $('input[name=treatment_duration]');
-    var treatment_types = $('select[name=treatment_type]');
     var stop = false;
 
     if (age == '') {
@@ -321,38 +318,6 @@ function manual_validate() {
     $(".gender-message").show();
     return false;
     }$(".gender-message").hide();
-    treatment_names.each(function() {
-        if ($(this).val() == '') {
-            $(".required-message").show();
-            $(this).siblings('.treatment-name-message').show();
-            $(this).focus();
-            stop = true;
-        } else {
-            $(this).siblings('.treatment-name-message').hide();
-        }
-    });
-    if (stop) { return false; }
-    treatment_durations.each(function() {
-        if ($(this).val() == '') {
-            $(".required-message").show();
-            $(this).siblings('.treatment-duration-message').show();
-            $(this).focus();
-            stop = true;
-        } else {
-            $(this).siblings('.treatment-duration-message').hide();
-        }
-    });
-    if (stop) { return false; }
-    treatment_types.each(function() {
-        if ($(this).val() == '') {
-            $(".required-message").show();
-            $(this).siblings('.treatment-type-message').show();
-            $(this).focus();
-            stop = true;
-        } else {
-            $(this).siblings('.treatment-type-message').hide();
-        }
-    });
     if (stop) { return false; }
 
     $('#caseform').submit();
