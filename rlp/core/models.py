@@ -139,6 +139,16 @@ class SharedObjectMixin(models.Model):
         )
         return {s.target for s in shares if s.target}
 
+    def check_all_viewers(self):
+        # like get_viewers, but includes private actions
+        my_type = ContentType.objects.get_for_model(self)
+        shares = Action.objects.filter(
+            action_object_object_id=self.id,
+            action_object_content_type=my_type,
+            verb__exact='shared',
+        )
+        return {s.target for s in shares if s.target}
+
     def get_viewers_as_users(self):
         '''resolve group viewers into lists of individuals'''
         users = set()
