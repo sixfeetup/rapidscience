@@ -320,32 +320,15 @@
 
          $('.select2').select2();
     }); })(jQuery);
-
-     CKEDITOR.replace('pathology', {
-         language: 'en',
-         skin: 'moono',
-         toolbar: [
-            ['Undo', 'Redo'],
-            ['ShowBlocks'],
-            ['Format', 'Styles'],
-            ['PasteText', 'PasteFromWord'],
-            ['Maximize', ''],
-            '/',
-            ['Bold', 'Italic', 'Underline', '-', 'Subscript', 'Superscript', '-', 'RemoveFormat'],
-            ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
-            ['HorizontalRule'],
-            ['Link', 'Unlink'],
-            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Table'],
-            ['Source']
-         ],
-         allowedContent: true,
-         toolbarCanCollapse: false,
-         extraPlugins: '',
-         width: '100%'
-     });
-     $(".treatment.row").each(function(){
-         field_id = $(this).find("textarea").attr("id");
-         CKEDITOR.replace(field_id, {
+    
+    // display the CKEditor for specified fields
+    display_editor = ['pathology', 'additional_comment']
+    $(".treatment.row").each(function(){
+        field_id = $(this).find("textarea").attr("id");
+        display_editor.push(field_id);
+    });
+     $(display_editor).each(function(index, value){
+         CKEDITOR.replace(value, {
              language: 'en',
              skin: 'moono',
              toolbar: [

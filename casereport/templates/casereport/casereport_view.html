@@ -239,8 +239,8 @@
 
       {% if casereport.additional_comment %}
       <div id="section-comments">
-          <h4>Additional Comments</h4>
-          <p>{{ casereport.additional_comment|linebreaks }}</p>
+          <h4>Notes/Questions/Updates</h4>
+          <p>{{ casereport.additional_comment|safe }}</p>
       </div>
       {% endif %}
 
