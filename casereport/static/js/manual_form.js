@@ -24,6 +24,29 @@
             e.preventDefault();
             $(this).parent('.row').remove();
         });
+        CKEDITOR.replace('treatment_outcome_' + (field_count-1), {
+            language: 'en',
+            skin: 'moono',
+            toolbar: [
+               ['Undo', 'Redo'],
+               ['ShowBlocks'],
+               ['Format', 'Styles'],
+               ['PasteText', 'PasteFromWord'],
+               ['Maximize', ''],
+               '/',
+               ['Bold', 'Italic', 'Underline', '-', 'Subscript', 'Superscript', '-', 'RemoveFormat'],
+               ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+               ['HorizontalRule'],
+               ['Link', 'Unlink'],
+               ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Table'],
+               ['Source']
+            ],
+            allowedContent: true,
+            toolbarCanCollapse: false,
+            extraPlugins: '',
+            width: '100%',
+            height: '275px'
+        });
     });
 
     //btn increment decrement

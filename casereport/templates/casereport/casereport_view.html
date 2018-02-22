@@ -231,7 +231,7 @@
                         <span class="treatment-stat">PS: {{ treatment.status }}</span>
                       {% endif %}
                   </p>
-                  <p>{{ treatment.notes|linebreaks }}</p>
+                  <p>{{ treatment.notes|safe }}</p>
               </div>
           {% endfor %}
       </div>
