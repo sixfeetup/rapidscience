@@ -17,8 +17,8 @@ function checkfile(sender) {
     if (validExts.indexOf(fileExt) < 0) {
         message += 'Invalid file selected, valid files are of ' + validExts.toString() + ' types.';
     }
-    if (sender.files[0].size > 2*1024*1024) {
-        message += ' File size must be smaller than 2MB.';
+    if (sender.files[0].size > 6*1024*1024) {
+        message += ' File size must be smaller than 6MB.';
     }
     if (message != '') {
         $(sender).parent().before(
@@ -382,7 +382,7 @@ $(document).ready(function() {
                     '<div class="form-control">'+
                         '<input type="file" name="attachment' + x + '" id="attachment' + x + '" onchange="checkfile(this);">'+
                     '</div>'+
-                    '<div class="helpText">JPG, PDF, PNG, TIFF file types; max file size 2MB; minimum width 770px'+
+                    '<div class="helpText">JPG, PDF, PNG, TIFF file types; max file size 6MB; minimum width 770px'+
                                           '<br/>Be sure to explicitly cite this file\'s name in relevant text below</div>'+
                     '<label for="attachment' + x + '_title">Title</label>'+
                     '<input id="attachment' + x + '_title" name="attachment' + x + '_title" class="form-control attachment' + x + '_title">'+
