@@ -659,23 +659,30 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     def get_treatments(self):
         return Treatment.objects.filter(casereport_f=self)
 
+    def attch_is_image(self, filename):
+        ext = filename.split('.')[-1:]
+        return ext[0].lower() in ['jpg', 'gif', 'png', 'jpeg', 'tiff']
+
     def get_attachments(self):
         if not self.attachment1:
             return []
         attachments = [
             {'file': self.attachment1,
              'title': self.attachment1_title,
-             'description': self.attachment1_description}]
+             'description': self.attachment1_description,
+             'is_image': self.attch_is_image(self.attachment1.url)}]
         if self.attachment2:
             attachments.append({
                 'file': self.attachment2,
                 'title': self.attachment2_title,
-                'description': self.attachment2_description})
+                'description': self.attachment2_description,
+                'is_image': self.attch_is_image(self.attachment2.url)})
         if self.attachment3:
             attachments.append({
                 'file': self.attachment3,
                 'title': self.attachment3_title,
-                'description': self.attachment3_description},)
+                'description': self.attachment3_description,
+                'is_image': self.attch_is_image(self.attachment3.url)},)
         return attachments
 
     def get_treatment_events_in_order(self):

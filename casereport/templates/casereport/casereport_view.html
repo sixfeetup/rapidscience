@@ -267,11 +267,16 @@
           <h4>Attachments</h4>
           {% for attachment in casereport.get_attachments %}
           {% if attachment.file %}
-              <img src="{{ attachment.file.url }}" alt="{{ attachment.title }}"/>
               <div class="caption">
+                  {% if attachment.is_image %}
+                    <img src="{{ attachment.file.url }}" alt="{{ attachment.title }}"/>
+                  {% else %}
+                    <i class="fa fa-paperclip"></i>
+                  {% endif %}
                   <p><strong>{{ forloop.counter }}. {% if attachment.title %}{{ attachment.title }}{% endif %}</strong></p>
                   {% if attachment.description %}{{ attachment.description|linebreaks }}{% endif %}
-                  <p><a href="{{ attachment.file.url }}" target="_blank" class="download">Download full image</a></p>
+                  <p><a href="{{ attachment.file.url }}" target="_blank" class="download">
+                      Download {% if attachment.is_image %}full image{% else %}file{% endif %}</a></p>
               </div>
           {% endif %}
           {% endfor %}

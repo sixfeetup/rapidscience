@@ -655,8 +655,17 @@ margin-bottom: 30px;}
 #section-comments {
     margin-top: -70px;
 }
+#section-attachments .fa {
+	font-size: 25px;
+}
 #section-attachments .caption {
     margin-bottom: 16px;
+	border-top: 1px solid #333333;
+	padding-top: 15px;
+}
+#section-attachments .caption:first-of-type {
+	border-top: none;
+	padding-top: 0;
 }
 .molecule-abberation div span{
     padding-left: 15px;
