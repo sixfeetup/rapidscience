@@ -714,18 +714,30 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
             )
             case.attachment1_title = data['attachment1_title']
             case.attachment1_description = data['attachment1_description']
+        else:
+            case.attachment1 = None
+            case.attachment1_title = ''
+            case.attachment1_description = ''
         if 'attachment2_title' in data:
             case.attachment2 = (
                 request.FILES.get('attachment2') or case.attachment2
             )
             case.attachment2_title = data['attachment2_title']
             case.attachment2_description = data['attachment2_description']
+        else:
+            case.attachment2 = None
+            case.attachment2_title = ''
+            case.attachment2_description = ''
         if 'attachment3_title' in data:
             case.attachment3 = (
                 request.FILES.get('attachment3') or case.attachment3
             )
             case.attachment3_title = data['attachment3_title']
             case.attachment3_description = data['attachment3_description']
+        else:
+            case.attachment3 = None
+            case.attachment3_title = ''
+            case.attachment3_description = ''
         if 'uploadfile' in request.FILES:
             case.casefile_f = (
                 request.FILES.get('uploadfile') or case.casefile_f

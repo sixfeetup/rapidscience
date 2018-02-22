@@ -370,25 +370,33 @@ $(document).ready(function() {
     var att_wrapper         = $(".attachments-div"); //Fields wrapper
     var add_button      = $(".add_att_button"); //Add button ID
 
-    var x = $(".attachments-div .attachment.row").length; //initlal text box count
 
     $(add_button).click(function(e){ //on add input button click
         e.preventDefault();
+        var x = $(".attachments-div .attachment.row").length;
+        var new_num = 0
+        if ($("#attachment1").length == 0) {
+            new_num = 1;
+        } else if ($("#attachment2").length == 0) {
+            new_num = 2;
+        } else if ($("#attachment3").length == 0) {
+            new_num = 3;
+        }
         if(x < max_fields){ //max input box allowed
             x++; //text box increment
             $(att_wrapper).append(
                 '<div class="attachment row"><div class="col-md-11">'+
                     '<div class="figure">File ' + x + '</div>'+
                     '<div class="form-control">'+
-                        '<input type="file" name="attachment' + x + '" id="attachment' + x + '" onchange="checkfile(this);">'+
+                        '<input type="file" name="attachment' + new_num + '" id="attachment' + new_num + '" onchange="checkfile(this);">'+
                     '</div>'+
                     '<div class="helpText">JPG, PDF, PNG, TIFF file types; max file size 6MB; minimum width 770px'+
                                           '<br/>Be sure to explicitly cite this file\'s name in relevant text below</div>'+
-                    '<label for="attachment' + x + '_title">Title</label>'+
-                    '<input id="attachment' + x + '_title" name="attachment' + x + '_title" class="form-control attachment' + x + '_title">'+
-                    '<label for="attachment1_description">Description</label>'+
-                    '<textarea id="attachment' + x + '_description" name="attachment' + x + '_description"'+
-                              'rows="4" cols="73" class="form-control attachment' + x + '_description editor"></textarea>'+
+                    '<label for="attachment' + new_num + '_title">Title</label>'+
+                    '<input id="attachment' + new_num + '_title" name="attachment' + new_num + '_title" class="form-control attachment' + new_num + '_title">'+
+                    '<label for="attachment' + new_num + '_description">Description</label>'+
+                    '<textarea id="attachment' + new_num + '_description" name="attachment' + new_num + '_description"'+
+                              'rows="4" cols="73" class="form-control attachment' + new_num + '_description editor"></textarea>'+
                 '</div><div class="col-md-1"><a href="#" class="remove_att">✕</a></div></div>'
             );
             if ($('.row.attachment').length >= max_fields) {

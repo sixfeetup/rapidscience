@@ -664,21 +664,26 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         return ext[0].lower() in ['jpg', 'gif', 'png', 'jpeg', 'tiff']
 
     def get_attachments(self):
-        if not self.attachment1:
+        if not (self.attachment1 or self.attachment2 or self.attachment3):
             return []
-        attachments = [
-            {'file': self.attachment1,
-             'title': self.attachment1_title,
-             'description': self.attachment1_description,
-             'is_image': self.attch_is_image(self.attachment1.url)}]
+        attachments = []
+        if self.attachment1:
+            attachments.append({
+                'id': 'attachment1',
+                'file': self.attachment1,
+                'title': self.attachment1_title,
+                'description': self.attachment1_description,
+                'is_image': self.attch_is_image(self.attachment1.url)})
         if self.attachment2:
             attachments.append({
+                'id': 'attachment2',
                 'file': self.attachment2,
                 'title': self.attachment2_title,
                 'description': self.attachment2_description,
                 'is_image': self.attch_is_image(self.attachment2.url)})
         if self.attachment3:
             attachments.append({
+                'id': 'attachment3',
                 'file': self.attachment3,
                 'title': self.attachment3_title,
                 'description': self.attachment3_description,
