@@ -18,7 +18,7 @@
 </div>
 
 <form id="caseform" name="caseform" class="rpds-form" action="" method="post"
-      data-mode="{% if casereport.get_treatments %}M{% elif not casereport.get_treatments and casereport.free_text %}T{% elif not casereport.get_treatments and casereport.casefile_f %}F{% endif %}"
+      data-mode="{% if use_template %}M{% elif not use_template and casereport.free_text %}T{% elif not use_template and casereport.casefile_f %}F{% endif %}"
       enctype="multipart/form-data">
     {% csrf_token %}
 

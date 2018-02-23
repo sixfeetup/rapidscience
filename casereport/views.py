@@ -193,7 +193,8 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
             form=form,
             subtypes=subtypes,
             aberrations=aberrations,
-            all_members=all_members), )
+            all_members=all_members,
+            use_template=True), )
 
     def get_form(self, form_class):
         try:
@@ -637,6 +638,9 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
             origin = 'casescentral'
         else:
             origin = None
+        use_template = casereport.presentation or casereport.pathology or \
+            casereport.biomarkers or casereport.aberrations.all() or \
+            casereport.get_treatments() or casereport.additional_comment
 
         return self.render_to_response(self.get_context_data(
             heading=heading,
@@ -646,7 +650,8 @@ class CaseReportEditView(LoginRequiredMixin, FormView):
             subtypes=subtypes,
             aberrations=aberrations,
             all_members=all_members,
-            viewers=viewers),
+            viewers=viewers,
+            use_template=use_template),
             )
 
     def post(self, request, case_id, *args, **kwargs):

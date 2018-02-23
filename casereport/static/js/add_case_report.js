@@ -149,7 +149,6 @@ function captcha(){
             }
         });
         var mode = $("#caseform").data('mode');
-        console.log("mode: '" + mode + "'");
         if (mode) {
             $(".radiobut[value=" + mode + "]").trigger("click");
         }
