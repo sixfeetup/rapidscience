@@ -3,7 +3,7 @@ function checkfile(sender) {
         return false;
     }
     var validExts = [];
-    var validAttachExts = [".pdf", ".jpeg", ".jpg", '.png', '.tif', '.tiff'];
+    var validAttachExts = [".pdf", ".jpeg", ".jpg", '.png', '.tif', '.tiff', ".doc", ".docx"];
     var validFileExts = [".doc", ".docx", ".epub", ".html", ".odt", ".pdf", ".rtf", ".txt", ".zip"];
     var fileExt = sender.value;
     fileExt = fileExt.substring(fileExt.lastIndexOf('.'));
@@ -390,7 +390,7 @@ $(document).ready(function() {
                     '<div class="form-control">'+
                         '<input type="file" name="attachment' + new_num + '" id="attachment' + new_num + '" onchange="checkfile(this);">'+
                     '</div>'+
-                    '<div class="helpText">JPG, PDF, PNG, TIFF file types; max file size 6MB; minimum width 770px'+
+                    '<div class="helpText">JPG, PDF, PNG, TIFF, DOCX/DOC file types; max file size 6MB; minimum image width 770px'+
                                           '<br/>Be sure to explicitly cite this file\'s name in relevant text below</div>'+
                     '<label for="attachment' + new_num + '_title">Title</label>'+
                     '<input id="attachment' + new_num + '_title" name="attachment' + new_num + '_title" class="form-control attachment' + new_num + '_title">'+
