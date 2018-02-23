@@ -6,7 +6,7 @@ function checkfile(sender) {
     var validAttachExts = [".pdf", ".jpeg", ".jpg", '.png', '.tif', '.tiff', ".doc", ".docx"];
     var validFileExts = [".doc", ".docx", ".epub", ".html", ".odt", ".pdf", ".rtf", ".txt", ".zip"];
     var fileExt = sender.value;
-    fileExt = fileExt.substring(fileExt.lastIndexOf('.'));
+    fileExt = fileExt.substring(fileExt.lastIndexOf('.')).lower();
     var attachexpr = "/attachment/";
     if (sender.id == 'uploadfile') {
         validExts = validFileExts;
