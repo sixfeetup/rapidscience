@@ -142,7 +142,11 @@ def update_treatments_from_request(case, data):
     treatment_status_list = data.getlist('treatment_status', None)
     treatment_outcome_list = data.getlist('treatment_outcome', None)
     for i in range(0, len(treatment_name_list)):
-        if not treatment_name_list[i]:
+        tfields = treatment_name_list[i] + treatment_duration_list[i] + \
+            treatment_type_list[i] + treatment_intent_list[i] + \
+            treatment_response_list[i] + treatment_status_list[i] + \
+            treatment_outcome_list[i]
+        if not tfields:
             continue
         if treatment_pk_list[i]:
             # update existing Treatment
