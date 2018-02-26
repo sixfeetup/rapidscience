@@ -661,7 +661,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
 
     def attch_is_image(self, filename):
         ext = filename.split('.')[-1:]
-        return ext[0].lower() in ['jpg', 'gif', 'png', 'jpeg', 'tiff']
+        return ext[0].lower() in ['jpg', 'gif', 'png', 'jpeg']
 
     def get_attachments(self):
         if not (self.attachment1 or self.attachment2 or self.attachment3):
