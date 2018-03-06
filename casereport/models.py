@@ -169,7 +169,7 @@ class CaseReportReview(models.Model):
 
 @python_2_unicode_compatible
 class CaseReport(CRDBBase, SharedObjectMixin):
-    title = models.CharField(max_length=200,
+    title = models.CharField(max_length=500,
                              null=True,
                              blank=True,
                              verbose_name='Case Title')
@@ -195,10 +195,10 @@ class CaseReport(CRDBBase, SharedObjectMixin):
                                             'Email Address')
     subtype = models.ForeignKey(SubtypeOption, models.SET_NULL,
                                 null=True, blank=True)
-    subtype_other = models.CharField(max_length=200, null=True, blank=True)
+    subtype_other = models.CharField(max_length=500, null=True, blank=True)
     presentation = models.TextField(null=True, blank=True)
     aberrations = models.ManyToManyField(MolecularAbberation, blank=True)
-    aberrations_other = models.CharField(max_length=200, null=True, blank=True)
+    aberrations_other = models.CharField(max_length=500, null=True, blank=True)
     biomarkers = models.TextField(null=True, blank=True)
     pathology = HTMLField(null=True, blank=True)
     additional_comment = models.TextField(null=True, blank=True)
@@ -217,13 +217,13 @@ class CaseReport(CRDBBase, SharedObjectMixin):
     date_updated = models.DateTimeField(auto_now=True, db_index=True)
     date_published = models.DateTimeField(db_index=True, null=True, blank=True)
     attachment1 = models.FileField(null=True, blank=True)
-    attachment1_title = models.CharField(max_length=200, null=True, blank=True)
+    attachment1_title = models.CharField(max_length=500, null=True, blank=True)
     attachment1_description = models.TextField(null=True, blank=True)
     attachment2 = models.FileField(null=True, blank=True)
-    attachment2_title = models.CharField(max_length=200, null=True, blank=True)
+    attachment2_title = models.CharField(max_length=500, null=True, blank=True)
     attachment2_description = models.TextField(null=True, blank=True)
     attachment3 = models.FileField(null=True, blank=True)
-    attachment3_title = models.CharField(max_length=200, null=True, blank=True)
+    attachment3_title = models.CharField(max_length=500, null=True, blank=True)
     attachment3_description = models.TextField(null=True, blank=True)
     consent = models.BooleanField(default=False, blank=True)
     discussions = GenericRelation(
