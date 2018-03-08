@@ -24,6 +24,9 @@ class CaseReportIndex(TaggableBaseIndex, indexes.Indexable):
     pub_or_mod_date = indexes.DateTimeField(model_attr='sort_date')
     treatment_type = indexes.MultiValueField(faceted=True)
     country = indexes.MultiValueField(faceted=True)
+    # I believe suggestions is an incomplete implementation
+    # that was going to be based upon this:
+    # https://www.egrovesys.com/blog/solr-implementation-using-django-haystack/
     suggestions = indexes.FacetCharField()
 
     def get_model(self):
@@ -31,7 +34,12 @@ class CaseReportIndex(TaggableBaseIndex, indexes.Indexable):
 
     def prepare(self, obj):
         prepared_data = super(CaseReportIndex, self).prepare(obj)
-        prepared_data['suggestions'] = prepared_data['text']
+
+        # FacetCharFields are limited to 32k chars after encoding.
+        suggestions_text = prepared_data['text']\
+            .encode('utf-8').decode('ascii', 'ignore')[:32765]
+        prepared_data['suggestions'] = suggestions_text
+
         return prepared_data
 
     def index_queryset(self, using=None):
@@ -50,11 +58,13 @@ class CaseReportIndex(TaggableBaseIndex, indexes.Indexable):
             {'object': obj,
              'reported_date': reported_date,
              'treatment_names': treatment_names})
+
+
         return searchstring
 
     def prepare_primary_author(self, obj):
         return obj.primary_author.pk
-    
+
     def prepare_country(self, obj):
         author = obj.primary_author
         if author.institution:
