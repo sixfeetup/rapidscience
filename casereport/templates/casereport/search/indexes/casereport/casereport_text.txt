@@ -10,7 +10,6 @@ sarcoma
 {{object.biomarkers}}
 {{object.pathology}}
 {{object.additional_comment}}
-{{object.free_text}}
 {{object.attachment1_title}}
 {{object.attachment1_description}}
 {{object.attachment2_title}}
