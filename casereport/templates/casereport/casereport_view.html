@@ -211,8 +211,8 @@
           {% for treatment in casereport.get_treatments %}
               <div class="row treatment-list-inner">
                   <div class="treatment-name">
-                      {{ forloop.counter }}.
-                      {{ treatment.name }}
+                      <em>Treatment {{ forloop.counter }}:</em>
+                      <strong>{{ treatment.name }}</strong>
                   </div>
                   <p class="section-details">
                       {% if treatment.duration %}
