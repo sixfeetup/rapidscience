@@ -36,18 +36,25 @@
 
 
             <div class="row">
-                {% if result.object.aberrations.all|length > 0 %}
-                <div class="col-md-6">
+                {% if result.object.aberrations.all|length > 0 or result.object.aberrations_other %}
+                <div class="col-md-12">
                     <h4>Aberrations</h4>
-                    {% for aberration in result.object.aberrations.all %}
-                        {{ aberration.name }}{% if not forloop.last %},{% endif %}
-                    {% endfor %}
+                    {% if result.object.aberrations.all %}
+                        <p>
+                        {% for aberration in result.object.aberrations.all %}
+                            {{ aberration.name }}{% if not forloop.last %},{% endif %}
+                        {% endfor %}
+                        </p>
+                    {% endif %}
+                    {% if result.object.aberrations_other %}
+                        <p>{{ result.object.aberrations_other }}</p>
+                    {% endif %}
                 </div>
                 {% endif %}
                 {% if result.object.biomarkers %}
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <h4>Biomarkers</h4>
-                    {{ result.object.biomarkers }}
+                    <p>{{ result.object.biomarkers }}</p>
                 </div>
                 {% endif %}
                 {% if result.object.get_treatments %}
