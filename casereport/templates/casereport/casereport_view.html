@@ -159,7 +159,9 @@
           <h4>Co-Authors</h4>
           <ol class="authors-list">
           {% for author in casereport.get_coauthors %}
-              <li>{{ author }}{% if not forloop.last %}; {% endif %}
+              <li>
+                  <a href="{%  url 'profile' author.pk  %}">
+                      {{ author.get_full_name }}</a>{% if not forloop.last %}; {% endif %}
               </li>
           {% endfor %}
           </ol>

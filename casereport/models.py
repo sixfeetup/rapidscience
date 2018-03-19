@@ -706,7 +706,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         coauthors = []
         for ref in self.co_author.all():
             if ref.pk != self.primary_author.pk:
-                coauthors.append(ref.get_full_name())
+                coauthors.append(ref)
         return coauthors
 
     def get_presented(self):
