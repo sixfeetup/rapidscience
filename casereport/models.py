@@ -352,8 +352,8 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         except Exception as mail_err:
             print(mail_err)
 
-        return "Thank you for approving your Case Report for posting in our \
-            database! We will contact you when it goes live."
+        return "Thank you for approving your Case Report. We will contact you" \
+               " when it goes live."
 
     @fsm_log_by
     @transition(field=workflow_state,
