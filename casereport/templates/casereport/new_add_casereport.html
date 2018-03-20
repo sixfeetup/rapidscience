@@ -322,7 +322,7 @@
     }); })(jQuery);
     
     // display the CKEditor for specified fields
-    display_editor = ['pathology', 'additional_comment']
+    display_editor = ['pathology', 'additional_comment', 'details']
     $(".treatment.row").each(function(){
         field_id = $(this).find("textarea").attr("id");
         display_editor.push(field_id);
