@@ -85,6 +85,7 @@ class CaseReportDetailView(LoginRequiredMixin, TemplateView):
         for entry in casereport_history:
             user = User.objects.get(pk=entry.by_id)
             entry.user = user
+        viewers = list(set(list(casereport.get_viewers()) + [x.target for x in casereport.get_nonpublished_shares()]))
         return self.render_to_response(
             dict(
                 casereport=casereport,
@@ -95,6 +96,7 @@ class CaseReportDetailView(LoginRequiredMixin, TemplateView):
                 review_allowed=review_allowed,
                 last_viewed_path=last_viewed_path,
                 casereport_history=casereport_history,
+                viewers=viewers,
             )
         )
 

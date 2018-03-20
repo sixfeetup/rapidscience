@@ -108,31 +108,16 @@
                  <a class="share-link pull-right" href="/send/casereport/casereport/{{ casereport.id }}"><i class="fa fa-share"></i></a>
              {% endif %}
              <h4>Sharing</h4>
-             {% if casereport.get_viewers %}
+             {% if viewers %}
              <ul class="jumpMenu">
-                 {% for viewer in casereport.get_viewers %}
-                    {% if viewer != request.user and viewer|check_is_visible %}
+                 {% for viewer in viewers %}
+                    {% if viewer != request.user and viewer != casereport.primary_author and viewer|check_is_visible %}
                      <li>
-                        {% if not viewer.users %}<a href="{% url 'profile' viewer.id %}">{{ viewer.get_full_name }}</a>{% endif %}
-                        {% if viewer.users %}<a href="{% url 'projects:projects_detail' viewer.id viewer.slug %}">{{ viewer }}</a>{% endif %}
+                        {{ viewer.display_type }}
                      </li>
                     {% endif %}
                  {% endfor %}
              </ul>
-             {% elif casereport.get_nonpublished_shares %}
-               <ul class="jumpMenu">
-                 {% for share in casereport.get_nonpublished_shares %}
-                   {% with viewer=share.target %}
-                    {% if viewer != request.user and viewer|check_is_visible %}
-                     <li>
-                        {% if not viewer.users %}<a href="{% url 'profile' viewer.id %}">{{ viewer.get_full_name }}</a>{% endif %}
-                        {% if viewer.users %}<a href="{% url 'projects:projects_detail' viewer.id viewer.slug %}">{{ viewer }}</a>{% endif %}
-{#                        pending#}
-                     </li>
-                    {% endif %}
-                   {% endwith %}
-                 {% endfor %}
-               </ul>
              {% endif %}
            </div>
          </div>
