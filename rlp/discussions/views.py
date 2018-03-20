@@ -153,7 +153,7 @@ class CreateDiscussion(LoginRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super(CreateDiscussion, self).get_context_data(**kwargs)
         initial_proj = self.request.session.get('last_viewed_project')
-        if initial_proj:
+        if initial_proj and initial_proj != -1:
             context['origin'] = Project.objects.get(pk=initial_proj)
         else:
             context['origin'] = self.request.user
@@ -208,7 +208,7 @@ class CreateDiscussion(LoginRequiredMixin, FormView):
             object_pk=site.id,
         )
         initial_proj = self.request.session.get('last_viewed_project')
-        if initial_proj:
+        if initial_proj and initial_proj != -1:
             target = Project.objects.get(pk=initial_proj)
             new_discussion.origin = target
             if target.approval_required:

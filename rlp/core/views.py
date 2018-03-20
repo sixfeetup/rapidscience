@@ -114,7 +114,7 @@ class BookmarkView(LoginRequiredMixin, View):
             request.user.bookmark(content)
         if request.POST.get('group') == 'on':
             initial_proj = request.session.get('last_viewed_project')
-            if initial_proj:
+            if initial_proj and initial_proj != -1:
                 project_type = ContentType.objects.get_by_natural_key(
                     'projects', 'project',
                 )
@@ -134,7 +134,7 @@ class BookmarkRemoveView(LoginRequiredMixin, View):
             request.user.remove_bookmark(content)
         if request.POST.get('group') == 'on':
             initial_proj = request.session.get('last_viewed_project')
-            if initial_proj:
+            if initial_proj and initial_proj != -1:
                 project_type = ContentType.objects.get_by_natural_key(
                     'projects', 'project',
                 )

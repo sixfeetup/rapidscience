@@ -51,7 +51,7 @@ def reference_search(request, template_name='bibliography/reference_search.html'
         'query': query
     }
     initial_proj = request.session.get('last_viewed_project')
-    if initial_proj:
+    if initial_proj and initial_proj != -1:
         context['origin'] = Project.objects.get(pk=initial_proj)
     else:
         context['origin'] = request.user
@@ -241,7 +241,7 @@ class ReferenceAttachView(LoginRequiredMixin, FormView):
         uref_id = self.kwargs.get('uref_id',None)
 
         initial_proj = self.request.session.get('last_viewed_project')
-        if initial_proj:
+        if initial_proj and initial_proj != -1:
             target = Project.objects.get(pk=initial_proj)
 
         if uref_id:
@@ -249,13 +249,13 @@ class ReferenceAttachView(LoginRequiredMixin, FormView):
         else:
             uref = UserReference(reference=ref, user=user)
             uref.id = None
-            if initial_proj:
+            if initial_proj and initial_proj != -1:
                 uref.origin = target
             else:
                 uref.origin = user
 
         uref.description = data.get('description')
-        if initial_proj and target.approval_required:
+        if initial_proj and initial_proj != -1 and target.approval_required:
             uref.shareable = False
         uref.save()
 

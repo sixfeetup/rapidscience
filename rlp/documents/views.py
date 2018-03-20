@@ -30,7 +30,7 @@ class AddMedia(FormView):
     def get_context_data(self, **kwargs):
         context = super(AddMedia, self).get_context_data(**kwargs)
         initial_proj = self.request.session.get('last_viewed_project')
-        if initial_proj:
+        if initial_proj and initial_proj != -1:
             context['origin'] = Project.objects.get(pk=initial_proj)
         else:
             context['origin'] = self.request.user
@@ -125,7 +125,7 @@ def add_document(request, add_form=None, doc_pk=None, template_name='documents/a
                 document.owner = request.user
                 initial_proj = request.session.get('last_viewed_project')
                 if not doc_pk:
-                    if initial_proj:
+                    if initial_proj and initial_proj != -1:
                         document.origin = Project.objects.get(pk=initial_proj)
                     else:
                         document.origin = request.user
@@ -141,7 +141,7 @@ def add_document(request, add_form=None, doc_pk=None, template_name='documents/a
                     )
                     message = "Your upload was successful!"
                     # Send email notification
-                    if initial_proj:
+                    if initial_proj and initial_proj != -1:
                         target = Project.objects.get(pk=initial_proj)
                         activity_mail(request.user, document, target, request)
                         if target.approval_required:
@@ -170,7 +170,7 @@ def add_document(request, add_form=None, doc_pk=None, template_name='documents/a
         context['origin'] = document.origin
     else:
         initial_proj = request.session.get('last_viewed_project')
-        if initial_proj:
+        if initial_proj and initial_proj != -1:
             context['origin'] = Project.objects.get(pk=initial_proj)
         else:
             context['origin'] = request.user
@@ -198,7 +198,7 @@ def add_link(request, add_form=None, doc_pk=None, template_name='documents/add_l
                 link.owner = request.user
                 initial_proj = request.session.get('last_viewed_project')
                 if not doc_pk:
-                    if initial_proj:
+                    if initial_proj and initial_proj != -1:
                         link.origin = Project.objects.get(pk=initial_proj)
                     else:
                         link.origin = request.user
@@ -214,7 +214,7 @@ def add_link(request, add_form=None, doc_pk=None, template_name='documents/add_l
                     )
                     message = "Your link was successfully added!"
                     # Send email notification
-                    if initial_proj:
+                    if initial_proj and initial_proj != -1:
                         target = Project.objects.get(pk=initial_proj)
                         activity_mail(request.user, link, target, request)
                         if target.approval_required:
@@ -242,7 +242,7 @@ def add_link(request, add_form=None, doc_pk=None, template_name='documents/add_l
         context['origin'] = document.origin
     else:
         initial_proj = request.session.get('last_viewed_project')
-        if initial_proj:
+        if initial_proj and initial_proj != -1:
             context['origin'] = Project.objects.get(pk=initial_proj)
         else:
             context['origin'] = request.user
@@ -270,7 +270,7 @@ def add_video(request, add_form=None, doc_pk=None, template_name='documents/add_
                 video.owner = request.user
                 initial_proj = request.session.get('last_viewed_project')
                 if not doc_pk:
-                    if initial_proj:
+                    if initial_proj and initial_proj != -1:
                         video.origin = Project.objects.get(pk=initial_proj)
                     else:
                         video.origin = request.user
@@ -286,7 +286,7 @@ def add_video(request, add_form=None, doc_pk=None, template_name='documents/add_
                     )
                     message = "Your video was successfully added!"
                     # Send email notification
-                    if initial_proj:
+                    if initial_proj and initial_proj != -1:
                         target = Project.objects.get(pk=initial_proj)
                         activity_mail(request.user, video, target, request)
                         if target.approval_required:
@@ -314,7 +314,7 @@ def add_video(request, add_form=None, doc_pk=None, template_name='documents/add_
         context['origin'] = document.origin
     else:
         initial_proj = request.session.get('last_viewed_project')
-        if initial_proj:
+        if initial_proj and initial_proj != -1:
             context['origin'] = Project.objects.get(pk=initial_proj)
         else:
             context['origin'] = request.user
