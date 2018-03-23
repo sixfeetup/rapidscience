@@ -39,7 +39,8 @@
 
 
                 <h4><label for="casetitle">Case Title</label></h4>
-                <input name="casetitle" value="{{ casereport.title }}" type="text" class="form-control" id="casetitle">
+                <input name="casetitle" value="{{ casereport.title }}" type="text" maxlength="500"
+                       class="form-control" id="casetitle">
 
 
                 <h4 class="title-name">Primary Author/Contact</h4>
@@ -143,7 +144,7 @@
                            </select>
                        <div class="form-group others">
                          <label for="subtype-other">Other</label>
-                         <input id="subtype-other" name="subtype_other" class="form-control" value="{{ casereport.subtype_other }}" />
+                         <input id="subtype-other" name="subtype_other" class="form-control" value="{{ casereport.subtype_other }}" maxlength="500" />
                        </div>
                        <div class="subtype-message">
                         <p>This field is required.</p>
@@ -172,7 +173,7 @@
                         <label for="{{attachment.id}}_title">Title</label>
                         <input id="{{attachment.id}}_title" name="{{attachment.id}}_title"
                                class="form-control {{attachment.id}}_title"
-                               value="{{ attachment.title }}">
+                               value="{{ attachment.title }}" maxlength="500">
 
                         <label for="{{attachment.id}}_description">Description</label>
                         <textarea id="{{attachment.id}}_description" name="{{attachment.id}}_description"

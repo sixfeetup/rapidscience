@@ -392,7 +392,7 @@ $(document).ready(function() {
                     '<div class="helpText">JPG, PDF, PNG, TIFF, DOCX/DOC file types; max file size 6MB; minimum image width 770px'+
                                           '<br/>Be sure to explicitly cite this file\'s name in relevant text below</div>'+
                     '<label for="attachment' + new_num + '_title">Title</label>'+
-                    '<input id="attachment' + new_num + '_title" name="attachment' + new_num + '_title" class="form-control attachment' + new_num + '_title">'+
+                    '<input id="attachment' + new_num + '_title" maxlength="500" name="attachment' + new_num + '_title" class="form-control attachment' + new_num + '_title">'+
                     '<label for="attachment' + new_num + '_description">Description</label>'+
                     '<textarea id="attachment' + new_num + '_description" name="attachment' + new_num + '_description"'+
                               'rows="4" cols="73" class="form-control attachment' + new_num + '_description editor"></textarea>'+
