@@ -235,7 +235,7 @@
       <div id="section-freetext">
           <h4>Free Text</h4>
           <p class="cr_help">For reference during editorial workflow</p>
-          <p>{{ casereport.free_text }}</p>
+          <p>{{ casereport.free_text|safe }}</p>
       </div>
       {% endif %}
 
