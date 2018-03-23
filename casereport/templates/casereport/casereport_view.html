@@ -260,7 +260,7 @@
                   {% else %}
                     <i class="fa fa-paperclip"></i>
                   {% endif %}
-                  <p><i>File {{ forloop.counter }}:<i><strong>{% if attachment.title %}{{ attachment.title }}{% endif %}</strong></p>
+                  <p><i>File {{ forloop.counter }}: <i><strong>{% if attachment.title %}{{ attachment.title }}{% endif %}</strong></p>
                   {% if attachment.description %}{{ attachment.description|linebreaks }}{% endif %}
                   <p><a href="{{ attachment.file.url }}" target="_blank" class="download">
                       Download {% if attachment.is_image %}full image{% else %}file{% endif %}</a></p>
