@@ -152,13 +152,28 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashb
   <div style="font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 30px 0">
     {{ users|length }} New Member{{ users|length|pluralize }}:
   </div>
-  <ul>
   {% for action in users %}
-    <li><a href="https://{{ site }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.get_full_name }}</a></li>
+    <div style="font-size: 18px;">
+        <a href="https://{{ site }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.get_full_name }}</a>{% if action.action_object.degrees %}, {{ action.action_object.degrees }}{% endif %}
+    </div>
+    {% if action.action_object.title %}{{ action.action_object.title }},{% endif %}
+    {% if action.action_object.institution %}
+        {% if action.action_object.institution.name %}{{ action.action_object.institution.name }}{% endif %}<br>
+        {{ action.action_object.institution.city }},
+        {% if action.action_object.institution.state %}
+            {{ action.action_object.institution.state }},
+        {% endif %}
+        {{ action.action_object.institution.country }}
+    {% endif %}
+    {% if not forloop.last %}
+      <hr style="margin: 30px 0; color: #f1f1f1;">
+    {% endif %}
   {% endfor %}
-  </ul>
 {% endif %}
 
+<br><br>
+
+<div>
 <a href="https://{{ site }}{% url 'dashboard' %}">View more on your dashboard</a><br /><br />
 
 Join the conversation!
@@ -188,6 +203,8 @@ The Sarcoma Central Team <a href="https://twitter.com/RapidScience">@RapidScienc
 Respond or send questions/concerns to <a href="mailto:info@rapidscience.org">info@rapidscience.org</a>.
 You can change your email preferences in your
 <a href="https://{{ site }}{% url 'profile' user.pk %}">Profile</a>.
+
+</div>
 
 </div>
 
