@@ -1,17 +1,28 @@
 {% extends 'emails/base_email.html' %}
-{% load discussion_tags core_tags %}
+{% load discussion_tags core_tags static %}
 
 {% block content %}
+
+<style type="text/css">
+    a { color: #3795bf; }
+</style>
+
+<div style="font-family: Arial, sans-serif; font-size: 14px; color: #444444">
+
+<img src="http://{{ site }}{% static 'img/weekly-logo.png' %}" style="width: 295px; height: auto; margin-bottom: 10px;" /><br>
+
 Hi {{ user.get_full_name }},<br><br>
-This content was shared with you last week on Sarcoma Central 
-(see <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashboard</a>):<br><br>
+This content was shared with you last week on Sarcoma Central.<br>
+See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashboard</a>.<br><br>
 
 
 {% if casereport %}
-  <strong>{{ casereport|length }} Case Report{{ casereport|length|pluralize }}/Comments:</strong><br>
+  <div style="font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 30px 0">
+    {{ casereport|length }} Case Report{{ casereport|length|pluralize }}/Comments:
+  </div>
   {% for action in casereport %}
     {% if action.action_object.display_type != 'Reply' %}
-        <div style="font-size: 14px; margin-bottom: 5px;">  
+        <div style="margin-bottom: 5px;">  
           Case Report {{ action.verb }} 
           by <a href="https://{{ site }}{{ action.actor.get_absolute_url }}">{{ action.actor.get_full_name }}</a>
           {% if action.target %}
@@ -40,7 +51,9 @@ This content was shared with you last week on Sarcoma Central
 
 
 {% if threadedcomment %}
-  <strong>{{ threadedcomment|length }} Discussion{{ threadedcomment|length|pluralize }}/Comments:</strong>
+  <div style="font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 30px 0">
+    {{ threadedcomment|length }} Discussion{{ threadedcomment|length|pluralize }}/Comments:
+  </div>
   <ul>
   {% for action in threadedcomment %}
     {% if action.action_object.display_type != 'Reply' %}
@@ -67,7 +80,9 @@ This content was shared with you last week on Sarcoma Central
 
 
 {% if document %}
-  <strong>{{ document|length }} Document{{ document|length|pluralize }} & Media/Comments:</strong>
+  <div style="font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 30px 0">
+    {{ document|length }} Document{{ document|length|pluralize }} & Media/Comments:
+  </div>
   <ul>
   {% for action in document %}
     {% if action.action_object.display_type != 'Reply' %}
@@ -94,7 +109,9 @@ This content was shared with you last week on Sarcoma Central
 
 
 {% if userreference %}
-  <strong>{{ userreference|length }} References/Comments:</strong>
+  <div style="font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 30px 0">
+    {{ userreference|length }} References/Comments:
+  </div>
   <ul>
   {% for action in userreference %}
     {% if action.action_object.display_type != 'Reply' %}
@@ -121,7 +138,9 @@ This content was shared with you last week on Sarcoma Central
 
 
 {% if users %}
-  <strong>{{ users|length }} New Member{{ users|length|pluralize }}:</strong>
+  <div style="font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 30px 0">
+    {{ users|length }} New Member{{ users|length|pluralize }}:
+  </div>
   <ul>
   {% for action in users %}
     <li><a href="https://{{ site }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.get_full_name }}</a></li>
@@ -158,4 +177,7 @@ The Sarcoma Central Team <a href="https://twitter.com/RapidScience">@RapidScienc
 Respond or send questions/concerns to <a href="mailto:info@rapidscience.org">info@rapidscience.org</a>.
 You can change your email preferences in your
 <a href="https://{{ site }}{% url 'profile' user.pk %}">Profile</a>.
+
+</div>
+
 {% endblock content %}
