@@ -151,6 +151,7 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashb
             
             {% setvar "0" as comment_count %}{%  get_threaded_comment_count for action.action_object as comment_count %}{% if comment_count %}({{ comment_count }} comment{{ comment_count|pluralize }}){% endif %}
         </div>
+        {{ action.action_object.reference.parsed_data.abstract|truncatechars:160 }}
         {% if not forloop.last or userreference_comments %}
           <hr style="margin: 30px 0; color: #f1f1f1;">
         {% endif %}
