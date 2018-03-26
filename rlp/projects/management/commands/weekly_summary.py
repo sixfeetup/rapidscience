@@ -14,6 +14,7 @@ from actstream.models import Action
 
 from rlp.accounts.models import User
 from rlp.discussions.models import ThreadedComment
+from rlp.projects.models import Project
 
 
 class Command(BaseCommand):
@@ -143,7 +144,10 @@ class Command(BaseCommand):
                 else:
                     email_context[type_key] = [(comment, commentcounter[comment])]
 
-            if not results:
+            new_projects = Project.objects.filter(created__gte=some_day_last_week)
+            email_context['new_projects'] = new_projects
+
+            if not results and not new_projects:
                 continue
             template = 'emails/weekly_summary'
             message_body = render_to_string('{}.txt'.format(template), email_context)

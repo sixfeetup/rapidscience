@@ -18,7 +18,7 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashb
 
 {% if casereport %}
   <div style="font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 30px 0">
-    {{ casereport|length }} Case Report{{ casereport|length|pluralize }}/Comments:
+    {{ casereport|length }} Case Report{{ casereport|length|pluralize }}/Comments
   </div>
   {% for action in casereport %}
     {% if action.action_object.display_type != 'Reply' %}
@@ -52,7 +52,7 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashb
 
 {% if threadedcomment %}
   <div style="font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 30px 0">
-    {{ threadedcomment|length }} Discussion{{ threadedcomment|length|pluralize }}/Comments:
+    {{ threadedcomment|length }} Discussion{{ threadedcomment|length|pluralize }}/Comments
   </div>
   <ul>
   {% for action in threadedcomment %}
@@ -81,7 +81,7 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashb
 
 {% if document %}
   <div style="font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 30px 0">
-    {{ document|length }} Document{{ document|length|pluralize }} & Media/Comments:
+    {{ document|length }} Document{{ document|length|pluralize }} & Media/Comments
   </div>
   {% for action in document %}
     {% if action.action_object.display_type != 'Reply' %}
@@ -121,7 +121,7 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashb
 
 {% if userreference %}
   <div style="font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 30px 0">
-    {{ userreference|length }} References/Comments:
+    {{ userreference|length }} References/Comments
   </div>
   {% for action in userreference %}
     {% if action.action_object.display_type != 'Reply' %}
@@ -169,7 +169,7 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashb
 
 {% if users %}
   <div style="font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 30px 0">
-    {{ users|length }} New Member{{ users|length|pluralize }}:
+    {{ users|length }} New Member{{ users|length|pluralize }}
   </div>
   {% for action in users %}
     <div style="font-size: 18px;">
@@ -184,6 +184,22 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashb
         {% endif %}
         {{ action.action_object.institution.country }}
     {% endif %}
+    {% if not forloop.last %}
+      <hr style="margin: 30px 0; color: #f1f1f1;">
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+{% if new_projects %}
+  <div style="font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 30px 0">
+    {{ new_projects|length }} New Group{{ new_projects|length|pluralize }}
+  </div>
+  {% for group in new_projects %}
+    <div style="font-size: 18px;">
+        <a href="https://{{ site }}{{ group.get_absolute_url }}">{{ group.title }}</a>
+    </div>
+    {% if group.approval_required %}Closed{% else %}Open{% endif %} Group<br />
+    <div>{{ group.goal }}</div>
     {% if not forloop.last %}
       <hr style="margin: 30px 0; color: #f1f1f1;">
     {% endif %}

@@ -52,6 +52,7 @@ class Project(SEOMixin, SharesContentMixin):
                                    related_name='projects')
     goal = models.CharField(max_length=450, blank=True)
     order = models.PositiveIntegerField(default=0, db_index=True)
+    created = models.DateTimeField(auto_now_add=True)
 
     @property
     def display_type(self):
