@@ -54,28 +54,33 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashb
   <div style="font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 30px 0">
     {{ threadedcomment|length }} Discussion{{ threadedcomment|length|pluralize }}/Comments
   </div>
-  <ul>
   {% for action in threadedcomment %}
     {% if action.action_object.display_type != 'Reply' %}
-        <li>
+        <div style="margin-bottom: 5px;">
             Discussion {{ action.verb }} 
             by <a href="https://{{ site }}{{ action.actor.get_absolute_url }}">{{ action.actor.get_full_name }}</a>
             {% if action.target %}
                 to <a href="https://{{ site }}{{ action.target.get_absolute_url }}">{{ action.target }}</a>
             {% endif %}
-            | {{ action.timestamp.date }}<br />
-            <div style="padding-left: 40px">
-                <a href="https://{{ site }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.title }}</a>
-                    {% setvar "0" as comment_count %}{%  get_threaded_comment_count for action.action_object as comment_count %}{% if comment_count %}({{ comment_count }} comment{{ comment_count|pluralize }}){% endif %}
-            </div>
-        </li>
+            | {{ action.timestamp.date }}
+        </div>
+        <div style="font-size: 18px"> 
+            <a href="https://{{ site }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.title }}</a>
+                {% setvar "0" as comment_count %}{%  get_threaded_comment_count for action.action_object as comment_count %}{% if comment_count %}({{ comment_count }} comment{{ comment_count|pluralize }}){% endif %}
+        </div>
+        <p>{{ action.action_object.comment|striptags|truncatechars:160 }}</p>
+        {% if not forloop.last or threadedcomment_comments %}
+          <hr style="margin: 30px 0; color: #f1f1f1;">
+        {% endif %}
      {% endif %}
   {% endfor %}
   {% for obj in threadedcomment_comments %}
-      <li>{{ obj.1 }} new comment{{ count|length|pluralize }} on 
-        <a href="https://{{ site }}{{ obj.0.get_absolute_url }}">{{ obj.0.title }}{{ obj.0.reference.title }}</a></li>
+      {{ obj.1 }} new comment{{ count|length|pluralize }} on 
+        <a href="https://{{ site }}{{ obj.0.get_absolute_url }}">{{ obj.0.title }}{{ obj.0.reference.title }}</a>
+      {% if not forloop.last %}
+        <hr style="margin: 30px 0; color: #f1f1f1;">
+      {% endif %}
   {% endfor %}
-  </ul>
 {% endif %}
 
 
