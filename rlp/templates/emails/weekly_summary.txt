@@ -211,11 +211,28 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashb
   {% endfor %}
 {% endif %}
 
-<br><br>
+<hr style="margin: 30px 0; color: #f1f1f1;">
 
-<div>
-<a href="https://{{ site }}{% url 'dashboard' %}">View more on your dashboard</a><br /><br />
+<p>Respond or send questions/concerns to <a href="mailto:info@rapidscience.org">info@rapidscience.org</a>.<br>
+You can change your email preferences in your
+<a href="https://{{ site }}{% url 'profile' user.pk %}">Profile</a>.</p>
 
+<div style="background-color: #ecebeb; padding: 15px;">
+    <p>
+        <a href="https://www.linkedin.com/company/rapid-science"
+            ><img src="http://{{ site }}{% static 'img/email-linkedin.png' %}" style="height: 32px; width: auto" /></a>
+        <a href="https://twitter.com/RapidScience"
+            ><img src="http://{{ site }}{% static 'img/email-twitter.png' %}" style="height: 32px; width: auto" /></a>
+    </p>
+    
+    <p>
+        &copy; {% now "Y" %} Rapid Science<br>
+        Rapid Science is a nonprofit 501(c)3 company based in Brooklyn, NY
+    </p>
+</div>
+
+
+{% comment "don't use for now" %}
 Join the conversation!
 {% if user_groups|length == 1 %}
     Connect with your colleagues in
@@ -236,15 +253,7 @@ Join the conversation!
     {% endfor %}
 {% endif %}
 -- or <a href="https://{{ site }}{% url 'projects:projects_add' %}">create a new group</a>.<br><br>
-
-
-The Sarcoma Central Team <a href="https://twitter.com/RapidScience">@RapidScience</a><br><br>
-
-Respond or send questions/concerns to <a href="mailto:info@rapidscience.org">info@rapidscience.org</a>.
-You can change your email preferences in your
-<a href="https://{{ site }}{% url 'profile' user.pk %}">Profile</a>.
-
-</div>
+{% endcomment %}
 
 </div>
 
