@@ -40,8 +40,14 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashb
     {% endif %}
   {% endfor %}
   {% for obj in casereport_comments %}
-      {{ obj.1 }} new comment{{ count|length|pluralize }} on 
-        <a href="https://{{ site }}{{ obj.0.get_absolute_url }}">{{ obj.0.title }}{{ obj.0.reference.title }}</a>
+      <div style="padding-bottom: 5px;">
+          Reply by <a href="https://{{ site }}{{ obj.0.user.get_absolute_url }}">{{ obj.0.user.get_full_name }}</a>
+          on <a href="https://{{ site }}{{ obj.1.get_absolute_url }}">{{ obj.1.title }}{{ obj.1.reference.title }}</a>
+          | {{ obj.0.submit_date|date:"j M Y" }}
+      </div>
+      <div style="font-size: 18px"> 
+        {{ obj.0.comment|striptags|truncatechars:160 }}
+      </div>
       {% if not forloop.last %}
         <hr style="margin: 30px 0; color: #f1f1f1;">
       {% endif %}
@@ -75,8 +81,14 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashb
      {% endif %}
   {% endfor %}
   {% for obj in threadedcomment_comments %}
-      {{ obj.1 }} new comment{{ count|length|pluralize }} on 
-        <a href="https://{{ site }}{{ obj.0.get_absolute_url }}">{{ obj.0.title }}{{ obj.0.reference.title }}</a>
+      <div style="padding-bottom: 5px;">
+          Reply by <a href="https://{{ site }}{{ obj.0.user.get_absolute_url }}">{{ obj.0.user.get_full_name }}</a>
+          on <a href="https://{{ site }}{{ obj.1.get_absolute_url }}">{{ obj.1.title }}{{ obj.1.reference.title }}</a>
+          | {{ obj.0.submit_date|date:"j M Y" }}
+      </div>
+      <div style="font-size: 18px"> 
+        {{ obj.0.comment|striptags|truncatechars:160 }}
+      </div>
       {% if not forloop.last %}
         <hr style="margin: 30px 0; color: #f1f1f1;">
       {% endif %}
@@ -115,8 +127,14 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashb
     {% endif %}
   {% endfor %}
   {% for obj in document_comments %}
-      {{ obj.1 }} new comment{{ count|length|pluralize }} on 
-        <a href="https://{{ site }}{{ obj.0.get_absolute_url }}">{{ obj.0.title }}{{ obj.0.reference.title }}</a>
+      <div style="padding-bottom: 5px;">
+          Reply by <a href="https://{{ site }}{{ obj.0.user.get_absolute_url }}">{{ obj.0.user.get_full_name }}</a>
+          on <a href="https://{{ site }}{{ obj.1.get_absolute_url }}">{{ obj.1.title }}{{ obj.1.reference.title }}</a>
+          | {{ obj.0.submit_date|date:"j M Y" }}
+      </div>
+      <div style="font-size: 18px"> 
+        {{ obj.0.comment|striptags|truncatechars:160 }}
+      </div>
       {% if not forloop.last %}
         <hr style="margin: 30px 0; color: #f1f1f1;">
       {% endif %}
@@ -163,8 +181,14 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashb
     {% endif %}
   {% endfor %}
   {% for obj in userreference_comments %}
-      {{ obj.1 }} new comment{{ count|length|pluralize }} on 
-      <a href="https://{{ site }}{{ obj.0.get_absolute_url }}">{{ obj.0.title|safe }}{{ obj.0.reference.title|safe }}</a>
+      <div style="padding-bottom: 5px;">
+          Reply by <a href="https://{{ site }}{{ obj.0.user.get_absolute_url }}">{{ obj.0.user.get_full_name }}</a>
+          on <a href="https://{{ site }}{{ obj.1.get_absolute_url }}">{{ obj.1.title }}{{ obj.1.reference.title }}</a>
+          | {{ obj.0.submit_date|date:"j M Y" }}
+      </div>
+      <div style="font-size: 18px"> 
+        {{ obj.0.comment|striptags|truncatechars:160 }}
+      </div>
       {% if not forloop.last %}
         <hr style="margin: 30px 0; color: #f1f1f1;">
       {% endif %}

@@ -126,28 +126,31 @@ class Command(BaseCommand):
                 ptype = parent._meta.model_name
                 if ptype == 'link' or ptype == 'file' or ptype == 'image':
                     ptype = 'document'
-                try:
-                    # add to doc type for count
-                    email_context[ptype].append(comment)
-                except:
-                    pass
-                comment_parents.append(parent)
-            commentcounter = Counter(comment_parents)
-            for comment in commentcounter:
-                ptype = comment._meta.model_name
-                if ptype == 'link' or ptype == 'file' or ptype == 'image':
-                    ptype = 'document'
-                # add to doc type comments
                 type_key = '{0}_comments'.format(ptype)
-                if type_key in email_context:
-                    email_context[type_key].append((comment, commentcounter[comment]))
-                else:
-                    email_context[type_key] = [(comment, commentcounter[comment])]
+                # add to doc type for count
+                email_context.setdefault(ptype, []).append(comment)
+                comment_obj = comment.action_object
+                email_context.setdefault(type_key, []).append((comment_obj, parent))
+                comment_parents.append(parent)
+
+            """This section below can be used for displaying one entry for each
+               piece of content that had comments in the last week:
+               '<x> comments on <item title>'
+            """
+            # commentcounter = Counter(comment_parents)
+            # for comment in commentcounter:
+            #     ptype = comment._meta.model_name
+            #     if ptype == 'link' or ptype == 'file' or ptype == 'image':
+            #         ptype = 'document'
+            #     # add to doc type comments
+            #     type_key = '{0}_comments'.format(ptype)
+            #     email_context.setdefault(type_key, []).append(
+            #         (comment, commentcounter[comment]))
 
             new_projects = Project.objects.filter(created__gte=some_day_last_week)
             email_context['new_projects'] = new_projects
 
-            if not results and not new_projects:
+            if not results and not new_projects and not comments:
                 continue
             template = 'emails/weekly_summary'
             message_body = render_to_string('{}.txt'.format(template), email_context)
