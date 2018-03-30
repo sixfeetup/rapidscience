@@ -4,7 +4,7 @@
 {% block content %}
 
 <style type="text/css">
-    a { color: #3795bf; }
+    a { color: #3795bf; text-decoration: none }
 </style>
 
 <div style="font-family: Arial, sans-serif; font-size: 14px; color: #444444">
@@ -26,7 +26,7 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashb
           Case Report {{ action.verb }} 
           by <a href="https://{{ site }}{{ action.actor.get_absolute_url }}">{{ action.actor.get_full_name }}</a>
           {% if action.target %}
-              to <a href="https://{{ site }}{{ action.target.get_absolute_url }}">{{ action.target }}</a>
+              {% display_shared_with action.action_object user "to {0}" %}
           {% endif %}
           | {{ action.timestamp.date }}
         </div>
@@ -66,7 +66,7 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashb
             Discussion {{ action.verb }} 
             by <a href="https://{{ site }}{{ action.actor.get_absolute_url }}">{{ action.actor.get_full_name }}</a>
             {% if action.target %}
-                to <a href="https://{{ site }}{{ action.target.get_absolute_url }}">{{ action.target }}</a>
+                {% display_shared_with action.action_object user "to {0}" %}
             {% endif %}
             | {{ action.timestamp.date }}
         </div>
@@ -106,7 +106,7 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashb
             {{ action.action_object.display_type }} {{ action.verb }} 
             by <a href="https://{{ site }}{{ action.actor.get_absolute_url }}">{{ action.actor.get_full_name }}</a>
             {% if action.target %}
-                to <a href="https://{{ site }}{{ action.target.get_absolute_url }}">{{ action.target }}</a>
+                {% display_shared_with action.action_object user "to {0}" %}
             {% endif %}
             | {{ action.timestamp.date }}
         </div>
@@ -152,7 +152,7 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashb
             Reference {{ action.verb }} 
             by <a href="https://{{ site }}{{ action.actor.get_absolute_url }}">{{ action.actor.get_full_name }}</a>
             {% if action.target %}
-                to <a href="https://{{ site }}{{ action.target.get_absolute_url }}">{{ action.target }}</a>
+                {% display_shared_with action.action_object user "to {0}" %}
             {% endif %}
             | {{ action.timestamp.date }}
         </div>
