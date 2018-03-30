@@ -24,10 +24,8 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashb
     {% if action.action_object.display_type != 'Reply' %}
         <div style="margin-bottom: 5px;">  
           Case Report {{ action.verb }} 
-          by <a href="https://{{ site }}{{ action.actor.get_absolute_url }}">{{ action.actor.get_full_name }}</a>
-          {% if action.target %}
-              {% display_shared_with action.action_object user "to {0}" %}
-          {% endif %}
+          by <a href="https://{{ site }}{{ action.action_object.primary_author.get_absolute_url }}">{{ action.action_object.primary_author.get_full_name }}</a>
+          {% display_shared_with action.action_object user "to {0}" %}
           | {{ action.timestamp.date }}
         </div>
         <div style="font-size: 18px"> 
@@ -65,9 +63,7 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashb
         <div style="margin-bottom: 5px;">
             Discussion {{ action.verb }} 
             by <a href="https://{{ site }}{{ action.actor.get_absolute_url }}">{{ action.actor.get_full_name }}</a>
-            {% if action.target %}
-                {% display_shared_with action.action_object user "to {0}" %}
-            {% endif %}
+            {% display_shared_with action.action_object user "to {0}" %}
             | {{ action.timestamp.date }}
         </div>
         <div style="font-size: 18px"> 
@@ -105,9 +101,7 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashb
         <div style="margin-bottom: 5px;">
             {{ action.action_object.display_type }} {{ action.verb }} 
             by <a href="https://{{ site }}{{ action.actor.get_absolute_url }}">{{ action.actor.get_full_name }}</a>
-            {% if action.target %}
-                {% display_shared_with action.action_object user "to {0}" %}
-            {% endif %}
+            {% display_shared_with action.action_object user "to {0}" %}
             | {{ action.timestamp.date }}
         </div>
         {% if 'Image' in action.action_object.display_type %}
@@ -151,9 +145,7 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashb
         <div style="margin-bottom: 5px;"> 
             Reference {{ action.verb }} 
             by <a href="https://{{ site }}{{ action.actor.get_absolute_url }}">{{ action.actor.get_full_name }}</a>
-            {% if action.target %}
-                {% display_shared_with action.action_object user "to {0}" %}
-            {% endif %}
+            {% display_shared_with action.action_object user "to {0}" %}
             | {{ action.timestamp.date }}
         </div>
         {% if action.action_object.description %}
