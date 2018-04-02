@@ -1,6 +1,6 @@
 from collections import Counter
 from datetime import timedelta
-from html2text import html2text
+import html2text
 import sys
 
 from django.conf import settings
@@ -156,11 +156,9 @@ class Command(BaseCommand):
             template = 'emails/weekly_summary'
             html_message = render_to_string(
                 '{}.txt'.format(template), email_context)
-            message = html2text(html_message)
-            # mail = EmailMessage(subject, message_body,
-            #                     settings.WEEKLY_SUMMARY_EMAIL,
-            #                     [user.email])
-            # mail.content_subtype = "html"
+            text_maker = html2text.HTML2Text()
+            text_maker.body_width = 100
+            message = text_maker.handle(html_message)
             send_mail(
                 subject,
                 message,
