@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.sites.models import Site
 from django.contrib.sites.shortcuts import get_current_site
 from django import template
@@ -141,15 +142,16 @@ def display_shared_with(item, user=None, fmt=r'Shared with {0}'):
         if v._meta.model_name == "user":
             if not v.is_active:
                 continue
-            url = reverse('profile', args=[v.id])
+            url = "//" + settings.DOMAIN + reverse('profile', args=[v.id])
             if v == user:
                 v = 'me'
             vlist.append('<a href="{0}">{1}</a>, '.format(url, v))
         elif v._meta.model_name == "project":
             if (v.approval_required and user in v.active_members()) or \
                     not v.approval_required:
+                domain = "//" + settings.DOMAIN
                 url = reverse('projects:projects_detail', args=[v.id, v.slug])
-                vlist.append('<a href="{0}">{1}</a>, '.format(url, v))
+                vlist.append('<a href="{0}{1}">{2}</a>, '.format(domain, url, v))
             else:
                 vlist.append('{0}, '.format(v))
         else:
