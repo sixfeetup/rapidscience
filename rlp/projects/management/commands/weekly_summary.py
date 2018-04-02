@@ -1,11 +1,12 @@
 from collections import Counter
 from datetime import timedelta
+from html2text import html2text
 import sys
 
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
-from django.core.mail import EmailMessage
 from django.core.mail import mail_admins
+from django.core.mail import send_mail
 from django.core.management.base import BaseCommand
 from django.template.loader import render_to_string
 from django.utils import timezone
@@ -153,9 +154,17 @@ class Command(BaseCommand):
             if not results and not new_projects and not comments:
                 continue
             template = 'emails/weekly_summary'
-            message_body = render_to_string('{}.txt'.format(template), email_context)
-            mail = EmailMessage(subject, message_body,
-                                settings.WEEKLY_SUMMARY_EMAIL,
-                                [user.email])
-            mail.content_subtype = "html"
-            mail.send()
+            html_message = render_to_string(
+                '{}.txt'.format(template), email_context)
+            message = html2text(html_message)
+            # mail = EmailMessage(subject, message_body,
+            #                     settings.WEEKLY_SUMMARY_EMAIL,
+            #                     [user.email])
+            # mail.content_subtype = "html"
+            send_mail(
+                subject,
+                message,
+                settings.WEEKLY_SUMMARY_EMAIL,
+                [user.email],
+                html_message=html_message,
+            )

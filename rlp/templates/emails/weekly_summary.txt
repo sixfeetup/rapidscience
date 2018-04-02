@@ -6,11 +6,13 @@
 <style type="text/css">
     a { color: #3795bf; text-decoration: none }
     hr { margin: 30px 0; color: #ffffff; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5 }
+    h2 { font-size: 14px; font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 30px 0; }
 </style>
 
 <div style="font-family: Arial, sans-serif; font-size: 14px; color: #444444">
 
-<img src="http://{{ site }}{% static 'img/weekly-logo.png' %}" style="width: 295px; height: auto; margin-bottom: 10px; max-width: 100%" /><br>
+<img src="http://{{ site }}{% static 'img/weekly-logo.png' %}" alt="Sarcoma Central Weekly"
+     style="width: 295px; height: auto; margin-bottom: 10px; max-width: 100%" /><br>
 
 Hi {{ user.get_full_name }},<br><br>
 This content was shared with you last week on Sarcoma Central.<br>
@@ -18,9 +20,9 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashb
 
 
 {% if casereport %}
-  <div style="font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 30px 0">
+  <h2>
     {{ casereport|length }} Case Report{{ casereport|length|pluralize }}/Comments
-  </div>
+  </h2>
   {% for action in casereport %}
     {% if action.action_object.display_type != 'Reply' %}
         <div style="margin-bottom: 5px;">  
@@ -56,9 +58,9 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashb
 
 
 {% if threadedcomment %}
-  <div style="font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 30px 0">
+  <h2>
     {{ threadedcomment|length }} Discussion{{ threadedcomment|length|pluralize }}/Comments
-  </div>
+  </h2>
   {% for action in threadedcomment %}
     {% if action.action_object.display_type != 'Reply' %}
         <div style="margin-bottom: 5px;">
@@ -94,9 +96,9 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashb
 
 
 {% if document %}
-  <div style="font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 30px 0">
+  <h2>
     {{ document|length }} Document{{ document|length|pluralize }} & Media/Comments
-  </div>
+  </h2>
   {% for action in document %}
     {% if action.action_object.display_type != 'Reply' %}
         <div style="margin-bottom: 5px;">
@@ -138,9 +140,9 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashb
 
 
 {% if userreference %}
-  <div style="font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 30px 0">
+  <h2>
     {{ userreference|length }} References/Comments
-  </div>
+  </h2>
   {% for action in userreference %}
     {% if action.action_object.display_type != 'Reply' %}
         <div style="margin-bottom: 5px;"> 
@@ -190,9 +192,9 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashb
 
 
 {% if users %}
-  <div style="font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 30px 0">
+  <h2>
     {{ users|length }} New Member{{ users|length|pluralize }}
-  </div>
+  </h2>
   {% for action in users %}
     <div style="font-size: 18px;">
         <a href="https://{{ site }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.get_full_name }}</a>{% if action.action_object.degrees %}, {{ action.action_object.degrees }}{% endif %}
@@ -213,9 +215,9 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashb
 {% endif %}
 
 {% if new_projects %}
-  <div style="font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 30px 0">
+  <h2>
     {{ new_projects|length }} New Group{{ new_projects|length|pluralize }}
-  </div>
+  </h2>
   {% for group in new_projects %}
     <div style="font-size: 18px;">
         <a href="https://{{ site }}{{ group.get_absolute_url }}">{{ group.title }}</a>
@@ -237,9 +239,11 @@ You can change your email preferences in your
 <div style="background-color: #ecebeb; padding: 15px;">
     <p>
         <a href="https://www.linkedin.com/company/rapid-science"
-            ><img src="http://{{ site }}{% static 'img/email-linkedin.png' %}" style="height: 32px; width: auto" /></a>
+            ><img src="http://{{ site }}{% static 'img/email-linkedin.png' %}" alt="LinkedIn"
+            style="height: 32px; width: auto" /></a>
         <a href="https://twitter.com/RapidScience"
-            ><img src="http://{{ site }}{% static 'img/email-twitter.png' %}" style="height: 32px; width: auto" /></a>
+            ><img src="http://{{ site }}{% static 'img/email-twitter.png' %}" alt="Twitter"
+            style="height: 32px; width: auto" /></a>
     </p>
     
     <p>
