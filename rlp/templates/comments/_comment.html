@@ -15,7 +15,7 @@
 {% if action.verb == 'shared' %}
     <p class="small meta">
         Posted by
-        <a href="{% url 'profile' action.actor_object_id  %}">{% if request.user == action.actor %} me {% else %} {{ action.actor }} {% endif %}</a>
+        <a href="{% url 'profile' action.action_object.user.pk  %}">{% if request.user == action.action_object.user %} me {% else %} {{ action.action_object.user }} {% endif %}</a>
         | {{ obj.submit_date|date:"j M Y" }}<br />
         {% display_shared_with obj request.user %}
     </p>
