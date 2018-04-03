@@ -142,14 +142,14 @@ def display_shared_with(item, user=None, fmt=r'Shared with {0}'):
         if v._meta.model_name == "user":
             if not v.is_active:
                 continue
-            url = "//" + settings.DOMAIN + reverse('profile', args=[v.id])
+            url = "http://" + settings.DOMAIN + reverse('profile', args=[v.id])
             if v == user:
                 v = 'me'
             vlist.append('<a href="{0}">{1}</a>, '.format(url, v))
         elif v._meta.model_name == "project":
             if (v.approval_required and user in v.active_members()) or \
                     not v.approval_required:
-                domain = "//" + settings.DOMAIN
+                domain = "http://" + settings.DOMAIN
                 url = reverse('projects:projects_detail', args=[v.id, v.slug])
                 vlist.append('<a href="{0}{1}">{2}</a>, '.format(domain, url, v))
             else:
