@@ -201,10 +201,18 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashb
   </h2>
   {% for group in new_projects %}
     <div style="font-size: 18px;">
-      <a href="https://{{ site }}{{ group.get_absolute_url }}">{{ group.title }}</a>
+      {% if group.user_is_member %}
+        <a href="http://{{ site }}{{ group.group.get_absolute_url }}">{{ group.group.title }}</a>
+      {% else %}
+        {% if group.group.approval_required %}
+          {{ group.group.title }} (<a href="http://{{ site }}/groups/{{ group.group.pk }}/join">Request to join</a>)
+        {% else %}
+          <a href="http://{{ site }}{{ group.group.get_absolute_url }}">{{ group.group.title }}</a> (<a href="http://{{ site }}/groups/{{ group.group.pk }}/join">Join</a>)
+        {% endif %}
+      {% endif %}
     </div>
-    {% if group.approval_required %}Closed{% else %}Open{% endif %} Group<br />
-    <div>{{ group.goal }}</div>
+    {% if group.group.approval_required %}Closed{% else %}Open{% endif %} Group<br />
+    <div>{{ group.group.goal }}</div>
     {% if not forloop.last %}<hr>{% endif %}
   {% endfor %}
 {% endif %}

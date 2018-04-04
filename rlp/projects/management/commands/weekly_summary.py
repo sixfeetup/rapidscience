@@ -149,7 +149,13 @@ class Command(BaseCommand):
             #         (comment, commentcounter[comment]))
 
             new_projects = Project.objects.filter(created__gte=some_day_last_week)
-            email_context['new_projects'] = new_projects
+            display_projects = []
+            for project in new_projects:
+                display_projects.append({
+                    'user_is_member': user in project.active_members(),
+                    'group': project
+                })
+            email_context['new_projects'] = display_projects
 
             if not results and not new_projects and not comments:
                 continue
