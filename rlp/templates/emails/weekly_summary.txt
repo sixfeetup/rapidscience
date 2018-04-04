@@ -31,6 +31,11 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashb
         {% display_shared_with action.action_object user "to {0}" %}
         | {{ action.timestamp.date }}
       </div>
+      {% if action.description %}
+        <div style="border-left: 3px solid #e5e5e5; padding-left: 15px; font-style: italic; margin: 15px 0">
+          {{ action.description|striptags|safe|truncatechars:160 }}
+        </div>
+      {% endif %}
       <div style="font-size: 18px"> 
         <a href="https://{{ site }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.title }}</a>
         {% setvar "0" as comment_count %}{%  get_threaded_comment_count for action.action_object as comment_count %}{% if comment_count %}({{ comment_count }} comment{{ comment_count|pluralize }}){% endif %}
@@ -65,6 +70,11 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashb
         {% display_shared_with action.action_object user "to {0}" %}
         | {{ action.timestamp.date }}
       </div>
+      {% if action.description %}
+        <div style="border-left: 3px solid #e5e5e5; padding-left: 15px; font-style: italic; margin: 15px 0">
+          {{ action.description|striptags|safe|truncatechars:160 }}
+        </div>
+      {% endif %}
       <div style="font-size: 18px"> 
         <a href="https://{{ site }}{{ action.action_object.get_absolute_url }}">{{ action.action_object.title }}</a>
         {% setvar "0" as comment_count %}{%  get_threaded_comment_count for action.action_object as comment_count %}{% if comment_count %}({{ comment_count }} comment{{ comment_count|pluralize }}){% endif %}
@@ -99,6 +109,11 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashb
         {% display_shared_with action.action_object user "to {0}" %}
         | {{ action.timestamp.date }}
       </div>
+      {% if action.description %}
+        <div style="border-left: 3px solid #e5e5e5; padding-left: 15px; font-style: italic; margin: 15px 0">
+          {{ action.description|striptags|safe|truncatechars:160 }}
+        </div>
+      {% endif %}
       {% if 'Image' in action.action_object.display_type %}
         {% thumbnail action.action_object.upload 700x160 crop upscale HIGH_RESOLUTION as thumbnail %}
         <img alt="{{ action.action_object.title }}" src="http://{{ site }}{{ thumbnail.url }}" style="max-width: 100%">
@@ -143,21 +158,21 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashb
         <div style="border-left: 3px solid #e5e5e5; padding-left: 15px; font-style: italic; margin: 15px 0">
           {{ action.action_object.description|striptags|safe|truncatechars:160 }}
         </div>
-        {% endif %}
-        <div style="font-size: 18px">        
-          {% with action.action_object.reference as obj %}
-          {% if obj.parsed_data.authors %}{{ obj.parsed_data.authors }}. {% endif %}
-            <a href="https://{{ site }}{{ action.action_object.get_absolute_url }}">{{ obj.title }}</a>,
-            {% if obj.parsed_data.container_title %}in <em>{% autoescape off %}{{ obj.parsed_data.container_title }}{% endautoescape %}</em>,{% endif %}
-            {% if obj.parsed_data.page %}pp {{ obj.parsed_data.page }}.{% endif %}
-            {% if obj.parsed_data.publication_date %}{{ obj.parsed_data.publication_date }};{% endif %}
-            {{ obj.parsed_data.publisher }} {{ obj.parsed_data.journal_title }}
-            {% if obj.parsed_data.doi %}DOI: {{ obj.parsed_data.doi }}{% endif %} {% if obj.parsed_data.pubmed_id %}PMID: {{ obj.parsed_data.pubmed_id }}{% endif %}
-          {% endwith %}
-          {% setvar "0" as comment_count %}{%  get_threaded_comment_count for action.action_object as comment_count %}{% if comment_count %}({{ comment_count }} comment{{ comment_count|pluralize }}){% endif %}
-        </div>
-        {{ action.action_object.reference.parsed_data.abstract|truncatechars:160 }}
-        {% if not forloop.last or userreference_comments %}<hr>{% endif %}
+      {% endif %}
+      <div style="font-size: 18px">        
+        {% with action.action_object.reference as obj %}
+        {% if obj.parsed_data.authors %}{{ obj.parsed_data.authors }}. {% endif %}
+          <a href="https://{{ site }}{{ action.action_object.get_absolute_url }}">{{ obj.title }}</a>,
+          {% if obj.parsed_data.container_title %}in <em>{% autoescape off %}{{ obj.parsed_data.container_title }}{% endautoescape %}</em>,{% endif %}
+          {% if obj.parsed_data.page %}pp {{ obj.parsed_data.page }}.{% endif %}
+          {% if obj.parsed_data.publication_date %}{{ obj.parsed_data.publication_date }};{% endif %}
+          {{ obj.parsed_data.publisher }} {{ obj.parsed_data.journal_title }}
+          {% if obj.parsed_data.doi %}DOI: {{ obj.parsed_data.doi }}{% endif %} {% if obj.parsed_data.pubmed_id %}PMID: {{ obj.parsed_data.pubmed_id }}{% endif %}
+        {% endwith %}
+        {% setvar "0" as comment_count %}{%  get_threaded_comment_count for action.action_object as comment_count %}{% if comment_count %}({{ comment_count }} comment{{ comment_count|pluralize }}){% endif %}
+      </div>
+      {{ action.action_object.reference.parsed_data.abstract|truncatechars:160 }}
+      {% if not forloop.last or userreference_comments %}<hr>{% endif %}
     {% endif %}
   {% endfor %}
   {% for obj in userreference_comments %}
