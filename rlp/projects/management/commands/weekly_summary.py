@@ -20,16 +20,30 @@ from rlp.projects.models import Project
 
 class Command(BaseCommand):
     """Sends a weekly summary of site activity. Should only be run once per week."""
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--to',
+            type=str,
+            help='Specify a list of emails',
+        )
+
     def handle(self, *args, **options):
+        users = []
+        emails = options.get('to')
+        if emails:
+            send_to = emails.split(',')
+            users = User.objects.filter(email__in=send_to)
+        else:
+            users = User.objects.filter(is_active=True)
         try:
-            self.process()
+            self.process(users)
         except Exception as err:
             subject = "{}".format(sys.argv[1])
             message = "{}".format(err)
             mail_admins(subject, message)
             raise
 
-    def process(self):
+    def process(self, users):
         some_day_last_week = timezone.now() - timedelta(days=7)
         year, week, day = some_day_last_week.isocalendar()
         # define the content types
@@ -44,7 +58,7 @@ class Command(BaseCommand):
         subject = "Weekly summary of new activity"
 
         # loop through users
-        for user in User.objects.filter(is_active=True):
+        for user in users:
             if user.email_prefs != 'digest':
                 print("skipping ", user, ": email setting is {0}".format(user.email_prefs))
                 continue
