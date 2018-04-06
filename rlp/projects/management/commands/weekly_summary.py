@@ -28,11 +28,9 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        users = []
         emails = options.get('to')
         if emails:
-            send_to = emails.split(',')
-            users = User.objects.filter(email__in=send_to)
+            users = User.objects.filter(email__in=emails.split(','))
         else:
             users = User.objects.filter(is_active=True)
         try:
