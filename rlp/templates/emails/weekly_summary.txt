@@ -220,9 +220,10 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}">your dashb
         <a href="http://{{ site }}{{ group.group.get_absolute_url }}">{{ group.group.title }}</a>
       {% else %}
         {% if group.group.approval_required %}
-          {{ group.group.title }} (<a href="http://{{ site }}/groups/{{ group.group.pk }}/join">Request to join</a>)
+          {{ group.group.title }} (<a href="http://{{ site }}/groups/{{ group.group.pk }}/join">request to join</a>)
         {% else %}
-          <a href="http://{{ site }}{{ group.group.get_absolute_url }}">{{ group.group.title }}</a> (<a href="http://{{ site }}/groups/{{ group.group.pk }}/join">Join</a>)
+          <a href="http://{{ site }}{{ group.group.get_absolute_url }}">{{ group.group.title }}</a>
+          {% comment %}(<a href="http://{{ site }}/groups/{{ group.group.pk }}/join">Join</a>){% endcomment %}
         {% endif %}
       {% endif %}
     </div>
