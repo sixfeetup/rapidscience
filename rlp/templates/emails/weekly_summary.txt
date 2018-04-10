@@ -73,7 +73,8 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
         <a href="https://{{ site }}{{ action.action_object.get_absolute_url }}" style="color: #3795bf; text-decoration: none">{{ action.action_object.title }}</a>
         {% setvar "0" as comment_count %}{%  get_threaded_comment_count for action.action_object as comment_count %}{% if comment_count %}({{ comment_count }} comment{{ comment_count|pluralize }}){% endif %}
       </div>
-      <p>{{ action.action_object.comment|striptags|safe|truncatechars:160 }}</p>
+      {{ action.action_object.comment|striptags|safe|truncatechars:160 }}
+      <br>
       {% if not forloop.last or threadedcomment_comments %}<br><hr style="margin: 15px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>{% endif %}
      {% endif %}
   {% endfor %}
