@@ -14,7 +14,7 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
 
 
 {% if casereport %}
-  <br><h2 style="font-size: 14px; font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 30px 0;">
+  <br><h2 style="font-size: 14px; font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 15px 0;">
     {{ casereport|length }} Case Report{{ casereport|length|pluralize }}/Comments
   </h2><br>
   {% for action in casereport %}
@@ -34,7 +34,7 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
         <a href="https://{{ site }}{{ action.action_object.get_absolute_url }}" style="color: #3795bf; text-decoration: none">{{ action.action_object.title }}</a>
         {% setvar "0" as comment_count %}{%  get_threaded_comment_count for action.action_object as comment_count %}{% if comment_count %}({{ comment_count }} comment{{ comment_count|pluralize }}){% endif %}
       </div>
-      {% if not forloop.last or casereport_comments %}<br><hr style="margin: 30px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>{% endif %}
+      {% if not forloop.last or casereport_comments %}<br><hr style="margin: 15px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>{% endif %}
     {% endif %}
   {% endfor %}
   {% for obj in casereport_comments %}
@@ -46,14 +46,14 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
     <div style="font-size: 18px; color: #444444"> 
       {{ obj.0.comment|striptags|safe|truncatechars:160 }}
     </div>
-    {% if not forloop.last %}<br><hr style="margin: 30px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>{% endif %}
+    {% if not forloop.last %}<br><hr style="margin: 15px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>{% endif %}
   {% endfor %}
 {% endif %}
 
 
 
 {% if threadedcomment %}
-  <br><h2 style="font-size: 14px; font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 30px 0;">
+  <br><h2 style="font-size: 14px; font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 15px 0;">
     {{ threadedcomment|length }} Discussion{{ threadedcomment|length|pluralize }}/Comments
   </h2><br>
   {% for action in threadedcomment %}
@@ -74,7 +74,7 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
         {% setvar "0" as comment_count %}{%  get_threaded_comment_count for action.action_object as comment_count %}{% if comment_count %}({{ comment_count }} comment{{ comment_count|pluralize }}){% endif %}
       </div>
       <p>{{ action.action_object.comment|striptags|safe|truncatechars:160 }}</p>
-      {% if not forloop.last or threadedcomment_comments %}<br><hr style="margin: 30px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>{% endif %}
+      {% if not forloop.last or threadedcomment_comments %}<br><hr style="margin: 15px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>{% endif %}
      {% endif %}
   {% endfor %}
   {% for obj in threadedcomment_comments %}
@@ -86,13 +86,13 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
     <div style="font-size: 18px; color: #444444"> 
       {{ obj.0.comment|striptags|safe|truncatechars:160 }}
     </div>
-    {% if not forloop.last %}<br><hr style="margin: 30px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>{% endif %}
+    {% if not forloop.last %}<br><hr style="margin: 15px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>{% endif %}
   {% endfor %}
 {% endif %}
 
 
 {% if document %}
-  <br><h2 style="font-size: 14px; font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 30px 0;">
+  <br><h2 style="font-size: 14px; font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 15px 0;">
     {{ document|length }} Document{{ document|length|pluralize }} & Media/Comments
   </h2><br>
   {% for action in document %}
@@ -119,7 +119,7 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
       {% if action.action_object.description %}
         <p style="color: #444444">{{ action.action_object.description|striptags|safe|truncatechars:160 }}</p>
       {% endif %}
-      {% if not forloop.last or document_comments %}<br><hr style="margin: 30px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>{% endif %}
+      {% if not forloop.last or document_comments %}<br><hr style="margin: 15px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>{% endif %}
     {% endif %}
   {% endfor %}
   {% for obj in document_comments %}
@@ -131,13 +131,13 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
     <div style="font-size: 18px; color: #444444"> 
       {{ obj.0.comment|striptags|safe|truncatechars:160 }}
     </div>
-    {% if not forloop.last %}<br><hr style="margin: 30px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>{% endif %}
+    {% if not forloop.last %}<br><hr style="margin: 15px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>{% endif %}
   {% endfor %}
 {% endif %}
 
 
 {% if userreference %}
-  <br><h2 style="font-size: 14px; font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 30px 0;">
+  <br><h2 style="font-size: 14px; font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 15px 0;">
     {{ userreference|length }} References/Comments
   </h2><br>
   {% for action in userreference %}
@@ -166,7 +166,7 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
         {% setvar "0" as comment_count %}{%  get_threaded_comment_count for action.action_object as comment_count %}{% if comment_count %}({{ comment_count }} comment{{ comment_count|pluralize }}){% endif %}
       </div>
       {{ action.action_object.reference.parsed_data.abstract|truncatechars:160 }}
-      {% if not forloop.last or userreference_comments %}<br><hr style="margin: 30px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>{% endif %}
+      {% if not forloop.last or userreference_comments %}<br><hr style="margin: 15px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>{% endif %}
     {% endif %}
   {% endfor %}
   {% for obj in userreference_comments %}
@@ -178,13 +178,13 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
     <div style="font-size: 18px; color: #444444"> 
       {{ obj.0.comment|striptags|safe|truncatechars:160 }}
     </div>
-    {% if not forloop.last %}<br><hr style="margin: 30px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>{% endif %}
+    {% if not forloop.last %}<br><hr style="margin: 15px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>{% endif %}
   {% endfor %}
 {% endif %}
 
 
 {% if users %}
-  <br><h2 style="font-size: 14px; font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 30px 0;">
+  <br><h2 style="font-size: 14px; font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 15px 0;">
     {{ users|length }} New Member{{ users|length|pluralize }}
   </h2><br>
   {% for action in users %}
@@ -200,14 +200,14 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
       {% endif %}
       {{ action.action_object.institution.country }}
     {% endif %}
-    {% if not forloop.last %}<br><hr style="margin: 30px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>{% endif %}
+    {% if not forloop.last %}<br><hr style="margin: 15px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>{% endif %}
   {% endfor %}
 {% endif %}
 
 {% if new_projects %}
-  <br><h2 style="font-size: 14px; font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 30px 0;">
+  <br><h2 style="font-size: 14px; font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 15px 0;">
     {{ new_projects|length }} New Group{{ new_projects|length|pluralize }}
-  </h2><br>
+</h2><br>
   {% for group in new_projects %}
     <div style="font-size: 18px; color: #444444">
       {% if group.user_is_member %}
@@ -223,11 +223,11 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
     </div>
     {% if group.group.approval_required %}Closed{% else %}Open{% endif %} Group<br />
     <div style="color: #444444">{{ group.group.goal }}</div>
-    {% if not forloop.last %}<br><hr style="margin: 30px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>{% endif %}
+    {% if not forloop.last %}<br><hr style="margin: 15px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>{% endif %}
   {% endfor %}
 {% endif %}
 
-<br><hr style="margin: 30px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>
+<br><hr style="margin: 15px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>
 
 <p>Respond or send questions/concerns to <a href="mailto:info@rapidscience.org" style="color: #3795bf; text-decoration: none">info@rapidscience.org</a>.<br>
 You can change your email preferences in your
