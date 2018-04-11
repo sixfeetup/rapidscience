@@ -63,7 +63,7 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
         by <a href="https://{{ site }}{{ action.actor.get_absolute_url }}" style="color: #3795bf; text-decoration: none">{{ action.actor.get_full_name }}</a>
         {% if action.description %}
           {% if action.target %}
-            to <a href="https://{{ site }}{{ action.target.get_absolute_url }}">{{ action.target }}</a>
+            to <a href="https://{{ site }}{{ action.target.get_absolute_url }}" style="color: #3795bf; text-decoration: none">{{ action.target }}</a>
           {% endif %}
         {% else %}
           {% display_shared_with action.action_object user "to {0}" "color: #3795bf; text-decoration: none" %}
@@ -109,7 +109,7 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
         by <a href="https://{{ site }}{{ action.actor.get_absolute_url }}" style="color: #3795bf; text-decoration: none">{{ action.actor.get_full_name }}</a>
         {% if action.description %}
           {% if action.target %}
-            to <a href="https://{{ site }}{{ action.target.get_absolute_url }}">{{ action.target }}</a>
+            to <a href="https://{{ site }}{{ action.target.get_absolute_url }}" style="color: #3795bf; text-decoration: none">{{ action.target }}</a>
           {% endif %}
         {% else %}
           {% display_shared_with action.action_object user "to {0}" "color: #3795bf; text-decoration: none" %}
@@ -160,7 +160,7 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
         by <a href="https://{{ site }}{{ action.actor.get_absolute_url }}" style="color: #3795bf; text-decoration: none">{{ action.actor.get_full_name }}</a>
         {% if action.description %}
           {% if action.target %}
-            to <a href="https://{{ site }}{{ action.target.get_absolute_url }}">{{ action.target }}</a>
+            to <a href="https://{{ site }}{{ action.target.get_absolute_url }}" style="color: #3795bf; text-decoration: none">{{ action.target }}</a>
           {% endif %}
         {% else %}
           {% display_shared_with action.action_object user "to {0}" "color: #3795bf; text-decoration: none" %}
