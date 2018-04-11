@@ -2,8 +2,8 @@
 {% load discussion_tags core_tags static thumbnail %}
 
 {% block content %}
-
-<div style="font-family: Arial, sans-serif; font-size: 14px; color: #444444; max-width: 600px">
+<table><tr><td width="600">
+<div style="font-family: Arial, sans-serif; font-size: 14px; color: #444444; max-width: 600px; margin: 0 auto">
 
 <img src="http://{{ site }}{% static 'img/weekly-logo.png' %}" alt="Sarcoma Central Weekly"
      style="width: 295px; height: auto; max-width: 100%" /><br><br>
@@ -275,5 +275,5 @@ Join the conversation!
 {% endcomment %}
 
 </div>
-
+</td></tr></table>
 {% endblock content %}
