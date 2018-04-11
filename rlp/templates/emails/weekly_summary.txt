@@ -61,7 +61,13 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
       <div style="margin-bottom: 5px; color: #444444">
         Discussion {{ action.verb }} 
         by <a href="https://{{ site }}{{ action.actor.get_absolute_url }}" style="color: #3795bf; text-decoration: none">{{ action.actor.get_full_name }}</a>
-        {% display_shared_with action.action_object user "to {0}" "color: #3795bf; text-decoration: none" %}
+        {% if action.description %}
+          {% if action.target %}
+            to <a href="https://{{ site }}{{ action.target.get_absolute_url }}">{{ action.target }}</a>
+          {% endif %}
+        {% else %}
+          {% display_shared_with action.action_object user "to {0}" "color: #3795bf; text-decoration: none" %}
+        {% endif %}
         | {{ action.timestamp.date }}
       </div>
       {% if action.description %}
@@ -101,7 +107,13 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
       <div style="margin-bottom: 5px; color: #444444">
         {{ action.action_object.display_type }} {{ action.verb }} 
         by <a href="https://{{ site }}{{ action.actor.get_absolute_url }}" style="color: #3795bf; text-decoration: none">{{ action.actor.get_full_name }}</a>
-        {% display_shared_with action.action_object user "to {0}" "color: #3795bf; text-decoration: none" %}
+        {% if action.description %}
+          {% if action.target %}
+            to <a href="https://{{ site }}{{ action.target.get_absolute_url }}">{{ action.target }}</a>
+          {% endif %}
+        {% else %}
+          {% display_shared_with action.action_object user "to {0}" "color: #3795bf; text-decoration: none" %}
+        {% endif %}
         | {{ action.timestamp.date }}
       </div>
       {% if action.description %}
@@ -146,7 +158,13 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
       <div style="margin-bottom: 5px; color: #444444"> 
         Reference {{ action.verb }} 
         by <a href="https://{{ site }}{{ action.actor.get_absolute_url }}" style="color: #3795bf; text-decoration: none">{{ action.actor.get_full_name }}</a>
-        {% display_shared_with action.action_object user "to {0}" "color: #3795bf; text-decoration: none" %}
+        {% if action.description %}
+          {% if action.target %}
+            to <a href="https://{{ site }}{{ action.target.get_absolute_url }}">{{ action.target }}</a>
+          {% endif %}
+        {% else %}
+          {% display_shared_with action.action_object user "to {0}" "color: #3795bf; text-decoration: none" %}
+        {% endif %}
         | {{ action.timestamp.date }}
       </div>
       {% if action.action_object.description %}
