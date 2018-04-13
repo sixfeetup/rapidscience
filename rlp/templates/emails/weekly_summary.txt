@@ -167,9 +167,9 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
         {% endif %}
         | {{ action.timestamp.date }}
       </div>
-      {% if action.action_object.description %}
+      {% if action.description %}
         <div style="border-left: 3px solid #e5e5e5; padding-left: 15px; font-style: italic; margin: 10px 0; color: #444444">
-          {{ action.action_object.description|striptags|safe|truncatechars:160 }}
+          {{ action.description|striptags|safe|truncatechars:160 }}
         </div>
       {% endif %}
       <div style="font-size: 18px; color: #444444">        
@@ -183,8 +183,10 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
           {% if obj.parsed_data.doi %}DOI: {{ obj.parsed_data.doi }}{% endif %} {% if obj.parsed_data.pubmed_id %}PMID: {{ obj.parsed_data.pubmed_id }}{% endif %}
         {% endwith %}
         {% setvar "0" as comment_count %}{%  get_threaded_comment_count for action.action_object as comment_count %}{% if comment_count %}({{ comment_count }} comment{{ comment_count|pluralize }}){% endif %}
-      </div>
-      {{ action.action_object.reference.parsed_data.abstract|truncatechars:160 }}
+      </div><br>
+      {% if action.action_object.description %}
+        <div style="color: #444444">{{ action.action_object.description|striptags|safe|truncatechars:160 }}</div>
+      {% endif %}
       {% if not forloop.last or userreference_comments %}<br><hr style="margin: 10px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>{% endif %}
     {% endif %}
   {% endfor %}
