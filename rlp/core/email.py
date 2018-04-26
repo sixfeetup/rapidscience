@@ -94,6 +94,7 @@ def activity_mail(user, obj, target, request=None):
             ref = Reference.objects.get(pk=root_obj.reference_id)
             title = ref.title
             author = User.objects.get(pk=root_obj.user_id)
+            type = 'Reference'
         elif type == 'CaseReport':
             title = root_obj.title
             author = root_obj.primary_author
