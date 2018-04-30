@@ -1,4 +1,4 @@
-<a href="{{ user_link }}">{{ user.get_full_name }}</a> commented on <a href="{{ link }}"> <em>{{title|safe |striptags}}</em></a>, the {{ type }} posted by <a href="{{ author_link }}">{{author.get_full_name }}</a> on Sarcoma Central:<br><br>
+<a href="{{ user_link }}">{{ user.get_full_name }}</a> commented on <a href="{{ link }}"> <em>{{title|safe |striptags}}</em></a>, a {{ type }} posted by <a href="{{ author_link }}">{{author.get_full_name }}</a>:<br><br>
 
 <div style="margin-left: 20px;">
 {{ comment|safe |striptags }}<br><br>
@@ -6,7 +6,7 @@
 
 You are invited to view and join the discussion <a href="{{ link }}">here</a>.<br><br>
 
-This notification also appears on your <a href="{{ dash_link }}">Dashboard Activity Feed</a> where you can save it or delete it to prevent further alerts on this discussion.<br><br>
+This notification also appears on your <a href="{{ dash_link }}">Dashboard Activity Feed</a> where you can bookmark it.<br><br>
 
 Sincerely,<br><br>
 
