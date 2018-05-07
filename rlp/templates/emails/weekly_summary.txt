@@ -15,7 +15,7 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
 
 {% if casereport %}
   <br><h2 style="font-size: 14px; font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 10px 0;">
-    {{ casereport|length }} Case Report{{ casereport|length|pluralize }}/Comments
+    {{ casereport|length }} Case Report{{ casereport|length|pluralize }}
   </h2><br>
   {% for action in casereport %}
     {% if action.action_object.display_type != 'Reply' %}
@@ -34,9 +34,15 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
         <a href="https://{{ site }}{{ action.action_object.get_absolute_url }}" style="color: #3795bf; text-decoration: none">{{ action.action_object.title }}</a>
         {% setvar "0" as comment_count %}{%  get_threaded_comment_count for action.action_object as comment_count %}{% if comment_count %}({{ comment_count }} comment{{ comment_count|pluralize }}){% endif %}
       </div>
-      {% if not forloop.last or casereport_comments %}<br><hr style="margin: 10px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>{% endif %}
+      {% if not forloop.last %}<br><hr style="margin: 10px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>{% endif %}
     {% endif %}
   {% endfor %}
+{% endif %}
+  
+{% if casereport_comments %}
+  <br><h2 style="font-size: 14px; font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 10px 0;">
+    {{ casereport_comments|length }} Case Report Comment{{ casereport_comments|length|pluralize }}
+  </h2><br>
   {% for obj in casereport_comments %}
     <div style="padding-bottom: 5px; color: #444444">
       Reply by <a href="https://{{ site }}{{ obj.0.user.get_absolute_url }}" style="color: #3795bf; text-decoration: none">{{ obj.0.user.get_full_name }}</a>
@@ -50,57 +56,9 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
   {% endfor %}
 {% endif %}
 
-
-
-{% if threadedcomment %}
-  <br><h2 style="font-size: 14px; font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 10px 0;">
-    {{ threadedcomment|length }} Discussion{{ threadedcomment|length|pluralize }}/Comments
-  </h2><br>
-  {% for action in threadedcomment %}
-    {% if action.action_object.display_type != 'Reply' %}
-      <div style="margin-bottom: 5px; color: #444444">
-        Discussion {{ action.verb }} 
-        by <a href="https://{{ site }}{{ action.actor.get_absolute_url }}" style="color: #3795bf; text-decoration: none">{{ action.actor.get_full_name }}</a>
-        {% if action.description %}
-          {% if action.target %}
-            to <a href="https://{{ site }}{{ action.target.get_absolute_url }}" style="color: #3795bf; text-decoration: none">{{ action.target }}</a>
-          {% endif %}
-        {% else %}
-          {% display_shared_with action.action_object user "to {0}" "color: #3795bf; text-decoration: none" %}
-        {% endif %}
-        | {{ action.timestamp.date }}
-      </div>
-      {% if action.description %}
-        <div style="border-left: 3px solid #e5e5e5; padding-left: 15px; font-style: italic; margin: 10px 0; color: #444444">
-          {{ action.description|striptags|safe|truncatechars:160 }}
-        </div>
-      {% endif %}
-      <div style="font-size: 18px; color: #444444"> 
-        <a href="https://{{ site }}{{ action.action_object.get_absolute_url }}" style="color: #3795bf; text-decoration: none">{{ action.action_object.title }}</a>
-        {% setvar "0" as comment_count %}{%  get_threaded_comment_count for action.action_object as comment_count %}{% if comment_count %}({{ comment_count }} comment{{ comment_count|pluralize }}){% endif %}
-      </div>
-      {{ action.action_object.comment|striptags|safe|truncatechars:160 }}
-      <br>
-      {% if not forloop.last or threadedcomment_comments %}<br><hr style="margin: 10px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>{% endif %}
-     {% endif %}
-  {% endfor %}
-  {% for obj in threadedcomment_comments %}
-    <div style="padding-bottom: 5px; color: #444444">
-      Reply by <a href="https://{{ site }}{{ obj.0.user.get_absolute_url }}" style="color: #3795bf; text-decoration: none">{{ obj.0.user.get_full_name }}</a>
-      on <a href="https://{{ site }}{{ obj.1.get_absolute_url }}" style="color: #3795bf; text-decoration: none">{{ obj.1.title }}{{ obj.1.reference.title }}</a>
-      | {{ obj.0.submit_date|date:"j M Y" }}
-    </div>
-    <div style="font-size: 18px; color: #444444"> 
-      {{ obj.0.comment|striptags|safe|truncatechars:160 }}
-    </div>
-    {% if not forloop.last %}<br><hr style="margin: 10px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>{% endif %}
-  {% endfor %}
-{% endif %}
-
-
 {% if document %}
   <br><h2 style="font-size: 14px; font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 10px 0;">
-    {{ document|length }} Document{{ document|length|pluralize }} & Media/Comments
+    {{ document|length }} Document{{ document|length|pluralize }} & Media
   </h2><br>
   {% for action in document %}
     {% if action.action_object.display_type != 'Reply' %}
@@ -132,10 +90,52 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
       {% if action.action_object.description %}
         <div style="color: #444444">{{ action.action_object.description|striptags|safe|truncatechars:160 }}</div>
       {% endif %}
-      {% if not forloop.last or document_comments %}<br><hr style="margin: 10px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>{% endif %}
+      {% if not forloop.last %}<br><hr style="margin: 10px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>{% endif %}
     {% endif %}
   {% endfor %}
-  {% for obj in document_comments %}
+{% endif %}
+
+
+
+{% if threadedcomment %}
+  <br><h2 style="font-size: 14px; font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 10px 0;">
+    {{ threadedcomment|length }} Discussion{{ threadedcomment|length|pluralize }}
+  </h2><br>
+  {% for action in threadedcomment %}
+    {% if action.action_object.display_type != 'Reply' %}
+      <div style="margin-bottom: 5px; color: #444444">
+        Discussion {{ action.verb }} 
+        by <a href="https://{{ site }}{{ action.actor.get_absolute_url }}" style="color: #3795bf; text-decoration: none">{{ action.actor.get_full_name }}</a>
+        {% if action.description %}
+          {% if action.target %}
+            to <a href="https://{{ site }}{{ action.target.get_absolute_url }}" style="color: #3795bf; text-decoration: none">{{ action.target }}</a>
+          {% endif %}
+        {% else %}
+          {% display_shared_with action.action_object user "to {0}" "color: #3795bf; text-decoration: none" %}
+        {% endif %}
+        | {{ action.timestamp.date }}
+      </div>
+      {% if action.description %}
+        <div style="border-left: 3px solid #e5e5e5; padding-left: 15px; font-style: italic; margin: 10px 0; color: #444444">
+          {{ action.description|striptags|safe|truncatechars:160 }}
+        </div>
+      {% endif %}
+      <div style="font-size: 18px; color: #444444"> 
+        <a href="https://{{ site }}{{ action.action_object.get_absolute_url }}" style="color: #3795bf; text-decoration: none">{{ action.action_object.title }}</a>
+        {% setvar "0" as comment_count %}{%  get_threaded_comment_count for action.action_object as comment_count %}{% if comment_count %}({{ comment_count }} comment{{ comment_count|pluralize }}){% endif %}
+      </div>
+      {{ action.action_object.comment|striptags|safe|truncatechars:160 }}
+      <br>
+      {% if not forloop.last %}<br><hr style="margin: 10px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>{% endif %}
+     {% endif %}
+  {% endfor %}
+{% endif %}
+
+{% if all_comments %}
+  <br><h2 style="font-size: 14px; font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 10px 0;">
+    {{ all_comments|length }} Comment{{ all_comments|length|pluralize }} on Discussions, Documents &amp; Media, and References
+  </h2><br>
+  {% for obj in all_comments %}
     <div style="padding-bottom: 5px; color: #444444">
       Reply by <a href="https://{{ site }}{{ obj.0.user.get_absolute_url }}" style="color: #3795bf; text-decoration: none">{{ obj.0.user.get_full_name }}</a>
       on <a href="https://{{ site }}{{ obj.1.get_absolute_url }}" style="color: #3795bf; text-decoration: none">{{ obj.1.title }}{{ obj.1.reference.title }}</a>
@@ -149,9 +149,10 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
 {% endif %}
 
 
+
 {% if userreference %}
   <br><h2 style="font-size: 14px; font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 10px 0;">
-    {{ userreference|length }} References/Comments
+    {{ userreference|length }} References
   </h2><br>
   {% for action in userreference %}
     {% if action.action_object.display_type != 'Reply' %}
@@ -187,19 +188,8 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
       {% if action.action_object.description %}
         <div style="color: #444444">{{ action.action_object.description|striptags|safe|truncatechars:160 }}</div>
       {% endif %}
-      {% if not forloop.last or userreference_comments %}<br><hr style="margin: 10px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>{% endif %}
+      {% if not forloop.last %}<br><hr style="margin: 10px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>{% endif %}
     {% endif %}
-  {% endfor %}
-  {% for obj in userreference_comments %}
-    <div style="padding-bottom: 5px; color: #444444">
-      Reply by <a href="https://{{ site }}{{ obj.0.user.get_absolute_url }}" style="color: #3795bf; text-decoration: none">{{ obj.0.user.get_full_name }}</a>
-      on <a href="https://{{ site }}{{ obj.1.get_absolute_url }}" style="color: #3795bf; text-decoration: none">{{ obj.1.title }}{{ obj.1.reference.title }}</a>
-      | {{ obj.0.submit_date|date:"j M Y" }}
-    </div>
-    <div style="font-size: 18px; color: #444444"> 
-      {{ obj.0.comment|striptags|safe|truncatechars:160 }}
-    </div>
-    {% if not forloop.last %}<br><hr style="margin: 10px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>{% endif %}
   {% endfor %}
 {% endif %}
 

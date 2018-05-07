@@ -139,9 +139,10 @@ class Command(BaseCommand):
                 ptype = parent._meta.model_name
                 if ptype == 'link' or ptype == 'file' or ptype == 'image':
                     ptype = 'document'
-                type_key = '{0}_comments'.format(ptype)
-                # add to doc type for count
-                email_context.setdefault(ptype, []).append(comment)
+                if ptype == 'casereport':
+                    type_key = '{0}_comments'.format(ptype)
+                else:
+                    type_key = 'all_comments'
                 comment_obj = comment.action_object
                 email_context.setdefault(type_key, []).append((comment_obj, parent))
                 comment_parents.append(parent)
