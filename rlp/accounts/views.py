@@ -37,6 +37,8 @@ from rlp.search.forms import ProjectContentForm, \
 from .forms import RegistrationForm, UserProfileForm, AuthenticationForm
 from .models import User
 from .signals import sync_user
+from rlp import logger
+
 
 REGISTRATION_SALT = getattr(settings, 'REGISTRATION_SALT', 'registration')
 
@@ -462,10 +464,14 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
                                'all_targets',
                                rollup_attr='target'))
             return res
-        af_key = "af3:%s" % activity_stream[0].id
-        activity_stream = cache.get_or_set(af_key,
-                                           rolled_up,
-                                           60*5)
+        try:
+            af_key = "af3:%s" % activity_stream[0].id
+            activity_stream = cache.get_or_set(af_key,
+                                               rolled_up,
+                                               60*5)
+        except IndexError as no_feed:
+            pass
+            logger.warn("empty activity stream")
 
         context.update({
             'activity_stream': activity_stream,
