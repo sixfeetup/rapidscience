@@ -1,7 +1,9 @@
 {% include 'search/_text.txt' %}
-{% if obj.reference.parsed_data.authors %}{{ obj.reference.parsed_data.authors }}. {% endif %}{{ obj.reference.parsed_data.title|striptags }}{% if obj.reference.get_source_url %} ({{ obj.reference.get_source_url }}){% endif %},
-{% if obj.reference.parsed_data.container_title %}in {{ obj.reference.parsed_data.container_title }},{% endif %}
-{% if obj.reference.parsed_data.page %}pp {{ obj.reference.parsed_data.page }}.{% endif %}
-{% if obj.reference.parsed_data.publication_date %}{{ obj.reference.parsed_data.publication_date }};{% endif %}
-{{ obj.reference.parsed_data.publisher }} {{ obj.reference.parsed_data.journal_title }}
-{% if obj.reference.parsed_data.doi %}DOI: {{ obj.reference.parsed_data.doi }}{% endif %} {% if obj.reference.parsed_data.pubmed_id %}PMID: {{ obj.reference.parsed_data.pubmed_id }}{% endif %}
+{% if data.authors %}{{ data.authors }}. {% endif %}
+{{ data.title|striptags }}
+{% if obj.reference.get_source_url %} ({{ obj.reference.get_source_url }}){% endif %},
+{% if data.container_title %}in {{ data.container_title }},{% endif %}
+{% if data.page %}pp {{ data.page }}.{% endif %}
+{% if data.publication_date %}{{ data.publication_date }};{% endif %}
+{{ data.publisher }} {{ data.journal_title }}
+{% if data.doi %}DOI: {{ data.doi }}{% endif %} {% if data.pubmed_id %}PMID: {{ data.pubmed_id }}{% endif %}
