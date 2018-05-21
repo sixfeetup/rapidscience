@@ -1,1 +1,2 @@
 {% include 'search/_text.txt' %}
+{{ object.owner.get_full_name }}

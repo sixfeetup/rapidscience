@@ -1,2 +1,3 @@
 {% include 'search/_text.txt' %}
 {{ object.comment }}
+{{ object.user.get_full_name }}

@@ -1,3 +1,4 @@
+from django.template.loader import render_to_string
 from haystack import indexes
 
 from .models import File, Image, Link, Video
@@ -10,6 +11,12 @@ class FileIndex(TaggableBaseIndex, indexes.Indexable):
 
     def get_model(self):
         return File
+
+    def prepare_text(self, obj):
+        searchstring = render_to_string(
+            'search/indexes/documents/file_text.txt',
+            {'object': obj, })
+        return searchstring
 
     def prepare(self, obj):
         self.prepared_data = super().prepare(obj)
@@ -32,6 +39,12 @@ class LinkIndex(TaggableBaseIndex, indexes.Indexable):
     def get_model(self):
         return Link
 
+    def prepare_text(self, obj):
+        searchstring = render_to_string(
+            'search/indexes/documents/link_text.txt',
+            {'object': obj, })
+        return searchstring
+
 
 class ImageIndex(TaggableBaseIndex, indexes.Indexable):
     text = indexes.CharField(document=True)
@@ -39,6 +52,12 @@ class ImageIndex(TaggableBaseIndex, indexes.Indexable):
 
     def get_model(self):
         return Image
+
+    def prepare_text(self, obj):
+        searchstring = render_to_string(
+            'search/indexes/documents/image_text.txt',
+            {'object': obj, })
+        return searchstring
 
     def prepare_display_type(self, obj):
         return obj.display_type
@@ -49,3 +68,9 @@ class VideoIndex(TaggableBaseIndex, indexes.Indexable):
 
     def get_model(self):
         return Video
+
+    def prepare_text(self, obj):
+        searchstring = render_to_string(
+            'search/indexes/documents/video_text.txt',
+            {'object': obj, })
+        return searchstring

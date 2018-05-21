@@ -1,4 +1,5 @@
 {% include 'search/_text.txt' %}
+{{ object.user.get_full_name }}
 {% if data.authors %}{{ data.authors }}. {% endif %}
 {{ data.title|striptags }}
 {% if obj.reference.get_source_url %} ({{ obj.reference.get_source_url }}){% endif %},
