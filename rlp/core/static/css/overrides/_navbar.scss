@@ -190,6 +190,16 @@
         }
     }
 }
+.navbar-brand.fullname,
+body.home .navbar-brand,
+body.home .subtitle {
+    display: none;
+}
+body.home .navbar-brand.fullname {
+    display: block;
+    font-weight: normal;
+    border: none;
+}
 
 // Navbar toggle
 //
