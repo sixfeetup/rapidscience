@@ -1430,6 +1430,9 @@ body.home {
     .bannerTitle {
         text-align: center;
         padding: 70px 0;
+        background: url('/static/img/banner-home-sarcoma.jpg') no-repeat top center;
+        background-size: cover;
+        color: #ffffff;
     }
     .content {
         text-align: center;
@@ -1439,6 +1442,7 @@ body.home {
         line-height: 65px;
         text-transform: uppercase;
         margin-bottom: 20px;
+        color: #ffffff;
     }
     .largetext {
         font-size: 25px;
@@ -1446,6 +1450,9 @@ body.home {
     }
     .bannerTitle p {
         margin-top: 20px;
+    }
+    .bannerTitle a {
+        color: #ffffff;
     }
     .content .fa {
         font-size: 60px;
@@ -1458,7 +1465,6 @@ body.home {
     .btn-primary {
         font-size: 18px;
         font-weight: bold;
-        box-shadow: 0px 3px 5px #cccccc;
         padding: 12px 24px;
     }
 }
