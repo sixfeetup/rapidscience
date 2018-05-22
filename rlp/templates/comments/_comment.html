@@ -8,8 +8,11 @@
   </h4>
 {% endif %}
 {% with truncated_comment=obj.comment|truncatewords:60 %}
-<div id="c{{ obj.id }}" class="more small">
+<div id="c{{ obj.id }}" class="small">
   {% autoescape off %}{{ truncated_comment }}{% endautoescape %}
+  {% ifnotequal obj.comment|truncatewords:60|length obj.comment|truncatewords:61|length %}
+   <a href="{{ obj.get_absolute_url }}">more...</a>
+  {% endifnotequal %}
 </div>
 {% endwith %}
 {% if action.verb == 'shared' %}
