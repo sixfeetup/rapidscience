@@ -7,9 +7,9 @@
       {% if can_link %}</a>{% endif %}
   </h4>
 {% endif %}
-{% with truncated_comment=obj.comment|truncatewords:20 %}
-<div id="c{{ obj.id }}" class="{% if action.verb != 'reply' %}more {% endif %}{% if action.verb == 'reply' %}reply {% endif %}small">
-  {% autoescape off %}{{ obj.comment }}{% endautoescape %}
+{% with truncated_comment=obj.comment|truncatewords:60 %}
+<div id="c{{ obj.id }}" class="more small">
+  {% autoescape off %}{{ truncated_comment }}{% endautoescape %}
 </div>
 {% endwith %}
 {% if action.verb == 'shared' %}
