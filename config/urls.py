@@ -59,6 +59,7 @@ urlpatterns = [
         views.BookmarkRemoveView.as_view(),
         name='remove_bookmark',
     ),
+    url(r'^home/', views.homepage, name='homepage'),
     url(r'^about/', views.about, name='about'),
     url(r'^', include('cms.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
