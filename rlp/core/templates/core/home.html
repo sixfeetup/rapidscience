@@ -9,11 +9,11 @@
     <div class="bannerTitle">
         <div class="container">
             <div class="row">
-                <div class="col-md-8 col-md-offset-2">
+                <div class="col-md-10 col-md-offset-1">
                     <h1>Sarcoma Central</h1>
-                    <h2>A FREE communication platform and database for sarcoma professionals.</h2>
-                    <a href="" class="btn">Register</a>
-                    <p>Already have an account? <a href="">Sign in</a>.</p>
+                    <div class="largetext">A <strong>FREE</strong> communication platform and database for sarcoma professionals.</div>
+                    <a href="{% url 'register' %}" class="btn btn-primary">Register</a>
+                    <p>Already have an account? <a href="{% url 'login' %}">Sign in</a>.</p>
                 </div>
             </div>
         </div>

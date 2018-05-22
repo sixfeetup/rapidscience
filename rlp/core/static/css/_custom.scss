@@ -1427,8 +1427,25 @@ body.about {
 
 /* home */
 body.home {
+    .bannerTitle {
+        text-align: center;
+        padding: 70px 0;
+    }
     .content {
         text-align: center;
+    }
+    h1 {
+        font-size: 65px;
+        line-height: 65px;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+    }
+    .largetext {
+        font-size: 25px;
+        margin-bottom: 30px;
+    }
+    .bannerTitle p {
+        margin-top: 20px;
     }
     .content .fa {
         font-size: 60px;
