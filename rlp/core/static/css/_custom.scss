@@ -1445,3 +1445,15 @@ body.home {
         padding: 12px 24px;
     }
 }
+
+.subtitle {
+    color: #f6eee3;
+    :hover {
+        color: #f6eee3;
+        opacity: 0.8;
+    }
+    :active,
+    :focus {
+        color: #f6eee3;
+    }
+}
