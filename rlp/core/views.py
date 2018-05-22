@@ -27,7 +27,7 @@ def server_error(request, template='500.html'):
     return render(request, template)
 
 
-def homepage(request, template='core/home.html'):
+def home(request, template='core/home.html'):
     return render(request, template)
 
 
