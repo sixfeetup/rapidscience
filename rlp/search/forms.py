@@ -64,7 +64,7 @@ class ProjectContentForm(ActionObjectForm):
                 required=False,
             )
             if not user.can_access_all_projects:
-                self.fields['project'].queryset = Project.objects.filter(approval_required=False)
+                self.fields['project'].queryset = user.active_projects()  # Project.objects.filter(approval_required=False)
 
     project = ProjectChoiceField(queryset=Project.objects.all(), required=False, empty_label='All Projects')
 
