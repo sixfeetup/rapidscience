@@ -3,7 +3,7 @@
 <div style="margin-left: 20px;">
 {{ comment|safe|truncatechars:160 }}
 {% ifnotequal comment|truncatechars:160|length comment|truncatechars:161|length %}
-   <a href="{{ link }}">more...</a>
+   <a href="{{ link }}">...</a>
 {% endifnotequal %}<br>
 </div>
 
@@ -14,3 +14,4 @@ Sincerely,<br><br>
 Editorial Team<br>
 <a href="https://sarcoma.rapidscience.org/">Sarcoma Central</a><br>
 <a href="https://twitter.com/RapidScience">@RapidScience</a>
+
