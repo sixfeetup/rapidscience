@@ -48,14 +48,14 @@ def activity_mail(user, obj, target, request=None):
 
     recipients = resolve_email_targets(target, exclude=user)
 
-    type = obj.__class__.__name__
+    cls_name = obj.__class__.__name__
     try:
         title = obj.title
     except AttributeError:
         title = ''
-    if type == 'UserReference':
+    if cls_name == 'UserReference':
         from rlp.bibliography.models import Reference
-        type = 'Reference'
+        cls_name = 'Reference'
         ref = Reference.objects.get(pk=obj.reference_id)
         title = ref.title
         comment = obj.description
@@ -64,13 +64,13 @@ def activity_mail(user, obj, target, request=None):
                            kwargs={'reference_pk': obj.reference_id,
                                    'uref_id': obj.id})) \
                or "https://" + settings.DOMAIN + obj.get_absolute_url()
-    if type in ('Document', 'File', 'Image', 'Link', 'Video'):
+    if cls_name in ('Document', 'File', 'Image', 'Link', 'Video'):
         comment = obj.description
         link = request and request.build_absolute_uri(
                    reverse('documents:document_detail',
                            kwargs={'doc_pk': obj.id})) \
                or "https://" + settings.DOMAIN + obj.get_absolute_url()
-    if type == 'ThreadedComment':
+    if cls_name == 'ThreadedComment':
         if obj.is_editorial_note:
             return
         author = ''
@@ -80,25 +80,26 @@ def activity_mail(user, obj, target, request=None):
                     or "https://" + settings.DOMAIN + user.get_absolute_url()
         disc_root = obj.discussion_root
         root_obj = disc_root.content_object
-        type = root_obj.__class__.__name__
-        if type == 'Site':
-            type = 'Discussion'
+        root_obj_cls_name = root_obj.__class__.__name__
+
+        if root_obj_cls_name == 'Site':
+            root_obj_cls_name = 'Discussion'
             title = disc_root.title
             author = User.objects.get(pk=disc_root.user_id)
-        elif type == 'ThreadedComment':
-            type = 'Comment'
+        elif root_obj_cls_name == 'ThreadedComment':
+            root_obj_cls_name = 'Comment'
             title = root_obj.title
             author = User.objects.get(pk=root_obj.user_id)
-        elif type == 'UserReference':
+        elif root_obj_cls_name == 'UserReference':
             from rlp.bibliography.models import Reference
             ref = Reference.objects.get(pk=root_obj.reference_id)
             title = ref.title
             author = User.objects.get(pk=root_obj.user_id)
-            type = 'Reference'
-        elif type == 'CaseReport':
+            root_obj_cls_name = 'Reference'
+        elif root_obj_cls_name == 'CaseReport':
             title = root_obj.title
             author = root_obj.primary_author
-        elif type in ('Document', 'File', 'Image', 'Link', 'Video'):
+        elif root_obj_cls_name in ('Document', 'File', 'Image', 'Link', 'Video'):
             title = root_obj.title
             author = User.objects.get(pk=root_obj.owner_id)
         author_link = request and request.build_absolute_uri(
@@ -110,7 +111,7 @@ def activity_mail(user, obj, target, request=None):
                     request.build_absolute_uri(reverse('dashboard')) \
                     or "https://" + settings.DOMAIN
 
-        if type == 'Discussion' and obj.title:
+        if root_obj_cls_name == 'Discussion' and obj.title:
             template = 'core/emails/newdiscussion_comment_activity_email'
         else:
             template = 'core/emails/comment_activity_email'
@@ -126,20 +127,27 @@ def activity_mail(user, obj, target, request=None):
         comment = obj.comment
     context.update({
         "user": user,
-        "type": type,
+        "type": root_obj_cls_name,
         "title": title,
         "comment": comment,
         "link": link,
         "site": settings.DOMAIN,
     })
-    if type == 'Discussion' and obj.title:
+
+    if root_obj_cls_name == 'Discussion' and obj.title:
         subject = "{} shared a {} with you at Sarcoma Central"
-    elif type == 'UserReference' or type == 'Reference':
-        subject = "{} has shared a reference with you"
+    elif root_obj_cls_name == 'Reference' or root_obj_cls_name == 'UserReference':
+        if cls_name == 'ThreadedComment':
+            subject = "{} has shared a comment with you"
+        else:
+            subject = "{} has shared a reference with you"
     else:
         subject = "{} has shared a comment with you"
-    subject = subject.format(user.get_full_name(), type)
-    message_body = render_to_string('{}.txt'.format(template), context)
+
+    subject = subject.format(user.get_full_name(), root_obj_cls_name)
+
+    template_name = "{}.txt".format(template)
+    message_body = render_to_string(template_name, context)
     for member in recipients:
         mail = EmailMessage(subject,
                             message_body,
