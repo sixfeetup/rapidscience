@@ -49,13 +49,15 @@ def activity_mail(user, obj, target, request=None):
     recipients = resolve_email_targets(target, exclude=user)
 
     cls_name = obj.__class__.__name__
+    root_obj_cls_name = cls_name
+
     try:
         title = obj.title
     except AttributeError:
         title = ''
     if cls_name == 'UserReference':
         from rlp.bibliography.models import Reference
-        cls_name = 'Reference'
+        root_obj_cls_name = 'Reference'
         ref = Reference.objects.get(pk=obj.reference_id)
         title = ref.title
         comment = obj.description
@@ -125,6 +127,7 @@ def activity_mail(user, obj, target, request=None):
         })
         link = "https://" + settings.DOMAIN + obj.get_absolute_url()
         comment = obj.comment
+
     context.update({
         "user": user,
         "type": root_obj_cls_name,
