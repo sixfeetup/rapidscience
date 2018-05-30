@@ -134,6 +134,8 @@ def activity_mail(user, obj, target, request=None):
     })
     if type == 'Discussion' and obj.title:
         subject = "{} shared a {} with you at Sarcoma Central"
+    elif type == 'UserReference' or type == 'Reference':
+        subject = "{} has shared a reference with you"
     else:
         subject = "{} has shared a comment with you"
     subject = subject.format(user.get_full_name(), type)
