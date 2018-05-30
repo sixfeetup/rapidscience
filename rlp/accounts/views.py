@@ -425,16 +425,20 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html',
     # if user dashboard was viewed, prevent adding things to a group
     request.session['last_viewed_project'] = None
 
-    if 'project' in request.GET or 'content_type' in request.GET or 'user_activity_only' in request.GET:
-        project_ct = ContentType.objects.get_for_model(Project)
-        user_ct = ContentType.objects.get_for_model(User)
+    project_ct = ContentType.objects.get_for_model(Project)
+    user_ct = ContentType.objects.get_for_model(User)
+
+    if 'project' in request.GET \
+            or 'content_type' in request.GET \
+            or 'user_activity_only' in request.GET:
         filter_form = ProjectContentForm(request.GET, user=request.user)
     else:
         filter_form = ProjectContentForm(user=request.user)
 
     if tab == 'activity':
         if request.user.can_access_all_projects:
-            # TODO: move this into the account model? as get_administrative_activity_stream ??? for site?
+            # TODO: move this into the account model?
+            # as get_administrative_activity_stream ??? for site?
             # we'll start with public actions
             # that aren't between a user and themselves.
             # You could argue that these should be public=False.
@@ -452,44 +456,59 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html',
                 Q(verb__exact='unpublished')
                 & ~Q(actor_object_id__exact=request.user.id))
 
-        if filter_form.is_valid() and filter_form.cleaned_data.get(
-            'content_type'):
-            activity_stream = activity_stream.filter(
-                action_object_content_type=filter_form.cleaned_data[
-                    'content_type'])
+        if filter_form.is_valid():
+            # there are three parameters which the user can use to control the
+            # stream.  The content_type, the group(aka project), and themselves
+            content_type_for_filter = filter_form.cleaned_data.get(
+                'content_type', '')
+            project_for_filter = filter_form.cleaned_data.get('project', '')
+            user_activity_for_filter = filter_form.cleaned_data.get(
+                'user_activity_only', '')
 
-        if filter_form.is_valid() and filter_form.cleaned_data.get(
-            'project'):
-            project = filter_form.cleaned_data['project']
-            activity_stream = activity_stream.filter(
-                target_content_type=project_ct,
-                target_object_id=project.id
-            )
+            if content_type_for_filter:
+                activity_stream = activity_stream.filter(
+                    action_object_content_type=content_type_for_filter)
 
-        if filter_form.is_valid() and filter_form.cleaned_data.get(
-            'user_activity_only'):
-            activity_stream = activity_stream.filter(
-                actor_content_type=user_ct,
-                actor_object_id=request.user.id
-            )
+            if project_for_filter:
+                project = filter_form.cleaned_data['project']
+                activity_stream = activity_stream.filter(
+                    target_content_type=project_ct,
+                    target_object_id=project.id
+                )
 
-        # roll up similar entries, and drop duplicate ones
-        # this can be expensive, so try to cache it
-        # however caching objects like this may not work with memcache
-        # because they wont serialize/deserialize
-        def rolled_up():
-            res = list(rollup(activity_stream,
-                               'all_targets',
-                               rollup_attr='target'))
-            return res
-        try:
-            af_key = "af3:%s" % activity_stream[0].id
-            activity_stream = cache.get_or_set(af_key,
-                                               rolled_up,
-                                               60*5)
-        except IndexError as no_feed:
-            pass
-            logger.warn("empty activity stream")
+            if user_activity_for_filter:
+                activity_stream = activity_stream.filter(
+                    actor_content_type=user_ct,
+                    actor_object_id=request.user.id
+                )
+
+            # roll up similar entries, and drop duplicate ones
+            # this can be expensive, so try to cache it
+            # however caching objects like this may not work with memcache/redis
+            # because they wont serialize/deserialize
+            def rolled_up():
+                res = list(rollup(activity_stream,
+                                  'all_targets',
+                                  rollup_attr='target'))
+                return res
+            try:
+                af_key = ":".join(map(str, ["af",
+                                            request.user.id,
+                                            activity_stream[0].id,
+                                            content_type_for_filter,
+                                            project_for_filter,
+                                            user_activity_for_filter,
+                                            ]))
+                activity_stream = cache.get_or_set(af_key,
+                                                   rolled_up,
+                                                   60*5)
+            except IndexError as _:  # no_feed
+                pass
+                logger.warn("empty activity stream")
+        else:
+            # invalid form. No stream for you!
+            logger.error("Invalid filter form.")
+            activity_stream = activity_stream.filter(actor_object_id=-1)
 
         context.update({
             'activity_stream': activity_stream,
