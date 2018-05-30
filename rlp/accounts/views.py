@@ -11,7 +11,7 @@ from django.core import signing
 from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.db import transaction
-from django.db.models import Q
+from django.db.models.query_utils import Q
 from django.shortcuts import get_object_or_404, redirect, render, resolve_url
 from django.utils.decorators import method_decorator
 from django.utils.http import is_safe_url
@@ -25,6 +25,7 @@ from formtools.wizard.views import SessionWizardView
 
 from casereport.constants import WorkflowState
 from casereport.models import CaseReport
+from rlp import logger
 from rlp.accounts import emails
 from rlp.accounts.models import Institution, UserLogin
 from rlp.bibliography.models import UserReference
@@ -38,14 +39,13 @@ from rlp.search.forms import ProjectContentForm, \
 from .forms import RegistrationForm, UserProfileForm, AuthenticationForm
 from .models import User
 from .signals import sync_user
-from rlp import logger
-
 
 REGISTRATION_SALT = getattr(settings, 'REGISTRATION_SALT', 'registration')
 
-PENDING_REGISTRATION_MESSAGE = "Thank you for your interest in joining Sarcoma Central. " \
-                               "Your registration is pending approval. You will receive an email when your " \
-                               "membership has been confirmed.".format(settings.SITE_PREFIX.upper())
+PENDING_REGISTRATION_MESSAGE = \
+    "Thank you for your interest in joining Sarcoma Central. " \
+    "Your registration is pending approval. You will receive an email when " \
+    "your membership has been confirmed.".format(settings.SITE_PREFIX.upper())
 
 WELCOME_MESSAGE = "Welcome to Sarcoma Central! " \
                 "In your Activity Feed below, you will find a few brief " \
@@ -62,18 +62,22 @@ def login(request, template_name='accounts/login.html',
           current_app=None, extra_context=None):
     """
     Displays the login form and handles the login action.
-    Borrowed from ``django.contrib.auth.views.login`` but customized for the following reasons:
+    Borrowed from ``django.contrib.auth.views.login`` but customized for the
+    following reasons:
         * Don't show the login form to users who are logged in already
-        * We had some bugs which didn't capture data that we should have captured.
-          For these users we manually logged them out so that the next time they login, we can
-          redirect them to their profile page with an appropriate message.
+        * We had some bugs which didn't capture data that we should have.
+          For these users we manually logged them out so that the next time
+          they login, we can redirect them to their profile page with an
+          appropriate message.
     """
     redirect_to = request.POST.get(redirect_field_name,
                                    request.GET.get(redirect_field_name, ''))
     # This is a customization, not sure why Django doesn't do this already
-    # but if the user is already logged in, why would we show them the login form?
+    # but if the user is already logged in, why would we show them the
+    # login form?
     if request.user.is_authenticated():
-        if redirect_to and is_safe_url(url=redirect_to, host=request.get_host()):
+        if redirect_to \
+                and is_safe_url(url=redirect_to, host=request.get_host()):
             return redirect(redirect_to)
         else:
             return redirect('dashboard')
@@ -130,7 +134,8 @@ def logout(request, next_page=None,
            extra_context=None):
     """
     Logs out the user and displays 'You are logged out' message.
-    Moved here unaltered from django.contrib.auth.views only to apply the @never_cache decorator
+    Moved here unaltered from django.contrib.auth.views only to apply the
+    @never_cache decorator
     """
     auth_logout(request)
 
@@ -216,7 +221,8 @@ class Register(SessionWizardView):
     def process_approval(self, form, user):
         with transaction.atomic():
             data = self.request.POST.copy()
-            if 'register-new_institution' in data and data['register-institution_name']:
+            if 'register-new_institution' in data \
+                    and data['register-institution_name']:
                 new_inst = Institution()
                 new_inst.name = data['register-institution_name']
                 new_inst.city = data['register-institution_city']
@@ -225,7 +231,8 @@ class Register(SessionWizardView):
                 new_inst.website = data['register-institution_website']
                 new_inst.save()
             # Either save form or update existing unregistered user
-            if 'register-new_institution' in data and data['register-institution_name']:
+            if 'register-new_institution' in data \
+                    and data['register-institution_name']:
                 user.institution = new_inst
             user.save()
             messages.success(self.request, PENDING_REGISTRATION_MESSAGE)
@@ -250,14 +257,17 @@ class Register(SessionWizardView):
                 )
                 messages.success(self.request, WELCOME_MESSAGE)
                 # notify admin about new members
-                emails.accepted_members_notification_to_admin(self.request, user, key)
+                emails.accepted_members_notification_to_admin(self.request,
+                                                              user, key)
         with transaction.atomic():
             user.is_active = True
             user.save()
-            # This is not a proper view but a reusable function to remove duplication from views
-            user = authenticate(email=user.email, password=form.cleaned_data['password1'])
-            # We don't check `if user is not None` because if authenticate failed
-            # we have bigger problems
+            # This is not a proper view but a reusable function to remove
+            # duplication from views
+            user = authenticate(email=user.email,
+                                password=form.cleaned_data['password1'])
+            # We don't check `if user is not None` because
+            # if authenticate failed then we have bigger problems
             auth_login(self.request, user)
             messages.success(self.request, "Thank you for registering!")
             emails.send_welcome(self.request, user)
@@ -331,7 +341,9 @@ class ActivationView(TemplateView):
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
-            messages.error(self.request, "No member was found with this email address: {}".format(email))
+            messages.error(self.request,
+                           "No member was found "
+                           "with this email address: {}".format(email))
         else:
             # notify admin to verify the account
             key = signing.dumps(
@@ -354,17 +366,24 @@ class ActivationView(TemplateView):
             try:
                 user = User.objects.get(email=email)
             except User.DoesNotExist:
-                messages.error(self.request, "No member was found with this email address: {}".format(email))
+                messages.error(self.request,
+                               "No member was found "
+                               "with this email address: {}".format(email))
             else:
                 if user.is_active:
-                    messages.error(self.request, "{} has already been approved.".format(user.email))
+                    messages.error(self.request,
+                                   "{} has already "
+                                   "been approved.".format(user.email))
                 else:
                     user.is_active = True
                     user.save()
-                    # Notify the user they can now login and complete their profile
+                    # Notify the user they can now login
+                    # and complete their profile
                     emails.acceptance_to_newuser(self.request, user)
-                    messages.success(self.request, "{} has been approved as a member of Sarcoma Central.".format(
-                        user.get_full_name()))
+                    messages.success(self.request,
+                                     "{} has been approved "
+                                     "as a member of Sarcoma Central.".format(
+                                        user.get_full_name()))
             # return so we don't accidentally pick up the following message.
             return
         messages.warning(self.request, "The link you followed is invalid.")
@@ -392,7 +411,8 @@ class ActivationView(TemplateView):
 @login_required
 @never_cache
 @page_template('actstream/_activity.html')
-def dashboard(request, tab='activity', template_name='accounts/dashboard.html', extra_context=None):
+def dashboard(request, tab='activity', template_name='accounts/dashboard.html',
+              extra_context=None):
     active_projects = request.user.active_projects()
     context = {
         'user': request.user,
@@ -554,7 +574,8 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
 
 
 @login_required
-def profile(request, pk, template_name='accounts/profile.html', extra_context=None):
+def profile(request, pk,
+            template_name='accounts/profile.html', extra_context=None):
     user = get_object_or_404(User, pk=pk)
     institution = user.institution
     projects = user.active_projects()
@@ -572,7 +593,8 @@ def profile(request, pk, template_name='accounts/profile.html', extra_context=No
 @never_cache
 def profile_edit(request, template_name='accounts/profile_edit.html'):
     if request.method == 'POST':
-        form = UserProfileForm(request.POST, request.FILES, instance=request.user)
+        form = UserProfileForm(request.POST, request.FILES,
+                               instance=request.user)
         data = request.POST.copy()
 
         if form.is_valid():
@@ -594,7 +616,9 @@ def profile_edit(request, template_name='accounts/profile_edit.html'):
     else:
         form = UserProfileForm(instance=request.user)
         if not request.user.bio:
-            messages.info(request, "Please add your bio and any other details you'd like to share.")
+            messages.info(request,
+                          "Please add your bio "
+                          "and any other details you'd like to share.")
     context = {
         'form': form,
     }
