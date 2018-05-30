@@ -470,6 +470,7 @@ def limit_casereport_results(queryset, user):
 
 
 class MyFacetedSearchView(FacetedSearchView):
+    # this is not a django class based view, so typical mixins will not funcyion
     def __init__(self, *args, **kwargs):
         sqs = SearchQuerySet().using(
             'casescentral',
