@@ -11,6 +11,7 @@ from django.core import signing
 from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.db import transaction
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render, resolve_url
 from django.utils.decorators import method_decorator
 from django.utils.http import is_safe_url
@@ -415,7 +416,7 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
         if request.user.can_access_all_projects:
             # TODO: move this into the account model? as get_administrative_activity_stream ??? for site?
             # we'll start with public actions
-            # that arent between a user and themself.
+            # that aren't between a user and themselves.
             # You could argue that these should be public=False.
             activity_stream = Action.objects.all()
         else:
@@ -427,12 +428,9 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html', 
 
         stream = []
         if request.user.can_access_all_projects:
-            for item in activity_stream:
-                if item.verb != 'unpublished' or \
-                        (item.verb == 'unpublished' and
-                            int(item.actor_object_id) != request.user.id):
-                                stream.append(item)
-            activity_stream = stream
+            activity_stream = activity_stream.exclude(
+                Q(verb__exact='unpublished')
+                & ~Q(actor_object_id__exact=request.user.id))
 
         if filter_form.is_valid() and filter_form.cleaned_data.get(
             'content_type'):
