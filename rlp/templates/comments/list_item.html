@@ -62,7 +62,10 @@
             {% endif %}<br />
             {% display_shared_with comment request.user %}
           </p>
-          <div class="more">{% autoescape off %}{{ comment.comment }}{% endautoescape %}</div>
+          <div class="more">{% autoescape off %}
+              {% with comment.comment|truncatewords_html:"60" as truncated_comment %}
+                {{ truncated_comment }}
+              {% endwith %}{% endautoescape %}</div>
           <p class="tags">
             {% display_tag_links comment %}
           </p>
