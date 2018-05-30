@@ -507,8 +507,10 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html',
                 logger.warn("empty activity stream")
         else:
             # invalid form. No stream for you!
-            logger.error("Invalid filter form.")
-            activity_stream = activity_stream.filter(actor_object_id=-1)
+            # logger.error("Invalid filter form.")
+            # activity_stream = activity_stream.filter(actor_object_id=-1)
+            # actually, an invalid form indicates the default AF should be used.
+            pass
 
         context.update({
             'activity_stream': activity_stream,
