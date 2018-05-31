@@ -491,7 +491,7 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html',
             except IndexError as _:  # no_feed
                 logger.warn("empty activity stream")
                 af_key = ":".join(map(str, ["af",
-                                            request.user_id,
+                                            request.user.id,
                                             "empty_af_stream",
                                             content_type_for_filter,
                                             project_for_filter,
