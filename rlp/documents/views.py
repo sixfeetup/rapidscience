@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.core.urlresolvers import reverse
@@ -22,7 +23,7 @@ from .forms import AddMediaForm, FileForm, ImageForm, LinkForm, VideoForm
 from .models import Document
 
 
-class AddMedia(FormView):
+class AddMedia(LoginRequiredMixin, FormView):
     form_class = AddMediaForm
     template_name = 'documents/add_media.html'
     success_url = '/'
