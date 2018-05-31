@@ -48,9 +48,9 @@ PENDING_REGISTRATION_MESSAGE = \
     "your membership has been confirmed.".format(settings.SITE_PREFIX.upper())
 
 WELCOME_MESSAGE = "Welcome to Sarcoma Central! " \
-                "In your Activity Feed below, you will find a few brief " \
-                "notes on how to proceed -- e.g., complete your profile " \
-                "and join or form groups."
+                  "In your Activity Feed below, you will find a few brief " \
+                  "notes on how to proceed -- e.g., complete your profile " \
+                  "and join or form groups."
 
 
 @sensitive_post_parameters()
@@ -88,7 +88,6 @@ def login(request, template_name='accounts/login.html',
             # Ensure the user-originating redirection url is safe.
             if redirect_to and not is_safe_url(url=redirect_to,
                                                host=request.get_host()):
-
                 redirect_to = resolve_url(settings.LOGIN_REDIRECT_URL)
 
             # check for first login
@@ -142,8 +141,8 @@ def logout(request, next_page=None,
     if next_page is not None:
         next_page = resolve_url(next_page)
 
-    if (redirect_field_name in request.POST or
-            redirect_field_name in request.GET):
+    if (redirect_field_name in request.POST
+            or redirect_field_name in request.GET):
         next_page = request.POST.get(redirect_field_name,
                                      request.GET.get(redirect_field_name))
         # Security check -- don't allow redirection to a different host.
@@ -383,7 +382,7 @@ class ActivationView(TemplateView):
                     messages.success(self.request,
                                      "{} has been approved "
                                      "as a member of Sarcoma Central.".format(
-                                        user.get_full_name()))
+                                         user.get_full_name()))
             # return so we don't accidentally pick up the following message.
             return
         messages.warning(self.request, "The link you followed is invalid.")
@@ -450,7 +449,6 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html',
         # suppress private shares
         activity_stream = activity_stream.filter(public=True)
 
-        stream = []
         if request.user.can_access_all_projects:
             activity_stream = activity_stream.exclude(
                 Q(verb__exact='unpublished')
@@ -482,15 +480,6 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html',
                     actor_object_id=request.user.id
                 )
 
-            # roll up similar entries, and drop duplicate ones
-            # this can be expensive, so try to cache it
-            # however caching objects like this may not work with memcache/redis
-            # because they wont serialize/deserialize
-            def rolled_up():
-                res = list(rollup(activity_stream,
-                                  'all_targets',
-                                  rollup_attr='target'))
-                return res
             try:
                 af_key = ":".join(map(str, ["af",
                                             request.user.id,
@@ -499,18 +488,43 @@ def dashboard(request, tab='activity', template_name='accounts/dashboard.html',
                                             project_for_filter,
                                             user_activity_for_filter,
                                             ]))
-                activity_stream = cache.get_or_set(af_key,
-                                                   rolled_up,
-                                                   60*5)
             except IndexError as _:  # no_feed
-                pass
                 logger.warn("empty activity stream")
+                af_key = ":".join(map(str, ["af",
+                                            request.user_id,
+                                            "empty_af_stream",
+                                            content_type_for_filter,
+                                            project_for_filter,
+                                            user_activity_for_filter,
+                                            ]))
+
         else:
             # invalid form. No stream for you!
             # logger.error("Invalid filter form.")
             # activity_stream = activity_stream.filter(actor_object_id=-1)
             # actually, an invalid form indicates the default AF should be used.
-            pass
+            # but the rollup hasn't been applied
+            af_key = ":".join(map(str, ["af",
+                                        request.user.id,
+                                        'default_stream',
+                                        'no_content_type_for_filter',
+                                        'no_project_for_filter',
+                                        'no_user_activity_for_filter',
+                                        ]))
+
+        # roll up similar entries, and drop duplicate ones
+        # this can be expensive, so try to cache it
+        # however caching objects like this may not work with memcache/redis
+        # because they may not serialize/deserialize
+        def rolled_up():
+            res = list(rollup(activity_stream,
+                              'all_targets',
+                              rollup_attr='target'))
+            return res
+
+        activity_stream = cache.get_or_set(af_key,
+                                           rolled_up,
+                                           60 * 5)
 
         context.update({
             'activity_stream': activity_stream,
