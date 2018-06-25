@@ -85,9 +85,17 @@ def project_invite_member(request, invitees, project, message):
         project.title)
     template = "projects/emails/member_group_invite"
     body = render_to_string('{}.txt'.format(template), data)
-    mail = EmailMessage(subject, body,
-                        settings.DEFAULT_FROM_EMAIL,
-                        [member for member in invitees])
+    if len(invitees) <= 1:
+        mail = EmailMessage(subject,
+                            body,
+                            settings.DEFAULT_FROM_EMAIL,
+                            [member for member in invitees])
+    else:
+        mail = EmailMessage(subject=subject,
+                            body=body,
+                            from_email=settings.DEFAULT_FROM_EMAIL,
+                            bcc=[member for member in invitees]
+                            )
     mail.content_subtype = "html"
     mail.send()
 
