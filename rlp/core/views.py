@@ -28,6 +28,8 @@ def server_error(request, template='500.html'):
 
 
 def home(request, template='core/home.html'):
+    if request.user.is_authenticated():
+        return redirect('dashboard')
     return render(request, template)
 
 
