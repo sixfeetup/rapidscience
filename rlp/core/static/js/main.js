@@ -69,6 +69,10 @@ var selectedBookmarksFolderName; // will contain ID of selected bookmarks folder
         form_id = $(this).parents("form").find('.django-ckeditor-widget').attr('data-field-id');
         CKEDITOR.instances[form_id].setData('');
     });
+    // Make search input active
+  $(".search-icon").click(function(){
+      setTimeout(function() { $('.navbar-nav .search-widget input.form-control').focus() }, 500);
+  })
 
 }); })(jQuery);
 
