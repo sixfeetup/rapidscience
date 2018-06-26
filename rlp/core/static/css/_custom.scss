@@ -334,6 +334,12 @@ body.search .box.main-content {
     margin: 1em 0;
 }
 
+.navbar-nav .search-widget input.form-control {
+  background-color: #998D87;
+  box-shadow: 0 0 2px #256180;
+
+}
+
 .refine-search ul {
     list-style: none;
     padding: 0;
@@ -1480,3 +1486,4 @@ body.home {
         color: #f6eee3;
     }
 }
+
