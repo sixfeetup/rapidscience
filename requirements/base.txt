@@ -1,5 +1,6 @@
 --find-links=https://dist.sixfeetup.com/public
 aldryn-search==0.3.0
+aldryn-apphooks-config==0.3.3
 backport-collections==0.1
 bcrypt==3.1.1
 #biopython==1.68
