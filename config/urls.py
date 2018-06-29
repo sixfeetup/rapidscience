@@ -61,6 +61,7 @@ urlpatterns = [
     ),
     url(r'^$', views.home, name='homepage'),
     url(r'^about/', views.about, name='about'),
+    url(r'^privacy_policy/', views.privacy_policy, name='privacy_policy'),
     url(r'^', include('cms.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
