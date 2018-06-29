@@ -41,6 +41,10 @@ def privacy_policy(request, template='core/privacy_policy.html'):
     return render(request, template)
 
 
+def terms_of_use(request, template='core/terms_of_use.html'):
+    return render(request, template)
+
+
 class SendToView(LoginRequiredMixin, View):
     def get(self, request, app_label, model_name, object_id):
         request.session['referrer'] = request.META['HTTP_REFERER']
