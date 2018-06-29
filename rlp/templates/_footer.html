@@ -1,5 +1,4 @@
 {% load cms_tags static %}
-<div class="container">
   <div class="logos">
       <a href="http://www.rapidscience.org/" class="img" target="_blank">
         <img src="{% static 'img/footer-logo.png' %}" class="img-responsive center-block" />
@@ -7,8 +6,10 @@
       </a>
   </div>
   <p>
-    &copy; 2017 Rapid Science |
-    Contact us at <a href="mailto:​info@rapidscience.org">​info@rapidscience.org</a>
+    &copy; 2018 Rapid Science |
+      <a href="{% url 'privacy_policy' %}">Privacy Policy</a> |
+      <a href="{% url 'terms_of_use' %}">Terms of Use</a> |
+      <a href="mailto:​info@rapidscience.org">​Contact us</a>
     <a href="https://www.linkedin.com/company/rapid-science" class="img" target="_blank">
         <i class="fa fa-linkedin-square"></i>
     </a>
@@ -19,4 +20,4 @@
   CC-BY 4.0 License</p>
     <p>Generous support was provided by the <a href="https://mellon.org/" target="_blank"> Andrew W. Mellon Foundation</a>, <a href="https://www.bayer.com/" target="_blank" >Bayer</a>, <a href="http://www.emdserono.com/en/index.html" target="_blank">EMD Serono</a>, <a href="https://www.lilly.com/" target="_blank">Eli Lilly</a>, the <a href="https://www.moore.org/" target="_blank">Gordon & Betty Moore Foundation</a>, <a href="http://www.janssen.com/us/" target="_blank">Janssen Pharmaceuticals</a>, the <a href="https://www.nih.gov/" target="_blank">National Institutes of Health</a>, and the Peaked Hill Fund.</p>
     <p>There are known issues in IE10 that are being addressed. This web site is optimized for Chrome, Firefox, Safari, and IE 11. Coming soon: Android and iOS!</p>
-</div>
+
