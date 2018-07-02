@@ -1,11 +1,11 @@
-{% load core_tags discussion_tags %}
+{% load core_tags discussion_tags highlight %}
 {% user_can_link obj as can_link %}
 {# FYI: another template where ref is a UserReference #}
 {# and obj = Reference #}
 <!-- _uref_tab -->
 <div class="row reference-item">
   <div class="col-md-11">
-    <h4>{% if obj.parsed_data.authors %}{{ obj.parsed_data.authors }}. {% endif %}
+    <h4>{% if obj.parsed_data.authors %}{% highlight obj.parsed_data.authors with request.GET.q html_tag "em" %}. {% endif %}
         {% if obj.get_source_url %}
             {%  if can_link %}
                 <a href="{{ ref.get_absolute_url }}">{% endif %}
