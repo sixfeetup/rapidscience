@@ -34,11 +34,18 @@
                       </label></h4>
                       {{ field.errors }}
                       {{ field }}
+                      {% if field.id_for_label == 'id_username' %}
+                          <input type="checkbox" id="remember" name="remember"
+                            {% if remember %}checked{% endif %}>
+                          <label for="remember"><p style="text-transform: capitalize;"><small>Remember my email address (not recommended for public or shared computers).</small></p></label><br>
+                      {% endif %}
                       {% if field.help_text %}
                       <p class="helptext">{{ field.help_text|safe }}</p>
                       {% endif %}
                   </div>
               {% endfor %}
+
+
               <div class="helpText"><a href="{% url 'password_reset' %}">Forgot password?</a></div>
               <input type="hidden" name="next" value="{{ next }}" />
               <div class="signin-buttons">
