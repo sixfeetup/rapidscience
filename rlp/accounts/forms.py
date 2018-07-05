@@ -8,7 +8,7 @@ from django.utils.http import urlsafe_base64_encode
 from django.utils.translation import ugettext_lazy as _
 
 from .models import User, Institution
-from rlp.accounts.models import EMAIL_CHOICES
+from rlp.accounts.models import EMAIL_PREF_CHOICES, DIGEST_PREF_CHOICES
 from rlp.core.email import send_transactional_mail
 from rlp.projects.models import Project, ProjectMembership
 
@@ -223,14 +223,19 @@ class UserProfileForm(forms.ModelForm):
     institution_state = forms.CharField(max_length=80, required=False)
     institution_country = forms.CharField(max_length=80, required=False)
     institution_website = forms.CharField(max_length=80, required=False)
+    digest_prefs = forms.ChoiceField(
+        label="Weekly Notifications",
+        choices=DIGEST_PREF_CHOICES,
+        widget=forms.RadioSelect(),
+    )
     email_prefs = forms.ChoiceField(
-        label="Email Preferences",
-        choices=EMAIL_CHOICES,
+        label="Immediate Notifications",
+        choices=EMAIL_PREF_CHOICES,
         widget=forms.RadioSelect(),
         help_text='(*) You will still receive occasional emails regarding (1) \
-            invitations from your colleagues to join new groups, (2) \
-            editorial correspondence when you submit a case report, and (3) \
-            registration-related notices.'
+        invitations from your colleagues to join new groups, (2) \
+        editorial correspondence when you submit a case report, and (3) \
+        registration-related notices.'
     )
 
     class Meta:
@@ -241,7 +246,7 @@ class UserProfileForm(forms.ModelForm):
             'institution_name', 'institution_city', 'institution_state',
             'institution_country', 'institution_website', 'email', 'website',
             'linkedin', 'twitter', 'bio', 'research_interests',
-            'email_prefs',
+            'digest_prefs', 'email_prefs',
         ]
         widgets = {
             'bio': forms.Textarea(attrs={'class': 'remaining-characters'}),

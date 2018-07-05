@@ -17,14 +17,17 @@ logger = logging.getLogger(__name__)
 
 phone_digits_re = re.compile(r'^(?:1-?)?(\d{3})[-\.]?(\d{3})[-\.]?(\d{4}).*$')
 
-EMAIL_CHOICES = (
-    ('immediate', 'Immediately notify me when an item is shared with \
-        me or with a group to which I belong. Includes case reports, \
-        documents, discussions, references and comments.'),
-    ('digest', 'Send a weekly digest of all items shared with me or \
-        with a group to which I belong.'),
-    ('disabled', 'Do not send notification emails(*). I will check my \
-        Dashboard to view shared items.')
+
+DIGEST_PREF_CHOICES = (
+    ('enabled', 'Email me a weekly digest of all items shared with me and with groups to which I belong.'),
+    ('disabled', 'Do not email me a weekly digest (*). I will check my Dashboard to view shared items')
+)
+
+
+EMAIL_PREF_CHOICES = (
+    ('user_and_group', 'Email me immediately when an item is shared with me individually or with groups to which I belong.'),
+    ('user_only', 'Email me immediately only when an item is shared with me individually.'),
+    ('disabled', 'Do not send immediate email notifications (*).')
 )
 
 
@@ -125,10 +128,15 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
     email_prefs = models.CharField(
         max_length=255,
         verbose_name='Email notification preferences',
-        default='digest',
-        choices=EMAIL_CHOICES
+        default='disabled',
+        choices=EMAIL_PREF_CHOICES
     )
-
+    digest_prefs = models.CharField(
+        max_length=255,
+        verbose_name='Email digest preferences',
+        default='enabled',
+        choices=DIGEST_PREF_CHOICES
+    )
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
