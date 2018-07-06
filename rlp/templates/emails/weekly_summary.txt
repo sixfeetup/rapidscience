@@ -241,7 +241,8 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
 <br><hr style="margin: 10px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>
 
 <p>Respond or send questions/concerns to <a href="mailto:info@rapidscience.org" style="color: #3795bf; text-decoration: none">info@rapidscience.org</a>.<br>
-You can change your email preferences in your
+You can hide other members' postings and notifications on their profile pages by clicking on their names above.<br>
+Change other notification preferences on
 <a href="https://{{ site }}{% url 'profile' user.pk %}" style="color: #3795bf; text-decoration: none">Profile</a>.</p>
 
 <div style="background-color: #ecebeb; padding: 15px;">
