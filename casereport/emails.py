@@ -41,13 +41,18 @@ def publish_to_group(casereport, groups):
     template = 'casereport/emails/group_casereport_published'
     message_body = render_to_string('{}.txt'.format(template),
                                     email_context)
-    for member in recipients:
+    if len(recipients) <= 1:
         mail = EmailMessage(subject,
                             message_body,
                             "Cases Central <edit@rapidscience.org>",
-                            [member,])
-        mail.content_subtype = "html"
-        mail.send()
+                            [member for member in recipients])
+    else:
+        mail = EmailMessage(subject,
+                            message_body,
+                            "Cases Central <edit@rapidscience.org>",
+                            bcc=[member for member in recipients])
+    mail.content_subtype = "html"
+    mail.send()
 
 
 def created(casereport):
