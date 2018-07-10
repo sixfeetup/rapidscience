@@ -39,11 +39,11 @@
           <div class="col-xs-1">
             {% if request.user in project.moderators %}
                 <div class="btn-group">
-                  <button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <button class="btn btn-default btn-xs dropdown-toggle dropdown-menu-members" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <span class="caret"></span>
                   </button>
-                  <ul class="dropdown-menu">
-                      <li><a href="{% url 'projects:demote_to_user' membership_id=membership.id %}">Remove as Moderator</a></li>
+                  <ul class="dropdown-menu dropdown-menu-members" >
+                      <li><a href="{% url 'projects:demote_to_user' membership_id=membership.id %}">Remove as moderator</a></li>
                       <li><a href="{% url 'projects:projects_leave' pk=project.id user=user.id %}">Remove from group</a></li>
                   </ul>
                 </div>
@@ -84,18 +84,18 @@
                         {% if request.user in project.moderators or request.user.is_staff %}
                             <!-- moderator actions -->
                             <div class="btn-group">
-                              <button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              <button class="btn btn-default btn-xs dropdown-toggle dropdown-menu-members" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="caret"></span>
                               </button>
-                              <ul class="dropdown-menu">
+                              <ul class="dropdown-menu dropdown-menu-members">
                                 {% if membership.state == 'pending' %}
-                                    <li><a href="{% url 'projects:accept_membership_request' membership_id=membership.id %}">Accept into group</a></li>
-                                    <li><a href="{% url 'projects:ignore_membership_request' membership_id=membership.id %}">Decline request to join group</a></li>
+                                    <li><a href="{% url 'projects:accept_membership_request' membership_id=membership.id %}">Approve</a></li>
+                                    <li><a href="{% url 'projects:ignore_membership_request' membership_id=membership.id %}">Decline</a></li>
                                 {% elif membership.state == 'member' %}
-                                    <li><a href="{% url 'projects:promote_to_moderator' membership_id=membership.id %}">Make a Moderator</a></li>
+                                    <li><a href="{% url 'projects:promote_to_moderator' membership_id=membership.id %}">Make a moderator</a></li>
                                     <li><a href="{% url 'projects:projects_leave' pk=project.id user=user.id %}">Remove from group</a></li>
                                 {% elif membership.state == 'moderator' %}
-                                    <li><a href="{% url 'projects:demote_to_user' membership_id=membership.id %}">Remove as Moderator</a></li>
+                                    <li><a href="{% url 'projects:demote_to_user' membership_id=membership.id %}">Remove as moderator</a></li>
                                     <li><a href="{% url 'projects:projects_leave' pk=project.id user=user.id %}">Remove from group</a></li>
                                 {% endif %}
                               </ul>

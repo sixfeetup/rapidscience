@@ -164,6 +164,15 @@ h1.detail-view-heading {
     .cc-box {
         border-bottom: none;
     }
+    .fa-cog {
+        color: #3792bf;
+    }
+    .fa-plus {
+        color: #3792bf;
+    }
+    .dropdown-toggle {
+       color: #3792bf;
+    }
 }
 
 .members-list {
@@ -1487,3 +1496,14 @@ body.home {
     }
 }
 
+.dropdown-menu-members {
+    background-color: #fff;
+    left: auto;
+    right: 0;
+    border:0px;
+    outline:0px;
+    li a {
+            padding-top: 0;
+            color:#3792bf;
+        }
+}
