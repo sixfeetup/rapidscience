@@ -78,9 +78,24 @@
 
 {% block left_column %}
   <div class="box about-box">
-    <p class="section-label">About<span style="float:right">{%  if request.user in project.moderators %} <a href="{%  url 'projects:projects_edit' project.pk project.slug %}#" class="edit-group-link" title="Edit group">
-      <i class="fa fa-cog"></i>
-    </a>{%  endif %}</span></p>
+    <p class="section-label">About<span style="float:right">
+{#        {%  if request.user in project.moderators %}#}
+{#        <a href="{%  url 'projects:projects_edit' project.pk project.slug %}#" class="edit-group-link" title="Edit group">#}
+
+        <div class="dropdown group-detail-dropdown">
+        <button class= "btn btn-default dropdown-toggle dropdown-menu-members" id="group-detail-menu" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fa fa-cog"></i>
+        </button>
+         <ul class="dropdown-menu dropdown-menu-members" aria-labelledby="group-detail-menu">{%  if request.user in project.moderators %}
+          <li><a href="{% url 'projects:projects_edit' project.pk project.slug %}">Edit group settings</a></li>{%  endif %}
+          <li><a href="#">Edit notifications</a></li>
+          <li><a href="{% url 'projects:projects_leave' pk=project.id user=user.id %}">Leave group</a></li>
+      </ul>
+        </div>
+
+{#    </a>#}
+{#    {%  endif %}#}
+    </span></p>
     <p class="group-approval">{% if project.approval_required %}Closed{% else %}Open{% endif %} Group</p>
   {% if project.goal %}
     <p class="group-goal">{{ project.goal }}</p>
