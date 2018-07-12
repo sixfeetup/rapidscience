@@ -305,6 +305,11 @@ body.home .navbar-brand.fullname {
         padding-top: 15px;
         padding-bottom: 15px;
         float: right;
+        &[aria-expanded='true'],
+        &[aria-expanded='true']:focus,
+        &[aria-expanded='true']:hover {
+          background-color: #998D87;
+        }
     }
     .search-icon:focus,
     .search-icon:active {
