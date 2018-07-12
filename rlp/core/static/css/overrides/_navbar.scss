@@ -277,8 +277,8 @@ body.home .navbar-brand.fullname {
         #search-form {
             position: absolute;
             z-index: 1000005;
-            top: 5px;
-            height: 45px;
+            top: 0;
+            height: 52px;
             left: 0;
             width: calc(100% - 50px);
             background-color: #332f2d;
@@ -287,7 +287,7 @@ body.home .navbar-brand.fullname {
             background-color: #444444;
             border: none;
             border-radius: 0;
-            height: 47px;
+            height: 52px;
             min-width: 430px;
             color: #f6eee3;
             font-weight: normal;
