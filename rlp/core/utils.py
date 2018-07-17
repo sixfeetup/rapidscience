@@ -34,7 +34,7 @@ def enforce_sharedobject_permissions(cls, obj_class, id_name, methods=None):
     for fname in methods or cls.http_method_names:
         if fname == 'options':
             continue
-        #if settings.DEBUG:
+        # if settings.DEBUG:
         #    print("inspecting classbasedview ", cls, "for:", fname, file=sys.stderr)
         if hasattr(cls, fname):
             view_func = getattr(cls, fname)
@@ -260,14 +260,52 @@ FORMAT_NAMED = 'NAMED'
 FORMAT_SIMPLE = 'SIMPLE'
 
 
-def resolve_email_targets(target, exclude=None, fmt=FORMAT_NAMED, debug=False, force=False):
+def can_send_email(user, group=None, digest=False):
+    """
+    :param user: User
+    :param group:  Project
+    :param digest: boolean
+    :return: boolean
+    """
+    if type(user) == str:
+        return True
+
+    if group:
+        membership = user.projectmembership.filter(project=group).first()  # there should only be one
+
+        if membership.email_prefs:
+            if digest and membership.email_prefs == 'digest':
+                return True
+            elif not digest and membership.email_prefs == 'immediate':
+                return True
+
+        else:
+            if digest and user.digest_prefs == "enabled":
+                return True
+            elif not digest and user.email_prefs != "disbaled":  # ""user_and_group":
+                return True
+
+    else:
+        if digest:
+            if user.digest_prefs == "enabled":
+                return True
+        else:
+            if user.email_prefs != "disabled":
+                return True
+
+    return False
+
+def resolve_email_targets(target, exclude=None, fmt=FORMAT_NAMED, debug=False, force=False,
+                          digest=False):
     """ Take a target comprised of users, projects, strings and return a set
         of email addresses in either x@domain.tld or Name <x@domain.tld> format
         with duplicates removed and known opt-out's honored.
         force=True will ignore the user's email preferences and send the email
     """
+
     if exclude:
         print("exclude:", exclude)
+
         if isinstance(exclude, str):
             excludables = resolve_email_targets({exclude}, fmt=FORMAT_SIMPLE)
         elif isinstance(exclude, SimpleLazyObject):
@@ -285,7 +323,7 @@ def resolve_email_targets(target, exclude=None, fmt=FORMAT_NAMED, debug=False, f
         return set([target])
     else:
         # start with a set of items to resolve
-        if isinstance( target, Iterable):
+        if isinstance(target, Iterable):
             starting_set = set(target)
         else:
             starting_set = {target}
@@ -293,15 +331,34 @@ def resolve_email_targets(target, exclude=None, fmt=FORMAT_NAMED, debug=False, f
         # expand any Projects into Users
         users_and_strings = set()
         for item in starting_set:
+            # if it's a group/project:
             if hasattr(item, 'users'):
                 for m in item.active_members():
-                    users_and_strings.add(m)
+                    # check the group prefs before falling back to the user's global prefs
+                    """membership = m.projectmembership_set.filter(project=item).first()  # there should only be one
+                  
+                    if membership.email_pref:
+                        if digest and membership.email_pref == 'digest':
+                            users_and_strings.add(m)
+                        elif not digest and membership.email_pref == 'immediate':
+                            users_and_strings.add(m)
+                            
+                    else:
+                        if digest and m.digest_prefs == "enabled":
+                            users_and_strings.add(m)
+                        elif not digest and m.email_prefs == "user_and_group":
+                            users_and_strings.add(m)
+                    """
+                    if can_send_email(m, item, digest):
+                        users_and_strings.add(m)
+            elif hasattr(item, 'email_prefs'):
+                if item.email_prefs != "disabled":
+                    users_and_strings.add(item)
             else:
                 users_and_strings.add(item)
 
-        # email_addresses
+        # email_addresses as names and addresses if possible
         naas = set()
-        emails = set()
         NameAndAddress = namedtuple('NameAndAddress', "name address")
         for recipient in users_and_strings:
             if hasattr(recipient, "email_prefs"):
@@ -315,7 +372,9 @@ def resolve_email_targets(target, exclude=None, fmt=FORMAT_NAMED, debug=False, f
                 naa = NameAndAddress( None, recipient)
                 # that assumes it was a plain email addr
                 naas.add(naa)
-        # now we can result it down to a list of strings
+
+        # now we can resolve it down to a list of strings
+        emails = set()
         for naa in naas:
             if naa.address in excludables:
                 if debug:
@@ -332,7 +391,6 @@ def resolve_email_targets(target, exclude=None, fmt=FORMAT_NAMED, debug=False, f
         return emails
 
 
-
 def test_resolve_email_targets():
     from rlp.accounts.models import User
     from rlp.projects.models import Project
@@ -341,18 +399,19 @@ def test_resolve_email_targets():
 
     u1 = User.objects.first()
     u2 = User.objects.last()
+    print("u1:{} email_prefs:{}".format(u1, u1.email_prefs))
     p1 = Project.objects.first()
     p2 = Project.objects.last()
     s1 = "glenn@gmail.com"
     s2 = "glenn franxman <glenn@sixfeetup.com>"
     assert len(resolve_email_targets(u1)) == 1
-    #Out[11]: {'Sixies Up <email>'}
+    # Out[11]: {'Sixies Up <email>'}
 
     assert len(resolve_email_targets(u2)) == 1
-    #Out[12]: {'Glenn OtherUser <email>'}
+    # Out[12]: {'Glenn OtherUser <email>'}
 
     assert len(resolve_email_targets(p1)) >= 1
-    #Out[13]: {'Christine Veenstra-VanderSháw <email>',
+    # Out[13]: {'Christine Veenstra-VanderSháw <email>',
     #          'Glenn Superuser <email>'}
 
     assert len(resolve_email_targets(p2)) >= 1
@@ -390,7 +449,7 @@ def test_resolve_email_targets():
         assert u not in res, "exclude by group failed"
 
     lazy_user = SimpleLazyObject( lambda: u2)
-    print( "\nExclude lazy_user(", u2.email, ") from ",(u1.email,u2.email) )
+    print("\nExclude lazy_user(", u2.email, ") from ",(u1.email,u2.email) )
     res = resolve_email_targets((u1, u2,), exclude=lazy_user, debug=True)
     pprint(res)
     assert u2 not in res

@@ -8,6 +8,7 @@ from django.db.models.lookups import DateTransform
 from taggit.managers import TaggableManager
 from taggit.models import TagBase, GenericTaggedItemBase
 
+
 from rlp.core.utils import CREATION_VERBS
 from rlp.managedtags.models import TaggedByManagedTag
 
@@ -210,6 +211,9 @@ class SharedObjectMixin(models.Model):
                 public=is_public,
             )
 
+        from casereport import emails
+        emails.published(self, viewers)
+
     def get_content_type(self, resolve_polymorphic=True):
         target = self
         if (resolve_polymorphic
@@ -231,7 +235,6 @@ class SharedObjectMixin(models.Model):
             target = parent_type.objects.non_polymorphic().get(id=self.id)
         content_type = ContentType.objects.get_for_model(target)
         return content_type.id
-
 
     def notify_viewers(self, subject, context, template='emails/notification'):
         from rlp.core.email import send_transactional_mail

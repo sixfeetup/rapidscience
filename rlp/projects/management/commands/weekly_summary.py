@@ -14,6 +14,7 @@ from django.utils import timezone
 from actstream.models import Action
 
 from rlp.accounts.models import User
+from rlp.core.utils import can_send_email
 from rlp.discussions.models import ThreadedComment
 from rlp.projects.models import Project
 
@@ -33,6 +34,7 @@ class Command(BaseCommand):
             users = User.objects.filter(email__in=emails.split(','))
         else:
             users = User.objects.filter(is_active=True)
+
         try:
             self.process(users)
         except Exception as err:
@@ -42,9 +44,32 @@ class Command(BaseCommand):
             raise
 
     def process(self, users):
+        # globally_enabled = users.filter(digest_prefs='disabled') #si weekle
+        # vv users who haven't set group preference, or who hasn't set it to 'digest'
+        enabled_for_groups = users.filter(projectmembership__email_prefs__in=('immediate', 'never'))
+
+        globally_enabled = User.objects.all().filter(digest_prefs='enabled').exclude(id__in=[u.id for u in enabled_for_groups]) #si weekly
+
+        """
+    two groups of users
+        1) users with a projectmembership setting that is not null 
+        2) users with a projectmembership setting that is null    -- these users must have user.digest_prefs  == 'enabled'
+    These states can differ for each project a user belongs to.
+    
+"""
+
+        # unfortunately that includes users who enabled the digest, but disabled the digest for
+        # all of the groups in their digest.
+
         some_day_last_week = timezone.now() - timedelta(days=7)
         year, week, day = some_day_last_week.isocalendar()
         # define the content types
+        project_ct = ContentType.objects.get(app_label='projects',
+                                             model='project')
+
+        user_ct = ContentType.objects.get(app_label='accounts',
+                                          model='user')
+
         casereport_ct = ContentType.objects.get(app_label='casereport',
                                                 model='casereport')
         comment_ct = ContentType.objects.get(app_label='discussions',
@@ -55,12 +80,24 @@ class Command(BaseCommand):
         member_ct = ContentType.objects.get(model='user')
         subject = "Weekly summary of new activity"
 
-        # loop through users
-        for user in users:
-            if user.email_prefs != 'digest':
-                print("skipping ", user, ": email setting is {0}".format(user.email_prefs))
+        # using users with group digests settings enabled,
+        # or global digests enabled, but no group digests enabled
+        # if any of the groups have direct or none, then those groups need to be filtered out.
+
+        for user in users:  # globally_enabled:
+            # if user.digest_prefs != 'digest':
+            #    print("skipping ", user, ": email setting is {0}".format(user.email_prefs))
+            #    continue
+            projects = user.get_digest_projects()
+            if not projects.count():
                 continue
-            projects = user.active_projects()
+            activity_stream = user.get_activity_stream().filter(
+                timestamp__gte=some_day_last_week,
+                timestamp__lte=timezone.now(),
+                target_content_type=project_ct,
+                target_object_id__in=[p.id for p in projects],
+            )
+
             email_context = {
                 'user': user,
                 'site': settings.DOMAIN,
@@ -70,7 +107,7 @@ class Command(BaseCommand):
             results = 0
             comments = []
             # loop through all content returned to strip out duplicates
-            # (for when multiple actions happen on one pice of content)
+            # (for when multiple actions happen on one piece of content)
             for ctype in [comment_ct, casereport_ct, docs_cts, biblio_ct, member_ct]:
                 display_items = []  # items to display in the email
                 # docs_cts has multiple types we group together
@@ -78,15 +115,18 @@ class Command(BaseCommand):
                     cxt_label = 'document'
                     for doctype in docs_cts:
                         content_id_set = []
-                        all_content = user.get_activity_stream().filter(
-                            timestamp__gte=some_day_last_week,
-                            timestamp__lte=timezone.now(),
+                        actions = activity_stream.filter(
                             action_object_content_type=doctype)
-                        for item in all_content:
-                            if item.action_object_object_id in content_id_set:
+
+                        for action in actions:
+                            # if type(item.target) == Project:
+                            #    if not can_send_email(user, item.target, True):
+                            #        continue
+                            if action.action_object_object_id in content_id_set:
+                                # dedupe
                                 continue
-                            content_id_set.append(item.action_object_object_id)
-                            display_items.append(item)
+                            content_id_set.append(action.action_object_object_id)
+                            display_items.append(action)
                 elif ctype == member_ct:
                     # this *should* be temporary until we have an action
                     # for when a member joins a group. Until then, just
@@ -97,17 +137,22 @@ class Command(BaseCommand):
                         timestamp__lte=timezone.now(),
                         action_object_content_type=ctype)
                     for member in members:
+                        if type(member.target) == Project:
+                            if not can_send_email(user, member.target, True):
+                                continue
                         display_items.append(member)
                 else:
                     content_id_set = []
                     cxt_label = ctype.model
-                    all_content = user.get_activity_stream().filter(
-                        timestamp__gte=some_day_last_week,
-                        timestamp__lte=timezone.now(),
+                    all_content = activity_stream.filter(
                         action_object_content_type=ctype)
+
                     for item in all_content:
                         if item.action_object_object_id in content_id_set:
                             continue
+                        # if type(item.target) == Project:
+                        #    if not can_send_email(user, item.target, True):
+                        #        continue
                         content_id_set.append(item.action_object_object_id)
                         if ctype.model == 'threadedcomment':
                             if not item.action_object.title:
@@ -162,6 +207,7 @@ class Command(BaseCommand):
             #         (comment, commentcounter[comment]))
 
             new_projects = Project.objects.filter(created__gte=some_day_last_week)
+            # TODO  exclude...
             display_projects = []
             for project in new_projects:
                 display_projects.append({
@@ -178,6 +224,7 @@ class Command(BaseCommand):
             text_maker = html2text.HTML2Text()
             text_maker.body_width = 100
             message = text_maker.handle(html_message)
+
             send_mail(
                 subject,
                 message,

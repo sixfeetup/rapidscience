@@ -176,7 +176,7 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
         return self.first_name
 
     def notify_immediately(self):
-        return self.email_prefs == 'immediate'
+        return self.email_prefs != 'disabled'
 
     def email_setting(self):
         return self.email_prefs
@@ -191,7 +191,19 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
         return self.is_staff or self in project.active_members()
 
     def active_projects(self):
-        return self.projects.filter(projectmembership__state__in=('member','moderator'))
+        return self.projects.filter(projectmembership__state__in=('member', 'moderator'))
+
+    def get_digest_projects(self):
+        """ return qs of projects where the user has set their membership preference to  'digest'
+            OR they have not set it, and their global digest preference == 'enabled'
+        """
+        ap = self.active_projects()
+        user_wants_digest = self.digest_prefs == 'enabled' or self.digest_prefs == None
+        explicit = [r for r in ap.filter(projectmembership__email_prefs='digest').values_list('id', flat=True)]
+        implicit = []
+        if user_wants_digest:
+            implicit = [r for r in ap.filter(projectmembership__email_prefs__isnull=True).values_list('id', flat=True)]
+        return ap.filter(id__in=explicit + implicit)
 
     def _get_my_activity_query(self):
         my_ct = ContentType.objects.get_for_model(self)

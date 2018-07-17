@@ -7,9 +7,10 @@ from django.utils.text import slugify
 from actstream.models import Action
 from rlp.core.utils import resolve_email_targets
 
+
 def publish_to_author(casereport):
     targets = [casereport.primary_author.email, ]
-    #resolve_email_targets(casereport.primary_author)
+    # resolve_email_targets(casereport.primary_author)
     if not targets:
         return
     email_context = {
@@ -26,9 +27,19 @@ def publish_to_author(casereport):
     mail.send()
 
 
-def publish_to_group(casereport, groups):
-    recipients = resolve_email_targets(groups,
-                                       exclude=casereport.primary_author)
+def published(casereport, recipients):
+    """
+    :param casereport:
+    :param recipients:
+    :return:
+
+    uses user preferences
+    """
+    allowed_recipients = resolve_email_targets(recipients,
+                                               exclude=casereport.primary_author, )
+
+    if not allowed_recipients:
+        return
 
     email_context = {
         "casereport": casereport,
@@ -41,18 +52,13 @@ def publish_to_group(casereport, groups):
     template = 'casereport/emails/group_casereport_published'
     message_body = render_to_string('{}.txt'.format(template),
                                     email_context)
-    if len(recipients) <= 1:
+    for member in allowed_recipients:
         mail = EmailMessage(subject,
                             message_body,
                             "Cases Central <edit@rapidscience.org>",
-                            [member for member in recipients])
-    else:
-        mail = EmailMessage(subject,
-                            message_body,
-                            "Cases Central <edit@rapidscience.org>",
-                            bcc=[member for member in recipients])
-    mail.content_subtype = "html"
-    mail.send()
+                            [member])
+        mail.content_subtype = "html"
+        mail.send()
 
 
 def created(casereport):
@@ -81,8 +87,8 @@ def submitted(casereport):
         'link': casereport.get_absolute_url(),
         'site': settings.DOMAIN,
     }
-    author_email_addresses = [casereport.primary_author.email,]
-    #resolve_email_targets(casereport.primary_author)
+    author_email_addresses = [casereport.primary_author.email, ]
+    # resolve_email_targets(casereport.primary_author)
     if not author_email_addresses:
         return
     subject = "Your case report submission"
@@ -243,7 +249,8 @@ def get_invite_comment(cr, viewer):
 
 def cr_published_notifications(casereport):
     """When a case report has been published, send out
-       the emails to those it has been shared with
+       the emails to those it has been shared with.
+       Uses user email preferences.
     """
     shared_with = casereport.get_viewers()
     for viewer in shared_with:

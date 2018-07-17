@@ -281,7 +281,7 @@ class AddGroup(LoginRequiredMixin, FormView):
     form_class = NewGroupForm
     template_name = 'projects/projects_add.html'
 
-    def get_form(self, form_class):
+    def get_form(self, form_class=NewGroupForm):
         # super.get_form() handles POST data if available
         form = super(AddGroup, self).get_form(form_class)
         invite_choices = (
