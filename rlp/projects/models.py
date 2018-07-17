@@ -190,6 +190,13 @@ class Project(SEOMixin, SharesContentMixin):
         membership.delete()
 
 
+EMAIL_PREFS_CHOICES = (
+    ('immediate', 'Immediately'),
+    ('digest', 'Weekly'),
+    ('never', 'Never')
+)
+
+
 class ProjectMembership(models.Model):
     project = models.ForeignKey(Project)
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
@@ -198,6 +205,14 @@ class ProjectMembership(models.Model):
     approver = models.ForeignKey(settings.AUTH_USER_MODEL,
                                  related_name='approvals',
                                  null=True, blank=True)
+    email_prefs = models.CharField(
+        max_length=255,
+        verbose_name='Email notification preferences for Groups',
+        default='digest',
+        choices=EMAIL_PREFS_CHOICES,
+        null=True,
+        blank=True,
+    )
 
     class Meta:
         unique_together = ['project', 'user']
@@ -235,7 +250,6 @@ class ProjectMembership(models.Model):
             target=self.project,
         )
         approval_action.save()
-
 
     @transition(field=state, source='pending', target='ignored')
     def ignore(self):
