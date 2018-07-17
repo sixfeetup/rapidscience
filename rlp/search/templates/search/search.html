@@ -31,7 +31,6 @@
       {% else %}
         <h1>Search</h1>
       {% endif %}
-        {% if object_list %}<div class="result-count">{{ object_list|length }} result{% if object_list|length > 1 %}s{% endif %}</div>{% endif %}
     </div>
     {% if not tags %}
     <form class="keywords" method="get" action="{% url 'haystack_search' %}{% if query %}?q={{ query }}{% endif %}" autocomplete="off">
@@ -44,6 +43,7 @@
         </div>
     </form>
     {% endif %}
+    {% if object_list %}<div class="result-count"><p class="result-font">{{ object_list|length }} result{% if object_list|length > 1 %}s</p>{% endif %}</div>{% endif %}
     {% if object_list %}
       {% if not tags %}
         <p class="relevance"><em>Results are sorted by keyword relevance.</em></p>
