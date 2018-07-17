@@ -72,7 +72,18 @@ var selectedBookmarksFolderName; // will contain ID of selected bookmarks folder
     // Make search input active
   $(".search-icon").click(function(){
       setTimeout(function() { $('.navbar-nav .search-widget input.form-control').focus() }, 500);
-  })
+      // change search-icon to submit search when field is visible
+    // if ($("#search-form").hasClass("in")) {
+    //   $("#search-form").submit();
+    // }
+
+  });
+  // hide the search field when losing focus
+  $(".navbar-nav .search-widget input.form-control").on("blur", function(){
+    $("#search-form").collapse('hide');
+  });
+
+
 
 }); })(jQuery);
 
