@@ -27,7 +27,7 @@ def publish_to_author(casereport):
     mail.send()
 
 
-def published(casereport, recipients):
+def send_shared_email(casereport, recipients):
     """
     :param casereport:
     :param recipients:

@@ -145,7 +145,7 @@ def activity_mail(user, obj, target, request=None):
         else:
             subject = "{} has shared a reference with you"
     else:
-        subject = "{} has shared a comment with you"
+        subject = "{{}} has shared a {} with you".format(root_obj_cls_name.lower())
 
     subject = subject.format(user.get_full_name(), root_obj_cls_name)
 

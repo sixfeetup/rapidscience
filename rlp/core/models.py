@@ -9,7 +9,7 @@ from taggit.managers import TaggableManager
 from taggit.models import TagBase, GenericTaggedItemBase
 
 
-from rlp.core.utils import CREATION_VERBS
+from rlp.core.utils import CREATION_VERBS, resolve_email_targets
 from rlp.managedtags.models import TaggedByManagedTag
 
 
@@ -194,7 +194,10 @@ class SharedObjectMixin(models.Model):
         ))
 
     def share_with(self, viewers, shared_by, comment=None, publicly=True):
-        from casereport.models import action
+        from casereport.models import action, CaseReport
+        from casereport import emails as casereport_emails
+        from .email import activity_mail
+
         # NB: action.send merely queues
         # add an entry to the target viewer's activity stream
         for viewer in viewers:
@@ -211,8 +214,14 @@ class SharedObjectMixin(models.Model):
                 public=is_public,
             )
 
-        from casereport import emails
-        emails.published(self, viewers)
+        if publicly:
+            if type(self) == CaseReport:
+                casereport_emails.send_shared_email(self, viewers)
+            else:
+                immediate_users = resolve_email_targets(viewers)
+
+
+                activity_mail(shared_by, self, immediate_users)
 
     def get_content_type(self, resolve_polymorphic=True):
         target = self
