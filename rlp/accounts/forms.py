@@ -100,6 +100,11 @@ class AuthenticationForm(DJAuthForm):
     The error message is also customized to only indicate that the password is case-sensitive.
     """
     username = forms.EmailField(max_length=254)
+    remember = forms.BooleanField(required=False,
+                                  label=' Remember my email address (not '
+                                        'recommended for public or shared '
+                                        'computers)',
+                                  )
     password = forms.CharField(label=_("Password"), widget=forms.PasswordInput)
 
     error_messages = {
@@ -107,6 +112,8 @@ class AuthenticationForm(DJAuthForm):
                            "Note that passwords are case-sensitive."),
         'inactive': _("This account is inactive."),
     }
+
+    field_order = ['username', 'remember', 'password']
 
     def clean_username(self):
         # Clean up the email address so we get consistent results regardless of what casing the user types their

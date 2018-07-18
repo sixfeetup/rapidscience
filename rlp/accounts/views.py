@@ -12,7 +12,6 @@ from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.db.models.query_utils import Q
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render, resolve_url
 from django.utils.decorators import method_decorator
 from django.utils.http import is_safe_url
@@ -83,8 +82,6 @@ def login(request, template_name='accounts/login.html',
         else:
             return redirect('dashboard')
 
-    remember = False
-    remembered_name = ''
     if request.method == "POST":
         form = authentication_form(request, data=request.POST)
         username = request.POST.get("username")
@@ -108,28 +105,23 @@ def login(request, template_name='accounts/login.html',
                 # display a welcome message
                 messages.success(request, WELCOME_MESSAGE)
 
-            if request.POST.get("remember", False):
-                remember = True
-                remembered_name = username
-                # request.session.set_cookie('remember', username)
-
-
-
             if not redirect_to:
                 redirect_to = reverse('dashboard')
 
             redirect_response = redirect(redirect_to)
-            if remember:
-                redirect_response.cookies['remember'] = remembered_name
+            if request.POST.get("remember", False):
+                redirect_response.set_cookie('username', username)
+            else:
+                redirect_response.delete_cookie('username')
             return redirect_response
         else:
             messages.error(request, "Please correct the errors below.")
     else:
         form = authentication_form(request)
-        if 'remember' in request.COOKIES:
-            remembered_name = request.COOKIES['remember']
-            form.fields['username'].initial = remembered_name
-
+        if 'username' in request.COOKIES:
+            username = request.COOKIES['username']
+            form.fields['username'].initial = username
+            form.fields['remember'].initial = True
 
     current_site = get_current_site(request)
 
@@ -138,8 +130,8 @@ def login(request, template_name='accounts/login.html',
         redirect_field_name: redirect_to,
         'site': current_site,
         'site_name': current_site.name,
-        #'remember': remember,
     }
+
     if extra_context is not None:
         context.update(extra_context)
     response = render(request, template_name, context)

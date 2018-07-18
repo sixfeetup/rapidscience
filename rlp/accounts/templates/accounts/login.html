@@ -29,16 +29,11 @@
               {% csrf_token %}
               {% for field in form %}
                   <div class="fieldWrapper">
-                      <h4><label for="{{ field.id_for_label }}">
-                          {{ field.label }}{% if field.field.required %} <span class="required">*</span>{% endif %}
+                      <h4><label for="{{ field.id_for_label }}">{% if field.id_for_label == 'id_remember' %}<p class="f-title">{{ field }} {{ field.label }}</p>{% else %} {{ field.label }}{% endif %}
+                         {% if field.field.required %} <span class="required">*</span>{% endif %}
                       </label></h4>
                       {{ field.errors }}
-                      {{ field }}
-                      {% if field.id_for_label == 'id_username' %}
-                          <input type="checkbox" id="remember" name="remember"
-                            {% if remember %}checked{% endif %}>
-                          <label for="remember"><p style="text-transform: capitalize;"><small>Remember my email address (not recommended for public or shared computers).</small></p></label><br>
-                      {% endif %}
+                      {% if field.id_for_label == 'id_remember' %}{% else %} {{ field }}{% endif %}
                       {% if field.help_text %}
                       <p class="helptext">{{ field.help_text|safe }}</p>
                       {% endif %}
@@ -62,4 +57,12 @@
     </div>
 </div>
 </div>
+<script>
+    $("#checkbox").on("change", function(){
+    alert("The checkbox with the ID '" + this.id + "' changed");
+    });
+</script>
 {% endblock content %}
+
+
+
