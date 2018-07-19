@@ -181,7 +181,7 @@ h1.detail-view-heading {
     }
     .btn-group {
         position: relative;
-        right: 15px;
+        right: 18px;
     }
     .leave-button {
         position: relative;
@@ -1529,4 +1529,12 @@ body.home {
 p.f-title {
   display:inline-block;
   text-transform: none;
+}
+
+.dashboard .fa-cog {
+    color: #CCCCCC;
+    &:hover{
+      color: rgb(68, 68, 68)
+    }
+
 }

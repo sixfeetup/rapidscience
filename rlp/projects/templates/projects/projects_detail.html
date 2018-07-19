@@ -79,22 +79,42 @@
 {% block left_column %}
   <div class="box about-box">
     <p class="section-label">About<span style="float:right">
-{#        {%  if request.user in project.moderators %}#}
-{#        <a href="{%  url 'projects:projects_edit' project.pk project.slug %}#" class="edit-group-link" title="Edit group">#}
-
+        {%  if request.user in project.moderators or request.user.is_staff %}
         <div class="dropdown group-detail-dropdown">
         <button class= "btn btn-default dropdown-toggle dropdown-menu-members" id="group-detail-menu" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fa fa-cog"></i>
         </button>
-         <ul class="dropdown-menu dropdown-menu-members" aria-labelledby="group-detail-menu">{%  if request.user in project.moderators %}
-          <li><a href="{% url 'projects:projects_edit' project.pk project.slug %}">Edit group settings</a></li>{%  endif %}
-          <li><a href="#">Edit notifications</a></li>
-          <li><a href="{% url 'projects:projects_leave' pk=project.id user=user.id %}">Leave group</a></li>
-      </ul>
+             <!-- moderator and staff actions -->
+            <ul class="dropdown-menu dropdown-menu-members" aria-labelledby="group-detail-menu">
+              <li><a href="{% url 'projects:projects_edit' project.pk project.slug %}">Edit group settings</a></li>
+              <li><a href="#">Edit notifications</a></li>
+              <li><a href="{% url 'projects:projects_leave' pk=project.id user=user.id %}">Leave group</a></li>
+            </ul>
         </div>
+        {% elif request.user in project.active_members %}
+            <div class="dropdown group-detail-dropdown">
+            <button class= "btn btn-default dropdown-toggle dropdown-menu-members" id="group-detail-menu" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-cog"></i>
+            </button>
+                <!-- active member actions -->
+                <ul class="dropdown-menu dropdown-menu-members" aria-labelledby="group-detail-menu">
+                  <li><a href="#">Edit notifications</a></li>
+                  <li><a href="{% url 'projects:projects_leave' pk=project.id user=user.id %}">Leave group</a></li>
+                </ul>
+            </div>
+{#        {% else %}#}
+{#            <div class="dropdown group-detail-dropdown">#}
+{#            <button class= "btn btn-default dropdown-toggle dropdown-menu-members" id="group-detail-menu" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">#}
+{#                <i class="fa fa-cog"></i>#}
+{#            </button>#}
+{#                <!-- others actions -->#}
+{#                <ul class="dropdown-menu dropdown-menu-members" aria-labelledby="group-detail-menu">#}
+{#                  <li><a href="#">Edit notifications</a></li>#}
+{#                </ul>#}
+{#            </div>#}
+        {%  endif %}
 
-{#    </a>#}
-{#    {%  endif %}#}
+
     </span></p>
     <p class="group-approval">{% if project.approval_required %}Closed{% else %}Open{% endif %} Group</p>
   {% if project.goal %}

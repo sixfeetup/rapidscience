@@ -100,8 +100,8 @@
                                 {% endif %}
                               </ul>
                             </div>
-                        {% else %}
-                            {% if request.user == user %}<a class="leave-button" href="{% url 'projects:projects_leave' pk=project.id user=user.id %}"> <i class="fa fa-times-circle-o"></i></a>{% endif %}
+{#                        {% else %}#}
+{#                            {% if request.user == user %}<a class="leave-button" href="{% url 'projects:projects_leave' pk=project.id user=user.id %}"> <i class="fa fa-times-circle-o"></i></a>{% endif %}#}
                         {% endif %}
                     </div>
                   </li>
