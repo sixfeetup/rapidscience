@@ -110,7 +110,7 @@ def login(request, template_name='accounts/login.html',
 
             redirect_response = redirect(redirect_to)
             if request.POST.get("remember", False):
-                redirect_response.set_cookie('username', username)
+                redirect_response.set_cookie('username', username,  max_age=60*60*24*365)
             else:
                 redirect_response.delete_cookie('username')
             return redirect_response
