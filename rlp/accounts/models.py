@@ -199,10 +199,12 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
         """
         ap = self.active_projects()
         user_wants_digest = self.digest_prefs == 'enabled' or self.digest_prefs == None
-        explicit = [r for r in ap.filter(projectmembership__email_prefs='digest').values_list('id', flat=True)]
+        explicit = [r for r in ap.filter(projectmembership__digest_prefs='enabled').values_list('id', flat=True)]
         implicit = []
         if user_wants_digest:
-            implicit = [r for r in ap.filter(projectmembership__email_prefs__isnull=True).values_list('id', flat=True)]
+            implicit = [r for r in ap.filter(projectmembership__digest_prefs__isnull=True).values_list('id', flat=True)]
+        print("explicit digest subscriptions:" + str(explicit))
+        print("implicit digest subscriptions:" + str(implicit))
         return ap.filter(id__in=explicit + implicit)
 
     def _get_my_activity_query(self):
@@ -252,11 +254,11 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
                 | self._get_activity_involving_me_query()
                 | self._get_activity_in_my_projects_query()
             )
-            #& self._get_activity_excluding_self_shares()
+            # & self._get_activity_excluding_self_shares()
         )
 
-        # exclude shares to me of casereports that arent mine and live,
-        if True: #not self.is_staff:
+        # exclude shares to me of casereports that aren't mine and live,
+        if True:  # not self.is_staff:
             casereport_ct = ContentType.objects.get_for_model(CaseReport)
             my_ct = ContentType.objects.get_for_model(self)
             # not loving this, but cant use expressions like

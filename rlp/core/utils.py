@@ -272,23 +272,31 @@ def can_send_email(user, group=None, digest=False):
 
     if group:
         membership = user.projectmembership.filter(project=group).first()  # there should only be one
-
-        if membership.email_prefs:
-            if digest and membership.email_prefs == 'digest':
-                return True
-            elif not digest and membership.email_prefs == 'immediate':
-                return True
-
+        if digest:
+            if membership.digest_prefs:
+                return membership.digest_prefs == "enabled"
+            else:
+                if user.digest_prefs:
+                    return user.digest_prefs == 'enabled'
+                else:
+                    return False
         else:
-            if digest and user.digest_prefs == "enabled":
-                return True
-            elif not digest and user.email_prefs != "disbaled":  # ""user_and_group":
-                return True
-
+            # regular transactional sharing email
+            if  membership.email_prefs:
+                return 'group' in membership.email_prefs
+            else:
+                if user.email_prefs:
+                    return 'group' in user.email_prefs
+                else:
+                    return False
     else:
+        # email to a user with no group context
+
         if digest:
             if user.digest_prefs == "enabled":
                 return True
+            if not user.digest_prefs:
+                return True  # to handle None defaulting to enabled
         else:
             if user.email_prefs != "disabled":
                 return True
@@ -335,20 +343,6 @@ def resolve_email_targets(target, exclude=None, fmt=FORMAT_NAMED, debug=False, f
             if hasattr(item, 'users'):
                 for m in item.active_members():
                     # check the group prefs before falling back to the user's global prefs
-                    """membership = m.projectmembership_set.filter(project=item).first()  # there should only be one
-                  
-                    if membership.email_pref:
-                        if digest and membership.email_pref == 'digest':
-                            users_and_strings.add(m)
-                        elif not digest and membership.email_pref == 'immediate':
-                            users_and_strings.add(m)
-                            
-                    else:
-                        if digest and m.digest_prefs == "enabled":
-                            users_and_strings.add(m)
-                        elif not digest and m.email_prefs == "user_and_group":
-                            users_and_strings.add(m)
-                    """
                     if can_send_email(m, item, digest):
                         users_and_strings.add(m)
             elif hasattr(item, 'email_prefs'):

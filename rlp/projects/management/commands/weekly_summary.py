@@ -32,31 +32,36 @@ class Command(BaseCommand):
         emails = options.get('to')
         if emails:
             users = User.objects.filter(email__in=emails.split(','))
-        else:
-            users = User.objects.filter(is_active=True)
-
-        try:
             self.process(users)
-        except Exception as err:
-            subject = "{}".format(sys.argv[1])
-            message = "{}".format(err)
-            mail_admins(subject, message)
-            raise
+        else:
+            #users = User.objects.filter(is_active=True)
+            # globally_enabled = users.filter(digest_prefs='disabled') # si weekle
+            # vv users who haven't set group preference, or who hasn't set it to 'digest'
+            enabled_for_groups = User.objects.all().filter(projectmembership__digest_prefs='enabled').distinct('id')
+
+            globally_enabled = User.objects.all().filter(digest_prefs='enabled').exclude(
+                id__in=[u.id for u in enabled_for_groups])  # si weekly
+            globally_defaulting = User.objects.all().filter(digest_prefs__isnull=True).exclude(
+                id__in=[u.id for u in enabled_for_groups]
+            )
+
+            try:
+                print("sending {} to those enabled_for_groups".format(enabled_for_groups.count()))
+                self.process(enabled_for_groups)
+
+                print("sending {} to those globally_enabled".format(globally_enabled.count()))
+                self.process(globally_enabled)
+
+                print("sending {} to those globally defaulting to enabled".format(globally_defaulting.count()))
+                self.process(globally_defaulting)
+
+            except Exception as err:
+                subject = "{}".format(sys.argv[1])
+                message = "{}".format(err)
+                mail_admins(subject, message)
+                raise
 
     def process(self, users):
-        # globally_enabled = users.filter(digest_prefs='disabled') #si weekle
-        # vv users who haven't set group preference, or who hasn't set it to 'digest'
-        enabled_for_groups = users.filter(projectmembership__email_prefs__in=('immediate', 'never'))
-
-        globally_enabled = User.objects.all().filter(digest_prefs='enabled').exclude(id__in=[u.id for u in enabled_for_groups]) #si weekly
-
-        """
-    two groups of users
-        1) users with a projectmembership setting that is not null 
-        2) users with a projectmembership setting that is null    -- these users must have user.digest_prefs  == 'enabled'
-    These states can differ for each project a user belongs to.
-    
-"""
 
         # unfortunately that includes users who enabled the digest, but disabled the digest for
         # all of the groups in their digest.
@@ -84,12 +89,10 @@ class Command(BaseCommand):
         # or global digests enabled, but no group digests enabled
         # if any of the groups have direct or none, then those groups need to be filtered out.
 
-        for user in users:  # globally_enabled:
-            # if user.digest_prefs != 'digest':
-            #    print("skipping ", user, ": email setting is {0}".format(user.email_prefs))
-            #    continue
+        for user in users:  # everybody who MIGHT get the digest
             projects = user.get_digest_projects()
             if not projects.count():
+                print("skipping user_id {} because they have no active digest subscriptions".format(user.id))
                 continue
             activity_stream = user.get_activity_stream().filter(
                 timestamp__gte=some_day_last_week,
