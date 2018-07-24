@@ -87,7 +87,7 @@
              <!-- moderator and staff actions -->
             <ul class="dropdown-menu dropdown-menu-members" aria-labelledby="group-detail-menu">
               <li><a href="{% url 'projects:projects_edit' project.pk project.slug %}">Edit group settings</a></li>
-              <li><a href="#">Edit notifications</a></li>
+              <li><a href="#" data-toggle="modal" data-target="#edit-group-email-prefs">Edit notifications</a></li>
               <li><a href="{% url 'projects:projects_leave' pk=project.id user=user.id %}">Leave group</a></li>
             </ul>
         </div>
@@ -158,6 +158,23 @@
         <input type="submit" value="Done" class="btn btn-primary">
         <input type="submit" value="Cancel" class="btn close-overlay">
     </form>
+  </div>
+
+<div class="modal" id="edit-group-email-prefs">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <form method="post" action="% url 'projects:projects_edit_email_prefs' project.pk %">
+{#                    <i class="fa fa-times-circle-o close-overlay"></i>#}
+                    {{ edit_group_email_prefs_form.media }}
+                    {% csrf_token %}
+                    {{ edit_group_email_prefs_form.as_p }}
+                    <button type="button" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-default close-overlay" data-dismiss="modal">Cancel</button>
+                </form>
+            </div>
+      </div>
+    </div>
   </div>
 
 

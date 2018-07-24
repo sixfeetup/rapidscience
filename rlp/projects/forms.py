@@ -9,6 +9,8 @@ from django.utils.safestring import mark_safe
 
 from ckeditor.widgets import CKEditorWidget
 
+from rlp.projects.models import Project, ProjectMembership
+
 
 class SimpleImageWidget(forms.FileInput):
     def __init__(self, attrs={}):
@@ -122,3 +124,40 @@ class ModifyGroupForm(NewGroupForm):
 
     approval = forms.IntegerField(widget=forms.HiddenInput())
     # remember to ensure that approval doesn't change, and the the user is a moderator for the group
+
+
+class EditGroupNotifications(forms.Form):
+    group_id = forms.IntegerField(widget=forms.HiddenInput())
+    group_prefs = forms.ChoiceField(
+        label='Select the notification frequency of items shared in this group.',
+        widget=forms.RadioSelect, choices=(
+            ('immediately', 'Immediately'),
+            ('weekly', 'Weekly'),
+            ('both', 'Immediately and Weekly'),
+            ('never', 'Never'),
+            ('none', 'Use my profile defaults')
+        )
+    )
+
+    @staticmethod
+    def get_group_prefs(user, group):
+        try:
+            membership = ProjectMembership.objects.get(user=user, project=group)
+            if membership.email_prefs and membership.digest_prefs:
+                if membership.email_prefs == 'enabled':
+                    if membership.digest_prefs != 'disabled':
+                        prefs = 'immediately'
+                    else:
+                        prefs = 'both'
+                else:
+                    if membership.digest_prefs == 'disabled':
+                        prefs = 'never'
+                    else:
+                        prefs = 'weekly'
+            else:
+                prefs = 'none'
+            return prefs
+        except Project.DoesNotExist as no_membership:
+            from rlp import logger
+            logger.warn("no existing membership for {} to {}".format(user, group))
+            raise no_membership

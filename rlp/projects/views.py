@@ -25,7 +25,7 @@ from rlp.discussions.models import ThreadedComment
 from rlp.documents.models import Document
 from rlp.search.forms import ProjectContentForm, get_action_object_content_types
 from rlp.projects import emails
-from .forms import InviteForm, NewGroupForm, ModifyGroupForm
+from .forms import InviteForm, NewGroupForm, ModifyGroupForm, EditGroupNotifications
 from .models import Project
 from .models import ProjectMembership
 from .shortcuts import group_invite_choices
@@ -168,6 +168,11 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
     ))
     context['edit_group_form'] = edit_form
 
+    email_prefs_form = EditGroupNotifications(initial={
+        'group_id': project.id,
+        'group_prefs': EditGroupNotifications.get_group_prefs(request.user, project)
+    })
+    context['edit_group_email_prefs_form'] = email_prefs_form
     # response
     return render(request, template_name, context)
 
@@ -455,3 +460,46 @@ class IgnoreMembershipRequest(LoginRequiredMixin, View):
                 membership.save()
                 emails.reject_to_requester(request, membership, group)
         return redirect(group.get_absolute_url())
+
+
+class EditGroupNotificationsView(LoginRequiredMixin, FormView):
+    form_class = EditGroupNotifications
+    # template_name=
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        group = Project.objects.get(self.group_id)
+        form = self.get_form()
+        if form.is_valid():
+            membership = ProjectMembership.objects.get(user=user, project=group)
+            pref = request.POST.get('group_prefs')
+
+            if pref == 'immediately':
+                membership.email_prefs = 'enabled'
+                membership.digest_prefs = 'disabled'
+
+            elif pref == 'weekly':
+                membership.email_prefs = 'disabled'
+                membership.digest_prefs = 'user_and_group'
+
+            elif pref == 'both':
+                membership.email_prefs = 'enabled'
+                membership.digest_prefs = 'user_and_group'
+
+            elif pref == 'never':
+                membership.email_prefs = 'disabled'
+                membership.digest_prefs = 'disabled'
+
+            elif pref == 'none':
+                membership.email_prefs = None
+                membership.digest_prefs = None
+
+            else:
+                from rlp import logger
+                logger.error("unexpected group email prefs values:{}".format(pref))
+            membership.save()
+            return self.form_valid(form, request)
+
+        else:
+            messages.error(request, "Please correct the errors below")
+            return self.form_invalid(form)

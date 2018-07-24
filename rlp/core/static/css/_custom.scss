@@ -1539,3 +1539,23 @@ p.f-title {
     }
 
 }
+
+#edit-group-email-prefs {
+  font-size: 12px;
+  font-weight: normal;
+  //font-family: none;
+  label {
+    font-weight: normal;
+  }
+  ul {
+    margin: 0 0 10px;
+    padding-left: 0;
+    display: inline-table;
+  }
+  li {
+    list-style-type: none;
+    display: inline-block;
+    padding: 5px 5px;
+    }
+}
+
