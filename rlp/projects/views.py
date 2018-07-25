@@ -6,6 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -466,40 +467,36 @@ class EditGroupNotificationsView(LoginRequiredMixin, FormView):
     form_class = EditGroupNotifications
     # template_name=
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         user = request.user
-        group = Project.objects.get(self.group_id)
+        group_id = int(request.POST.get('group_id'))
+        group = Project.objects.get(id=group_id)
         form = self.get_form()
-        if form.is_valid():
-            membership = ProjectMembership.objects.get(user=user, project=group)
-            pref = request.POST.get('group_prefs')
+        membership = ProjectMembership.objects.get(user=user, project=group)
+        pref = request.POST.get('group_prefs')
 
-            if pref == 'immediately':
-                membership.email_prefs = 'enabled'
-                membership.digest_prefs = 'disabled'
+        if pref == 'immediately':
+            membership.email_prefs = 'enabled'
+            membership.digest_prefs = 'disabled'
 
-            elif pref == 'weekly':
-                membership.email_prefs = 'disabled'
-                membership.digest_prefs = 'user_and_group'
+        elif pref == 'weekly':
+            membership.email_prefs = 'disabled'
+            membership.digest_prefs = 'user_and_group'
 
-            elif pref == 'both':
-                membership.email_prefs = 'enabled'
-                membership.digest_prefs = 'user_and_group'
+        elif pref == 'both':
+            membership.email_prefs = 'enabled'
+            membership.digest_prefs = 'user_and_group'
 
-            elif pref == 'never':
-                membership.email_prefs = 'disabled'
-                membership.digest_prefs = 'disabled'
+        elif pref == 'never':
+            membership.email_prefs = 'disabled'
+            membership.digest_prefs = 'disabled'
 
-            elif pref == 'none':
-                membership.email_prefs = None
-                membership.digest_prefs = None
-
-            else:
-                from rlp import logger
-                logger.error("unexpected group email prefs values:{}".format(pref))
-            membership.save()
-            return self.form_valid(form, request)
+        elif pref == 'none':
+            membership.email_prefs = None
+            membership.digest_prefs = None
 
         else:
-            messages.error(request, "Please correct the errors below")
-            return self.form_invalid(form)
+            from rlp import logger
+            logger.error("unexpected group email prefs values:{}".format(pref))
+        membership.save()
+        return JsonResponse({'message':'success'})

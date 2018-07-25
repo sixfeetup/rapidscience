@@ -323,6 +323,23 @@ $(".close-overlay").click(function(){
     $("body").removeClass("overlay-active");
 });
 */
+(function($) { $(function() {
+    $("#edit-group-email-prefs .save-overlay").on('click', function (e){
+        var form = $("#edit-group-email-prefs form");
+        var csrfmiddlewaretoken = form.find("input[name='csrfmiddlewaretoken']").val();
+
+        $.ajax({
+            type: 'post',
+            url: '/groups/update_group_notifications/',
+            data: {
+                'csrfmiddlewaretoken': csrfmiddlewaretoken,
+                'group_id': form.find("input[name='group_id']").val(),
+                'group_prefs': form.find("input[name='group_prefs']:checked").val()
+            }
+        });
+        $('#edit-group-email-prefs').modal('hide');
+    })
+}); })(jQuery);
 
 
 // Open Discussion form if #topic-form in path

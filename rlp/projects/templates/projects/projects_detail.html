@@ -164,12 +164,13 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-body">
-                <form method="post" action="% url 'projects:projects_edit_email_prefs' project.pk %">
+                <form method="post">
 {#                    <i class="fa fa-times-circle-o close-overlay"></i>#}
+                    <input type="hidden" name="group_id" value="{{ project.id }}"/>
                     {{ edit_group_email_prefs_form.media }}
                     {% csrf_token %}
                     {{ edit_group_email_prefs_form.as_p }}
-                    <button type="button" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-primary save-overlay">Save</button>
                     <button type="button" class="btn btn-default close-overlay" data-dismiss="modal">Cancel</button>
                 </form>
             </div>
