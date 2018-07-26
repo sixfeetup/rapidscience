@@ -324,20 +324,21 @@ $(".close-overlay").click(function(){
 });
 */
 (function($) { $(function() {
-    $("#edit-group-email-prefs .save-overlay").on('click', function (e){
-        var form = $("#edit-group-email-prefs form");
+    $(".save-email-prefs").on('click', function (e){
+        e.preventDefault();
+        var form = $(this).parents("form");
         var csrfmiddlewaretoken = form.find("input[name='csrfmiddlewaretoken']").val();
-
+        var group_id = form.find("input[name='group_id']").val();
         $.ajax({
             type: 'post',
             url: '/groups/update_group_notifications/',
             data: {
                 'csrfmiddlewaretoken': csrfmiddlewaretoken,
-                'group_id': form.find("input[name='group_id']").val(),
+                'group_id': group_id,
                 'group_prefs': form.find("input[name='group_prefs']:checked").val()
             }
         });
-        $('#edit-group-email-prefs').modal('hide');
+        $('#edit-group-email-prefs-'+group_id).modal('hide');
     })
 }); })(jQuery);
 

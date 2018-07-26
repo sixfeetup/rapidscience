@@ -10,6 +10,7 @@ from django.utils.functional import SimpleLazyObject
 
 from taggit.models import Tag
 
+from rlp import logger
 from rlp.managedtags.models import ManagedTag
 
 
@@ -282,11 +283,11 @@ def can_send_email(user, group=None, digest=False):
                     return False
         else:
             # regular transactional sharing email
-            if  membership.email_prefs:
-                return 'group' in membership.email_prefs
+            if membership.email_prefs:
+                return 'enabled' in membership.email_prefs
             else:
                 if user.email_prefs:
-                    return 'group' in user.email_prefs
+                    return 'enabled' in user.email_prefs
                 else:
                     return False
     else:
@@ -303,6 +304,7 @@ def can_send_email(user, group=None, digest=False):
 
     return False
 
+
 def resolve_email_targets(target, exclude=None, fmt=FORMAT_NAMED, debug=False, force=False,
                           digest=False):
     """ Take a target comprised of users, projects, strings and return a set
@@ -310,6 +312,8 @@ def resolve_email_targets(target, exclude=None, fmt=FORMAT_NAMED, debug=False, f
         with duplicates removed and known opt-out's honored.
         force=True will ignore the user's email preferences and send the email
     """
+    if force:
+        logger.error("resolve_email_targets no longer support 'force=True'")
 
     if exclude:
         print("exclude:", exclude)
@@ -321,6 +325,17 @@ def resolve_email_targets(target, exclude=None, fmt=FORMAT_NAMED, debug=False, f
             excludables = resolve_email_targets({exclude}, fmt=FORMAT_SIMPLE)
         else:
             excludables = resolve_email_targets(exclude, fmt=FORMAT_SIMPLE)
+
+        # strip excludes down to simple email addresses
+        excludable_emails = []
+        for ex in excludables:
+            if "<" in ex:
+                bit = ex.split("<")[1]
+                ex = bit[:-1]
+            else:
+                pass
+            excludable_emails.append(ex)
+        excludables = set(excludable_emails)
     else:
         excludables = {}
 
@@ -356,16 +371,12 @@ def resolve_email_targets(target, exclude=None, fmt=FORMAT_NAMED, debug=False, f
         NameAndAddress = namedtuple('NameAndAddress', "name address")
         for recipient in users_and_strings:
             if hasattr(recipient, "email_prefs"):
-                if not force and not recipient.notify_immediately():
-                    continue  # skip the opted-out target
-                else:
-                    naa = NameAndAddress(recipient.get_full_name(),
-                                         recipient.email)
-                    naas.add(naa)
+                naa = NameAndAddress(recipient.get_full_name(),
+                                     recipient.email)
             else:
-                naa = NameAndAddress( None, recipient)
-                # that assumes it was a plain email addr
-                naas.add(naa)
+                naa = NameAndAddress(None, recipient)
+
+            naas.add(naa)
 
         # now we can resolve it down to a list of strings
         emails = set()

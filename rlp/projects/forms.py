@@ -146,9 +146,9 @@ class EditGroupNotifications(forms.Form):
             if membership.email_prefs and membership.digest_prefs:
                 if membership.email_prefs == 'enabled':
                     if membership.digest_prefs != 'disabled':
-                        prefs = 'immediately'
-                    else:
                         prefs = 'both'
+                    else:
+                        prefs = 'immediately'
                 else:
                     if membership.digest_prefs == 'disabled':
                         prefs = 'never'
@@ -161,3 +161,12 @@ class EditGroupNotifications(forms.Form):
             from rlp import logger
             logger.warn("no existing membership for {} to {}".format(user, group))
             raise no_membership
+
+    @classmethod
+    def get_form_for_user_and_group(cls, user, group):
+        #membership = ProjectMembership.objects.get(user=user, project=group)
+        form = EditGroupNotifications(initial={
+            'group_id': group.id,
+            'group_prefs': cls.get_group_prefs(user, group),
+        })
+        return form

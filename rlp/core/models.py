@@ -193,7 +193,9 @@ class SharedObjectMixin(models.Model):
             viewer_type_id=viewer_type.id,
         ))
 
-    def share_with(self, viewers, shared_by, comment=None, publicly=True):
+    def share_with(self, viewers, shared_by, exclude=[], comment=None, publicly=True):
+        """ returns emails of those notified
+        """
         from casereport.models import action, CaseReport
         from casereport import emails as casereport_emails
         from .email import activity_mail
@@ -213,15 +215,15 @@ class SharedObjectMixin(models.Model):
                 target=viewer,
                 public=is_public,
             )
-
+        emails = []
         if publicly:
             if type(self) == CaseReport:
-                casereport_emails.send_shared_email(self, viewers)
+                emails = casereport_emails.send_shared_email(self, viewers, exclude=exclude)
             else:
-                immediate_users = resolve_email_targets(viewers)
+                emails = resolve_email_targets(viewers, exclude=exclude)
 
-
-                activity_mail(shared_by, self, immediate_users)
+                activity_mail(shared_by, self, emails)
+        return emails
 
     def get_content_type(self, resolve_polymorphic=True):
         target = self

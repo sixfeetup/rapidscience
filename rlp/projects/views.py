@@ -47,6 +47,9 @@ def projects_list(request, template_name="projects/projects_list.html"):
 @page_template('actstream/_activity.html')
 def projects_detail(request, pk, slug, tab='activity', template_name="projects/projects_detail.html",
                     extra_context=None):
+    # if tab == 'undefined':
+    #     raise ValueError('better call anthony')
+
     projects = Project.objects.select_related('institution', 'topic')
     project = get_object_or_404(projects, pk=pk, slug=slug)
     context = {
@@ -169,11 +172,9 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
     ))
     context['edit_group_form'] = edit_form
 
-    email_prefs_form = EditGroupNotifications(initial={
-        'group_id': project.id,
-        'group_prefs': EditGroupNotifications.get_group_prefs(request.user, project)
-    })
+    email_prefs_form = EditGroupNotifications.get_form_for_user_and_group(request.user, project)
     context['edit_group_email_prefs_form'] = email_prefs_form
+
     # response
     return render(request, template_name, context)
 

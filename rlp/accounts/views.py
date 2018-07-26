@@ -33,6 +33,7 @@ from rlp.core.utils import rollup
 from rlp.core.views import MESSAGES_DEFAULT_FORM_ERROR
 from rlp.discussions.models import ThreadedComment
 from rlp.documents.models import Document
+from rlp.projects.forms import EditGroupNotifications
 from rlp.projects.models import Project
 from rlp.search.forms import ProjectContentForm, \
     get_action_object_content_types
@@ -426,11 +427,20 @@ class ActivationView(TemplateView):
 def dashboard(request, tab='activity', template_name='accounts/dashboard.html',
               extra_context=None):
     active_projects = request.user.active_projects()
+    active_project_prefs_forms = [
+        #{
+        #    'form': EditGroupNotifications.get_form_for_user_and_group(request.user, p),
+        #    'project_id': p.id,
+        #}
+        EditGroupNotifications.get_form_for_user_and_group(request.user, p)
+        for p in active_projects
+    ]
     context = {
         'user': request.user,
         'edit': True,
         'tab': tab,
         'projects': active_projects,
+        'edit_group_email_prefs_forms': active_project_prefs_forms,
         'content_types': get_action_object_content_types()
     }
     request.session['last_viewed_path'] = request.get_full_path()

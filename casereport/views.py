@@ -83,7 +83,11 @@ class CaseReportDetailView(LoginRequiredMixin, TemplateView):
         casereport_history = StateLog.objects.filter(
             object_id=case_id).order_by('timestamp').reverse()
         for entry in casereport_history:
-            user = User.objects.get(pk=entry.by_id)
+            try:
+                user = User.objects.get(pk=entry.by_id)
+            except User.DoesNotExist as no_user:
+                user = User.objects.first()
+                entry.by_id = user.id
             entry.user = user
         viewers = list(set(list(casereport.get_viewers()) + [x.target for x in casereport.get_nonpublished_shares()]))
         return self.render_to_response(

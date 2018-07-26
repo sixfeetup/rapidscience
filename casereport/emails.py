@@ -27,19 +27,19 @@ def publish_to_author(casereport):
     mail.send()
 
 
-def send_shared_email(casereport, recipients):
+def send_shared_email(casereport, recipients, exclude=[]):
     """
     :param casereport:
     :param recipients:
-    :return:
+    :return: list of formatted email addresses of those notified.
 
     uses user preferences
     """
     allowed_recipients = resolve_email_targets(recipients,
-                                               exclude=casereport.primary_author, )
+                                               exclude=exclude + [casereport.primary_author,])
 
     if not allowed_recipients:
-        return
+        return []
 
     email_context = {
         "casereport": casereport,
@@ -59,7 +59,7 @@ def send_shared_email(casereport, recipients):
                             [member])
         mail.content_subtype = "html"
         mail.send()
-
+    return allowed_recipients
 
 def created(casereport):
     email_context = {

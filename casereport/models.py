@@ -264,6 +264,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
         }
 
     def share_with(self, viewers, shared_by,
+                   exclude=[],
                    comment=None,
                    publicly=True,
                    force_public=False):
@@ -272,10 +273,11 @@ class CaseReport(CRDBBase, SharedObjectMixin):
             Instead, this marks the shares as Private if the CR is not LIVE
         """
         public_sharing = force_public or self.workflow_state == WorkflowState.LIVE
-        return super(CaseReport,self).share_with(viewers,
-                                                 shared_by,
-                                                 comment=comment,
-                                                 publicly=public_sharing)
+        return super(CaseReport, self).share_with(viewers,
+                                                  shared_by,
+                                                  exclude=exclude,
+                                                  comment=comment,
+                                                  publicly=public_sharing)
 
     def sort_date(self):
         if self.date_published:
@@ -424,13 +426,16 @@ class CaseReport(CRDBBase, SharedObjectMixin):
 
         # re-share publicly with the author's private shares
         # remember, we're still in the source state so our state is not yet LIVE
+        those_notified = []
         for npshare in self.get_nonpublished_shares():
             target = npshare.target
             invite_msg = npshare.description
-            self.share_with([target],
-                            shared_by=self.primary_author,
-                            comment=invite_msg,
-                            force_public=True)
+            notified = self.share_with([target],
+                                       shared_by=self.primary_author,
+                                       exclude=those_notified,
+                                       comment=invite_msg,
+                                       force_public=True)
+            those_notified.extend(notified)
 
         if not self.date_published:
             # only send these emails on first publish
@@ -505,8 +510,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
             print(mail_err)
         return "Retracted"
 
-
-    # TODO: think hard about moving these out of the model and into WorkflowState
+    #  TODO:think hard about moving these out of the model and into WorkflowState
     def _get_displayname_for_fname(self, fname):
         """ turn a Transition name into its associated method name.
         """
@@ -551,7 +555,6 @@ class CaseReport(CRDBBase, SharedObjectMixin):
                 res = "Case report has been pulled back"
             else:
                 raise PermissionError("permission denied")
-
 
         if group:
             action.send(user, verb=verb, action_object=self, target=group)

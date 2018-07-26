@@ -205,7 +205,6 @@ class ProjectMembership(models.Model):
     email_prefs = models.CharField(
         max_length=255,
         verbose_name='Email notification preferences for Groups',
-        default='digest',
         choices=EMAIL_PREFS_CHOICES,
         null=True,
         blank=True,
@@ -213,8 +212,9 @@ class ProjectMembership(models.Model):
     digest_prefs = models.CharField(
         max_length=255,
         verbose_name='Email digest preferences',
-        default='enabled',
-        choices=DIGEST_PREF_CHOICES
+        choices=DIGEST_PREF_CHOICES,
+        null=True,
+        blank=True,
     )
 
     class Meta:

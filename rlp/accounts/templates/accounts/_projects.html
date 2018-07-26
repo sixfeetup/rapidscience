@@ -19,7 +19,7 @@
                  <!-- moderator and staff actions -->
                 <ul class="dropdown-menu dropdown-menu-members" aria-labelledby="group-detail-menu">
                   <li><a href="{% url 'projects:projects_edit' project.pk project.slug %}">Edit group settings</a></li>
-                  <li><a href="#">Edit notifications</a></li>
+                  <li><a href="#" data-toggle="modal" data-target="#edit-group-email-prefs-{{ project.id }}">Edit notifications</a></li>
                   <li><a href="{% url 'projects:projects_leave' pk=project.id user=user.id %}">Leave group</a></li>
                 </ul>
             </div>
@@ -30,24 +30,47 @@
             </button>
                 <!-- active member actions -->
                 <ul class="dropdown-menu dropdown-menu-members" aria-labelledby="group-detail-menu">
-                  <li><a href="#">Edit notifications</a></li>
+                  <li><a href="#" data-toggle="modal" data-target="#edit-group-email-prefs-{{  project.id }}">Edit notifications</a></li>
                   <li><a href="{% url 'projects:projects_leave' pk=project.id user=user.id %}">Leave group</a></li>
                 </ul>
             </div>
         {% else %}
-            <div class="dropdown group-detail-dropdown">
-            <button class= "btn btn-default dropdown-toggle dropdown-menu-members" id="group-detail-menu" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fa fa-cog"></i>
-            </button>
-                <!-- others actions -->
-                <ul class="dropdown-menu dropdown-menu-members" aria-labelledby="group-detail-menu">
-                  <li><a href="#">Edit notifications</a></li>
-                </ul>
-            </div>
+            <!-- oops -- nonmember trying to view someone else's groups -->
+{#            <div class="dropdown group-detail-dropdown">#}
+{#            <button class= "btn btn-default dropdown-toggle dropdown-menu-members" id="group-detail-menu" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">#}
+{#                <i class="fa fa-cog"></i>#}
+{#            </button>#}
+{#                <!-- others actions -->#}
+{#                <ul class="dropdown-menu dropdown-menu-members" aria-labelledby="group-detail-menu">#}
+{#                  <li><a href="#" data-toggle="modal" data-target="#edit-group-email-prefs">Edit notifications</a></li>#}
+{#                </ul>#}
+{#            </div>#}
         {% endif %}
           </div>
 
       </li>
       {% endfor %}
+
+
     </ul>
 </div>
+{% for form in edit_group_email_prefs_forms %}
+
+    <div class="modal edit-group-email-prefs" id="edit-group-email-prefs-{{ form.group_id.value }}">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+
+                    <form method="post">
+                        {{ form.media }}
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="button" class="btn btn-primary save-email-prefs">Save</button>
+                        <button type="button" class="btn btn-default close-overlay" data-dismiss="modal">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{%  endfor %}
