@@ -13,6 +13,11 @@ def reset_enabled_as_null(*args):
         pm.digest_prefs=None
         pm.save()
 
+
+def fake_reverse(*args):
+    pass
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -20,5 +25,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(reset_enabled_as_null)
+        migrations.RunPython(reset_enabled_as_null, reverse_code=fake_reverse)
     ]

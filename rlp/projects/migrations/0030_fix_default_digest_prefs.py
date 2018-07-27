@@ -14,10 +14,19 @@ def reset_prefs(*args):
         pm.digest_prefs = 'enabled'
         pm.save()
 
+    pms = ProjectMembership.objects.filter(email_prefs='digest')
+    for pm in pms:
+        pm.digest_prefs = 'disabled'
+        pm.save()
+
     accounts = User.objects.filter(email_prefs='digest') # this value is a deprecated default.
     for user in accounts:
         user.email_prefs = 'disabled'
         user.save()
+
+
+def fake_reverse(*args):
+    pass
 
 
 class Migration(migrations.Migration):
@@ -32,5 +41,5 @@ class Migration(migrations.Migration):
             name='digest_prefs',
             field=models.CharField(blank=True, choices=[('enabled', 'Email me a weekly digest of all items shared with me and with groups to which I belong.'), ('disabled', 'Do not email me a weekly digest (*). I will check my Dashboard to view shared items')], max_length=255, null=True, verbose_name='Email digest preferences'),
         ),
-        migrations.RunPython(reset_prefs)
+        migrations.RunPython(reset_prefs, reverse_code=fake_reverse)
     ]

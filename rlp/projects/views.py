@@ -477,16 +477,16 @@ class EditGroupNotificationsView(LoginRequiredMixin, FormView):
         pref = request.POST.get('group_prefs')
 
         if pref == 'immediately':
-            membership.email_prefs = 'enabled'
+            membership.email_prefs = 'user_and_group'
             membership.digest_prefs = 'disabled'
 
         elif pref == 'weekly':
             membership.email_prefs = 'disabled'
-            membership.digest_prefs = 'user_and_group'
+            membership.digest_prefs = 'enabled'
 
         elif pref == 'both':
-            membership.email_prefs = 'enabled'
-            membership.digest_prefs = 'user_and_group'
+            membership.email_prefs = 'user_and_group'
+            membership.digest_prefs = 'enabled'
 
         elif pref == 'never':
             membership.email_prefs = 'disabled'
