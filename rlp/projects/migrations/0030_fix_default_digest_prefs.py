@@ -16,7 +16,12 @@ def reset_prefs(*args):
 
     pms = ProjectMembership.objects.filter(email_prefs='digest')
     for pm in pms:
-        pm.digest_prefs = 'disabled'
+        pm.email_prefs = 'disabled'
+        pm.save()
+
+    pms = ProjectMembership.objects.filter(email_prefs='immediate')
+    for pm in pms:
+        pm.email_prefs = 'user_only'
         pm.save()
 
     accounts = User.objects.filter(email_prefs='digest') # this value is a deprecated default.
