@@ -24,9 +24,14 @@ def reset_prefs(*args):
         pm.email_prefs = 'user_only'
         pm.save()
 
-    accounts = User.objects.filter(email_prefs='digest') # this value is a deprecated default.
+    accounts = User.objects.filter(email_prefs='digest')  # this value is a deprecated default.
     for user in accounts:
         user.email_prefs = 'disabled'
+        user.save()
+
+    accounts = User.objects.filter(email_prefs='immediate')  # this value is a deprecated default.
+    for user in accounts:
+        user.email_prefs = 'user_only'
         user.save()
 
 
