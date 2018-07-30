@@ -74,20 +74,22 @@ class SendToView(LoginRequiredMixin, View):
             groups = list(form.cleaned_data['groups'])
             last_proj = request.session.get('last_viewed_project')
             if not last_proj:
-                # if not coming from a project, remove and self-to-self shares
+                # if not coming from a project, remove any self-to-self shares
                 if request.user in members:
                     members = [m for m in members if m.id != request.user.id]
-            shared_content.share_with(
-                members + groups,
+            targets = members + groups
+            '''shared_to = shared_content.share_with(
+                targets,
                 shared_by=request.user,
                 comment=form.cleaned_data['comment'],
             )
-            target = members + groups
+            '''
+
             if ctype.name != "case report" or \
-                (hasattr(shared_content, "workflow_state") and
-                         shared_content.workflow_state == WorkflowState.LIVE):
-                # case report emails are handled separately
-                activity_mail(request.user, shared_content, target, request)
+                    (hasattr(shared_content, "workflow_state") and
+                    shared_content.workflow_state == WorkflowState.LIVE):
+                #    case report emails are handled separately
+                activity_mail(request.user, shared_content, targets, request)
 
             # automatically bookmark for user when sharing
             if not shared_content.is_bookmarked_to(request.user):

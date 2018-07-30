@@ -194,7 +194,8 @@ class SharedObjectMixin(models.Model):
         ))
 
     def share_with(self, viewers, shared_by, exclude=[], comment=None, publicly=True):
-        """ returns emails of those notified
+        """ record an action and send emails.
+            returns emails of those notified
         """
         from casereport.models import action, CaseReport
         from casereport import emails as casereport_emails

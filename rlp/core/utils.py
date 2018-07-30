@@ -88,13 +88,14 @@ def bookmark_and_notify(
         obj.share_with([group], request.user, comment)
     else:
         group = None
-    SendToView.post(
-        view,
-        request,
-        app_label,
-        model_name,
-        obj.id,
-    )
+        SendToView.post(
+            view,
+            request,
+            app_label,
+            model_name,
+            obj.id,
+        )
+
     return group
 
 
