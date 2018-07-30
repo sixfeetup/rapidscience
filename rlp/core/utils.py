@@ -284,10 +284,10 @@ def can_send_email(user, group=None, digest=False):
         else:
             # regular transactional sharing email
             if membership.email_prefs:
-                return 'enabled' in membership.email_prefs
+                return 'user_and_group' in membership.email_prefs
             else:
                 if user.email_prefs:
-                    return 'enabled' in user.email_prefs
+                    return 'user_and_group' in user.email_prefs
                 else:
                     return False
     else:
