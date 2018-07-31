@@ -48,7 +48,9 @@
       {% if not tags %}
         <p class="relevance"><em>Results are sorted by keyword relevance.</em></p>
       {% endif %}
-        {% include 'search/_results.html' %}
+        <div class="search-results-items">
+            {% include 'search/_results.html' %}
+        </div>
     {% else %}
       <p>
         {% if query %}No results found for <span class="highlighted">{{ query }}</span>.
@@ -56,4 +58,12 @@
       </p>
     {% endif %}
     </div>
+{% endblock %}
+{% block js-compress-inline %}
+    <script>
+    $(".search-results-items").mark("{{ request.GET.q }}", {
+        "element": "em",
+        "className": "highlighted"
+    });
+    </script>
 {% endblock %}

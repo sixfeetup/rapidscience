@@ -7,7 +7,7 @@
           {%  if can_link %}
           <a href="{% url 'casereport_detail' case_id=obj.id title_slug=obj.title|slugify %}">
           {% endif %}
-        {% autoescape off %}{%  if highlighted.title %}{{ highlighted.title.0 }}{% else %}{{ obj.title }}{% endif %}{% endautoescape %}
+        {% autoescape off %}{{ obj.title }}{% endautoescape %}
           {%  if can_link %}
           </a>
           {% endif %}

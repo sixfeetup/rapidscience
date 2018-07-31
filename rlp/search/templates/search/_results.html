@@ -4,21 +4,21 @@
 {#       include and compile these results over and over in the loop.#}
 {% for result in object_list %}
   {% if  'accounts.' in result.content_type %}
-    {% include "accounts/_accounts_result_item.html" with label=result.verbose_name title=result.title link=result.link description=result.text highlighted=result.highlighted %}
+    {% include "accounts/_accounts_result_item.html" with label=result.verbose_name title=result.title link=result.link description=result.text %}
   {% elif 'discussions.' in result.content_type %}
-    {% include 'comments/list_item.html' with view='tab-content' comment=result.object highlighted=result.highlighted %}
+    {% include 'comments/list_item.html' with view='tab-content' comment=result.object %}
   {% elif 'casereport.' in result.content_type %}
-    {% include 'casereport/listing_preview.html' with obj=result.object highlighted=result.highlighted %}
+    {% include 'casereport/listing_preview.html' with obj=result.object %}
   {% elif 'documents.' in result.content_type %}
-    {% include 'documents/listing_preview.html' with obj=result.object highlighted=result.highlighted %}
+    {% include 'documents/listing_preview.html' with obj=result.object %}
   {% elif 'userreference' in result.content_type %}
-    {% include 'bibliography/_uref_tab.html' with obj=result.object.reference ref=result.object user=result.object.user highlighted=result.highlighted %}
-{#      {% include 'bibliography/_reference.html' with obj=result.object.reference user=result.object.user highlighted=result.highlighted %} #}
+    {% include 'bibliography/_uref_tab.html' with obj=result.object.reference ref=result.object user=result.object.user %}
+{#      {% include 'bibliography/_reference.html' with obj=result.object.reference user=result.object.user %} #}
   {% elif 'bibliography.' in result.content_type %}
-{#    {% include 'bibliography/_ref_tab.html' with obj=result.object user=result.object.current_user_reference.user highlighted=result.highlighted %}#}
-      {% include 'bibliography/_reference.html' with obj=result.object user=result.object.current_user_reference.user highlighted=result.highlighted %}
+{#    {% include 'bibliography/_ref_tab.html' with obj=result.object user=result.object.current_user_reference.user %}#}
+      {% include 'bibliography/_reference.html' with obj=result.object user=result.object.current_user_reference.user %}
   {% else %}
-    {% include "search/_result_item.html" with title=result.title link=result.link description=result.text highlighted=result.highlighted %}
+    {% include "search/_result_item.html" with title=result.title link=result.link description=result.text %}
   {% endif %}
 {% empty %}
     <p>No results found.</p>

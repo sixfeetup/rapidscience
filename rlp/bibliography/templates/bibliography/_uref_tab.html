@@ -5,12 +5,12 @@
 <!-- _uref_tab -->
 <div class="row reference-item">
   <div class="col-md-11">
-    <h4>{% if obj.parsed_data.authors %}{% highlight obj.parsed_data.authors with request.GET.q html_tag "em" %}. {% endif %}
+    <h4>{% if obj.parsed_data.authors %}{{ obj.parsed_data.authors }}. {% endif %}
         {% if obj.get_source_url %}
             {%  if can_link %}
                 <a href="{{ ref.get_absolute_url }}">{% endif %}
             {% endif %}
-        {% if highlighted.title %}{% autoescape off %}{{ highlighted.title.0 }}{% endautoescape %}{% else %}{% autoescape off%}{{ obj.parsed_data.title }}{% endautoescape %}{% endif %}{% if obj.get_source_url %}{% if can_link %}</a>{% endif %}{%  endif %},
+        {% autoescape off%}{{ obj.parsed_data.title }}{% endautoescape %}{% if obj.get_source_url %}{% if can_link %}</a>{% endif %}{%  endif %},
         {% if obj.parsed_data.container_title %}in <em>{% autoescape off %}{{ obj.parsed_data.container_title }}{% endautoescape %}</em>,{% endif %}
         {% if obj.parsed_data.page %}pp {{ obj.parsed_data.page }}.{% endif %}
         {% if obj.parsed_data.publication_date %}{{ obj.parsed_data.publication_date }};{% endif %}
