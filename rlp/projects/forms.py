@@ -2,6 +2,7 @@ from django.conf import settings
 from django import forms
 from django.core.validators import EmailValidator
 
+from rlp import logger
 from rlp.core.forms import MemberListField
 
 from django import forms
@@ -157,8 +158,7 @@ class EditGroupNotifications(forms.Form):
             else:
                 prefs = 'none'
             return prefs
-        except Project.DoesNotExist as no_membership:
-            from rlp import logger
+        except ProjectMembership.DoesNotExist as no_membership:
             logger.warn("no existing membership for {} to {}".format(user, group))
             raise no_membership
 

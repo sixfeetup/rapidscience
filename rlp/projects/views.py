@@ -172,8 +172,9 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
     ))
     context['edit_group_form'] = edit_form
 
-    email_prefs_form = EditGroupNotifications.get_form_for_user_and_group(request.user, project)
-    context['edit_group_email_prefs_form'] = email_prefs_form
+    if request.user in project.active_members():
+        email_prefs_form = EditGroupNotifications.get_form_for_user_and_group(request.user, project)
+        context['edit_group_email_prefs_form'] = email_prefs_form
 
     # response
     return render(request, template_name, context)
