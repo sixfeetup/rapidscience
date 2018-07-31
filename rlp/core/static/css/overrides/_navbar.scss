@@ -282,6 +282,10 @@ body.home .navbar-brand.fullname {
             left: 0;
             width: calc(100% - 50px);
             background-color: #332f2d;
+            @media screen and (max-width: 767px) {
+                float: left;
+                position: relative;
+            }
         }
         input.form-control {
             background-color: #444444;
@@ -293,6 +297,10 @@ body.home .navbar-brand.fullname {
             font-weight: normal;
             position: absolute;
             right: 0;
+            @media screen and (max-width: 767px) {
+                min-width: auto;
+                width: 100%;
+            }
         }
         input.form-control::-webkit-input-placeholder {
             color: #f6eee3;
