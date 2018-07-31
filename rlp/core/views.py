@@ -11,7 +11,7 @@ from casereport.constants import WorkflowState
 from casereport.models import CaseReport, action
 from rlp.core.email import activity_mail
 from rlp.core.forms import get_sendto_form
-
+from rlp.core.utils import resolve_email_targets
 
 MESSAGES_DEFAULT_FORM_ERROR = "Please correct the errors below"
 
@@ -88,7 +88,10 @@ class SendToView(LoginRequiredMixin, View):
                 (hasattr(shared_content, "workflow_state") and
                  shared_content.workflow_state == WorkflowState.LIVE):
                 #    case report emails are handled separately
-                activity_mail(request.user, shared_content, targets, request)
+                targets_as_emails = resolve_email_targets(targets) - shared_to
+                activity_mail(request.user, shared_content,
+                              targets_as_emails, request)
+
 
             # automatically bookmark for user when sharing
             if not shared_content.is_bookmarked_to(request.user):
