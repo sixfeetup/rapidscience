@@ -294,6 +294,21 @@ body.home .navbar-brand.fullname {
             position: absolute;
             right: 0;
         }
+        input.form-control::-webkit-input-placeholder {
+            color: #f6eee3;
+            font-style: italic;
+            font-weight: normal;
+        }
+        input.form-control:-ms-input-placeholder {
+            color: #f6eee3;
+            font-style: italic;
+            font-weight: normal;
+        }
+        input.form-control::-moz-placeholder {
+            color: #f6eee3;
+            font-style: italic;
+            font-weight: normal;
+        }
         input.form-control::placeholder {
             color: #f6eee3;
             font-style: italic;
