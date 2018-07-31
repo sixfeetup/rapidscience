@@ -70,17 +70,24 @@ var selectedBookmarksFolderName; // will contain ID of selected bookmarks folder
         CKEDITOR.instances[form_id].setData('');
     });
     // Make search input active
-  $(".search-icon").click(function(){
-      setTimeout(function() { $('.navbar-nav .search-widget input.form-control').focus() }, 500);
-      // change search-icon to submit search when field is visible
-    // if ($("#search-form").hasClass("in")) {
-    //   $("#search-form").submit();
-    // }
-
+  $(".search-icon").click(function(e){
+      e.preventDefault();
+      if (!$("#search-form").hasClass("search-open")) {
+          $("#search-form").addClass("search-open");
+          $("#search-form").removeClass("search-closed");
+          $(this).attr("aria-expanded", true);
+          setTimeout(function() { $('.navbar-nav .search-widget input.form-control').focus() }, 500);
+      } else {
+          $("#search-form form").submit();
+      }
   });
   // hide the search field when losing focus
   $(".navbar-nav .search-widget input.form-control").on("blur", function(){
-    $("#search-form").collapse('hide');
+      setTimeout(function() {
+          $(".search-icon").attr("aria-expanded", false);
+          $("#search-form").removeClass("search-open");
+          $("#search-form").addClass("search-closed");
+      }, 100);
   });
 
 

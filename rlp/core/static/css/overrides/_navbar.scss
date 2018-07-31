@@ -282,6 +282,15 @@ body.home .navbar-brand.fullname {
             left: 0;
             width: calc(100% - 50px);
             background-color: #332f2d;
+            &.search-closed {
+                display: none;
+            }
+            &.search-open {
+                display: block;
+                input.form-control {
+                    opacity: 1;
+                }
+            }
             @media screen and (max-width: 767px) {
                 float: left;
                 position: relative;
@@ -295,8 +304,10 @@ body.home .navbar-brand.fullname {
             min-width: 430px;
             color: #f6eee3;
             font-weight: normal;
+            opacity: 0;
             position: absolute;
             right: 0;
+            transition: all .25s ease;
             @media screen and (max-width: 767px) {
                 min-width: auto;
                 width: 100%;
