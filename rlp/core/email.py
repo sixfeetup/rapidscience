@@ -6,6 +6,7 @@ from django.core.mail import EmailMultiAlternatives, EmailMessage
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 
+from rlp import logger
 from rlp.accounts.models import User
 from rlp.core.utils import resolve_email_targets
 from .models import EmailLog
@@ -41,6 +42,10 @@ def activity_mail(user, obj, target, request=None):
     """
     if target == user:
         return
+    if not target:
+        logger.warn("activity_mail called with no targets!")
+        return
+
     context = {}
     comment = ""
     link = "https://" + settings.DOMAIN + obj.get_absolute_url()

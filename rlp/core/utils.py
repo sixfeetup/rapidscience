@@ -85,16 +85,17 @@ def bookmark_and_notify(
         Project = project_type.model_class()
         group = Project.objects.get(id=initial_proj)
         group.bookmark(obj)
-        obj.share_with([group], request.user, comment)
+        obj.share_with([group], request.user, comment) # first emails
     else:
         group = None
-        SendToView.post(
-            view,
-            request,
-            app_label,
-            model_name,
-            obj.id,
-        )
+
+    SendToView.post(
+        None,
+        request,
+        app_label,
+        model_name,
+        obj.id,
+    )  # second and third emails, but empty targets
 
     return group
 

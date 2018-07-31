@@ -78,16 +78,15 @@ class SendToView(LoginRequiredMixin, View):
                 if request.user in members:
                     members = [m for m in members if m.id != request.user.id]
             targets = members + groups
-            '''shared_to = shared_content.share_with(
+            shared_to = shared_content.share_with(
                 targets,
                 shared_by=request.user,
                 comment=form.cleaned_data['comment'],
             )
-            '''
 
             if ctype.name != "case report" or \
-                    (hasattr(shared_content, "workflow_state") and
-                    shared_content.workflow_state == WorkflowState.LIVE):
+                (hasattr(shared_content, "workflow_state") and
+                 shared_content.workflow_state == WorkflowState.LIVE):
                 #    case report emails are handled separately
                 activity_mail(request.user, shared_content, targets, request)
 
