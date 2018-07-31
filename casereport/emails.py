@@ -254,7 +254,7 @@ def cr_published_notifications(casereport):
     """
     shared_with = casereport.get_viewers()
     for viewer in shared_with:
-        sendto = resolve_email_targets(viewer,
+        sendto = resolve_email_targets(viewer, force=True,
                                        exclude=casereport.primary_author)
         comment = get_invite_comment(casereport, viewer)
         if sendto:

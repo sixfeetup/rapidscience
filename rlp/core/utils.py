@@ -307,16 +307,13 @@ def can_send_email(user, group=None, digest=False):
     return False
 
 
-def resolve_email_targets(target, exclude=None, fmt=FORMAT_NAMED, debug=False, force=False,
-                          digest=False):
+def resolve_email_targets(target, exclude=None, fmt=FORMAT_NAMED,
+                          debug=False, force=False, digest=False):
     """ Take a target comprised of users, projects, strings and return a set
         of email addresses in either x@domain.tld or Name <x@domain.tld> format
         with duplicates removed and known opt-out's honored.
         force=True will ignore the user's email preferences and send the email
     """
-    if force:
-        logger.error("resolve_email_targets no longer support 'force=True'")
-
     if exclude:
         print("exclude:", exclude)
 
@@ -360,10 +357,14 @@ def resolve_email_targets(target, exclude=None, fmt=FORMAT_NAMED, debug=False, f
             if hasattr(item, 'users'):
                 for m in item.active_members():
                     # check the group prefs before falling back to the user's global prefs
-                    if can_send_email(m, item, digest):
+                    if force:
+                        users_and_strings.add(m)
+                    elif can_send_email(m, item, digest):
                         users_and_strings.add(m)
             elif hasattr(item, 'email_prefs'):
-                if item.email_prefs != "disabled":
+                if force:
+                    users_and_strings.add(item)
+                elif item.email_prefs != "disabled":
                     users_and_strings.add(item)
             else:
                 users_and_strings.add(item)
