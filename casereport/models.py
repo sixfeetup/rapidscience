@@ -448,6 +448,7 @@ class CaseReport(CRDBBase, SharedObjectMixin):
             emails.publish_to_author(self)
         except ConnectionRefusedError:
             pass
+
         user = CurrentUserMiddleware.get_user()
         action.send(user, verb='published', action_object=self, target=author)
         return "This case report has been published!"

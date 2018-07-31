@@ -319,22 +319,22 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         for auth in coauthor_ids:
             coauth_user = User.objects.get(pk=auth)
             case.co_author.add(auth)
-            emails.notify_coauthor(case, coauth_user)
+            # emails.notify_coauthor(case, coauth_user)
 
         for i in range(0, len(name)):
             try:
                 coauthor = User.objects.get(email=email[i])
                 case.co_author.add(coauthor)
-                if coauth_user.is_active:
-                    emails.notify_coauthor(case, coauth_user)
-                else:
-                    emails.invite_coauthor(case, coauth_user)
+                # if coauth_user.is_active:
+                #     emails.notify_coauthor(case, coauth_user)
+                # else:
+                #     emails.invite_coauthor(case, coauth_user)
             except User.DoesNotExist:
                 coauthor = User(email=email[i], last_name=name[i],
                                 is_active=False)
                 coauthor.save()
                 case.co_author.add(coauthor)
-                emails.invite_coauthor(case, coauth_user)
+                # emails.invite_coauthor(case, coauth_user)
         # save with new co authors
         case.save()
 
