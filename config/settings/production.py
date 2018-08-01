@@ -29,5 +29,3 @@ if SITE_PREFIX == 'chci':
         'django.contrib.auth.hashers.CryptPasswordHasher',
     )
 SECRET_KEY = env('DJANGO_SECRET_KEY', default='')
-
-GA_ENABLED = True
