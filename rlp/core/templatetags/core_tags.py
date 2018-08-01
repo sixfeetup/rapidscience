@@ -234,7 +234,8 @@ def show_mods(project):
 
 class SettingsNode(SetVarNode):
     def render(self, context):
-        return self.new_val
+        context[self.var_name] = self.new_val
+        return ''
 
 
 @register.tag
