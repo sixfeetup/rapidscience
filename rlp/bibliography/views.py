@@ -274,7 +274,6 @@ class ReferenceAttachView(LoginRequiredMixin, FormView):
             action_object=uref,
             target=target,
         )
-        activity_mail(user, uref, target, self.request)
         last_viewed_path = self.request.session.get('last_viewed_path', '/')
         return redirect(last_viewed_path)
 
