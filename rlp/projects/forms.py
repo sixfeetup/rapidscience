@@ -144,8 +144,8 @@ class EditGroupNotifications(forms.Form):
     def get_group_prefs(user, group):
         try:
             membership = ProjectMembership.objects.get(user=user, project=group)
-            if membership.email_prefs and membership.digest_prefs:
-                if membership.email_prefs == 'enabled':
+            if membership.email_prefs or membership.digest_prefs:
+                if membership.email_prefs == 'user_and_group':
                     if membership.digest_prefs != 'disabled':
                         prefs = 'both'
                     else:
