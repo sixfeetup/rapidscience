@@ -41,9 +41,9 @@
                 <button type="submit" class="btn btn-primary search-button" type="button"><i class="fa fa-search"></i></button>
             </span>
         </div>
-    </form>
+
+        <br>
     {% endif %}
-    <br>
     {% if object_list %}
         <div id="inline">
             <div><p class="result-font"><b>{{ object_list|length }} result{% if object_list|length > 1 %}s</b></p>{% endif %}</div>
@@ -54,7 +54,9 @@
                     <option value="-pub_date">Oldest to Newest</option>
                 </select>
             </div>
+         {% if not tags %}
              <p class="relevance" align="right" style="color:#444444;"><em>Sort by:&nbsp;&nbsp;</em> </p>
+         {% endif %}
         </div>
         <hr>
         <div class="search-results-items">
@@ -66,6 +68,33 @@
         Try a new search {% else %}Please enter a search term {% endif %}or select an option to browse resources by type.
       </p>
     {% endif %}
+    </form>
+{#    {% endif %}#}
+{#    <br>#}
+{#    {% if object_list %}#}
+{#        <div id="inline">#}
+{#            <div><p class="result-font"><b>{{ object_list|length }} result{% if object_list|length > 1 %}s</b></p>{% endif %}</div>#}
+{#            <div class="result-count">#}
+{#                <select name="sort_by">#}
+{#                    <option value="relevence">Relevance</option>#}
+{#                    <option value="pub_date">Newest to Oldest</option>#}
+{#                    <option value="-pub_date">Oldest to Newest</option>#}
+{#                </select>#}
+{#            </div>#}
+{#         {% if not tags %}#}
+{#             <p class="relevance" align="right" style="color:#444444;"><em>Sort by:&nbsp;&nbsp;</em> </p>#}
+{#         {% endif %}#}
+{#        </div>#}
+{#        <hr>#}
+{#        <div class="search-results-items">#}
+{#            {% include 'search/_results.html' %}#}
+{#        </div>#}
+{#    {% else %}#}
+{#      <p>#}
+{#        {% if query %}No results found for <span class="highlighted">{{ query }}</span>.#}
+{#        Try a new search {% else %}Please enter a search term {% endif %}or select an option to browse resources by type.#}
+{#      </p>#}
+{#    {% endif %}#}
     </div>
 {% endblock %}
 {% block js-footer %}
