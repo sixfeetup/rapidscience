@@ -43,11 +43,20 @@
         </div>
     </form>
     {% endif %}
-    {% if object_list %}<div class="result-count"><p class="result-font">{{ object_list|length }} result{% if object_list|length > 1 %}s</p>{% endif %}</div>{% endif %}
+    <br>
     {% if object_list %}
-      {% if not tags %}
-        <p class="relevance"><em>Results are sorted by keyword relevance.</em></p>
-      {% endif %}
+        <div id="inline">
+            <div><p class="result-font"><b>{{ object_list|length }} result{% if object_list|length > 1 %}s</b></p>{% endif %}</div>
+            <div class="result-count">
+                <select name="sort_by">
+                    <option value="relevence">Relevance</option>
+                    <option value="pub_date">Newest to Oldest</option>
+                    <option value="-pub_date">Oldest to Newest</option>
+                </select>
+            </div>
+             <p class="relevance" align="right" style="color:#444444;"><em>Sort by:&nbsp;&nbsp;</em> </p>
+        </div>
+        <hr>
         <div class="search-results-items">
             {% include 'search/_results.html' %}
         </div>

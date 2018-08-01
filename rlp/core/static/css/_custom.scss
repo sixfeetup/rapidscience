@@ -305,12 +305,13 @@ body.search .box.main-content {
 }
 .result-font {
   font-size: 20px;
+  float: left;
 }
 
 .search-page .result-count {
     float: right;
-    line-height: 46px;
-    font-weight: bold;
+    font-size: 14px;
+    color: #444444;
 }
 .search-page .input-group {
     position: relative;
@@ -343,7 +344,13 @@ body.search .box.main-content {
 }
 
 .search-page .relevance {
-    margin: 1em 0;
+    margin: 0;
+    padding: 0;
+  em {
+    font-weight: normal;
+    font-style: normal;
+    font-size: 14px;
+  };
 }
 
 .navbar-nav .search-widget input.form-control {
