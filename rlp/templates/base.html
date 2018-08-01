@@ -1,6 +1,9 @@
-{% load cms_tags sekizai_tags staticfiles compress menu_tags %}<!doctype html>
+{% load cms_tags sekizai_tags staticfiles compress menu_tags core_tags %}
+{% load_setting GA_ENABLED %}
+<!doctype html>
 <html class="no-js" lang="{{ LANGUAGE_CODE|default:'en-us' }}">
 <head>
+{% if GA_ENABLED %}
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-73213368-1"></script>
     <script>
@@ -10,6 +13,8 @@
 
       gtag('config', 'UA-73213368-1');
     </script>
+{% endif %}
+
     <meta name="google-site-verification" content="AGH6NObboZXSZRShQCYpBqrE_BEu2WkGqulqmbudQRU" />
 
     <meta charset="utf-8">
