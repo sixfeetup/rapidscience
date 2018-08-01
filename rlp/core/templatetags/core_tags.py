@@ -230,3 +230,24 @@ def show_mods(project):
         mods = ', '.join([x.get_full_name() for x in mod[:len(mod) - 1]])
         umo = ''.join([x.get_full_name() for x in mod[len(mod)-1:]])
         return pre_mod_text + mods + ' and ' + umo
+
+
+class SettingsNode(SetVarNode):
+    def render(self, context):
+        return self.new_val
+
+
+@register.tag
+def load_setting(parser, token):
+    _ = parser
+    try:
+        # Splitting by None == splitting by spaces.
+        tag_name, args = token.contents.split(None, 1)
+    except ValueError:
+        raise template.TemplateSyntaxError("%r tag requires arguments" %
+                                           token.contents.split()[0])
+    name = args
+    if not name:
+        raise template.TemplateSyntaxError("%r tag had invalid arguments %s" %
+                                           (tag_name, name))
+    return SettingsNode(getattr(settings, name), name)
