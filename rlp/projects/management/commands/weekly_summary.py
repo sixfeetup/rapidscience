@@ -20,7 +20,9 @@ from rlp.projects.models import Project
 
 
 class Command(BaseCommand):
-    """Sends a weekly summary of site activity. Should only be run once per week."""
+    """ Sends a weekly summary of site activity.
+        Should only be run once per week.
+    """
     def add_arguments(self, parser):
         parser.add_argument(
             '--to',
@@ -34,26 +36,24 @@ class Command(BaseCommand):
             users = User.objects.filter(email__in=emails.split(','))
             self.process(users)
         else:
-            #users = User.objects.filter(is_active=True)
+            users = User.objects.filter(is_active=True)
             # globally_enabled = users.filter(digest_prefs='disabled') # si weekle
             # vv users who haven't set group preference, or who hasn't set it to 'digest'
-            enabled_for_groups = User.objects.all().filter(projectmembership__digest_prefs='enabled').distinct('id')
+            enabled_for_groups = users.filter(
+                projectmembership__digest_prefs='enabled').distinct('id')
 
-            globally_enabled = User.objects.all().filter(digest_prefs='enabled').exclude(
+            globally_enabled = users.filter(digest_prefs='enabled').exclude(
                 id__in=[u.id for u in enabled_for_groups])  # si weekly
-            globally_defaulting = User.objects.all().filter(digest_prefs__isnull=True).exclude(
-                id__in=[u.id for u in enabled_for_groups]
-            )
-
+            # It's important to note that those are merely candidates to receive
+            # a digest.
             try:
-                print("sending {} to those enabled_for_groups".format(enabled_for_groups.count()))
+                print("sending {} to those enabled_for_groups".format(
+                    enabled_for_groups.count()))
                 self.process(enabled_for_groups)
 
-                print("sending {} to those globally_enabled".format(globally_enabled.count()))
+                print("sending {} to those globally_enabled".format(
+                    globally_enabled.count()))
                 self.process(globally_enabled)
-
-                print("sending {} to those globally defaulting to enabled".format(globally_defaulting.count()))
-                self.process(globally_defaulting)
 
             except Exception as err:
                 subject = "{}".format(sys.argv[1])
@@ -62,9 +62,8 @@ class Command(BaseCommand):
                 raise
 
     def process(self, users):
-
-        # unfortunately that includes users who enabled the digest, but disabled the digest for
-        # all of the groups in their digest.
+        # unfortunately that includes users who enabled the digest,
+        # but disabled the digest for all of the groups in their digest.
 
         some_day_last_week = timezone.now() - timedelta(days=7)
         year, week, day = some_day_last_week.isocalendar()
@@ -87,12 +86,14 @@ class Command(BaseCommand):
 
         # using users with group digests settings enabled,
         # or global digests enabled, but no group digests enabled
-        # if any of the groups have direct or none, then those groups need to be filtered out.
+        # if any of the groups have direct or none,
+        # then those groups need to be filtered out.
 
         for user in users:  # everybody who MIGHT get the digest
             projects = user.get_digest_projects()
             if not projects.count():
-                print("skipping user_id {} because they have no active digest subscriptions".format(user.id))
+                print("skipping user_id {} because they have no active digest"
+                      " subscriptions".format(user.id))
                 continue
             activity_stream = user.get_activity_stream().filter(
                 timestamp__gte=some_day_last_week,
