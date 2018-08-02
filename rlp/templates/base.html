@@ -196,7 +196,22 @@
             });
         }
         setBookmarks();
-        $.endlessPaginate({paginateOnScroll: true, onCompleted: function(context, fragment) {setBookmarks();}});
+        $.endlessPaginate({
+            paginateOnScroll: true,
+            onCompleted: function(context, fragment) {
+                setBookmarks();
+                if ($("body").hasClass('search')) {
+                    $(".search-results-items").unmark({
+                        done: function() {
+                            $(".search-results-items").mark("{{ request.GET.q }}", {
+                                "element": "em",
+                                "className": "highlighted"
+                            });
+                        }
+                    });
+                }
+            }
+        });
 
     </script>
     {% block js-compress-inline %}
