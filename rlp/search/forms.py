@@ -98,7 +98,7 @@ class ModelSearchForm(BaseModelSearchForm):
                                       label='Search In',
                                       widget=forms.CheckboxSelectMultiple)
 
-    sort_by = forms.ChoiceField(choices=( ('relevance', 'Relevance'), ('pub_date', 'Date'), ('-pub_date', 'Reversed')),
+    sort_by = forms.ChoiceField(choices=( ('relevence', 'Relevance'), ('pub_date', 'Date'), ('-pub_date', 'Reversed')),
                                                            required=False,)
 
     q = forms.CharField(

@@ -12,6 +12,7 @@
     <form  class="sub-menu" method="get" action="{% url 'haystack_search' %}{% if query %}?q={{ query }}{% endif %}" autocomplete="off">
         <div class="refine-search">
             <input id="id_q_hidden" name="q" type="hidden" value="{{ query }}">
+            <input id="id_sort_by_hidden" name="sort_by" type="hidden" value="{{ sort_by }}">
             <p class="section-label">Filter By<i class="fa fa-caret-down visible-xs-inline visible-sm-inline"></i></p>
             {% bootstrap_field form.models show_label=False %}
             <button class="btn btn-primary" type="submit">
@@ -43,21 +44,26 @@
         </div>
 
         <br>
-    {% endif %}
-    {% if object_list %}
         <div id="inline">
             <div><p class="result-font"><b>{{ object_list|length }} result{% if object_list|length > 1 %}s</b></p>{% endif %}</div>
             <div class="result-count">
                 <select name="sort_by">
-                    <option value="relevence">Relevance</option>
-                    <option value="pub_date">Newest to Oldest</option>
-                    <option value="-pub_date">Oldest to Newest</option>
+                    <option {% if sort_by == 'relevence' %}selected{% endif %} value="relevence">Relevance</option>
+                    <option {% if sort_by == '-pub_date' %}selected{% endif %} value="-pub_date">Newest to Oldest</option>
+                    <option {% if sort_by == 'pub_date' %}selected{% endif %} value="pub_date">Oldest to Newest</option>
                 </select>
             </div>
+          {% for m in models %}
+              <input id="id_models_hidden" name="models" type="hidden" value="{{ m }}">
+          {%  endfor %}
          {% if not tags %}
              <p class="relevance" align="right" style="color:#444444;"><em>Sort by:&nbsp;&nbsp;</em> </p>
          {% endif %}
         </div>
+    </form>
+    {% endif %}
+    {% if object_list %}
+
         <hr>
         <div class="search-results-items">
             {% include 'search/_results.html' %}
@@ -68,7 +74,7 @@
         Try a new search {% else %}Please enter a search term {% endif %}or select an option to browse resources by type.
       </p>
     {% endif %}
-    </form>
+
 {#    {% endif %}#}
 {#    <br>#}
 {#    {% if object_list %}#}
