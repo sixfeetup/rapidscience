@@ -199,11 +199,14 @@
         $.endlessPaginate({
             paginateOnScroll: true,
             onCompleted: function(context, fragment) {
+                var re = /\+/;
+                var keyword = getQueryParam("q");
+                keyword = keyword.replace(re, " ");
                 setBookmarks();
                 if ($("body").hasClass('search')) {
                     $(".search-results-items").unmark({
                         done: function() {
-                            $(".search-results-items").mark("{{ request.GET.q }}", {
+                            $(".search-results-items").mark(keyword, {
                                 "element": "em",
                                 "className": "highlighted"
                             });
