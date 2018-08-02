@@ -1,5 +1,6 @@
 import logging
 import re
+from django.conf import settings
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
@@ -191,20 +192,32 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
         return self.is_staff or self in project.active_members()
 
     def active_projects(self):
-        return self.projects.filter(projectmembership__state__in=('member', 'moderator'))
+        return self.projects.filter(projectmembership__state__in=(
+            'member', 'moderator'))
 
     def get_digest_projects(self):
-        """ return qs of projects where the user has set their membership preference to  'digest'
-            OR they have not set it, and their global digest preference == 'enabled'
+        """ return qs of projects where the user has set their digest preference
+            OR it is null AND their global digest preference == 'enabled'
         """
         ap = self.active_projects()
-        user_wants_digest = self.digest_prefs == 'enabled' or self.digest_prefs == None
-        explicit = [r for r in ap.filter(projectmembership__digest_prefs='enabled').values_list('id', flat=True)]
+        user_wants_digest = self.digest_prefs == 'enabled' \
+            or not self.digest_prefs
+        explicit = [r
+                    for r in ap.filter(projectmembership__user=self,
+                                       projectmembership__digest_prefs='enabled'
+                                       ).values_list('id', flat=True)]
         implicit = []
         if user_wants_digest:
-            implicit = [r for r in ap.filter(projectmembership__digest_prefs__isnull=True).values_list('id', flat=True)]
-        print("explicit digest subscriptions:" + str(explicit))
-        print("implicit digest subscriptions:" + str(implicit))
+            implicit = [r
+                        for r in ap.filter(
+                            projectmembership__user=self,
+                            projectmembership__digest_prefs__isnull=True
+                            ).values_list('id', flat=True)]
+
+        if settings.DEBUG:
+            print("explicit digest subscriptions:" + str(explicit))
+            print("implicit digest subscriptions:" + str(implicit))
+
         return ap.filter(id__in=explicit + implicit)
 
     def _get_my_activity_query(self):
