@@ -39,7 +39,7 @@
             <input id="id_q" name="q" type="search" class="form-control clear-input" placeholder="Authors, institutions, drugs, biomarkers…" value="{{ query }}">
             <span class="glyphicon glyphicon-remove"></span>
             <span class="input-group-btn">
-                <button type="submit" class="btn btn-primary search-button" type="button"><i class="fa fa-search"></i></button>
+                <button class="btn btn-primary search-button" type="button"><i class="fa fa-search"></i></button>
             </span>
         </div>
 
@@ -47,14 +47,14 @@
         <div id="inline">
             <div><p class="result-font"><b>{{ object_list|length }} result{% if object_list|length > 1 %}s</b></p>{% endif %}</div>
             <div class="result-count">
-                <select name="sort_by">
+                <select id="id_sort_by" name="sort_by">
                     <option {% if sort_by == 'relevence' %}selected{% endif %} value="relevence">Relevance</option>
                     <option {% if sort_by == '-pub_date' %}selected{% endif %} value="-pub_date">Newest to Oldest</option>
                     <option {% if sort_by == 'pub_date' %}selected{% endif %} value="pub_date">Oldest to Newest</option>
                 </select>
             </div>
           {% for m in models %}
-              <input id="id_models_hidden" name="models" type="hidden" value="{{ m }}">
+              <input class="models-hidden" name="models" type="hidden" value="{{ m }}">
           {%  endfor %}
          {% if not tags %}
              <p class="relevance" align="right" style="color:#444444;"><em>Sort by:&nbsp;&nbsp;</em> </p>

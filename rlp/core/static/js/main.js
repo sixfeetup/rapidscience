@@ -375,9 +375,27 @@ $(".clear-input+.glyphicon-remove").on('click', function(){
     $(".clear-input").keyup();
 });
 
-// on submit of refine, copy potentially changed keywords from search input
+// on submit of main search, update hidden models from refine
+$(".keywords .search-button").on('click', function(e) {
+    e.preventDefault();
+    $(".models-hidden").remove();
+    $("#id_models").find("input[name='models']:checked").each(function() {
+        var hidden_el = document.createElement("input");
+        $(hidden_el).attr({
+            "type": "hidden",
+            "class": "models-hidden",
+            "name": "models"
+        });
+        $(hidden_el).val($(this).val());
+        $(".result-count").after(hidden_el);
+    });
+    $(".keywords").submit();
+});
+
+// on submit of refine, copy potentially changed keywords and sort from main form
 $(".sub-menu").on('submit', function(e) {
     $("#id_q_hidden").val($("#id_q").val());
+    $("#id_sort_by_hidden").val($("#id_sort_by").val());
 });
 
 (function($) { $(function() {
