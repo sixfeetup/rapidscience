@@ -1,5 +1,6 @@
 import logging
 import re
+from django.conf import settings
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
@@ -17,14 +18,17 @@ logger = logging.getLogger(__name__)
 
 phone_digits_re = re.compile(r'^(?:1-?)?(\d{3})[-\.]?(\d{3})[-\.]?(\d{4}).*$')
 
-EMAIL_CHOICES = (
-    ('immediate', 'Immediately notify me when an item is shared with \
-        me or with a group to which I belong. Includes case reports, \
-        documents, discussions, references and comments.'),
-    ('digest', 'Send a weekly digest of all items shared with me or \
-        with a group to which I belong.'),
-    ('disabled', 'Do not send notification emails(*). I will check my \
-        Dashboard to view shared items.')
+
+DIGEST_PREF_CHOICES = (
+    ('enabled', 'Email me a weekly digest of all items shared with me and with groups to which I belong.'),
+    ('disabled', 'Do not email me a weekly digest (*). I will check my Dashboard to view shared items')
+)
+
+
+EMAIL_PREF_CHOICES = (
+    ('user_and_group', 'Email me immediately when an item is shared with me individually or with groups to which I belong.'),
+    ('user_only', 'Email me immediately only when an item is shared with me individually.'),
+    ('disabled', 'Do not send immediate email notifications (*).')
 )
 
 
@@ -125,10 +129,15 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
     email_prefs = models.CharField(
         max_length=255,
         verbose_name='Email notification preferences',
-        default='digest',
-        choices=EMAIL_CHOICES
+        default='disabled',
+        choices=EMAIL_PREF_CHOICES
     )
-
+    digest_prefs = models.CharField(
+        max_length=255,
+        verbose_name='Email digest preferences',
+        default='enabled',
+        choices=DIGEST_PREF_CHOICES
+    )
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
@@ -168,7 +177,7 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
         return self.first_name
 
     def notify_immediately(self):
-        return self.email_prefs == 'immediate'
+        return self.email_prefs != 'disabled'
 
     def email_setting(self):
         return self.email_prefs
@@ -183,7 +192,33 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
         return self.is_staff or self in project.active_members()
 
     def active_projects(self):
-        return self.projects.filter(projectmembership__state__in=('member','moderator'))
+        return self.projects.filter(projectmembership__state__in=(
+            'member', 'moderator'))
+
+    def get_digest_projects(self):
+        """ return qs of projects where the user has set their digest preference
+            OR it is null AND their global digest preference == 'enabled'
+        """
+        ap = self.active_projects()
+        user_wants_digest = self.digest_prefs == 'enabled' \
+            or not self.digest_prefs
+        explicit = [r
+                    for r in ap.filter(projectmembership__user=self,
+                                       projectmembership__digest_prefs='enabled'
+                                       ).values_list('id', flat=True)]
+        implicit = []
+        if user_wants_digest:
+            implicit = [r
+                        for r in ap.filter(
+                            projectmembership__user=self,
+                            projectmembership__digest_prefs__isnull=True
+                            ).values_list('id', flat=True)]
+
+        if settings.DEBUG:
+            print("explicit digest subscriptions:" + str(explicit))
+            print("implicit digest subscriptions:" + str(implicit))
+
+        return ap.filter(id__in=explicit + implicit)
 
     def _get_my_activity_query(self):
         my_ct = ContentType.objects.get_for_model(self)
@@ -232,11 +267,11 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
                 | self._get_activity_involving_me_query()
                 | self._get_activity_in_my_projects_query()
             )
-            #& self._get_activity_excluding_self_shares()
+            # & self._get_activity_excluding_self_shares()
         )
 
-        # exclude shares to me of casereports that arent mine and live,
-        if True: #not self.is_staff:
+        # exclude shares to me of casereports that aren't mine and live,
+        if True:  # not self.is_staff:
             casereport_ct = ContentType.objects.get_for_model(CaseReport)
             my_ct = ContentType.objects.get_for_model(self)
             # not loving this, but cant use expressions like

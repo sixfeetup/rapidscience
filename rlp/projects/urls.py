@@ -40,12 +40,12 @@ urlpatterns = [
         views.EditGroup.as_view(),
         name='projects_edit',
     ),
-     url(
+    url(
         r'^accept_membership/(?P<membership_id>\d+)/$',
         views.AcceptMembershipRequest.as_view(),
         name='accept_membership_request',
     ),
-      url(
+    url(
         r'^reject_membership/(?P<membership_id>\d+)/$',
         views.IgnoreMembershipRequest.as_view(),
         name='ignore_membership_request',
@@ -59,5 +59,10 @@ urlpatterns = [
         r'^demote_to_user/(?P<membership_id>\d+)/$',
         views.DemoteToMember.as_view(),
         name='demote_to_user',
+    ),
+    url(
+        r'^update_group_notifications/$',  # (?P<membership_id>\d+)/$',
+        views.EditGroupNotificationsView.as_view(),
+        name='update_group_notifications',
     ),
  ]

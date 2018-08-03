@@ -1,4 +1,4 @@
-{% load core_tags discussion_tags %}
+{% load core_tags discussion_tags highlight %}
 {% user_can_link obj as can_link %}
 {# FYI: another template where ref is a UserReference #}
 {# and obj = Reference #}
@@ -10,7 +10,7 @@
             {%  if can_link %}
                 <a href="{{ ref.get_absolute_url }}">{% endif %}
             {% endif %}
-        {% if highlighted.title %}{% autoescape off %}{{ highlighted.title.0 }}{% endautoescape %}{% else %}{% autoescape off%}{{ obj.parsed_data.title }}{% endautoescape %}{% endif %}{% if obj.get_source_url %}{% if can_link %}</a>{% endif %}{%  endif %},
+        {% autoescape off%}{{ obj.parsed_data.title }}{% endautoescape %}{% if obj.get_source_url %}{% if can_link %}</a>{% endif %}{%  endif %},
         {% if obj.parsed_data.container_title %}in <em>{% autoescape off %}{{ obj.parsed_data.container_title }}{% endautoescape %}</em>,{% endif %}
         {% if obj.parsed_data.page %}pp {{ obj.parsed_data.page }}.{% endif %}
         {% if obj.parsed_data.publication_date %}{{ obj.parsed_data.publication_date }};{% endif %}

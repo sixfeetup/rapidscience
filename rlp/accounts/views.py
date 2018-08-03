@@ -33,6 +33,7 @@ from rlp.core.utils import rollup
 from rlp.core.views import MESSAGES_DEFAULT_FORM_ERROR
 from rlp.discussions.models import ThreadedComment
 from rlp.documents.models import Document
+from rlp.projects.forms import EditGroupNotifications
 from rlp.projects.models import Project
 from rlp.search.forms import ProjectContentForm, \
     get_action_object_content_types
@@ -84,6 +85,7 @@ def login(request, template_name='accounts/login.html',
 
     if request.method == "POST":
         form = authentication_form(request, data=request.POST)
+        username = request.POST.get("username")
         if form.is_valid():
             # Ensure the user-originating redirection url is safe.
             if redirect_to and not is_safe_url(url=redirect_to,
@@ -107,11 +109,20 @@ def login(request, template_name='accounts/login.html',
             if not redirect_to:
                 redirect_to = reverse('dashboard')
 
-            return redirect(redirect_to)
+            redirect_response = redirect(redirect_to)
+            if request.POST.get("remember", False):
+                redirect_response.set_cookie('username', username,  max_age=60*60*24*365)
+            else:
+                redirect_response.delete_cookie('username')
+            return redirect_response
         else:
             messages.error(request, "Please correct the errors below.")
     else:
         form = authentication_form(request)
+        if 'username' in request.COOKIES:
+            username = request.COOKIES['username']
+            form.fields['username'].initial = username
+            form.fields['remember'].initial = True
 
     current_site = get_current_site(request)
 
@@ -121,9 +132,12 @@ def login(request, template_name='accounts/login.html',
         'site': current_site,
         'site_name': current_site.name,
     }
+
     if extra_context is not None:
         context.update(extra_context)
-    return render(request, template_name, context)
+    response = render(request, template_name, context)
+
+    return response
 
 
 @never_cache
@@ -413,11 +427,20 @@ class ActivationView(TemplateView):
 def dashboard(request, tab='activity', template_name='accounts/dashboard.html',
               extra_context=None):
     active_projects = request.user.active_projects()
+    active_project_prefs_forms = [
+        #{
+        #    'form': EditGroupNotifications.get_form_for_user_and_group(request.user, p),
+        #    'project_id': p.id,
+        #}
+        EditGroupNotifications.get_form_for_user_and_group(request.user, p)
+        for p in active_projects
+    ]
     context = {
         'user': request.user,
         'edit': True,
         'tab': tab,
         'projects': active_projects,
+        'edit_group_email_prefs_forms': active_project_prefs_forms,
         'content_types': get_action_object_content_types()
     }
     request.session['last_viewed_path'] = request.get_full_path()

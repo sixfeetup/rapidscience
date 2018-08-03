@@ -75,3 +75,5 @@ COMPRESS_OFFLINE = False
 ZOTERO_URL = "https://api.zotero.org/groups/INSERT-ID-HERE/items/top?start=%%START%%&limit=%%NUM_PER_PAGE%%&sort=dateAdded&format=json"
 
 DOMAIN = env('DOMAIN', default='localhost:8000')
+
+GA_ENABLED = False

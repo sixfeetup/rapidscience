@@ -83,7 +83,11 @@ class CaseReportDetailView(LoginRequiredMixin, TemplateView):
         casereport_history = StateLog.objects.filter(
             object_id=case_id).order_by('timestamp').reverse()
         for entry in casereport_history:
-            user = User.objects.get(pk=entry.by_id)
+            try:
+                user = User.objects.get(pk=entry.by_id)
+            except User.DoesNotExist as no_user:
+                user = User.objects.first()
+                entry.by_id = user.id
             entry.user = user
         viewers = list(set(list(casereport.get_viewers()) + [x.target for x in casereport.get_nonpublished_shares()]))
         return self.render_to_response(
@@ -311,23 +315,27 @@ class CaseReportFormView(LoginRequiredMixin, FormView):
         else:
             case.origin = request.user
 
-        coauthors_to_notify = set()
 
         for auth in coauthor_ids:
             coauth_user = User.objects.get(pk=auth)
             case.co_author.add(auth)
-            coauthors_to_notify.add(coauth_user)
+            # emails.notify_coauthor(case, coauth_user)
+
         for i in range(0, len(name)):
             try:
                 coauthor = User.objects.get(email=email[i])
                 case.co_author.add(coauthor)
-                coauthors_to_notify.add(coauthor)
+                # if coauth_user.is_active:
+                #     emails.notify_coauthor(case, coauth_user)
+                # else:
+                #     emails.invite_coauthor(case, coauth_user)
             except User.DoesNotExist:
                 coauthor = User(email=email[i], last_name=name[i],
                                 is_active=False)
                 coauthor.save()
                 case.co_author.add(coauthor)
-
+                # emails.invite_coauthor(case, coauth_user)
+        # save with new co authors
         case.save()
 
         if data.get('sharing-options') == 'share-all':

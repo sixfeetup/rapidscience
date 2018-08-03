@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 
+from os.path import dirname, join
 gettext = lambda s: s
 
 import environ
@@ -19,7 +20,7 @@ ROOT_DIR = environ.Path(__file__) - 3
 APPS_DIR = ROOT_DIR.path('rlp')
 
 env = environ.Env()
-env.read_env()
+env.read_env(join(dirname(__file__), '.env'))
 
 SITE_PREFIX = env('SITE_PREFIX')
 
@@ -330,7 +331,7 @@ THUMBNAIL_PROCESSORS = (
 
 THUMBNAIL_HIGH_RESOLUTION = True
 
-GOOGLE_UA = ""
+GA_ENABLED = env('GA_ENABLED', cast=bool, default=True)
 
 ORCID_CLIENT_ID = ''
 ORCID_SECRET_KEY = ''

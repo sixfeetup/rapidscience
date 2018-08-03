@@ -19,8 +19,8 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
   </h2><br>
   {% for action in casereport %}
     {% if action.action_object.display_type != 'Reply' %}
-      <div style="margin-bottom: 5px; color: #444444">  
-        Case Report {{ action.verb }} 
+      <div style="margin-bottom: 5px; color: #444444">
+        Case Report {{ action.verb }}
         by <a href="https://{{ site }}{{ action.action_object.primary_author.get_absolute_url }}" style="color: #3795bf; text-decoration: none">{{ action.action_object.primary_author.get_full_name }}</a>
         {% display_shared_with action.action_object user "to {0}" "color: #3795bf; text-decoration: none" %}
         | {{ action.timestamp.date }}
@@ -30,7 +30,7 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
           {{ action.description|striptags|safe|truncatechars:160 }}
         </div>
       {% endif %}
-      <div style="font-size: 18px; color: #444444"> 
+      <div style="font-size: 18px; color: #444444">
         <a href="https://{{ site }}{{ action.action_object.get_absolute_url }}" style="color: #3795bf; text-decoration: none">{{ action.action_object.title }}</a>
         {% setvar "0" as comment_count %}{%  get_threaded_comment_count for action.action_object as comment_count %}{% if comment_count %}({{ comment_count }} comment{{ comment_count|pluralize }}){% endif %}
       </div>
@@ -38,7 +38,7 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
     {% endif %}
   {% endfor %}
 {% endif %}
-  
+
 {% if casereport_comments %}
   <br><h2 style="font-size: 14px; font-weight: bold; text-transform: uppercase; border-top: 2px solid #444444; border-bottom: 1px solid #e5e5e5; padding: 7px 0; margin: 10px 0;">
     {{ casereport_comments|length }} Case Report Comment{{ casereport_comments|length|pluralize }}
@@ -49,7 +49,7 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
       on <a href="https://{{ site }}{{ obj.1.get_absolute_url }}" style="color: #3795bf; text-decoration: none">{{ obj.1.title }}{{ obj.1.reference.title }}</a>
       | {{ obj.0.submit_date|date:"j M Y" }}
     </div>
-    <div style="font-size: 18px; color: #444444"> 
+    <div style="font-size: 18px; color: #444444">
       {{ obj.0.comment|striptags|safe|truncatechars:160 }}
     </div>
     {% if not forloop.last %}<br><hr style="margin: 10px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>{% endif %}
@@ -63,7 +63,7 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
   {% for action in document %}
     {% if action.action_object.display_type != 'Reply' %}
       <div style="margin-bottom: 5px; color: #444444">
-        {{ action.action_object.display_type }} {{ action.verb }} 
+        {{ action.action_object.display_type }} {{ action.verb }}
         by <a href="https://{{ site }}{{ action.actor.get_absolute_url }}" style="color: #3795bf; text-decoration: none">{{ action.actor.get_full_name }}</a>
         {% if action.description %}
           {% if action.target %}
@@ -104,7 +104,7 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
   {% for action in threadedcomment %}
     {% if action.action_object.display_type != 'Reply' %}
       <div style="margin-bottom: 5px; color: #444444">
-        Discussion {{ action.verb }} 
+        Discussion {{ action.verb }}
         by <a href="https://{{ site }}{{ action.actor.get_absolute_url }}" style="color: #3795bf; text-decoration: none">{{ action.actor.get_full_name }}</a>
         {% if action.description %}
           {% if action.target %}
@@ -120,7 +120,7 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
           {{ action.description|striptags|safe|truncatechars:160 }}
         </div>
       {% endif %}
-      <div style="font-size: 18px; color: #444444"> 
+      <div style="font-size: 18px; color: #444444">
         <a href="https://{{ site }}{{ action.action_object.get_absolute_url }}" style="color: #3795bf; text-decoration: none">{{ action.action_object.title }}</a>
         {% setvar "0" as comment_count %}{%  get_threaded_comment_count for action.action_object as comment_count %}{% if comment_count %}({{ comment_count }} comment{{ comment_count|pluralize }}){% endif %}
       </div>
@@ -141,7 +141,7 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
       on <a href="https://{{ site }}{{ obj.1.get_absolute_url }}" style="color: #3795bf; text-decoration: none">{{ obj.1.title }}{{ obj.1.reference.title }}</a>
       | {{ obj.0.submit_date|date:"j M Y" }}
     </div>
-    <div style="font-size: 18px; color: #444444"> 
+    <div style="font-size: 18px; color: #444444">
       {{ obj.0.comment|striptags|safe|truncatechars:160 }}
     </div>
     {% if not forloop.last %}<br><hr style="margin: 10px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>{% endif %}
@@ -156,8 +156,8 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
   </h2><br>
   {% for action in userreference %}
     {% if action.action_object.display_type != 'Reply' %}
-      <div style="margin-bottom: 5px; color: #444444"> 
-        Reference {{ action.verb }} 
+      <div style="margin-bottom: 5px; color: #444444">
+        Reference {{ action.verb }}
         by <a href="https://{{ site }}{{ action.actor.get_absolute_url }}" style="color: #3795bf; text-decoration: none">{{ action.actor.get_full_name }}</a>
         {% if action.description %}
           {% if action.target %}
@@ -173,7 +173,7 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
           {{ action.description|striptags|safe|truncatechars:160 }}
         </div>
       {% endif %}
-      <div style="font-size: 18px; color: #444444">        
+      <div style="font-size: 18px; color: #444444">
         {% with action.action_object.reference as obj %}
         {% if obj.parsed_data.authors %}{{ obj.parsed_data.authors }}. {% endif %}
           <a href="https://{{ site }}{{ action.action_object.get_absolute_url }}" style="color: #3795bf; text-decoration: none">{{ obj.title }}</a>,
@@ -240,9 +240,10 @@ See <em>all</em> on <a href="https://{{ site }}{% url 'dashboard' %}" style="col
 
 <br><hr style="margin: 10px 0; color: #e5e5e5; background-color: #ffffff; height: 1px; border: none; border-bottom: 1px solid #e5e5e5"><br>
 
-<p>Respond or send questions/concerns to <a href="mailto:info@rapidscience.org" style="color: #3795bf; text-decoration: none">info@rapidscience.org</a>.<br>
-You can change your email preferences in your
-<a href="https://{{ site }}{% url 'profile' user.pk %}" style="color: #3795bf; text-decoration: none">Profile</a>.</p>
+<p>Respond or send questions/concerns to <a href="mailto:info@rapidscience.org" style="color: #3795bf; text-decoration: none">info@rapidscience.org</a>.</p>
+<p>You can hide other members' postings and notifications on their profile pages by clicking on their names above.</p>
+<p>Change other notification preferences on
+<a href="https://{{ site }}{% url 'profile' user.pk %}" style="color: #3795bf; text-decoration: none">your own profile page</a>.</p>
 
 <div style="background-color: #ecebeb; padding: 15px;">
     <p>
@@ -253,11 +254,16 @@ You can change your email preferences in your
             ><img src="http://{{ site }}{% static 'img/email-twitter.png' %}" alt="Twitter"
             style="height: 32px; width: auto" /></a>
     </p>
-    
+
     <p>
         &copy; {% now "Y" %} Rapid Science<br>
         Rapid Science is a nonprofit 501(c)3 company based in Brooklyn, NY
     </p>
+    <p>Generous support was provided by the <a href="https://mellon.org/" target="_blank"> Andrew W. Mellon Foundation</a>, <a href="https://www.bayer.com/" target="_blank" >Bayer</a>, <a href="http://www.emdserono.com/en/index.html" target="_blank">EMD Serono</a>, <a href="https://www.lilly.com/" target="_blank">Eli Lilly</a>, the <a href="https://www.moore.org/" target="_blank">Gordon & Betty Moore Foundation</a>, <a href="http://www.janssen.com/us/" target="_blank">Janssen Pharmaceuticals</a>, the <a href="https://www.nih.gov/" target="_blank">National Institutes of Health</a>, and the Peaked Hill Fund.</p>
+
+    {% comment %}
+    <p>There are known issues in IE10 that are being addressed. This web site is optimized for Chrome, Firefox, Safari, and IE 11. Coming soon: Android and iOS!</p>
+    {% endcomment %}
 </div>
 
 
@@ -274,7 +280,7 @@ Join the conversation!
         {% if forloop.last %}and {% endif %}<a href="https://{{ site }}{{ group.get_absolute_url }}" style="color: #3795bf; text-decoration: none">{{ group.title }}</a>
     {% endfor %}
 {% elif user_groups|length == 0 %}
-    <a href="https://{{ site }}{% url 'projects:projects_list' %}" style="color: #3795bf; text-decoration: none">Join a new group</a> 
+    <a href="https://{{ site }}{% url 'projects:projects_list' %}" style="color: #3795bf; text-decoration: none">Join a new group</a>
 {% else %}
     Connect with your colleagues in
     {% for group in user_groups %}

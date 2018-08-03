@@ -6,6 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -25,7 +26,7 @@ from rlp.discussions.models import ThreadedComment
 from rlp.documents.models import Document
 from rlp.search.forms import ProjectContentForm, get_action_object_content_types
 from rlp.projects import emails
-from .forms import InviteForm, NewGroupForm, ModifyGroupForm
+from .forms import InviteForm, NewGroupForm, ModifyGroupForm, EditGroupNotifications
 from .models import Project
 from .models import ProjectMembership
 from .shortcuts import group_invite_choices
@@ -46,6 +47,9 @@ def projects_list(request, template_name="projects/projects_list.html"):
 @page_template('actstream/_activity.html')
 def projects_detail(request, pk, slug, tab='activity', template_name="projects/projects_detail.html",
                     extra_context=None):
+    # if tab == 'undefined':
+    #     raise ValueError('better call anthony')
+
     projects = Project.objects.select_related('institution', 'topic')
     project = get_object_or_404(projects, pk=pk, slug=slug)
     context = {
@@ -168,6 +172,10 @@ def projects_detail(request, pk, slug, tab='activity', template_name="projects/p
     ))
     context['edit_group_form'] = edit_form
 
+    if request.user in project.active_members():
+        email_prefs_form = EditGroupNotifications.get_form_for_user_and_group(request.user, project)
+        context['edit_group_email_prefs_form'] = email_prefs_form
+
     # response
     return render(request, template_name, context)
 
@@ -281,7 +289,7 @@ class AddGroup(LoginRequiredMixin, FormView):
     form_class = NewGroupForm
     template_name = 'projects/projects_add.html'
 
-    def get_form(self, form_class):
+    def get_form(self, form_class=NewGroupForm):
         # super.get_form() handles POST data if available
         form = super(AddGroup, self).get_form(form_class)
         invite_choices = (
@@ -455,3 +463,42 @@ class IgnoreMembershipRequest(LoginRequiredMixin, View):
                 membership.save()
                 emails.reject_to_requester(request, membership, group)
         return redirect(group.get_absolute_url())
+
+
+class EditGroupNotificationsView(LoginRequiredMixin, FormView):
+    form_class = EditGroupNotifications
+    # template_name=
+
+    def post(self, request):
+        user = request.user
+        group_id = int(request.POST.get('group_id'))
+        group = Project.objects.get(id=group_id)
+        form = self.get_form()
+        membership = ProjectMembership.objects.get(user=user, project=group)
+        pref = request.POST.get('group_prefs')
+
+        if pref == 'immediately':
+            membership.email_prefs = 'user_and_group'
+            membership.digest_prefs = 'disabled'
+
+        elif pref == 'weekly':
+            membership.email_prefs = 'disabled'
+            membership.digest_prefs = 'enabled'
+
+        elif pref == 'both':
+            membership.email_prefs = 'user_and_group'
+            membership.digest_prefs = 'enabled'
+
+        elif pref == 'never':
+            membership.email_prefs = 'disabled'
+            membership.digest_prefs = 'disabled'
+
+        elif pref == 'none':
+            membership.email_prefs = None
+            membership.digest_prefs = None
+
+        else:
+            from rlp import logger
+            logger.error("unexpected group email prefs values:{}".format(pref))
+        membership.save()
+        return JsonResponse({'message':'success'})

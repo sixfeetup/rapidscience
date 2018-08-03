@@ -52,6 +52,16 @@ class SearchView(BaseSearchView):
             list(Tag.objects.filter(id__in=tag_ids)) +
             list(ManagedTag.objects.filter(id__in=mtag_ids))
         )
+
+        sort_by = self.request.GET.get('sort_by', None)
+        # we have to re-assert the ordering, specifically for -pub_date
+        # without which it seems the '-' order gets lost from some prior
+        # manipulation.   relevence/default and pub_date seemed to work fine.
+        if sort_by:
+            context['object_list'].order_by(sort_by)
+        context['sort_by'] = sort_by or 'relevence'  # to preserve in the form
+
+        context['models'] =self.request.GET.getlist('models')
         return context
 
     def get(self, request, *args, **kwargs):

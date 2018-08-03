@@ -3,6 +3,9 @@ from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 from django.conf import settings
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 def verify_email(request, user, key):
     subject = "Membership in Sarcoma Central"
@@ -23,7 +26,10 @@ def verify_email(request, user, key):
                         settings.DEFAULT_FROM_EMAIL,
                         [user.email])
     mail.content_subtype = "html"
-    mail.send()
+    try:
+        mail.send()
+    except ConnectionRefusedError as no_smtp_server:
+        logger.fatal("Could not connect to send email!")
 
 
 def registration_to_admin(request, user, key):
@@ -47,7 +53,10 @@ def registration_to_admin(request, user, key):
                         to,
                         cc=settings.BCC_LIST)
     mail.content_subtype = "html"
-    mail.send()
+    try:
+        mail.send()
+    except ConnectionRefusedError as no_smtp_server:
+        logger.fatal("Could not connect to send email!")
 
 
 def acceptance_to_newuser(request, user):
@@ -75,7 +84,10 @@ def acceptance_to_newuser(request, user):
                         settings.DEFAULT_FROM_EMAIL,
                         to,)
     mail.content_subtype = "html"
-    mail.send()
+    try:
+        mail.send()
+    except ConnectionRefusedError as no_smtp_server:
+        logger.fatal("Could not connect to send email!")
 
 
 def send_welcome(request, user):
@@ -104,7 +116,10 @@ def send_welcome(request, user):
                         settings.DEFAULT_FROM_EMAIL,
                         to,)
     mail.content_subtype = "html"
-    mail.send()
+    try:
+        mail.send()
+    except ConnectionRefusedError as no_smtp_server:
+        logger.fatal("Could not connect to send email!")
 
 
 def accepted_members_notification_to_admin(request, user, key):
@@ -128,4 +143,7 @@ def accepted_members_notification_to_admin(request, user, key):
                         to,
                         cc=settings.BCC_LIST)
     mail.content_subtype = "html"
-    mail.send()
+    try:
+        mail.send()
+    except ConnectionRefusedError as no_smtp_server:
+        logger.fatal("Could not connect to send email!")

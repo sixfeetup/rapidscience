@@ -8,7 +8,8 @@ from django.db.models.lookups import DateTransform
 from taggit.managers import TaggableManager
 from taggit.models import TagBase, GenericTaggedItemBase
 
-from rlp.core.utils import CREATION_VERBS
+
+from rlp.core.utils import CREATION_VERBS, resolve_email_targets
 from rlp.managedtags.models import TaggedByManagedTag
 
 
@@ -192,8 +193,14 @@ class SharedObjectMixin(models.Model):
             viewer_type_id=viewer_type.id,
         ))
 
-    def share_with(self, viewers, shared_by, comment=None, publicly=True):
-        from casereport.models import action
+    def share_with(self, viewers, shared_by, exclude=[], comment=None, publicly=True):
+        """ record an action and send emails.
+            returns emails of those notified
+        """
+        from casereport.models import action, CaseReport
+        from casereport import emails as casereport_emails
+        from .email import activity_mail
+
         # NB: action.send merely queues
         # add an entry to the target viewer's activity stream
         for viewer in viewers:
@@ -209,6 +216,15 @@ class SharedObjectMixin(models.Model):
                 target=viewer,
                 public=is_public,
             )
+        emails = []
+        if publicly:
+            if type(self) == CaseReport:
+                emails = casereport_emails.send_shared_email(self, viewers, exclude=exclude)
+            else:
+                emails = resolve_email_targets(viewers, exclude=exclude)
+
+                activity_mail(shared_by, self, emails)
+        return emails
 
     def get_content_type(self, resolve_polymorphic=True):
         target = self
@@ -231,7 +247,6 @@ class SharedObjectMixin(models.Model):
             target = parent_type.objects.non_polymorphic().get(id=self.id)
         content_type = ContentType.objects.get_for_model(target)
         return content_type.id
-
 
     def notify_viewers(self, subject, context, template='emails/notification'):
         from rlp.core.email import send_transactional_mail

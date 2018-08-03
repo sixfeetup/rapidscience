@@ -14,7 +14,7 @@ from django.views.generic.edit import FormView
 from actstream import action
 
 from rlp.core.forms import member_choices, group_choices
-from rlp.core.utils import bookmark_and_notify, add_tags, fill_tags
+from rlp.core.utils import bookmark_and_notify, add_tags, fill_tags, resolve_email_targets
 from rlp.discussions.models import ThreadedComment
 from rlp.projects.models import Project
 from . import choices
@@ -274,7 +274,6 @@ class ReferenceAttachView(LoginRequiredMixin, FormView):
             action_object=uref,
             target=target,
         )
-        activity_mail(user, uref, target, self.request)
         last_viewed_path = self.request.session.get('last_viewed_path', '/')
         return redirect(last_viewed_path)
 
@@ -336,7 +335,7 @@ def reference_share(request, reference_pk):
                 # put it in the project's timeline
                 action.send(request.user, verb='shared', action_object=share, target=share.group)
             # Only email individuals who were specifically selected
-            for user in recipients:
+            for user in resolve_email_targets(recipients, reason='share'):
                 if user.notify_immediately:
                     send_transactional_mail(
                         user.email,

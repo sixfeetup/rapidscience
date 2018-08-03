@@ -98,6 +98,9 @@ class ModelSearchForm(BaseModelSearchForm):
                                       label='Search In',
                                       widget=forms.CheckboxSelectMultiple)
 
+    sort_by = forms.ChoiceField(choices=( ('relevence', 'Relevance'), ('pub_date', 'Date'), ('-pub_date', 'Reversed')),
+                                                           required=False,)
+
     q = forms.CharField(
         required=False,
         widget=forms.TextInput(
@@ -128,6 +131,7 @@ class ModelSearchForm(BaseModelSearchForm):
         query = self.cleaned_data.get('q')
         tags = self.cleaned_data.get('tags')
         mtags = self.cleaned_data.get('mtags')
+        sort_by = self.cleaned_data.get('sort_by', 'relevence')
         models = self.get_models()
         if not any([query, models, tags, mtags]):
             return self.no_query_found()
@@ -142,6 +146,8 @@ class ModelSearchForm(BaseModelSearchForm):
             sqs = sqs.filter(
                 SQ(title=query) | SQ(text=query)
             ).highlight(**kwargs)
+            if sort_by and sort_by != 'relevence':
+                sqs = sqs.order_by(sort_by)
         if models:
             sqs = sqs.models(*self.get_models())
         if tags:

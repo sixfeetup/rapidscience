@@ -87,11 +87,11 @@ class Project(SEOMixin, SharesContentMixin):
                 verb__exact = 'shared',
                 target_content_type_id=my_ct,
                 target_object_id=self.id).values_list('action_object_object_id', flat=True)
-            logger.debug( "shared crs %s", list(casereport_ids))
+            logger.debug("shared crs %s", list(casereport_ids))
             non_live_ids = CaseReport.objects.filter(
                 id__in=list(casereport_ids)).exclude(
                 workflow_state='live').values_list('id', flat=True)
-            logger.debug( "non live crs %s", list(non_live_ids))
+            logger.debug("non live crs %s", list(non_live_ids))
             activity_stream_queryset = activity_stream_queryset.exclude(
                 action_object_content_type=casereport_ct,
                 action_object_object_id__in=list(
@@ -190,6 +190,10 @@ class Project(SEOMixin, SharesContentMixin):
         membership.delete()
 
 
+from rlp.accounts.models import EMAIL_PREF_CHOICES as ALL_EMAIL_PREFS_CHOICES, DIGEST_PREF_CHOICES
+EMAIL_PREFS_CHOICES = [choice for choice in ALL_EMAIL_PREFS_CHOICES if choice[0] != 'user_only']
+
+
 class ProjectMembership(models.Model):
     project = models.ForeignKey(Project)
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
@@ -198,6 +202,20 @@ class ProjectMembership(models.Model):
     approver = models.ForeignKey(settings.AUTH_USER_MODEL,
                                  related_name='approvals',
                                  null=True, blank=True)
+    email_prefs = models.CharField(
+        max_length=255,
+        verbose_name='Email notification preferences for Groups',
+        choices=EMAIL_PREFS_CHOICES,
+        null=True,
+        blank=True,
+    )
+    digest_prefs = models.CharField(
+        max_length=255,
+        verbose_name='Email digest preferences',
+        choices=DIGEST_PREF_CHOICES,
+        null=True,
+        blank=True,
+    )
 
     class Meta:
         unique_together = ['project', 'user']
@@ -235,7 +253,6 @@ class ProjectMembership(models.Model):
             target=self.project,
         )
         approval_action.save()
-
 
     @transition(field=state, source='pending', target='ignored')
     def ignore(self):

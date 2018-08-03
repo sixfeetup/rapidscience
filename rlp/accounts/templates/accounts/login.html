@@ -21,7 +21,7 @@
     </div>
 </div>
 
-<div class="container">    
+<div class="container">
     <div class="plugin-form row">
         <div class="col-md-8 col-md-push-2">
             {% bootstrap_messages %}
@@ -29,16 +29,18 @@
               {% csrf_token %}
               {% for field in form %}
                   <div class="fieldWrapper">
-                      <h4><label for="{{ field.id_for_label }}">
-                          {{ field.label }}{% if field.field.required %} <span class="required">*</span>{% endif %}
+                      <h4><label for="{{ field.id_for_label }}">{% if field.id_for_label == 'id_remember' %}<p class="f-title">{{ field }} {{ field.label }}</p>{% else %} {{ field.label }}{% endif %}
+                         {% if field.field.required %} <span class="required">*</span>{% endif %}
                       </label></h4>
                       {{ field.errors }}
-                      {{ field }}
+                      {% if field.id_for_label == 'id_remember' %}{% else %} {{ field }}{% endif %}
                       {% if field.help_text %}
                       <p class="helptext">{{ field.help_text|safe }}</p>
                       {% endif %}
                   </div>
               {% endfor %}
+
+
               <div class="helpText"><a href="{% url 'password_reset' %}">Forgot password?</a></div>
               <input type="hidden" name="next" value="{{ next }}" />
               <div class="signin-buttons">
@@ -49,9 +51,18 @@
                     Cancel
                   </a>
               </div>
+            <div>By clicking <i>Sign In</i>, you agree to our <a href="{% url 'terms_of_use' %}">Terms of Use</a>.</div>
             </form>
         </div>
     </div>
 </div>
 </div>
+<script>
+    $("#checkbox").on("change", function(){
+    alert("The checkbox with the ID '" + this.id + "' changed");
+    });
+</script>
 {% endblock content %}
+
+
+

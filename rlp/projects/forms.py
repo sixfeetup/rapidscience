@@ -2,12 +2,15 @@ from django.conf import settings
 from django import forms
 from django.core.validators import EmailValidator
 
+from rlp import logger
 from rlp.core.forms import MemberListField
 
 from django import forms
 from django.utils.safestring import mark_safe
 
 from ckeditor.widgets import CKEditorWidget
+
+from rlp.projects.models import Project, ProjectMembership
 
 
 class SimpleImageWidget(forms.FileInput):
@@ -122,3 +125,48 @@ class ModifyGroupForm(NewGroupForm):
 
     approval = forms.IntegerField(widget=forms.HiddenInput())
     # remember to ensure that approval doesn't change, and the the user is a moderator for the group
+
+
+class EditGroupNotifications(forms.Form):
+    group_id = forms.IntegerField(widget=forms.HiddenInput())
+    group_prefs = forms.ChoiceField(
+        label='Select the notification frequency of items shared in this group.',
+        widget=forms.RadioSelect, choices=(
+            ('immediately', 'Immediately'),
+            ('weekly', 'Weekly'),
+            ('both', 'Immediately and Weekly'),
+            ('never', 'Never'),
+            ('none', 'Use my profile defaults')
+        )
+    )
+
+    @staticmethod
+    def get_group_prefs(user, group):
+        try:
+            membership = ProjectMembership.objects.get(user=user, project=group)
+            if membership.email_prefs or membership.digest_prefs:
+                if membership.email_prefs == 'user_and_group':
+                    if membership.digest_prefs != 'disabled':
+                        prefs = 'both'
+                    else:
+                        prefs = 'immediately'
+                else:
+                    if membership.digest_prefs == 'disabled':
+                        prefs = 'never'
+                    else:
+                        prefs = 'weekly'
+            else:
+                prefs = 'none'
+            return prefs
+        except ProjectMembership.DoesNotExist as no_membership:
+            logger.warn("no existing membership for {} to {}".format(user, group))
+            raise no_membership
+
+    @classmethod
+    def get_form_for_user_and_group(cls, user, group):
+        #membership = ProjectMembership.objects.get(user=user, project=group)
+        form = EditGroupNotifications(initial={
+            'group_id': group.id,
+            'group_prefs': cls.get_group_prefs(user, group),
+        })
+        return form

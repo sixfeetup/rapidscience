@@ -1,6 +1,22 @@
-{% load cms_tags sekizai_tags staticfiles compress menu_tags %}<!doctype html>
+{% load cms_tags sekizai_tags staticfiles compress menu_tags core_tags %}
+{% load_setting GA_ENABLED %}
+<!doctype html>
 <html class="no-js" lang="{{ LANGUAGE_CODE|default:'en-us' }}">
 <head>
+{% if GA_ENABLED and not request.user.is_staff %}
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-73213368-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-73213368-1');
+    </script>
+{% endif %}
+
+    <meta name="google-site-verification" content="AGH6NObboZXSZRShQCYpBqrE_BEu2WkGqulqmbudQRU" />
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="format-detection" content="telephone=no">
@@ -82,13 +98,13 @@
                     <li><a href="{% url 'register' %}">Register</a></li>
                 {% endif %}
                 <li class="navbar-secondary search-widget">
-                    <div id="search-form" class="collapse">
+                    <div id="search-form" class="search-closed">
                         <form class="clearfix" action="{% url 'haystack_search' %}" method="get">
                           <label for="search" class="sr-only">Search: </label>
-                          <input class="form-control" type="text" name="q" placeholder="Search keyword, name, DOI, PMID ...">
+                          <input class="form-control" type="text" name="q" placeholder="Type search terms here">
                       </form>
                     </div>
-                    <a class="search-icon" href="#search-form" data-toggle="collapse">
+                    <a id="search-icon" class="search-icon" href="#search-form" aria-expanded="false">
                         <i class="glyphicon glyphicon-search invert-horizontal"></i>
                     </a>
                 </li>
@@ -111,6 +127,7 @@
 <script src="{% static 'js/vendor/jquery.transit.min.js' %}"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 <script src="{{STATIC_URL}}js/vendor/django_select2.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js"></script>
 <script type="text/javascript">
 (function($) { $(function() {
     $(".select2").select2()
@@ -179,7 +196,25 @@
             });
         }
         setBookmarks();
-        $.endlessPaginate({paginateOnScroll: true, onCompleted: function(context, fragment) {setBookmarks();}});
+        $.endlessPaginate({
+            paginateOnScroll: true,
+            onCompleted: function(context, fragment) {
+                var re = /\+/;
+                var keyword = getQueryParam("q");
+                keyword = keyword.replace(re, " ");
+                setBookmarks();
+                if ($("body").hasClass('search')) {
+                    $(".search-results-items").unmark({
+                        done: function() {
+                            $(".search-results-items").mark(keyword, {
+                                "element": "em",
+                                "className": "highlighted"
+                            });
+                        }
+                    });
+                }
+            }
+        });
 
     </script>
     {% block js-compress-inline %}

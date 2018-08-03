@@ -31,8 +31,12 @@
                                     <img src="{{ thumbnail2.url }}" />
                                 {% endif %}
                             {% endif %}
+
                         </div>
                         <div class="col-md-6">
+                            {% if field.name == 'digest_prefs' %}
+                                <p>EMAIL NOTIFICATIONS (your choices can be modified for specific groups you join and for specific individuals)</p>
+                            {%  endif %}
                             {% bootstrap_field field label_class='section-label' %}
                         </div>
                     </div>
@@ -64,6 +68,7 @@
               $("[id^='wrapper-id_institution_']").slideUp()
           }
       })
+          //$("#wrapper-id_digest_prefs").before("<p>EMAIL NOTIFICATIONS (your choices can be modified for specific groups you join and for specific individuals)</p>");
   }); })(jQuery);
 </script>
 {% endblock %}

@@ -9,7 +9,7 @@
         {% if can_link %}
                 <a href="{{ comment.get_absolute_url }}">
         {% endif %}
-        {% autoescape off %}{% if highlighted.title %}{{ highlighted.title.0 }}{% else %}{{ comment.title }}{% endif %}{% endautoescape %}
+        {% autoescape off %}{{ comment.title }}{% endautoescape %}
         {% if can_link %}
                 </a>
         {% endif %}

@@ -17,9 +17,11 @@
 {% endwith %}
 {% if action.verb == 'shared' %}
     <p class="small meta">
-        Posted by
+        {# deal with old dirty data - actions with no user #}
+        {% if action.action_object.user %}
+          Posted by
         <a href="{% url 'profile' action.action_object.user.pk  %}">{% if request.user == action.action_object.user %} me {% else %} {{ action.action_object.user }} {% endif %}</a>
-        | {{ obj.submit_date|date:"j M Y" }}<br />
+        {%  endif %}| {{ obj.submit_date|date:"j M Y" }}<br />
         {% display_shared_with obj request.user %}
     </p>
 {% endif %}

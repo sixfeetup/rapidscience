@@ -69,6 +69,28 @@ var selectedBookmarksFolderName; // will contain ID of selected bookmarks folder
         form_id = $(this).parents("form").find('.django-ckeditor-widget').attr('data-field-id');
         CKEDITOR.instances[form_id].setData('');
     });
+    // Make search input active
+  $(".search-icon").click(function(e){
+      e.preventDefault();
+      if (!$("#search-form").hasClass("search-open")) {
+          $("#search-form").addClass("search-open");
+          $("#search-form").removeClass("search-closed");
+          $(this).attr("aria-expanded", true);
+          setTimeout(function() { $('.navbar-nav .search-widget input.form-control').focus() }, 500);
+      } else {
+          $("#search-form form").submit();
+      }
+  });
+  // hide the search field when losing focus
+  $(".navbar-nav .search-widget input.form-control").on("blur", function(){
+      setTimeout(function() {
+          $(".search-icon").attr("aria-expanded", false);
+          $("#search-form").removeClass("search-open");
+          $("#search-form").addClass("search-closed");
+      }, 100);
+  });
+
+
 
 }); })(jQuery);
 
@@ -308,6 +330,24 @@ $(".close-overlay").click(function(){
     $("body").removeClass("overlay-active");
 });
 */
+(function($) { $(function() {
+    $(".save-email-prefs").on('click', function (e){
+        e.preventDefault();
+        var form = $(this).parents("form");
+        var csrfmiddlewaretoken = form.find("input[name='csrfmiddlewaretoken']").val();
+        var group_id = form.find("input[name='group_id']").val();
+        $.ajax({
+            type: 'post',
+            url: '/groups/update_group_notifications/',
+            data: {
+                'csrfmiddlewaretoken': csrfmiddlewaretoken,
+                'group_id': group_id,
+                'group_prefs': form.find("input[name='group_prefs']:checked").val()
+            }
+        });
+        $('#edit-group-email-prefs-'+group_id).modal('hide');
+    })
+}); })(jQuery);
 
 
 // Open Discussion form if #topic-form in path
@@ -335,9 +375,27 @@ $(".clear-input+.glyphicon-remove").on('click', function(){
     $(".clear-input").keyup();
 });
 
-// on submit of refine, copy potentially changed keywords from search input
+// on submit of main search, update hidden models from refine
+$(".keywords .search-button").on('click', function(e) {
+    e.preventDefault();
+    $(".models-hidden").remove();
+    $("#id_models").find("input[name='models']:checked").each(function() {
+        var hidden_el = document.createElement("input");
+        $(hidden_el).attr({
+            "type": "hidden",
+            "class": "models-hidden",
+            "name": "models"
+        });
+        $(hidden_el).val($(this).val());
+        $(".result-count").after(hidden_el);
+    });
+    $(".keywords").submit();
+});
+
+// on submit of refine, copy potentially changed keywords and sort from main form
 $(".sub-menu").on('submit', function(e) {
     $("#id_q_hidden").val($("#id_q").val());
+    $("#id_sort_by_hidden").val($("#id_sort_by").val());
 });
 
 (function($) { $(function() {
@@ -359,3 +417,12 @@ $(".sub-menu").on('submit', function(e) {
   });
 
 }); })(jQuery);
+
+function getQueryParam(param) {
+    location.search.substr(1)
+        .split("&")
+        .some(function(item) { // returns first occurrence and stops
+            return item.split("=")[0] == param && (param = item.split("=")[1])
+        });
+    return param
+}

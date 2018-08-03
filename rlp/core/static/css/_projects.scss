@@ -77,6 +77,11 @@
     padding-right: 15px;
 }
 
+.members-list .caret {
+  border-width: 6px;
+  border-bottom-width: 0;
+}
+
 .members-list > li {
     width: 48%;
 }

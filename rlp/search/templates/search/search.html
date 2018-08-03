@@ -12,6 +12,7 @@
     <form  class="sub-menu" method="get" action="{% url 'haystack_search' %}{% if query %}?q={{ query }}{% endif %}" autocomplete="off">
         <div class="refine-search">
             <input id="id_q_hidden" name="q" type="hidden" value="{{ query }}">
+            <input id="id_sort_by_hidden" name="sort_by" type="hidden" value="{{ sort_by }}">
             <p class="section-label">Filter By<i class="fa fa-caret-down visible-xs-inline visible-sm-inline"></i></p>
             {% bootstrap_field form.models show_label=False %}
             <button class="btn btn-primary" type="submit">
@@ -31,7 +32,6 @@
       {% else %}
         <h1>Search</h1>
       {% endif %}
-        {% if object_list %}<div class="result-count">{{ object_list|length }} result{% if object_list|length > 1 %}s{% endif %}</div>{% endif %}
     </div>
     {% if not tags %}
     <form class="keywords" method="get" action="{% url 'haystack_search' %}{% if query %}?q={{ query }}{% endif %}" autocomplete="off">
@@ -39,21 +39,75 @@
             <input id="id_q" name="q" type="search" class="form-control clear-input" placeholder="Authors, institutions, drugs, biomarkers…" value="{{ query }}">
             <span class="glyphicon glyphicon-remove"></span>
             <span class="input-group-btn">
-                <button type="submit" class="btn btn-primary search-button" type="button"><i class="fa fa-search"></i></button>
+                <button class="btn btn-primary search-button" type="button"><i class="fa fa-search"></i></button>
             </span>
+        </div>
+
+        <br>
+        <div id="inline">
+            <div><p class="result-font"><b>{{ object_list|length }} result{% if object_list|length > 1 %}s</b></p>{% endif %}</div>
+            <div class="result-count">
+                <select id="id_sort_by" name="sort_by">
+                    <option {% if sort_by == 'relevence' %}selected{% endif %} value="relevence">Relevance</option>
+                    <option {% if sort_by == '-pub_date' %}selected{% endif %} value="-pub_date">Newest to Oldest</option>
+                    <option {% if sort_by == 'pub_date' %}selected{% endif %} value="pub_date">Oldest to Newest</option>
+                </select>
+            </div>
+          {% for m in models %}
+              <input class="models-hidden" name="models" type="hidden" value="{{ m }}">
+          {%  endfor %}
+         {% if not tags %}
+             <p class="relevance" align="right" style="color:#444444;"><em>Sort by:&nbsp;&nbsp;</em> </p>
+         {% endif %}
         </div>
     </form>
     {% endif %}
     {% if object_list %}
-      {% if not tags %}
-        <p class="relevance"><em>Results are sorted by keyword relevance.</em></p>
-      {% endif %}
-        {% include 'search/_results.html' %}
+
+        <hr>
+        <div class="search-results-items">
+            {% include 'search/_results.html' %}
+        </div>
     {% else %}
       <p>
         {% if query %}No results found for <span class="highlighted">{{ query }}</span>.
         Try a new search {% else %}Please enter a search term {% endif %}or select an option to browse resources by type.
       </p>
     {% endif %}
+
+{#    {% endif %}#}
+{#    <br>#}
+{#    {% if object_list %}#}
+{#        <div id="inline">#}
+{#            <div><p class="result-font"><b>{{ object_list|length }} result{% if object_list|length > 1 %}s</b></p>{% endif %}</div>#}
+{#            <div class="result-count">#}
+{#                <select name="sort_by">#}
+{#                    <option value="relevence">Relevance</option>#}
+{#                    <option value="pub_date">Newest to Oldest</option>#}
+{#                    <option value="-pub_date">Oldest to Newest</option>#}
+{#                </select>#}
+{#            </div>#}
+{#         {% if not tags %}#}
+{#             <p class="relevance" align="right" style="color:#444444;"><em>Sort by:&nbsp;&nbsp;</em> </p>#}
+{#         {% endif %}#}
+{#        </div>#}
+{#        <hr>#}
+{#        <div class="search-results-items">#}
+{#            {% include 'search/_results.html' %}#}
+{#        </div>#}
+{#    {% else %}#}
+{#      <p>#}
+{#        {% if query %}No results found for <span class="highlighted">{{ query }}</span>.#}
+{#        Try a new search {% else %}Please enter a search term {% endif %}or select an option to browse resources by type.#}
+{#      </p>#}
+{#    {% endif %}#}
     </div>
+{% endblock %}
+{% block js-footer %}
+    <script>
+    $(".search-results-items").mark("{{ request.GET.q }}", {
+        "element": "em",
+        "className": "highlighted"
+    });
+    </script>
 {% endblock %}

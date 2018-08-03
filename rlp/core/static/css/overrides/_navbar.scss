@@ -277,22 +277,56 @@ body.home .navbar-brand.fullname {
         #search-form {
             position: absolute;
             z-index: 1000005;
-            top: 5px;
-            height: 45px;
+            top: 0;
+            height: 52px;
             left: 0;
             width: calc(100% - 50px);
             background-color: #332f2d;
+            &.search-closed {
+                display: none;
+            }
+            &.search-open {
+                display: block;
+                input.form-control {
+                    opacity: 1;
+                }
+            }
+            @media screen and (max-width: 767px) {
+                float: left;
+                position: relative;
+            }
         }
         input.form-control {
             background-color: #444444;
             border: none;
             border-radius: 0;
-            height: 47px;
+            height: 52px;
             min-width: 430px;
             color: #f6eee3;
             font-weight: normal;
+            opacity: 0;
             position: absolute;
             right: 0;
+            transition: all .25s ease;
+            @media screen and (max-width: 767px) {
+                min-width: auto;
+                width: 100%;
+            }
+        }
+        input.form-control::-webkit-input-placeholder {
+            color: #f6eee3;
+            font-style: italic;
+            font-weight: normal;
+        }
+        input.form-control:-ms-input-placeholder {
+            color: #f6eee3;
+            font-style: italic;
+            font-weight: normal;
+        }
+        input.form-control::-moz-placeholder {
+            color: #f6eee3;
+            font-style: italic;
+            font-weight: normal;
         }
         input.form-control::placeholder {
             color: #f6eee3;
@@ -305,6 +339,11 @@ body.home .navbar-brand.fullname {
         padding-top: 15px;
         padding-bottom: 15px;
         float: right;
+        &[aria-expanded='true'],
+        &[aria-expanded='true']:focus,
+        &[aria-expanded='true']:hover {
+          background-color: #998D87;
+        }
     }
     .search-icon:focus,
     .search-icon:active {

@@ -6,6 +6,7 @@ class BaseIndex(indexes.SearchIndex):
     text = indexes.CharField(document=True)
     title = indexes.CharField()
     link = indexes.CharField()
+    pub_date = indexes.DateTimeField()
 
     def prepare_title(self, obj):
         return obj.title
@@ -18,6 +19,19 @@ class BaseIndex(indexes.SearchIndex):
             'search/_text.txt',
             {'object': obj, })
         return searchstring
+
+    def prepare_pub_date(self, obj):
+        for attr_name in ('submit_date',
+                          'date_joined',
+                          'date_added',
+                          'start_date',
+                          'create_date',
+                          'created', ):
+            if hasattr(obj, attr_name):
+                v = getattr(obj, attr_name, None)
+                if v:
+                    return v.strftime('%Y-%m-%dT%H:%M:%SZ')
+        return 'today'
 
 
 class TaggableBaseIndex(BaseIndex):

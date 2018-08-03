@@ -144,7 +144,7 @@ def add_document(request, add_form=None, doc_pk=None, template_name='documents/a
                     # Send email notification
                     if initial_proj and initial_proj != -1:
                         target = Project.objects.get(pk=initial_proj)
-                        activity_mail(request.user, document, target, request)
+                        # activity_mail(request.user, document, target, request)
                         if target.approval_required:
                             document.shareable = False
                             document.save()
@@ -217,7 +217,10 @@ def add_link(request, add_form=None, doc_pk=None, template_name='documents/add_l
                     # Send email notification
                     if initial_proj and initial_proj != -1:
                         target = Project.objects.get(pk=initial_proj)
-                        activity_mail(request.user, link, target, request)
+                        # this email goes to everyone in the group, which
+                        # is also done when bookmark_and_notify is called
+                        # below
+                        # activity_mail(request.user, link, target, request)
                         if target.approval_required:
                             link.shareable = False
                             link.save()
@@ -289,7 +292,7 @@ def add_video(request, add_form=None, doc_pk=None, template_name='documents/add_
                     # Send email notification
                     if initial_proj and initial_proj != -1:
                         target = Project.objects.get(pk=initial_proj)
-                        activity_mail(request.user, video, target, request)
+                        #activity_mail(request.user, video, target, request)
                         if target.approval_required:
                             video.shareable = False
                             video.save()

@@ -164,6 +164,15 @@ h1.detail-view-heading {
     .cc-box {
         border-bottom: none;
     }
+    .fa-cog {
+        color: #3792bf;
+    }
+    .fa-plus {
+        color: #3792bf;
+    }
+    .dropdown-toggle {
+       color: #3792bf;
+    }
 }
 
 .members-list {
@@ -172,7 +181,7 @@ h1.detail-view-heading {
     }
     .btn-group {
         position: relative;
-        right: 15px;
+        right: 18px;
     }
     .leave-button {
         position: relative;
@@ -198,7 +207,7 @@ h1.detail-view-heading {
                         border-top: 6px solid \9;
                         border-right: 6px solid transparent;
                         border-left: 6px solid transparent;
-                        color: #444;
+                        color: #3792bf;
                     }
                     &.collapsed .caret {
                         transform: rotate(360deg);
@@ -294,11 +303,15 @@ body.search .box.main-content {
     font-size: 32px;
     display: inline-block;
 }
+.result-font {
+  font-size: 20px;
+  float: left;
+}
 
 .search-page .result-count {
     float: right;
-    line-height: 46px;
-    font-weight: bold;
+    font-size: 14px;
+    color: #444444;
 }
 .search-page .input-group {
     position: relative;
@@ -331,7 +344,19 @@ body.search .box.main-content {
 }
 
 .search-page .relevance {
-    margin: 1em 0;
+    margin: 0;
+    padding: 0;
+  em {
+    font-weight: normal;
+    font-style: normal;
+    font-size: 14px;
+  };
+}
+
+.navbar-nav .search-widget input.form-control {
+  background-color: #998D87;
+  box-shadow: 0 0 2px #256180;
+
 }
 
 .refine-search ul {
@@ -1480,3 +1505,64 @@ body.home {
         color: #f6eee3;
     }
 }
+
+.dropdown-menu-members {
+    background-color: #fff;
+    left: auto;
+    right: 0;
+    border:0px;
+    outline:0px;
+    .item-list > li & {
+      margin: 0;
+    }
+    li a {
+            padding-top: 0;
+            color:#3792bf;
+        }
+}
+
+.group-detail-dropdown {
+  float: right;
+  button {
+    padding: 0;
+    font-size: 18px;
+    border-color: transparent;
+    &:hover,
+    &:active {
+      background-color: transparent;
+    }
+  }
+}
+
+p.f-title {
+  display:inline-block;
+  text-transform: none;
+}
+
+.dashboard .fa-cog {
+    color: #CCCCCC;
+    &:hover{
+      color: rgb(68, 68, 68)
+    }
+
+}
+
+.edit-group-email-prefs {
+  font-size: 12px;
+  font-weight: normal;
+  //font-family: none;
+  label {
+    font-weight: normal;
+  }
+  ul {
+    margin: 0 0 10px;
+    padding-left: 0;
+    display: inline-table;
+  }
+  li {
+    list-style-type: none;
+    display: inline-block;
+    padding: 5px 5px;
+    }
+}
+
