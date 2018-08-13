@@ -125,7 +125,7 @@ def display_tag_links( tagged_item ):
 
 
 @register.simple_tag
-def display_shared_with(item, user=None, fmt=r'Shared with {0}', style=''):
+def display_shared_with(item, user=None, fmt=r'Shared with {0}', style='', alt_viewers=[]):
     # Display 'Shared with...' text if shared with more than the current user
     try:
         viewers = item.get_viewers()
@@ -133,9 +133,12 @@ def display_shared_with(item, user=None, fmt=r'Shared with {0}', style=''):
         viewers = []
         print("item was not a viewable")
 
-
     vlist = []
-    for v in viewers:
+    if alt_viewers:
+        vs = alt_viewers
+    else:
+        vs = viewers
+    for v in vs:
         # suppress shares by the author to themselves
         if hasattr(item, "user") and v == item.user:
             continue

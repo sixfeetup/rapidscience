@@ -1,0 +1,130 @@
+{% extends 'emails/base_email.html'  %}{% load bootstrap3 comments discussion_tags core_tags static thumbnail%}
+
+
+
+
+{% block content %}
+    Hi {{ recipient_name }}, <br><br>
+
+
+{% if root_obj_cls_name == 'CaseReport' %}
+  <p>
+    {{ root_obj_cls_name }} posted by <a href="https://{{ site }}{{ obj.user.get_absolute_url }}" style="color: #3795bf; text-decoration: none">
+    {% if obj.user == request.user %}me{% else %}{{ obj.user.get_full_name }}{% endif %} </a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="to {0}" style="color: #3795bf; text-decoration: none" %} | {{ obj.submit_date|date:"j M Y" }}
+  </p>
+
+    <div style="margin-left: 0px;" style="color: #3795bf; text-decoration: none" >
+    <p>{{ title|safe |striptags }}</p> <br><br>
+    </div>
+
+    {% if comment %}
+     <div style="margin-left: 0px;" style="border-left: 3px solid #e5e5e5; padding-left: 15px; font-style: italic; margin: 10px 0; color: #444444"> {{ comment|safe |striptags|truncatechars:160 }}<br><br> </div>
+    {% endif %}
+
+{% elif root_obj_cls_name == 'Discussion' %}
+    {% if obj.title %}
+        <p>
+          {{ root_obj_cls_name }} posted by <a href="https://{{ site }}{{ obj.user.get_absolute_url }}" style="color: #3795bf; text-decoration: none">
+          {% if obj.user == request.user %}me{% else %}{{ obj.user.get_full_name }}{% endif %} </a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="to {0}" style="color: #3795bf; text-decoration: none" %} | {{ obj.submit_date|date:"j M Y" }}<br />
+        </p>
+
+          <div style="margin-left: 0px;"  >
+          <p style="color: #3795bf; text-decoration: none">{{ title|safe |striptags }}</p>
+          </div>
+
+          {% if comment %}
+           <div style="margin-left: 0px;" style="border-left: 3px solid #e5e5e5; padding-left: 15px; font-style: italic; margin: 10px 0; color: #444444"> {{ comment|safe |striptags|truncatechars:160 }}<br><br> </div>
+          {% endif %}
+
+          Content posted here from a closed group can be shared only with members of that group. All other content, posted from your personal dashboard or an open group, can be shared with any individuals and with groups to which you belong. In addition, this content can be further shared by original recipients with groups to which they belong.
+          <br><br>
+    {% else %}
+          <p> Reply by <a href="https://{{ site }}{{ obj.user.get_absolute_url }}" style="color: #3795bf; text-decoration: none">
+            {% if obj.user == request.user %}me{% else %}{{ obj.user.get_full_name }}{% endif %} </a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="on {0}" style="color: #3795bf; text-decoration: none" %} | {{ obj.submit_date|date:"j M Y" }}
+          </p>
+
+          {% if comment %}
+              <div style="margin-left: 0px;" style="border-left: 3px solid #e5e5e5; padding-left: 15px; font-style: italic; margin: 10px 0; color: #444444"> {{ comment|safe |striptags|truncatechars:160 }}</div>
+          {% endif %}
+    {% endif %}
+
+{% elif root_obj_cls_name in comment_list %}
+
+    <p> Reply by <a href="https://{{ site }}{{ obj.user.get_absolute_url }}" style="color: #3795bf; text-decoration: none">
+    {% if obj.user == request.user %}me{% else %}{{ obj.user.get_full_name }}{% endif %} </a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="on {0}" style="color: #3795bf; text-decoration: none" %} | {{ obj.submit_date|date:"j M Y" }}
+    </p>
+
+    {% if comment %}
+        <div style="margin-left: 0px;" style="border-left: 3px solid #e5e5e5; padding-left: 15px; font-style: italic; margin: 10px 0; color: #444444"> {{ comment|safe |striptags|truncatechars:160 }}</div>
+    {% endif %}
+
+{% elif root_obj_cls_name in doc_media_list %}
+    <p>
+  {{ root_obj_cls_name }} posted by <a href="https://{{ site }}{{ obj.user.get_absolute_url }}" style="color: #3795bf; text-decoration: none">
+    {% if obj.user == request.user %}me{% else %}{{ obj.user.get_full_name }}{% endif %} </a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="to {0}" style="color: #3795bf; text-decoration: none" %} || {{ obj.submit_date|date:"j M Y" }}
+    </p>
+
+    <div style="margin-left: 0px;" >
+    <p style="color: #3795bf; text-decoration: none">{{ title|safe |striptags }}</p>
+    </div>
+
+    {% if comment %}
+     <div style="margin-left: 0px;" style="border-left: 3px solid #e5e5e5; padding-left: 15px; font-style: italic; margin: 10px 0; color: #444444"> {{ comment|safe |striptags|truncatechars:160 }}</div>
+    {% endif %}
+
+    <h4>Content posted here from a closed group can be shared only with members of that group. All other content, posted from your personal dashboard or an open group, can be shared with any individuals and with groups to which you belong. In addition, this content can be further shared by original recipients with groups to which they belong.</h4>
+
+
+
+{% elif root_obj_cls_name == 'Reference' %}
+  <p>
+    {{ root_obj_cls_name }} posted by <a href="https://{{ site }}{{ obj.user.get_absolute_url }}" style="color: #3795bf; text-decoration: none">
+    {% if obj.user == request.user %}me{% else %}{{ obj.user.get_full_name }}{% endif %} </a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="with {0}" style="color: #3795bf; text-decoration: none"%} | {{ obj.submit_date|date:"j M Y" }}
+
+{##}
+{#    <div style="margin-left: 0px;" style="color: #3795bf; text-decoration: none" >#}
+{#    <p>{{ title|safe |striptags }}</p> <br><br>#}
+{#    </div>#}
+
+    {% if comment %}
+     <div style="margin-left: 0px;" style="border-left: 3px solid #e5e5e5; padding-left: 15px; font-style: italic; margin: 10px 0; color: #444444"> comment: {{ comment|safe |striptags|truncatechars:160 }}<br><br> </div>
+    {% endif %}
+
+
+{% else %}
+ What type of notification is it. {{ root_obj_cls_name }} {{ cls_name }}  {{ both_cls_name }}
+{% endif %}
+
+  Quiero ver que son : {{ root_obj_cls_name }} {{ cls_name }}  {{ both_cls_name }}: <br><br>
+
+This notification also appears on your <a href="https://{{ site }}{% url 'dashboard' %}" style="color: #3795bf; text-decoration: none">dashboard activity feed</a> where you can bookmark it in your personal or group folder.<br><br>
+
+You can hide this member's postings and notifications on his or her profile page by clicking on their name above.<br><br>
+
+Change other notification preferences on <a href="https://{{ site }}{% url 'profile' user.pk %}" style="color: #3795bf; text-decoration: none">your own profile page</a>.<br><br>
+
+Respond or send questions/concerns to ​<a href="mailto:info@rapidscience.org">info@rapidscience.org</a>.<br><br>
+
+
+<div style="background-color: #ecebeb; padding: 15px;">
+    <p>
+        <a href="https://www.linkedin.com/company/rapid-science"
+            ><img src="http://{{ site }}{% static 'img/email-linkedin.png' %}" alt="LinkedIn"
+            style="height: 32px; width: auto" /></a>
+        <a href="https://twitter.com/RapidScience"
+            ><img src="http://{{ site }}{% static 'img/email-twitter.png' %}" alt="Twitter"
+            style="height: 32px; width: auto" /></a>
+    </p>
+
+    <p>
+        &copy; {% now "Y" %} Rapid Science<br>
+        Rapid Science is a nonprofit 501(c)3 company based in Brooklyn, NY
+    </p>
+    <p>Generous support was provided by the <a href="https://mellon.org/" target="_blank"> Andrew W. Mellon Foundation</a>, <a href="https://www.bayer.com/" target="_blank" >Bayer</a>, <a href="http://www.emdserono.com/en/index.html" target="_blank">EMD Serono</a>, <a href="https://www.lilly.com/" target="_blank">Eli Lilly</a>, the <a href="https://www.moore.org/" target="_blank">Gordon & Betty Moore Foundation</a>, <a href="http://www.janssen.com/us/" target="_blank">Janssen Pharmaceuticals</a>, the <a href="https://www.nih.gov/" target="_blank">National Institutes of Health</a>, and the Peaked Hill Fund.</p>
+
+    {% comment %}
+    <p>There are known issues in IE10 that are being addressed. This web site is optimized for Chrome, Firefox, Safari, and IE 11. Coming soon: Android and iOS!</p>
+    {% endcomment %}
+</div>
+{% endblock content %}
+
