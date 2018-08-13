@@ -135,6 +135,7 @@ def activity_mail(user, obj, target, request=None):
             "dash_link": dash_link,
             'doc_media_list': doc_media_list,
             'obj': obj,
+            'comment': comment,
         })
         link = "https://" + settings.DOMAIN + obj.get_absolute_url()
         comment = obj.comment
