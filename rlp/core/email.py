@@ -40,6 +40,7 @@ def activity_mail(user, obj, target, request=None):
         Users who have opted out of receiving emails are removed from the
         set.
     """
+
     if target == user:
         return
     if not target:
@@ -49,9 +50,12 @@ def activity_mail(user, obj, target, request=None):
     context = {}
     comment = ""
     link = "https://" + settings.DOMAIN + obj.get_absolute_url()
-    template = 'core/emails/activity_email'
+    # template = 'core/emails/activity_email'
+    template = 'core/emails/immediate_email_notifications'
 
     recipients = resolve_email_targets(target, exclude=user)
+    doc_media_list = ['Document', 'File', 'Image', 'Link', 'Video']
+    comment_list = ['ThreadedComment', 'Comment']
 
     cls_name = obj.__class__.__name__
     root_obj_cls_name = cls_name
@@ -111,17 +115,17 @@ def activity_mail(user, obj, target, request=None):
             author = User.objects.get(pk=root_obj.owner_id)
         author_link = request and request.build_absolute_uri(
                       reverse('profile',
-                           kwargs={'pk': author.id})) \
-                      or "https://" + settings.DOMAIN + \
-                         author.get_absolute_url()
+                              kwargs={'pk': author.id}))\
+                              or "https://" + settings.DOMAIN + \
+                                 author.get_absolute_url()
         dash_link = request and \
                     request.build_absolute_uri(reverse('dashboard')) \
                     or "https://" + settings.DOMAIN
 
         if root_obj_cls_name == 'Discussion' and obj.title:
-            template = 'core/emails/newdiscussion_comment_activity_email'
+            template = 'core/emails/immediate_email_notifications'  # 'core/emails/newdiscussion_comment_activity_email'
         else:
-            template = 'core/emails/comment_activity_email'
+            template = 'core/emails/immediate_email_notifications'  # 'core/emails/comment_activity_email'
 
         context.update({
             "user_link": user_link,
@@ -129,17 +133,25 @@ def activity_mail(user, obj, target, request=None):
             "author_link": author_link,
             "author": author,
             "dash_link": dash_link,
+            'doc_media_list': doc_media_list,
+            'obj': obj,
         })
         link = "https://" + settings.DOMAIN + obj.get_absolute_url()
         comment = obj.comment
 
     context.update({
-        "user": user,
-        "type": root_obj_cls_name,
+        "user": user,  # author
         "title": title,
         "comment": comment,
         "link": link,
         "site": settings.DOMAIN,
+        "recipients": recipients,
+        'doc_media_list': doc_media_list,
+        'obj': obj,
+        'viewers': target,
+        'both_cls_name': cls_name if cls_name != root_obj_cls_name else root_obj_cls_name,
+        'comment_list': comment_list,
+        "root_obj_cls_name": root_obj_cls_name,
     })
 
     if root_obj_cls_name == 'Discussion' and obj.title:
@@ -154,12 +166,24 @@ def activity_mail(user, obj, target, request=None):
 
     subject = subject.format(user.get_full_name(), root_obj_cls_name)
 
-    template_name = "{}.txt".format(template)
-    message_body = render_to_string(template_name, context)
-    for member in recipients:
+    template_name = "{}.html".format(template)
+
+    for recipient in recipients:
+        from django.utils import timezone
+
+        now = timezone.now()
+        recipient_name = recipient  # a str, likely in "name" <email@host> format
+        if '"' in recipient_name and '<' in recipient_name:
+            recipient_name = recipient_name.split('"')[1]
+        context.update({
+            "recipient_name": recipient_name,
+            'date_time': now,
+
+        })
+        message_body = render_to_string(template_name, context)
         mail = EmailMessage(subject,
                             message_body,
                             settings.DEFAULT_FROM_EMAIL,
-                            [member,])
+                            [recipient, ])
         mail.content_subtype = "html"
         mail.send()

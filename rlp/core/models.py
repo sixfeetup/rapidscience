@@ -223,7 +223,7 @@ class SharedObjectMixin(models.Model):
             else:
                 emails = resolve_email_targets(viewers, exclude=exclude)
 
-                activity_mail(shared_by, self, emails)
+                activity_mail(shared_by, self, viewers)  # emails)
         return emails
 
     def get_content_type(self, resolve_polymorphic=True):
