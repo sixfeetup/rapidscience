@@ -59,43 +59,55 @@
     {% endif %}
 
 {% elif root_obj_cls_name in doc_media_list %}
-    <p>
-  {{ root_obj_cls_name }} posted by <a href="https://{{ site }}{{ obj.user.get_absolute_url }}" style="color: #3795bf; text-decoration: none">
-    {% if obj.user == request.user %}me{% else %}{{ obj.user.get_full_name }}{% endif %} </a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="to {0}" style="color: #3795bf; text-decoration: none" %} || {{ obj.submit_date|date:"j M Y" }}
-    </p>
+     {% if obj.title %}
+        <p>
+          {{ root_obj_cls_name }} posted by <a href="https://{{ site }}{{ obj.user.get_absolute_url }}" style="color: #3795bf; text-decoration: none">
+          {% if obj.user == request.user %}me{% else %}{{ obj.user.get_full_name }}{% endif %} </a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="to {0}" style="color: #3795bf; text-decoration: none" %} | {{ obj.submit_date|date:"j M Y" }}
+        </p>
 
-    <div style="margin-left: 0px;" >
-    <p style="color: #3795bf; text-decoration: none">{{ title|safe |striptags }}</p>
-    </div>
+        <div style="margin-left: 0px;" >
+            <p style="color: #3795bf; text-decoration: none">{{ title|safe |striptags }}</p>
+        </div>
 
-    {% if comment %}
-     <div style="margin-left: 0px;" style="border-left: 3px solid #e5e5e5; padding-left: 15px; font-style: italic; margin: 10px 0; color: #444444"> {{ comment|safe |striptags|truncatechars:160 }}</div>
+        {% if comment %}
+            <div style="margin-left: 0px;" style="border-left: 3px solid #e5e5e5; padding-left: 15px; font-style: italic; margin: 10px 0; color: #444444"> {{ comment|safe |striptags|truncatechars:160 }}</div>
+        {% endif %}
+
+            <h4>Content posted here from a closed group can be shared only with members of that group. All other content, posted from your personal dashboard or an open group, can be shared with any individuals and with groups to which you belong. In addition, this content can be further shared by original recipients with groups to which they belong.</h4>
+    {% else %}
+        <p> Reply by <a href="https://{{ site }}{{ obj.user.get_absolute_url }}" style="color: #3795bf; text-decoration: none">
+          {% if obj.user == request.user %}me{% else %}{{ obj.user.get_full_name }}{% endif %} </a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="on {0}" style="color: #3795bf; text-decoration: none" %} | {{ obj.submit_date|date:"j M Y" }}
+        </p>
+
+        {% if comment %}
+          <div style="margin-left: 0px;" style="border-left: 3px solid #e5e5e5; padding-left: 15px; font-style: italic; margin: 10px 0; color: #444444"> {{ comment|safe |striptags|truncatechars:160 }}</div>
+        {% endif %}
     {% endif %}
-
-    <h4>Content posted here from a closed group can be shared only with members of that group. All other content, posted from your personal dashboard or an open group, can be shared with any individuals and with groups to which you belong. In addition, this content can be further shared by original recipients with groups to which they belong.</h4>
-
 
 
 {% elif root_obj_cls_name == 'Reference' %}
-  <p>
-    {{ root_obj_cls_name }} posted by <a href="https://{{ site }}{{ obj.user.get_absolute_url }}" style="color: #3795bf; text-decoration: none">
-    {% if obj.user == request.user %}me{% else %}{{ obj.user.get_full_name }}{% endif %} </a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="with {0}" style="color: #3795bf; text-decoration: none"%} | {{ obj.submit_date|date:"j M Y" }}
+    {% if obj.title %}
+        <p>
+          {{ root_obj_cls_name }} posted by <a href="https://{{ site }}{{ obj.user.get_absolute_url }}" style="color: #3795bf; text-decoration: none">
+          {% if obj.user == request.user %}me{% else %}{{ obj.user.get_full_name }}{% endif %} </a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="with {0}" style="color: #3795bf; text-decoration: none"%} | {{ obj.submit_date|date:"j M Y" }}
 
-{##}
-{#    <div style="margin-left: 0px;" style="color: #3795bf; text-decoration: none" >#}
-{#    <p>{{ title|safe |striptags }}</p> <br><br>#}
-{#    </div>#}
+          {% if comment %}
+           <div style="margin-left: 0px;" style="border-left: 3px solid #e5e5e5; padding-left: 15px; font-style: italic; margin: 10px 0; color: #444444"> {{ comment|safe |striptags|truncatechars:160 }}<br><br> </div>
+          {% endif %}
+        </p>
+    {% else %}
+        <p> Reply by <a href="https://{{ site }}{{ obj.user.get_absolute_url }}" style="color: #3795bf; text-decoration: none">
+          {% if obj.user == request.user %}me{% else %}{{ obj.user.get_full_name }}{% endif %} </a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="on {0}" style="color: #3795bf; text-decoration: none" %} | {{ obj.submit_date|date:"j M Y" }}
+        </p>
 
-    {% if comment %}
-     <div style="margin-left: 0px;" style="border-left: 3px solid #e5e5e5; padding-left: 15px; font-style: italic; margin: 10px 0; color: #444444"> comment: {{ comment|safe |striptags|truncatechars:160 }}<br><br> </div>
+        {% if comment %}
+          <div style="margin-left: 0px;" style="border-left: 3px solid #e5e5e5; padding-left: 15px; font-style: italic; margin: 10px 0; color: #444444"> {{ comment|safe |striptags|truncatechars:160 }}</div>
+        {% endif %}
     {% endif %}
-
 
 {% else %}
  What type of notification is it. {{ root_obj_cls_name }} {{ cls_name }}  {{ both_cls_name }}
 {% endif %}
-
-  Quiero ver que son : {{ root_obj_cls_name }} {{ cls_name }}  {{ both_cls_name }}: <br><br>
 
 This notification also appears on your <a href="https://{{ site }}{% url 'dashboard' %}" style="color: #3795bf; text-decoration: none">dashboard activity feed</a> where you can bookmark it in your personal or group folder.<br><br>
 
