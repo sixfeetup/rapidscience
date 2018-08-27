@@ -1,3 +1,5 @@
+from functools import lru_cache
+
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.contrib.sites.shortcuts import get_current_site
@@ -5,6 +7,7 @@ from django import template
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
+from pip._vendor.html5lib._utils import memoize
 
 from rlp.core.utils import CREATION_VERBS
 
@@ -41,6 +44,8 @@ def blog_widget(context):
 def get_dict_item(dictionary, key):
     return dictionary.get(key)
 
+from django.template import Template
+var_template = Template("{{ var_template_var }}")
 
 class SetVarNode(template.Node):
     def __init__(self, new_val, var_name):
@@ -53,12 +58,8 @@ class SetVarNode(template.Node):
             context[self.var_name] = self.new_val
         else:
             try:
-                #context[self.var_name] = template.resolve_variable(self.new_val,context)
-                #context[self.var_name] = self.new_val.resolve(context)
-                # TODO: for shame.    Find a better way!!!
-                from django.template import Template
-                val = Template( "{{" + self.new_val + "}}")
-                context[self.var_name] = val.render(context)
+                context[self.var_name] = var_template.render({
+                    'var_template_var': context[self.new_val]})
             except Exception as e:
                 return "failed to resolve:" + self.new_val + " -- " + str(e)
         return ''

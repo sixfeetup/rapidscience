@@ -139,7 +139,12 @@ class Command(BaseCommand):
                     members = Action.objects.filter(
                         timestamp__gte=some_day_last_week,
                         timestamp__lte=timezone.now(),
+                        verb='joined',
                         action_object_content_type=ctype)
+                    # thoughts: this should be looking for members
+                    # joining themselves.   weird, but that what happens
+                    # when they join the site.  The code below should not
+                    # be check can_send_mail
                     for member in members:
                         if type(member.target) == Project:
                             if not can_send_email(user, member.target, True):

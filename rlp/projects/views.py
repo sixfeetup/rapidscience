@@ -389,7 +389,8 @@ class EditGroup(LoginRequiredMixin, FormView):
                                                    force=True)
             emails.project_invite_nonmember(request, external_addrs, project, message)
 
-            messages.info(request, "Invites Sent!")
+            if internal_addrs or external_addrs:
+                messages.info(request, "Invites Sent!")
 
             return res
 

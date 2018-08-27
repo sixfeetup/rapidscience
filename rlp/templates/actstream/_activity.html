@@ -1,164 +1,570 @@
+including actstream/_action_detail.html
+including documents/_file.html
+including documents/_image.html
+including documents/_link.html
+including documents/_video.html
+including comments/_comment.html
+including casereport/casereport_activity.html
+including discussions/discussion_count_widget.html
 {% load bookmarks comments discussion_tags el_pagination_tags core_tags casereport_tags %}
+{% load thumbnail %}
+{% load embed_video_tags %}
 
 {% lazy_paginate activity_stream %}
 {% for action in activity_stream %}
-    {% with obj=action.action_object frozen=action.data.frozen model=action.action_object_content_type.model content_type=action.action_object_content_type.id %}
-        <div class="activity-stream activity-{{ model }} verb-{{ action.verb }}">
-            {% if obj %}
-                <div class="row">
-                    <div class="col-md-11">
-                        {% if action.actor == action.action_object %}
-                            {# message #}
-                            <p>{{ action.description|safe }}</p>
-                        {% else %}
-                            <p class="small action-detail">
-                                {% include 'actstream/_action_detail.html' %}
-                            </p>
-                            {% if action.description and model != "casereport" and model != "reference" %}
-                                {% if action.verb != 'invited' %}
-                                    <blockquote>
-                                        <p>{{ action.description }}</p>
-                                    </blockquote>
-                                {% endif %}
-                            {% endif %}
-                            {% if model == 'file' %}
-                                {% include 'documents/_file.html' %}
-                            {% elif model == 'image' %}
-                                {% include 'documents/_image.html' %}
-                            {% elif model == 'link' %}
-                                {% include 'documents/_link.html' %}
-                            {% elif model == 'video' %}
-                                {% include 'documents/_video.html' %}
-                            {% elif model == 'threadedcomment' %}
-                                {% include 'comments/_comment.html' %}
-                            {% elif model == 'referenceshare' or model == 'userreference' %}
-                                {% if obj.comment %}
-                                    <blockquote>
-                                        <p>{{ obj.comment }}</p>
-                                    </blockquote>
-                                {% endif %}
-                                {% include 'bibliography/_ref_activity.html' with ref=obj %}
-                            {% elif model == 'reference' %}
-                                {% if action.description %}
-                                    <blockquote>
-                                        <p>{{ action.description }}</p>
-                                    </blockquote>
-                                {% endif %}
-                                {% include 'bibliography/_ref_activity.html' with ref=obj %}
-                            {% elif model == "casereport" %}
-                                {% if action.description and frozen.workflow_state == 'live' %}
-                                    <blockquote>
-                                        <p>{{ action.description }}</p>
-                                    </blockquote>
-                                {% endif %}
-                                {% include 'casereport/casereport_activity.html' %}
-                            {% endif %}
+  {% with obj=action.action_object actor=action.actor date_updated=obj.date_updated|date:"j M Y" frozen=action.data.frozen model=action.action_object_content_type.model content_type=action.action_object_content_type.id %}
+    <div class="activity-stream activity-{{ model }} verb-{{ action.verb }}">
+      {% if obj %}
+        <div class="row">
+          <div class="col-md-11">
+            {% if actor == obj %}
+              {# message #}
+              <p>{{ action.description|safe }}</p>
+            {% else %}
+              <p class="small action-detail">
+                {#object#}
+                {% if not action.verb|is_workflow_verb and not action_object.is_editorial_note %}
+                  {% if action.action_object_content_type.model == 'threadedcomment' and obj.is_discussion or action.action_object_content_type.model != 'threadedcomment' %}
+                    {% if obj.shareable %}
+                      <i class="fa fa-unlock"
+                         title="This item has been shared outside of closed groups."
+                         aria-hidden="true"></i>
+                    {% else %}
+                      <i class="fa fa-lock"
+                         title="This item is only shared with members of this closed group."
+                         aria-hidden="true"></i>
+                    {% endif %}
+                  {% endif %}
+                {% endif %}
+                {% if action.verb == 'approved' %}
+                  <!-- SUPPRESSED in favor of joined and declined actions which are more targeted -->
+                  {% if action.action_object_content_type.model == 'casereport' %}
+                    Case Report submitted
+                    {#      by <a href="{{ actor.get_absolute_url }}">{% if request.user == actor %} me {% else %} {{ actor.get_full_name }}{% endif %}</a>#}
+                  {% endif %}
+                {% elif action.verb == 'joined' %}
+                  {# could be in the user's activity feed or the group's activity feed #}
+                  {% if actor == request.user %}
+                    {% if obj.approver %}Moderator
+                      {{ obj.approver|link }} has {% else %}We
+                      have {% endif %}approved
+                    {% if obj.user == request.user %} your
+                    {% else %} {{ obj.user|link }}'s
+                    {% endif %}
+                    request to join the {{ obj.project|link }}
+                    group.
+                    {% if obj.user == request.user %}
+                      <p>You may post discussions, files, case reports, and
+                        references to this group, and participate in member
+                        discussions.
+                        If you wish to invite others to join the group, please
+                        contact the moderator(s).
+                      </p>
+                      If you have questions please contact us at &lt;
+                      <a href="mailto:support@rapidscience.org">support@rapidscience.org</a>
+                      &gt;
+                    {% endif %}
+                  {% else %}
+                    {% if project %}
+                      {#  on the project AF #}
+                      Welcome to
+                      {{ obj.user|link }} who has joined this
+                      group.
+                    {% else %}
+                      Welcome to
+                      {{ obj.user|link }} who has joined the
+                      {{ obj.project|link }} group.
+                    {% endif %}
+                  {% endif %}
+                {% elif action.verb == 'declined' %}
+                  {#    only visible to the declined user's activity feed#}
+                  With apologies, the
+                  {{ obj.project }} group is currently closedto
+                  new members.
+                  <p>You may, however, create a new group (from the <a
+                    href="{% url "projects:projects_list" %}">All Groups</a>
+                    page) related to this topic and invite members from within
+                    or outside the Sarcoma Central network.
+                  </p>
+                  If you have questions please contact us at &lt;
+                  <a href="mailto:support@rapidscience.org">support@rapidscience.org</a>
+                  &gt;
+                {% elif action.verb == 'invited' %}
+                  {# visible on their Activity Feed if a member invites another existing member to an open group #}
+                  You are invited by<a
+                  href="{{ actor.get_absolute_url }}">{{ actor.get_full_name }}</a>
+                  to join<a
+                  href="{{ obj.get_absolute_url }}">{{ obj.title }}</a>
+                  and participate in member discussions and file sharing.<br>
+                  <br>
 
-                            {# tags and workflow status #}
-                            {% if action.action_object.tags or model == "casereport" %}
-                                <p class="tags">
-                                    {% if model == "casereport" %}
-                                        {% if request.user.is_superuser or request.user == obj.primary_author %}
-                                            <span class="btn btn-tag btn-xs cr-workflow">
-                                                <i class="{{ obj.get_workflow_icon }}"
-                                                   aria-hidden="true"></i>
+                  {% if action.description %}
+                    <div class="more">{% autoescape off %}
+                      {{ action.description }}{% endautoescape %}</div>
+                  {% endif %}
+
+                  The group’s {{ obj|show_mods }}.<br><br>
+
+                  To join the group, click<a
+                  href="{% url "projects:projects_join" pk=obj.pk %}">Join</a>
+                  . You can also visit the
+                  <a href="{% url "projects:projects_list" %}">All Groups</a>
+                  page to read more about the group and click the Join button
+                  there. As an open group, member access is immediate.<br><br>
+
+
+                {% else %}
+
+                  {{ obj.display_type }}
+
+                  {#verb#}
+                  {% if action.verb == 'reply' or action.verb == 'comment' %}
+                    <!-- verb suppressed to read like Comment by ... -->
+                  {% elif action.verb == 'sent back' %}
+                    {{ action.verb|verb_alias }} to the author
+                  {% elif action.verb == 'published' %}
+                    <!-- posted or shared depending... -->
+                    {% if obj.get_nonpublished_shares %}
+                      shared
+                    {% else %}
+                      posted
+                    {% endif %}
+                  {% else %}
+                    {{ action.verb|verb_alias }}<!-- (aliased from {{ action.verb }}) -->
+                  {% endif %}
+
+                {% endif %}
+              {% if action.verb != 'joined' %}
+                {# actor #}
+                by
+                {% if action.verb == 'published' %}
+                  <!-- swapping author for admin -->
+                  {% with author=obj.primary_author %}
+                    <a href="{{ author.get_absolute_url }}">
+                      {% if request.user == author %} me {% else %}
+                        {{ author.get_full_name }}{% endif %}</a>
+                  {% endwith %}
+
+                  {# with targets #}
+                  {% if obj.get_viewers %}
+                    {% display_shared_with obj request.user "with {0}." %}
+                  {% endif %}
+                {% elif action.verb == 'added' or action.verb == 'uploaded' or action.verb == 'started' or action.verb == 'replied' or action.verb == 'created' or action.verb == 'posted' %}
+                  {% with author=actor %}
+                    <a href="{{ author.get_absolute_url }}">
+                      {% if request.user == author %} me {% else %}
+                        {{ author.get_full_name }}{% endif %}</a>
+                  {% endwith %}
+                  {# to targets #}
+                  {% with all_targets=action.all_targets|omit:actor %}
+                    {% if all_targets %} to
+                      {{ all_targets.0|link }}<!-- no space
+                -->{% for target in all_targets|slice:"1:" %}
+                      {% if forloop.last %} and {% else %}, {% endif %}
+                      {{ target|link }}{% endfor %}
+                    {% endif %}
+                  {% endwith %}
+                {% elif action.verb == 'shared' %}
+                  <a href="{{ actor.get_absolute_url }}">
+                    {% if request.user == actor %} me {% else %}
+                      {{ actor.get_full_name }}{% endif %}</a>
+                  {# for references, etc    the target is the share, and there may or may not be more in the all_targets #}
+                  with {{ action.target|link }}
+                  {% with all_targets=action.all_targets|omit:action.target %}
+                    {% if all_targets %}
+                      {% for target in all_targets %}{% if forloop.last %} and
+                      {% else %}, {% endif %}{{ target|link }}{% endfor %}
+                    {% endif %}
+                  {% endwith %}
+                {% else %}
+                  <a href="{{ actor.get_absolute_url }}">
+                    {% if request.user == actor %} me {% else %}
+                      {{ actor.get_full_name }}{% endif %}</a>
+                {% endif %}
+              {% endif %}
+              {% if action.action_object_content_type.model == 'threadedcomment' and action.verb != 'started' and action.verb != 'shared' %}
+                {% with comment=obj parent_user=obj.get_parent.user discussion_root=comment.discussion_root %}
+                  {% if comment.is_reply or 'casereport' in discussion_root.content_object.get_content_type or 'document' in comment.discussion_root.content_object.get_content_type or 'userreference' in comment.discussion_root.content_object.get_content_type or comment.is_editorial_note %}
+                    on{% endif %}
+                  {% if 'casereport' in discussion_root.content_object.get_content_type or 'document' in discussion_root.content_object.get_content_type %}
+                    <a
+                      href="{{ discussion_root.content_object.get_absolute_url }}">
+                      {% if comment.is_reply %}
+                        {{ discussion_root.user }}: {% endif %}
+                      {{ discussion_root.content_object.title|truncatewords_html:10 }}
+                    </a>
+                  {% elif 'userreference' in discussion_root.content_object.get_content_type %}
+                    <a
+                      href="{{ discussion_root.content_object.get_absolute_url }}">
+                      {% if comment.is_reply %}
+                        {{ discussion_root.user }}: {% endif %}
+                      {{ discussion_root.content_object.reference.title|striptags }}
+                    </a>
+                  {% elif comment.is_editorial_note %}
+                    <a
+                      href="{{ comment.content_object.casereport.get_absolute_url }}">
+                      {{ comment.content_object.casereport.title|truncatewords_html:10 }}
+                    </a>
+                  {% else %}
+                    <a href="{{ discussion_root.get_absolute_url }}">
+                      {% if comment.is_reply %}
+                        {{ discussion_root.user }}: {% endif %}
+                      {{ discussion_root.title|truncatewords_html:10 }}
+                    </a>
+                  {% endif %}
+                {% endwith %}
+              {% endif %}
+              {# timestamp #}
+              {% if action.verb != 'invited' %}
+                {#    {%  if action.verb == 'shared' %}#}
+                {#      {% if action.data.frozen.workflow_state == 'draft' or action.data.frozen.workflow_state == 'processing' %}#}
+                {#        pending publication#}
+                {#      {% endif %}#}
+                {#    {% endif %}#}
+                | {{ action.timestamp|date:"j M Y" }}
+              {% endif %}
+
+              </p>
+              {% if action.description and model != "casereport" and model != "reference" %}
+                {% if action.verb != 'invited' %}
+                  <blockquote>
+                    <p>{{ action.description }}</p>
+                  </blockquote>
+                {% endif %}
+              {% endif %}
+              {% if model == 'file' %}
+                {% user_can_link obj as can_link %}
+
+                <h4>
+                  {% if can_link %}
+                    <a href="{{ obj.get_absolute_url }}">{% endif %}
+                  {{ obj.title }}
+                  {% if can_link %}</a>{% endif %}
+                </h4>
+                {% if obj.description %}
+                  <div class="more">{% autoescape off %}
+                    {{ obj.description }}{% endautoescape %}</div>{% endif %}
+
+                {% if action.verb == 'shared' %}
+                  <p class="small meta">
+                    {{ obj.display_type }} posted by
+                    <a
+                      href="{% url 'profile' obj.owner_id %}">{{ obj.owner }}</a>
+                    | {{ date_updated }}<br/>
+                    {% display_shared_with obj request.user %}
+                  </p>
+                {% endif %}
+
+              {% elif model == 'image' %}
+                {% user_can_link obj as can_link %}
+                {% thumbnail obj.upload 700x160 crop upscale HIGH_RESOLUTION as thumbnail %}
+                <a href="{{ obj.upload.url }}" target="_blank">
+                  <img class="thumbnail-image" alt="{{ obj.title }}"
+                       src="{{ thumbnail.url }}" width="100%">
+                </a>
+
+                <h4>
+                  {% if can_link %}
+                    <a href="{{ obj.get_absolute_url }}">{% endif %}
+                  {{ obj.title }}
+                  {% if can_link %}</a>{% endif %}
+                </h4>
+
+                {% if obj.description %}
+                  <div class="more">{% autoescape off %}
+                    {{ obj.description }}{% endautoescape %}</div>
+                {% endif %}
+
+                {% if action.verb == 'shared' %}
+                  <p class="small meta">
+                    {{ obj.display_type }} posted by
+                    <a
+                      href="{% url 'profile' obj.owner_id %}">{{ obj.owner }}</a>
+                    | {{ date_updated }}<br/>
+                    {% display_shared_with obj request.user %}
+                  </p>
+                {% endif %}
+
+
+              {% elif model == 'link' %}
+                {% user_can_link obj as can_link %}
+                <h4>
+                  {% if can_link %}
+                    <a href="{{ obj.get_absolute_url }}">{% endif %}
+                  {{ obj.title }}
+                  {% if can_link %}</a>{% endif %}
+                </h4>
+                <div class="more">{% autoescape off %}
+                  {{ obj.description }}{% endautoescape %}</div>
+
+                {% if action.verb == 'shared' %}
+                  <p class="small meta">
+                    {{ obj.display_type }} posted by
+                    <a
+                      href="{% url 'profile' obj.owner_id %}">{{ obj.owner }}</a>
+                    | {{ date_updated }}<br/>
+                    {% display_shared_with obj request.user %}
+                  </p>
+                {% endif %}
+
+              {% elif model == 'video' %}
+                {% user_can_link obj as can_link %}
+                {% video obj.share_link as shared_video %}
+                {% video shared_video 'small' %}
+                {% endvideo %}
+                <h4>
+                  {% if can_link %}
+                    <a href="{{ obj.get_absolute_url }}">{% endif %}
+                  {{ obj.title }}
+                  {% if can_link %}</a>{% endif %}
+                </h4>
+                <div class="more">{% autoescape off %}
+                  {{ obj.description }}{% endautoescape %}</div>
+                {% if action.verb == 'shared' %}
+                  <p class="small meta">
+                    {{ obj.display_type }} posted by
+                    <a
+                      href="{% url 'profile' obj.owner_id %}">{{ obj.owner }}</a>
+                    | {{ date_updated }}<br/>
+                    {% display_shared_with obj request.user %}
+                  </p>
+                {% endif %}
+
+              {% elif model == 'threadedcomment' %}
+                {% user_can_link obj as can_link %}
+                {% if obj.title %}
+                  <h4>
+                    {% if can_link %}
+                      <a href="{{ obj.get_absolute_url }}">{% endif %}
+                    {{ obj.title }}
+                    {% if can_link %}</a>{% endif %}
+                  </h4>
+                {% endif %}
+                {% with truncated_comment=obj.comment|truncatewords:60 %}
+                  <div id="c{{ obj.id }}" class="small">
+                    {% autoescape off %}
+                      {{ truncated_comment }}{% endautoescape %}
+                    {% ifnotequal obj.comment|truncatewords:60|length obj.comment|truncatewords:61|length %}
+                      <a href="{{ obj.get_absolute_url }}"></a>
+                    {% endifnotequal %}
+                  </div>
+                {% endwith %}
+                {% if action.verb == 'shared' %}
+                  <p class="small meta">
+                    {# deal with old dirty data - actions with no user #}
+                    {% if obj.user %}
+                      Posted by
+                      <a
+                        href="{% url 'profile' obj.user.pk %}">
+                        {% if request.user == obj.user %}
+                          me {% else %}
+                          {{ obj.user }} {% endif %}</a>
+                    {% endif %}| {{ obj.submit_date|date:"j M Y" }}<br/>
+                    {% display_shared_with obj request.user %}
+                  </p>
+                {% endif %}
+
+              {% elif model == 'referenceshare' or model == 'userreference' %}
+                {% if obj.comment %}
+                  <blockquote>
+                    <p>{{ obj.comment }}</p>
+                  </blockquote>
+                {% endif %}
+                {% include 'bibliography/_ref_activity.html' with ref=obj %}
+              {% elif model == 'reference' %}
+                {% if action.description %}
+                  <blockquote>
+                    <p>{{ action.description }}</p>
+                  </blockquote>
+                {% endif %}
+                {% include 'bibliography/_ref_activity.html' with ref=obj %}
+              {% elif model == "casereport" %}
+                {% if action.description and frozen.workflow_state == 'live' %}
+                  <blockquote>
+                    <p>{{ action.description }}</p>
+                  </blockquote>
+                {% endif %}
+                {% user_can_link casereport as can_link %}
+                <!-- casereport/casereport_activity -->
+                {% with casereport=obj %}
+                  <h4>
+                    {% if can_link %}
+                      <a href="{{ casereport.get_absolute_url }}">{% endif %}
+                    {{ casereport.title }}
+                    {% if can_link %}</a>{% endif %}
+                  </h4>
+                  {% if action.verb == 'shared' %}
+                    <p class="small meta">
+                      Posted by
+                      {{ casereport.primary_author }}
+                      | {{ casereport.date_added|date:"j M Y" }}<br/>
+                      {% display_shared_with casereport request.user %}
+                    </p>
+                  {% endif %}
+                {% endwith %}
+                <!-- /casereport/casereport_activity -->
+              {% endif %}
+
+              {% comment down to 4.5  1s %}{% endcomment %}
+              {# tags and workflow status #}
+              {% if obj.tags or model == "casereport" %}
+                <p class="tags">
+                  {% if model == "casereport" %}
+                    {% if request.user.is_superuser or request.user == obj.primary_author %}
+                      <span class="btn btn-tag btn-xs cr-workflow">
+                                                <i
+                                                  class="{{ obj.get_workflow_icon }}"
+                                                  aria-hidden="true"></i>
 {#                                            (frozen.state:{{ frozen.workflow_state }}, statelog_state:{{ frozen.statelog_state }}, last_transition:{{ frozen.transition }}, live.state:{{ obj.workflow_state }})#}
                                                 {% firstof frozen.workflow_state obj.workflow_state as cr_workflow_state %}
-                                                {% if cr_workflow_state == 'live' %}
-                                                    Posted
-                                                {% elif cr_workflow_state == 'draft' %}
-                                                    Draft
-                                                {% elif cr_workflow_state == 'author review' %}
-                                                    Author Review
-                                                {% elif cr_workflow_state == 'processing' %}
-                                                    Submitted
-                                                {% else %}
-                                                    {{ cr_workflow_state }}
-                                                {% endif %}
-                                            </span>
-                                        {% endif %}
-                                    {% endif %}
-                                    {% if model == 'reference' %}
-                                        {% display_tag_links action.action_object.current_user_reference %}
-                                    {% else %}
-                                        {% display_tag_links action.action_object %}
-                                    {% endif %}
-                                </p>
-                            {% endif %}
-                        {% endif %}
-                    </div>
-                    <div class="col-md-1 activity-actions">
-                        {% if project and request.user not in project.active_members %}
-                            <a href="{% url "projects:projects_join" pk=project.id %}">Join to discuss, share, etc.</a>
+                        {% if cr_workflow_state == 'live' %}
+                          Posted
+                        {% elif cr_workflow_state == 'draft' %}
+                          Draft
+                        {% elif cr_workflow_state == 'author review' %}
+                          Author Review
+                        {% elif cr_workflow_state == 'processing' %}
+                          Submitted
                         {% else %}
-                            {% if model != 'referenceshare' %}
-                                {% include 'discussions/discussion_count_widget.html' %}
-                            {% endif %}
-                            {% if model == "casereport" and obj.workflow_state != 'live' %}
-                                <!-- SUPPRESSED BOOKMARK ICON for non-live {{action.verb }} CR -->
-                            {% elif action.verb|is_workflow_verb %}
-                                <!-- SUPPRESSED BOOKMARK ICON for workflow verb:{{ action.verb }} -->
-                            {% elif not obj.is_bookmarkable %}
-                                <!-- SUPPRESSED BOOKMARK ICON for non-bookmarkable obj -->
-                            {% else %}
-                                {% if request.user != obj.get_poster %}
-                                    {% if project %}
-                                        <form class="bookmark-form" method="POST"
-                                              action="{% toggle_bookmark_url content=obj viewer=project %}">
-                                    {% else %}
-                                        <form class="bookmark-form" method="POST"
-                                              action="{% toggle_bookmark_url content=obj viewer=user %}">
-                                    {% endif %}
-                                    {% csrf_token %}
-                                    <input type="hidden"
-                                           name="{% if project %}group{% else %}dashboard{% endif %}"
-                                           value="on"/>
-                                    <input type="hidden" name="content_type"
-                                           value="{{ content_type }}"/>
-                                    <input type="hidden" name="content_id"
-                                           value="{{ obj.id }}"/>
-                                    <a href="#" class="bookmark-trigger"
-                                       data-toggle="tooltip"><i class="fa fa-star"
-                                                                aria-hidden="true"></i></a>
-                                    </form>
-                                {% else %}
-                                    <!-- SUPPRESSED BOOKMARK ICON because the user already the creator/poster -->
-                                {% endif %}
-                            {% endif %}
-                            {% if obj.shareable %}
-                                {% if model == 'file' or model == 'image' or model == 'link' or model == 'video' or model == 'document' %}
-                                    <a class="share-link"
-                                       href="/send/documents/document/{{ obj.id }}"
-                                       title="Share"><i class="fa fa-share"></i></a>
-                                {% elif model == 'casereport' and not action.verb|is_workflow_verb %}
-                                    {% if obj.primary_author == request.user %}
-                                        <a class="share-link"
-                                           href="/send/casereport/casereport/{{ obj.id }}"
-                                           title="Share"><i class="fa fa-share"></i></a>
-                                    {% endif %}
-                                {% elif model == 'threadedcomment' and obj.is_discussion %}
-                                    {% if obj.discussion_root.is_discussion %}
-                                        <a class="share-link"
-                                           href="/send/discussions/threadedcomment/{{ obj.discussion_root.id }}"
-                                           title="Share"><i class="fa fa-share"></i></a>
-                                    {% endif %}
-                                {% elif model == 'userreference' %}
-                                    <a class="share-link"
-                                       href="/send/bibliography/userreference/{{ obj.id }}"
-                                       title="Share"><i class="fa fa-share"></i></a>
-                                {% else %}
-                                    <!-- dont know what to do with model {{ model }} -->
-                                {% endif %}
-                            {% endif %}
+                          {{ cr_workflow_state }}
                         {% endif %}
-
-                    </div>
-                </div>
+                                            </span>
+                    {% endif %}
+                  {% endif %}
+                  {% if model == 'reference' %}
+                    {% comment .4s %}{% endcomment %}
+                    {% display_tag_links obj.current_user_reference %}
+                  {% else %}
+                    {% display_tag_links obj %}
+                  {% endif %}
+                </p>
+              {% endif %}
+              {% comment %}{% endcomment %}
             {% endif %}
+          </div>
+          <div class="col-md-1 activity-actions">
+            {% if project and request.user not in project.active_members %}
+              <a href="{% url "projects:projects_join" pk=project.id %}">Join to
+                discuss, share, etc.</a>
+            {% else %}
+              {% if model != 'referenceshare' %}
+                {% comment %}
+    displays an icon indicating the size of the associated threaded discussion
+    for the action.action_object or root comment of a discussion
+    or obj
+                {%  endcomment %}
+                <!-- discussion_count_widget.html -->
+{% comment .5s %}{% endcomment %}
+                {% setvar "0" as comment_count %}
+                {% setvar "" as discussion_link %}
+
+                {% if action and obj %}
+                  <!-- from action_object -->
+                  {% comment %}
+                    {% setvar action_object.get_content_object_url as discussion_link %}
+                    {% if not discussion_link %}
+                      {%  setvar action_object.get_absolute_url as discussion_link %}
+                    {% endif %}
+                  {%  endcomment %}
+                  {% setvar obj.get_absolute_url as discussion_link %}
+                  {% get_threaded_comment_count for obj as comment_count %}
+
+                {% elif obj %}
+                  <!-- from obj -->
+                  {% setvar obj.get_absolute_url as discussion_link %}
+                  {% if obj.current_user_reference %}
+                    {%  get_threaded_comment_count for obj.current_user_reference as comment_count %}<!-- cant seem to get_threaded_comment_count for {{ obj }} -->
+                  {% else %}
+                    {%  get_threaded_comment_count for obj as comment_count %}<!-- cant seem to get_threaded_comment_count for {{ obj }} -->
+                  {% endif %}
+
+                {% elif comment %}
+                  <!-- from comment object -->
+                  {% setvar comment.get_absolute_url as discussion_link %}
+                  {% get_threaded_comment_count for comment as comment_count %}
+                {% endif %}
+
+                {% if discussion_link %}
+                  {% if action.verb != 'invited' %}
+                    <a
+                      class="comment-count {% if comment_count < 1 %}empty{% endif %}"
+                      type="button" title="Comments"
+                      href="{{ discussion_link }}">
+                      <i class="fa fa-comment" aria-hidden="true"></i><br/>
+                      {% if comment_count > 0 %}<span
+                        class="comment-count-text">{{ comment_count }}</span> {% endif %}
+                    </a>
+                  {% endif %}
+                {% endif %}
+                <!-- end discussion_count_widget.html -->
+{% comment %}{% endcomment %}
+              {% endif %}
+              {% if model == "casereport" and obj.workflow_state != 'live' %}
+                <!-- SUPPRESSED BOOKMARK ICON for non-live {{action.verb }} CR -->
+              {% elif action.verb|is_workflow_verb %}
+                <!-- SUPPRESSED BOOKMARK ICON for workflow verb:{{ action.verb }} -->
+              {% elif not obj.is_bookmarkable %}
+                <!-- SUPPRESSED BOOKMARK ICON for non-bookmarkable obj -->
+              {% else %}
+                {% if request.user != obj.get_poster %}
+                  {% if project %}
+                    <form class="bookmark-form" method="POST"
+                          action="{% toggle_bookmark_url content=obj viewer=project %}">
+                  {% else %}
+                    <form class="bookmark-form" method="POST"
+                          action="{% toggle_bookmark_url content=obj viewer=user %}">
+                  {% endif %}
+                {% csrf_token %}
+                <input type="hidden"
+                       name="{% if project %}group{% else %}dashboard{% endif %}"
+                       value="on"/>
+                <input type="hidden" name="content_type"
+                       value="{{ content_type }}"/>
+                <input type="hidden" name="content_id"
+                       value="{{ obj.id }}"/>
+                <a href="#" class="bookmark-trigger"
+                   data-toggle="tooltip"><i class="fa fa-star"
+                                            aria-hidden="true"></i></a>
+                </form>
+                {% else %}
+                  <!-- SUPPRESSED BOOKMARK ICON because the user already the creator/poster -->
+                {% endif %}
+              {% endif %}
+              {% if obj.shareable %}
+                {% if model == 'file' or model == 'image' or model == 'link' or model == 'video' or model == 'document' %}
+                  <a class="share-link"
+                     href="/send/documents/document/{{ obj.id }}"
+                     title="Share"><i class="fa fa-share"></i></a>
+                {% elif model == 'casereport' and not action.verb|is_workflow_verb %}
+                  {% if obj.primary_author == request.user %}
+                    <a class="share-link"
+                       href="/send/casereport/casereport/{{ obj.id }}"
+                       title="Share"><i class="fa fa-share"></i></a>
+                  {% endif %}
+                {% elif model == 'threadedcomment' and obj.is_discussion %}
+                  {% if obj.discussion_root.is_discussion %}
+                    <a class="share-link"
+                       href="/send/discussions/threadedcomment/{{ obj.discussion_root.id }}"
+                       title="Share"><i class="fa fa-share"></i></a>
+                  {% endif %}
+                {% elif model == 'userreference' %}
+                  <a class="share-link"
+                     href="/send/bibliography/userreference/{{ obj.id }}"
+                     title="Share"><i class="fa fa-share"></i></a>
+                {% else %}
+                  <!-- dont know what to do with model {{ model }} -->
+                {% endif %}
+              {% endif %}
+            {% endif %}
+
+          </div>
         </div>
-    {% endwith %}
-    <hr>
+      {% endif %}
+    </div>
+  {% endwith %}
+  <hr>
 {% empty %}
-    <p>There is no recent activity</p>
+  <p>There is no recent activity</p>
 {% endfor %}
 {% show_more %}
+
