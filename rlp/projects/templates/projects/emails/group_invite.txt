@@ -7,7 +7,7 @@ You are invited by {{ user }} to join {{ project_title }} and participate in mem
 {% endif %}
 
 To join the group, click <a href="{{ project_join }}">Join</a>.
-You can also visit the <a href="{{ projects_list }}"All Groups</a> page to read more about the group and its moderator(s), and click the Join button there.
+You can also visit the <a href="{{ projects_list }}">All Groups</a> page to read more about the group and its moderator(s), and click the Join button there.
 
 
 Sincerely,<br><br>
