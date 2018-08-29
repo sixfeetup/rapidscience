@@ -83,7 +83,7 @@ def project_invite_member(request, invitees, project, message):
     subject = "{0} invites you to join {1}".format(
         request.user.get_full_name(),
         project.title)
-    template = "projects/emails/member_group_invite"
+    template = "projects/emails/group_invite"
     body = render_to_string('{}.txt'.format(template), data)
 
     for member in invitees:
@@ -131,7 +131,7 @@ def project_invite_nonmember(request, invitees, project, message):
             'message': message
         }
         subject = "Invitation to join {}".format(project.title)
-        template = "projects/emails/nonmember_group_invite"
+        template = "projects/emails/group_invite"
         body = render_to_string('{}.txt'.format(template), data)
         mail = EmailMessage(subject, body,
                             settings.DEFAULT_FROM_EMAIL,
