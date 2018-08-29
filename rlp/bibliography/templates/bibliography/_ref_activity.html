@@ -33,7 +33,11 @@
 {% if action.verb == 'shared' %}
     {% if not search %}<p class="small meta">{% endif %}
         Posted by
-        <a href="{% url 'profile' ref.user_id  %}">{% if request.user == ref.user %} me {% else %} {{ ref.user }} {% endif %}</a>
+        {% if ref.user_id %}
+          <a href="{% url 'profile' ref.user_id  %}">
+            {% endif %}
+        {% if request.user == ref.user %} me {% else %} {{ ref.user }} {% endif %}
+        {% if ref.user_id %}</a>{% endif %}
         | {{ ref.date_updated|date:"j M Y" }}{% if not search %}<br />{% endif %}
       {% if ref %}
           {% display_shared_with ref request.user %}
