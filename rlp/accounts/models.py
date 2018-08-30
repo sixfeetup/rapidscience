@@ -28,7 +28,7 @@ DIGEST_PREF_CHOICES = (
 EMAIL_PREF_CHOICES = (
     ('user_and_group', 'Email me immediately when an item is shared with me individually or with groups to which I belong.'),
     ('user_only', 'Email me immediately only when an item is shared with me individually.'),
-    ('disabled', 'Do not send immediate email notifications (*).')
+    ('disabled', 'Do not send immediate email notifications.*')
 )
 
 
