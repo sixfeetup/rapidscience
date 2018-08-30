@@ -77,7 +77,18 @@
         </div>
         <div class="navbar-collapse collapse navbar-right">
             <ul class="nav navbar-nav">
-                {% show_menu 0 3 100 100 "menu.html" %}
+                <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                <li class=" dropdown">
+                    <a id="nav-6" class="dropdown-toggle" href="/groups/">Groups <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{% url 'projects:projects_list' %}">All Groups</a></li>
+                    {% for project in request.user.active_projects %}
+                        <li><a href="{{ project.get_absolute_url }}">{{ project.title }}</a></li>
+                    {% endfor %}
+                    </ul>
+                </li>
+                <li><a href="{% url 'haystac' %}">Cases Central</a></li>
+                <li><a href="{% url 'about' %}">About</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-secondary">
                 {% if request.user.is_authenticated %}
