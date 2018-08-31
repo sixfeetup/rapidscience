@@ -51,7 +51,7 @@ def approve_to_requester(request, membership, group):
     mail.send()
 
 
-def project_invite_member(request, invitees, project, message):
+def invite_existing_member_to_group(request, invitees, project, message):
     # invitees should be a list of email addresses
     project_url = request.build_absolute_uri(
         reverse('projects:projects_detail',
@@ -83,7 +83,7 @@ def project_invite_member(request, invitees, project, message):
     subject = "{0} invites you to join {1}".format(
         request.user.get_full_name(),
         project.title)
-    template = "projects/emails/group_invite"
+    template = "projects/emails/invite_existing_member_to_group"
     body = render_to_string('{}.txt'.format(template), data)
 
     for member in invitees:
@@ -96,7 +96,7 @@ def project_invite_member(request, invitees, project, message):
         mail.send()
 
 
-def project_invite_nonmember(request, invitees, project, message):
+def invite_nonmember_to_group(request, invitees, project, message):
     # invitees is a list of email addresses.
     # Create an inactive account for each
     for ext in invitees:
@@ -104,7 +104,7 @@ def project_invite_nonmember(request, invitees, project, message):
             # check if member already exists, send the member email
             member = User.objects.get(email=ext)
             if member.is_active:
-                project_invite_member(request, [member.email], project, message)
+                invite_existing_member_to_group(request, [member.email], project, message)
                 return
             # else send the nonmember email
         except User.DoesNotExist:
@@ -131,7 +131,7 @@ def project_invite_nonmember(request, invitees, project, message):
             'message': message
         }
         subject = "Invitation to join {}".format(project.title)
-        template = "projects/emails/group_invite"
+        template = "projects/emails/invite_non_member_to_group"
         body = render_to_string('{}.txt'.format(template), data)
         mail = EmailMessage(subject, body,
                             settings.DEFAULT_FROM_EMAIL,
