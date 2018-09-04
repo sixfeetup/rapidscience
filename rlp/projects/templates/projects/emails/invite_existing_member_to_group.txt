@@ -12,4 +12,4 @@ You can also visit the <a href="{{ projects_list }}">All Groups</a> page to read
 <br>
 Sincerely,<br><br>
 
-The <a href="https://sarcoma.rapidscience.org/">Sarcoma Central</a> Team <a href="https://twitter.com/RapidScience/">@RapidScience</a><br><br>
+The <a href="https://www.rapidscience.org/sarcoma-central/">Sarcoma Central</a> Team <a href="https://twitter.com/RapidScience/">@RapidScience</a><br><br>
