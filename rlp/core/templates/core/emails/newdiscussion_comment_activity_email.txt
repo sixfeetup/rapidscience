@@ -14,5 +14,5 @@ This notification also appears on your <a href="{{ dash_link }}">Dashboard Activ
 
 Sincerely,<br><br>
 
-The <a href="https://www.rapidscience.org/sarcoma-central/">Sarcoma Central</a> Team <a href="https://twitter.com/RapidScience/">@RapidScience</a><br><br>
+The <a href="http://www.rapidscience.org/sarcoma-central/">Sarcoma Central</a> Team <a href="https://twitter.com/RapidScience/">@RapidScience</a><br><br>
 
