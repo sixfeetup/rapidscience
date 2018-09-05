@@ -21,7 +21,7 @@ phone_digits_re = re.compile(r'^(?:1-?)?(\d{3})[-\.]?(\d{3})[-\.]?(\d{4}).*$')
 
 DIGEST_PREF_CHOICES = (
     ('enabled', 'Email me a weekly digest of all items shared with me and with groups to which I belong.'),
-    ('disabled', 'Do not email me a weekly digest (*). I will check my Dashboard to view shared items')
+    ('disabled', 'Do not email me a weekly digest (*). I will check my Dashboard to view shared items.')
 )
 
 
