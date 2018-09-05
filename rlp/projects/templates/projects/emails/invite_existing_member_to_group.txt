@@ -1,9 +1,10 @@
-You are invited by {{ user }} to join {{ project_title }} and participate in member discussions and file sharing.<br>
+You are invited by {{ user }} to join {{ project_title }} and participate in member discussions and file sharing.<br><br>
 
 {% if message %}
 <div style="margin-left: 20px;">
 <i>{{ message|safe }}</i>
 </div>
+<br><br>
 {% endif %}
 
 To join the group, click <a href="{{ project_join }}">Join</a>.
@@ -12,4 +13,5 @@ You can also visit the <a href="{{ projects_list }}">All Groups</a> page to read
 <br><br>
 Sincerely,<br><br>
 
-The <a href="http://www.rapidscience.org/sarcoma-central/">Sarcoma Central</a> Team <a href="https://twitter.com/RapidScience/">@RapidScience</a><br><br>
+The <a href="http://www.rapidscience.org/sarcoma-central/">Sarcoma Central</a> team <br/>
+<a href="https://twitter.com/RapidScience/">@RapidScience</a><br><br>
