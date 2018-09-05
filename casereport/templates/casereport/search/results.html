@@ -15,7 +15,7 @@
                             {{ casereport.title }}
                         </a>
                     </h3>
-                    Case ID: {{ casereport.id }} | {{ casereport.get_author|capfirst }}{% if casereport.primary_author.institution.country %},  {{ casereport.primary_author.institution.country }}{% endif %}
+                    Case ID: {{ casereport.id }} {# | {{ casereport.get_author|capfirst }}{% if casereport.primary_author.institution.country %},  {{ casereport.primary_author.institution.country }}{% endif %} #}
                      |
                         {% if workflow_state == 'draft' %}
                             Created:
