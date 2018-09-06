@@ -23,9 +23,13 @@ class CustomUserAdmin(UserAdmin):
         }),
         (_('Profile'), {
             'fields': (
-                'title', 'degrees', 'bio', 'research_interests', 'website', 'photo', 'institution',
-                'linkedin', 'twitter', 'email_prefs'),
+                'title', 'degrees', 'bio', 'research_interests', 'website',
+                'photo', 'institution', 'linkedin', 'twitter',),
             'classes': ('collapse',)
+        }),
+        (_('Profile-Level Email Preferences'), {
+            'fields': ('email_prefs', 'digest_prefs',),
+            'classes': ('collapse',),
         }),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
                                        'groups', 'user_permissions'),
@@ -39,7 +43,8 @@ class CustomUserAdmin(UserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('first_name', 'last_name', 'email', 'institution', 'password1', 'password2'),
+            'fields': ('first_name', 'last_name', 'email', 'institution',
+                       'password1', 'password2'),
         }),
     )
     form = UserChangeForm
@@ -47,7 +52,8 @@ class CustomUserAdmin(UserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('email', 'first_name', 'last_name', 'is_staff', 'email_setting', 'is_active')
+    list_display = ('email', 'first_name', 'last_name', 'is_active', 'is_staff',
+                    'email_setting', 'digest_setting')
     readonly_fields = ['date_joined', 'last_login']
     search_fields = (
         'email', 'first_name', 'last_name',

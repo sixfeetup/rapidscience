@@ -173,14 +173,19 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
         return self.email
 
     def get_short_name(self):
-        "Returns the short name for the user."
+        """Returns the short name for the user."""
         return self.first_name
 
     def notify_immediately(self):
         return self.email_prefs != 'disabled'
 
+    @property
     def email_setting(self):
         return self.email_prefs
+
+    @property
+    def digest_setting(self):
+        return self.digest_prefs
 
     @property
     def can_access_all_projects(self):
