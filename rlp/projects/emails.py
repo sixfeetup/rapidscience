@@ -51,34 +51,32 @@ def approve_to_requester(request, membership, group):
     mail.send()
 
 
+# TODO: now that these next two are so similar, combine them.
 def invite_existing_member_to_group(request, invitees, project, message):
     # invitees should be a list of email addresses
-    project_url = request.build_absolute_uri(
-        reverse('projects:projects_detail',
-                kwargs={'pk': project.pk, 'slug': project.slug}))
+    # project_url = request.build_absolute_uri(
+    #     reverse('projects:projects_detail',
+    #             kwargs={'pk': project.pk, 'slug': project.slug}))
     projects_list = request.build_absolute_uri(
         reverse('projects:projects_list'))
     join_url = request.build_absolute_uri(
         reverse('projects:projects_join',
                 kwargs={'pk': project.pk}))
-    user_url = request.build_absolute_uri(
-        reverse('profile',
-                kwargs={'pk': request.user.pk}))
-    mods = project.users.filter(projectmembership__state='moderator')
-    if len(mods) == 1:
-        pre_mod_text = "moderator is "
-    else:
-        pre_mod_text = "moderators are "
-    mods = ' and '.join([x.get_full_name() for x in mods])
+    # user_url = request.build_absolute_uri(
+    #     reverse('profile',
+    #             kwargs={'pk': request.user.pk}))
+    # mods = project.users.filter(projectmembership__state='moderator')
+    # if len(mods) == 1:
+    #     pre_mod_text = "moderator is "
+    # else:
+    #     pre_mod_text = "moderators are "
+    # mods = ' and '.join([x.get_full_name() for x in mods])
     data = {
         'user': request.user.get_full_name(),
-        'user_link': user_url,
         'project_title': project.title,
         'project_join': join_url,
-        'project_link': project_url,
         'projects_list': projects_list,
         'message': message,
-        'mods': pre_mod_text + mods
     }
     subject = "{0} invites you to join {1}".format(
         request.user.get_full_name(),
@@ -111,24 +109,25 @@ def invite_nonmember_to_group(request, invitees, project, message):
             member = User(email=ext, is_active=False)
             member.save()
 
-        project_url = request.build_absolute_uri(
-            reverse('projects:projects_detail',
-                    kwargs={'pk': project.pk, 'slug': project.slug}))
+        # project_url = request.build_absolute_uri(
+        #     reverse('projects:projects_detail',
+        #             kwargs={'pk': project.pk, 'slug': project.slug}))
         join_url = request.build_absolute_uri(
             reverse('projects:projects_join',
                     kwargs={'pk': project.pk}))
-        user_url = request.build_absolute_uri(
-            reverse('profile', kwargs={'pk': request.user.pk}))
+        projects_list = request.build_absolute_uri(
+            reverse('projects:projects_list'))
+        # user_url = request.build_absolute_uri(
+        #     reverse('profile', kwargs={'pk': request.user.pk}))
         register_url = request.build_absolute_uri(
             reverse('register_user', kwargs={'pk': member.pk}))
         data = {
             'user': request.user.get_full_name(),
-            'user_link': user_url,
             'project_title': project.title,
-            'join_link': join_url,
-            'project_link': project_url,
+            'project_join': join_url,
+            'projects_list': projects_list,
+            'message': message,
             'reg_link': register_url,
-            'message': message
         }
         subject = "Invitation to join {}".format(project.title)
         template = "projects/emails/invite_non_member_to_group"
