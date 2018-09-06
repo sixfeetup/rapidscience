@@ -282,7 +282,7 @@ def can_send_email(user, group=None, digest=False):
 
     if group:
         membership = user.projectmembership.filter(project=group).first()  # there should only be one
-        if membership.status not in ('member', 'moderator'):
+        if membership.state not in ('member', 'moderator'):
             return False
 
         if digest:
