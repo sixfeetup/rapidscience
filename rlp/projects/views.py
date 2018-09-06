@@ -263,7 +263,14 @@ class LeaveGroup(LoginRequiredMixin, View):
 class JoinGroup(LoginRequiredMixin, View):
     def get(self, request, pk):
         project = get_object_or_404(Project, id=pk)
-        if request.user in project.users.all():
+        if project in request.user.active_projects():
+            message = 'Welcome to the “{}” group'.format(
+                project.title
+            )
+            messages.success(request, message)
+            return redirect(project.get_absolute_url())
+
+        elif request.user in project.users.all():
             message = (
                 'You are already a member of the “{}” group, '
                 'or your membership approval is pending'.format(project.title)
