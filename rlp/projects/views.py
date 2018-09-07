@@ -1,3 +1,5 @@
+from itertools import chain
+
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -19,6 +21,7 @@ from el_pagination.decorators import page_template
 
 from casereport.constants import WorkflowState
 from casereport.models import CaseReport
+from rlp import logger
 from rlp.accounts.models import User
 from rlp.core.utils import rollup, resolve_email_targets
 from rlp.bibliography.models import Reference, UserReference
@@ -231,6 +234,19 @@ def invite_members(request, pk, slug):
             if not group.approval_required:
                 for invitee in User.objects.filter(id__in=internal_users):
                     action.send(request.user, verb='invited', action_object=group, target= invitee, description=message)
+            else:
+                # closed group invitation by the moderator, pre-create the membership
+                if request.user in group.moderators():
+                    for u in list(chain(
+                            User.objects.filter(email__in=external_addrs),
+                            internal_users)):
+                        pm = group.add_member(u, approver=request.user)
+                        if pm.state == 'pending':
+                            pm.state = 'member'
+                            pm.save()
+                else:
+                    logger.warn("non-moderator trying to add users to group")
+
             recipients = internal_addrs.union(external_addrs)
             count = len(recipients)
             messages.success(request, '{} member{} invited'.format(
