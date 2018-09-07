@@ -205,6 +205,22 @@ def projects_members(request, pk, slug, template_name='projects/projects_members
         context.update(extra_context)
     return render(request, template_name, context)
 
+def preapprove_users_into_group_by_approver(users, group, approver):
+    """ add users to the group immediately
+        users will not be left in a pending state, they will go straight
+        to full members unless previously made moderator or ignored
+    """
+    if not group.approval_required or (group.approval_required
+                                       and approver in group.moderators()):
+        for u in users:
+            pm = group.add_member(u, approver=approver)
+            if pm.state == 'pending':
+                pm.state = 'member'
+                pm.save()
+    else:
+        logger.warn("non-moderator trying to add users to a closed group")
+
+
 
 def invite_members(request, pk, slug):
     if request.method != 'POST' or not request.user.is_authenticated():
@@ -234,18 +250,11 @@ def invite_members(request, pk, slug):
             if not group.approval_required:
                 for invitee in User.objects.filter(id__in=internal_users):
                     action.send(request.user, verb='invited', action_object=group, target= invitee, description=message)
-            else:
-                # closed group invitation by the moderator, pre-create the membership
-                if request.user in group.moderators():
-                    for u in list(chain(
-                            User.objects.filter(email__in=external_addrs),
-                            internal_users)):
-                        pm = group.add_member(u, approver=request.user)
-                        if pm.state == 'pending':
-                            pm.state = 'member'
-                            pm.save()
-                else:
-                    logger.warn("non-moderator trying to add users to group")
+
+            users = list(chain(
+                    User.objects.filter(email__in=external_addrs),
+                    internal_users))
+            preapprove_users_into_group_by_approver(users, group, request.user)
 
             recipients = internal_addrs.union(external_addrs)
             count = len(recipients)
@@ -359,6 +368,13 @@ class AddGroup(LoginRequiredMixin, FormView):
                                                force=True)
         emails.invite_nonmember_to_group(request, external_addrs, new_group,
                                          message)
+
+        # set up membership for the invitees
+        users = list(chain(
+            User.objects.filter(email__in=external_addrs),
+            internal_users))
+        preapprove_users_into_group_by_approver(users, new_group, request.user)
+
         return redirect(new_group.get_absolute_url())
 
 
@@ -413,6 +429,11 @@ class EditGroup(LoginRequiredMixin, FormView):
             emails.invite_nonmember_to_group(request, external_addrs, project, message)
 
             messages.info(request, "Invites Sent!")
+
+            users = list(chain(
+                User.objects.filter(email__in=external_addrs),
+                internal_users))
+            preapprove_users_into_group_by_approver(users, project, request.user)
 
             return res
 
