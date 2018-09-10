@@ -1241,6 +1241,41 @@ a.comment-count.empty {
         display: none;
         padding-left: 25px;
     }
+    #wrapper-id_digest_prefs {
+        margin-bottom: 0;
+    }
+    #wrapper-id_digest_prefs,
+    #wrapper-id_email_prefs {
+        h4 {
+            text-transform: uppercase;
+        }
+        label.section-label {
+            border-top: 1px solid #ddd;
+            display: block;
+            font-size: 14px;
+            margin-top: 12px;
+            padding-top: 15px;
+            text-transform: none;
+            &:after {
+                content: "";
+            }
+        }
+        p {
+            font-size: 14px;
+        }
+        .radio {
+            margin-bottom: 15px;
+        }
+        #id_digest_prefs .radio:last-of-type {
+            margin-bottom: 0;
+        }
+        #id_email_prefs {
+            margin-bottom: 15px;
+        }
+        span.help-block {
+            border-radius: 4px;
+        }
+    }
 }
 
 /* profile */

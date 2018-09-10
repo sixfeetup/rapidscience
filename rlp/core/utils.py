@@ -265,6 +265,10 @@ FORMAT_SIMPLE = 'SIMPLE'
 
 def can_send_email(user, group=None, digest=False):
     """
+    Return True if the user has opted to receive emails from a group.
+    Will check their membership and profile preferences
+    as well as their user and membership status.
+
     :param user: User
     :param group:  Project
     :param digest: boolean
@@ -273,8 +277,14 @@ def can_send_email(user, group=None, digest=False):
     if type(user) == str:
         return True
 
+    if not user.is_active:
+        return False
+
     if group:
         membership = user.projectmembership.filter(project=group).first()  # there should only be one
+        if membership.state not in ('member', 'moderator'):
+            return False
+
         if digest:
             if membership.digest_prefs:
                 return membership.digest_prefs == "enabled"
@@ -294,7 +304,6 @@ def can_send_email(user, group=None, digest=False):
                     return False
     else:
         # email to a user with no group context
-
         if digest:
             if user.digest_prefs == "enabled":
                 return True

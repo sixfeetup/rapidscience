@@ -4,64 +4,76 @@
         <div class="results">
 
 {% for result in page.object_list %}
-
+    {% with casereport=result.object workflow_state=result.object.workflow_state %}
             <!--search-->
     <div class="searchresult">
 
             <div class="row titlerow">
                 <div class="col-md-10">
                     <h3>
-                        <a href="{% url 'casereport_detail' result.object.id  result.object.title|slugify %}">
-                            {{ result.object.title }}
+                        <a href="{% url 'casereport_detail' casereport.id  casereport.title|slugify %}">
+                            {{ casereport.title }}
                         </a>
                     </h3>
-                    Case ID: {{ result.object.id }} | {{ result.object.get_author|capfirst }}{% if result.object.primary_author.institution.country %},  {{ result.object.primary_author.institution.country }}{% endif %}
-                     |  {{ result.object.sort_date|date:"M d, Y" }}
+                    Case ID: {{ casereport.id }} {# | {{ casereport.get_author|capfirst }}{% if casereport.primary_author.institution.country %},  {{ casereport.primary_author.institution.country }}{% endif %} #}
+                     |
+                        {% if workflow_state == 'draft' %}
+                            Created:
+                        {% elif workflow_state == 'processing' %}
+                            Submitted:
+                        {% elif workflow_state == 'author review' %}
+                            Placed under revision:
+                        {% elif workflow_state == 'live' %}
+                            Posted:
+                        {% endif %}
+                        {{ casereport.created_on|date:"M d, Y" }} |
+                        Last revision: {{ casereport.modified_on|date:"M d, Y" }}
                 </div>
-                <div class="col-md-2 crstatus {{ result.object.workflow_state|slugify }}">
-                    <i class="{{ result.object.get_workflow_icon }}" aria-hidden="true"></i><br />
-                    {% if result.object.workflow_state == 'live' %}
+                <div class="col-md-2 crstatus {{ casereport.workflow_state|slugify }}">
+                    <i class="{{ casereport.get_workflow_icon }}" aria-hidden="true"></i><br />
+
+                    {% if workflow_state == 'live' %}
                         Posted
-                    {% elif result.object.workflow_state == 'draft' %}
+                    {% elif workflow_state == 'draft' %}
                         Draft
-                    {% elif result.object.workflow_state == 'author review' %}
+                    {% elif workflow_state == 'author review' %}
                         Author Review
-                    {% elif result.object.workflow_state == 'processing' %}
+                    {% elif workflow_state == 'processing' %}
                         Submitted
                     {% else %}
-                        {{ result.object.workflow_state }}
+                        {{ workflow_state }}
                     {% endif %}
                 </div>
             </div>
 
 
             <div class="row">
-                {% if result.object.aberrations.all|length > 0 or result.object.aberrations_other %}
+                {% if casereport.aberrations.all|length > 0 or casereport.aberrations_other %}
                 <div class="col-md-12">
                     <h4>Aberrations</h4>
-                    {% if result.object.aberrations.all %}
+                    {% if casereport.aberrations.all %}
                         <p>
-                        {% for aberration in result.object.aberrations.all %}
+                        {% for aberration in casereport.aberrations.all %}
                             {{ aberration.name }}{% if not forloop.last %},{% endif %}
                         {% endfor %}
                         </p>
                     {% endif %}
-                    {% if result.object.aberrations_other %}
-                        <p>{{ result.object.aberrations_other }}</p>
+                    {% if casereport.aberrations_other %}
+                        <p>{{ casereport.aberrations_other }}</p>
                     {% endif %}
                 </div>
                 {% endif %}
-                {% if result.object.biomarkers %}
+                {% if casereport.biomarkers %}
                 <div class="col-md-12">
                     <h4>Biomarkers</h4>
-                    <p>{{ result.object.biomarkers }}</p>
+                    <p>{{ casereport.biomarkers }}</p>
                 </div>
                 {% endif %}
-                {% if result.object.get_treatments %}
+                {% if casereport.get_treatments %}
                 <div class="col-md-12">
                     <h4>Treatments</h4>
                       <div class="row treatments">
-                        {{ result.object.get_treatments | join:" &raquo; " }}
+                        {{ casereport.get_treatments | join:" &raquo; " }}
                       </div>
                 </div>
                 {% endif %}
@@ -78,6 +90,7 @@
         {% endif %}
 
     {% endcomment %}
+    {% endwith %}
 {% empty %}
     <p>
     {% if suggestions %}
@@ -91,7 +104,9 @@
         No Results
         {% endfor %}</p>
 {% endfor %}
+
         </div>
+
 {#</div>#}
         {% if page.has_previous or page.has_next %}
             <div class="row pagination_wrapper">

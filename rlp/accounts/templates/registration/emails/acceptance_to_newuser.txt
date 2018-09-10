@@ -2,7 +2,7 @@ Hello {{ name }},<br><br>
 
 Welcome to Sarcoma Central.<br><br>
 
-To get started, log in at <a href="{{ login_url }}">{{ site }}</a> using your email address and password.<br><br>
+To get started, <a href="{{ login_url }}">log in at {{ site }}</a> using your email address and password.<br><br>
 
 You will land on your personal dashboard -- a private space for your content and messages. You'll see content shared with you and the groups you belong to.<br><br>
 
@@ -19,5 +19,5 @@ Take a look at our <a href="http://www.rapidscience.org/collaboration-platform/
 
 Sincerely,<br><br>
 
-The <a href="https://sarcoma.rapidscience.org/">Sarcoma Central</a> Team <a href="https://twitter.com/RapidScience/">@RapidScience</a><br><br>
+The <a href="http://www.rapidscience.org/sarcoma-central/">Sarcoma Central</a> Team <a href="https://twitter.com/RapidScience/">@RapidScience</a><br><br>
 

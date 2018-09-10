@@ -162,7 +162,7 @@ class Project(SEOMixin, SharesContentMixin):
         mods = self.users.filter(projectmembership__state='moderator')
         return ' | '.join([x.get_full_name() for x in mods])
 
-    def add_member(self, user):
+    def add_member(self, user, state=None, approver=None):
         """ add user to the project(group)
             if the user was already a member, no action is taken
             if the project requires membership approval, the user will be pending.
@@ -176,11 +176,17 @@ class Project(SEOMixin, SharesContentMixin):
             user=user,
         )
 
-        # if moderator approval isn't needed, approve the member now
-        if not self.approval_required:
-            membership.state = 'member'
-            membership.save()
+        if state:
+            membership.state = state
 
+        # if moderator approval isn't needed, approve the member now
+        elif not self.approval_required:
+            membership.state = 'member'
+
+        if approver:
+            membership.approver = approver
+
+        membership.save()
         return membership
 
     def remove_member(self, user):

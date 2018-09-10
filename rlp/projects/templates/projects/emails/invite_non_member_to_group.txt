@@ -1,0 +1,19 @@
+You are invited by {{ user }} to join {{ project_title }} in the Sarcoma Central network and participate in member discussions and file sharing.<br><br>
+
+{% if message %}
+<div style="margin-left: 20px;">
+<i>{{ message|safe }}</i>
+</div>
+<br><br>
+{% endif %}
+
+To join the group, click <a href="{{ project_join }}">Join</a>.
+You can also visit the <a href="{{ projects_list }}">All Groups</a> page to read more about the group and its moderator(s), and click the Join button there.
+
+<br><br><a href="http://www.rapidscience.org/sarcoma-central">Sarcoma Central</a> is part of the nonprofit organization, Rapid Science, and is free for validated HCPs. If you are not already a member, you can <a href="{{ reg_link }}">register here</a> for immediate entry to this group.
+
+<br><br>
+Sincerely,<br><br>
+
+The <a href="http://www.rapidscience.org/sarcoma-central">Sarcoma Central</a> team<br/>
+<a href="https://twitter.com/RapidScience/">@RapidScience</a><br><br>

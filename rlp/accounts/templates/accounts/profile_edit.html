@@ -35,7 +35,8 @@
                         </div>
                         <div class="col-md-6">
                             {% if field.name == 'digest_prefs' %}
-                                <p>EMAIL NOTIFICATIONS (your choices can be modified for specific groups you join and for specific individuals)</p>
+                                <div class="form-group required"><h4 class="control-label">Email Notifications</h4></div>
+                                <p>Your choices can be modified for specific groups you join.</p>
                             {%  endif %}
                             {% bootstrap_field field label_class='section-label' %}
                         </div>

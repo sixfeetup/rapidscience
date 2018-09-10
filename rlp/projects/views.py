@@ -1,3 +1,5 @@
+from itertools import chain
+
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -19,6 +21,7 @@ from el_pagination.decorators import page_template
 
 from casereport.constants import WorkflowState
 from casereport.models import CaseReport
+from rlp import logger
 from rlp.accounts.models import User
 from rlp.core.utils import rollup, resolve_email_targets
 from rlp.bibliography.models import Reference, UserReference
@@ -202,6 +205,22 @@ def projects_members(request, pk, slug, template_name='projects/projects_members
         context.update(extra_context)
     return render(request, template_name, context)
 
+def preapprove_users_into_group_by_approver(users, group, approver):
+    """ add users to the group immediately
+        users will not be left in a pending state, they will go straight
+        to full members unless previously made moderator or ignored
+    """
+    if not group.approval_required or (group.approval_required
+                                       and approver in group.moderators()):
+        for u in users:
+            pm = group.add_member(u, approver=approver)
+            if pm.state == 'pending':
+                pm.state = 'member'
+                pm.save()
+    else:
+        logger.warn("non-moderator trying to add users to a closed group")
+
+
 
 def invite_members(request, pk, slug):
     if request.method != 'POST' or not request.user.is_authenticated():
@@ -222,15 +241,21 @@ def invite_members(request, pk, slug):
                                                    force=True)
 
             # Non-members - create user and send specific registration link
-            emails.project_invite_nonmember(request, external_addrs, group, message)
+            emails.invite_nonmember_to_group(request, external_addrs, group, message)
 
             # site members
-            emails.project_invite_member(request, internal_addrs, group, message)
+            emails.invite_existing_member_to_group(request, internal_addrs, group, message)
 
             # message the results back
             if not group.approval_required:
                 for invitee in User.objects.filter(id__in=internal_users):
                     action.send(request.user, verb='invited', action_object=group, target= invitee, description=message)
+
+            users = list(chain(
+                    User.objects.filter(email__in=external_addrs),
+                    internal_users))
+            preapprove_users_into_group_by_approver(users, group, request.user)
+
             recipients = internal_addrs.union(external_addrs)
             count = len(recipients)
             messages.success(request, '{} member{} invited'.format(
@@ -263,7 +288,14 @@ class LeaveGroup(LoginRequiredMixin, View):
 class JoinGroup(LoginRequiredMixin, View):
     def get(self, request, pk):
         project = get_object_or_404(Project, id=pk)
-        if request.user in project.users.all():
+        if project in request.user.active_projects():
+            message = 'Welcome to the “{}” group'.format(
+                project.title
+            )
+            messages.success(request, message)
+            return redirect(project.get_absolute_url())
+
+        elif request.user in project.users.all():
             message = (
                 'You are already a member of the “{}” group, '
                 'or your membership approval is pending'.format(project.title)
@@ -328,14 +360,21 @@ class AddGroup(LoginRequiredMixin, FormView):
         internal_users = form.cleaned_data['internal']
         internal_addrs = resolve_email_targets(internal_users, force=True)
         message = form.cleaned_data['invitation_message']
-        emails.project_invite_member(request, internal_addrs, new_group,
-                                     message)
+        emails.invite_existing_member_to_group(request, internal_addrs, new_group,
+                                               message)
 
         external_addrs = resolve_email_targets(form.cleaned_data['external'],
                                                exclude=internal_users,
                                                force=True)
-        emails.project_invite_nonmember(request, external_addrs, new_group,
-                                        message)
+        emails.invite_nonmember_to_group(request, external_addrs, new_group,
+                                         message)
+
+        # set up membership for the invitees
+        users = list(chain(
+            User.objects.filter(email__in=external_addrs),
+            internal_users))
+        preapprove_users_into_group_by_approver(users, new_group, request.user)
+
         return redirect(new_group.get_absolute_url())
 
 
@@ -382,14 +421,19 @@ class EditGroup(LoginRequiredMixin, FormView):
             internal_users = [member for member in form.cleaned_data['internal']
                               if member not in project.active_members()]
             internal_addrs = resolve_email_targets(internal_users, force=True)
-            emails.project_invite_member(request, internal_addrs, project, message)
+            emails.invite_existing_member_to_group(request, internal_addrs, project, message)
 
             external_addrs = resolve_email_targets(form.cleaned_data['external'],
                                                    exclude=project.active_members(),
                                                    force=True)
-            emails.project_invite_nonmember(request, external_addrs, project, message)
+            emails.invite_nonmember_to_group(request, external_addrs, project, message)
 
             messages.info(request, "Invites Sent!")
+
+            users = list(chain(
+                User.objects.filter(email__in=external_addrs),
+                internal_users))
+            preapprove_users_into_group_by_approver(users, project, request.user)
 
             return res
 

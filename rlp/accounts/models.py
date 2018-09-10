@@ -21,14 +21,14 @@ phone_digits_re = re.compile(r'^(?:1-?)?(\d{3})[-\.]?(\d{3})[-\.]?(\d{4}).*$')
 
 DIGEST_PREF_CHOICES = (
     ('enabled', 'Email me a weekly digest of all items shared with me and with groups to which I belong.'),
-    ('disabled', 'Do not email me a weekly digest (*). I will check my Dashboard to view shared items')
+    ('disabled', 'Do not email me a weekly digest (*). I will check my Dashboard to view shared items.')
 )
 
 
 EMAIL_PREF_CHOICES = (
     ('user_and_group', 'Email me immediately when an item is shared with me individually or with groups to which I belong.'),
     ('user_only', 'Email me immediately only when an item is shared with me individually.'),
-    ('disabled', 'Do not send immediate email notifications (*).')
+    ('disabled', 'Do not send immediate email notifications.*')
 )
 
 
@@ -173,14 +173,19 @@ class User(AbstractBaseUser, PermissionsMixin, SharesContentMixin):
         return self.email
 
     def get_short_name(self):
-        "Returns the short name for the user."
+        """Returns the short name for the user."""
         return self.first_name
 
     def notify_immediately(self):
         return self.email_prefs != 'disabled'
 
+    @property
     def email_setting(self):
         return self.email_prefs
+
+    @property
+    def digest_setting(self):
+        return self.digest_prefs
 
     @property
     def can_access_all_projects(self):

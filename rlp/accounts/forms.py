@@ -231,17 +231,17 @@ class UserProfileForm(forms.ModelForm):
     institution_country = forms.CharField(max_length=80, required=False)
     institution_website = forms.CharField(max_length=80, required=False)
     digest_prefs = forms.ChoiceField(
-        label="Weekly Notifications",
+        label="Weekly",
         choices=DIGEST_PREF_CHOICES,
         widget=forms.RadioSelect(),
     )
     email_prefs = forms.ChoiceField(
-        label="Immediate Notifications",
+        label="Immediate",
         choices=EMAIL_PREF_CHOICES,
         widget=forms.RadioSelect(),
-        help_text='(*) You will still receive occasional emails regarding (1) \
-        invitations from your colleagues to join new groups, (2) \
-        editorial correspondence when you submit a case report, and (3) \
+        help_text='* You will still receive occasional emails regarding 1) \
+        invitations from your colleagues to join new groups, 2) \
+        editorial correspondence when you submit a case report, and 3) \
         registration-related notices.'
     )
 

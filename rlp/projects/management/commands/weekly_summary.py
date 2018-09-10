@@ -132,18 +132,28 @@ class Command(BaseCommand):
                             content_id_set.append(action.action_object_object_id)
                             display_items.append(action)
                 elif ctype == member_ct:
-                    # this *should* be temporary until we have an action
-                    # for when a member joins a group. Until then, just
-                    # show all new members
+                    # new members.
+                    # there are two types of 'joined' actions in the activity
+                    # stream:
+                    # 1) new to the site - these show as user 'joined' user
+                    #   with no target set.   Really should target site.  I'm
+                    #   not sure that wasn't how we did it.
+                    # 2) new to a closed group - these show in the AF as
+                    #   moderator 'joined' user targeting the group.
+                    #   'approved' woul dhave been a better verb, but it must be
+                    #   getting displayed somewhere.
+                    # For the weekly summary, we only want to show new users to
+                    # the site.
                     cxt_label = 'users'
-                    members = Action.objects.filter(
+                    new_members = Action.objects.filter(
                         timestamp__gte=some_day_last_week,
                         timestamp__lte=timezone.now(),
-                        action_object_content_type=ctype)
-                    for member in members:
-                        if type(member.target) == Project:
-                            if not can_send_email(user, member.target, True):
-                                continue
+                        actor_content_type=ctype,
+                        verb='joined',
+                        action_object_content_type=ctype,
+                        target_object_id__isnull=True,
+                    )
+                    for member in new_members:
                         display_items.append(member)
                 else:
                     content_id_set = []
@@ -224,7 +234,7 @@ class Command(BaseCommand):
                 continue
             template = 'emails/weekly_summary'
             html_message = render_to_string(
-                '{}.txt'.format(template), email_context)
+                '{}.html'.format(template), email_context)
             text_maker = html2text.HTML2Text()
             text_maker.body_width = 100
             message = text_maker.handle(html_message)
