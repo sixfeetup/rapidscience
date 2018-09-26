@@ -59,6 +59,7 @@ def activity_mail(user, obj, target, request=None):
 
     cls_name = obj.__class__.__name__
     root_obj_cls_name = cls_name
+    root_obj = obj
 
     try:
         title = obj.title
@@ -67,6 +68,7 @@ def activity_mail(user, obj, target, request=None):
     if cls_name == 'UserReference':
         from rlp.bibliography.models import Reference
         root_obj_cls_name = 'Reference'
+        root_obj = obj.reference
         ref = Reference.objects.get(pk=obj.reference_id)
         title = ref.title
         comment = obj.description
@@ -153,6 +155,7 @@ def activity_mail(user, obj, target, request=None):
         'both_cls_name': cls_name if cls_name != root_obj_cls_name else root_obj_cls_name,
         'comment_list': comment_list,
         "root_obj_cls_name": root_obj_cls_name,
+        "root_obj": root_obj,
     })
 
     if root_obj_cls_name == 'Discussion' and obj.title:

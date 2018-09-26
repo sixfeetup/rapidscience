@@ -44,7 +44,7 @@
           </p>
 
           {% if comment %}
-              <div style="margin-left: 0px;" style="border-left: 3px solid #e5e5e5; padding-left: 15px; font-style: italic; margin: 10px 0; color: #444444"> {{ comment|safe |striptags|truncatechars:160 }}</div>
+              <div style="margin-left: 0px;" style="border-left: 3px solid #e5e5e5; padding-left: 15px; font-style: italic; margin: 10px 0; color: #444444"> Comment: {{ comment|safe |striptags|truncatechars:160 }}</div>
           {% endif %}
     {% endif %}
 
@@ -90,18 +90,29 @@
         <p>
           {{ root_obj_cls_name }} posted by <a href="https://{{ site }}{{ obj.user.get_absolute_url }}" style="color: #3795bf; text-decoration: none">
           {% if obj.user == request.user %}me{% else %}{{ obj.user.get_full_name }}{% endif %} </a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="with {0}" style="color: #3795bf; text-decoration: none"%} | {{ obj.submit_date|date:"j M Y" }}
-
+          <p>
+            {# Full reference details #}
+            {% include 'bibliography/_reference.html' with obj=root_obj email=True %}
+          </p>
           {% if comment %}
-           <div style="margin-left: 0px;" style="border-left: 3px solid #e5e5e5; padding-left: 15px; font-style: italic; margin: 10px 0; color: #444444"> {{ comment|safe |striptags|truncatechars:160 }}<br><br> </div>
+           <div style="margin-left: 0px;" style="border-left: 3px solid #e5e5e5; padding-left: 15px; font-style: italic; margin: 10px 0; color: #444444">Comment: {{ comment|safe |striptags|truncatechars:160 }}<br><br> </div>
           {% endif %}
         </p>
     {% else %}
-        <p> Reply by <a href="https://{{ site }}{{ obj.user.get_absolute_url }}" style="color: #3795bf; text-decoration: none">
-          {% if obj.user == request.user %}me{% else %}{{ obj.user.get_full_name }}{% endif %} </a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="on {0}" style="color: #3795bf; text-decoration: none" %} | {{ obj.submit_date|date:"j M Y" }}
-        </p>
-
+{#        <p> Reply by <a href="https://{{ site }}{{ obj.user.get_absolute_url }}" style="color: #3795bf; text-decoration: none">#}
+{#          {% if obj.user == request.user %}me{% else %}{{ obj.user.get_full_name }}{% endif %} </a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="on {0}" style="color: #3795bf; text-decoration: none" %} | {{ obj.submit_date|date:"j M Y" }}#}
+{#        </p>#}
+          <p>
+            {{ obj.user.get_full_name }} shared this Reference with you:
+          </p>
+          <p>
+            {# Full reference details #}
+            {% include 'bibliography/_reference.html' with obj=root_obj email=True %}
+          </p>
         {% if comment %}
-          <div style="margin-left: 0px;" style="border-left: 3px solid #e5e5e5; padding-left: 15px; font-style: italic; margin: 10px 0; color: #444444"> {{ comment|safe |striptags|truncatechars:160 }}</div>
+          <p>
+          <div style="margin-left: 0px;" style="border-left: 3px solid #e5e5e5; padding-left: 15px; font-style: italic; margin: 10px 0; color: #444444">Comment: {{ comment|safe |striptags|truncatechars:160 }}</div>
+          </p>
         {% endif %}
     {% endif %}
 
