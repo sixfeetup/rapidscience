@@ -3,8 +3,8 @@
 {% lazy_paginate activity_stream %}
 {% for action in activity_stream %}
     {% with obj=action.action_object frozen=action.data.frozen model=action.action_object_content_type.model content_type=action.action_object_content_type.id %}
-        <div class="activity-stream activity-{{ model }} verb-{{ action.verb }}">
-            {% if obj %}
+        {% if obj %}
+            <div class="activity-stream activity-{{ model }} verb-{{ action.verb }}">
                 <div class="row">
                     <div class="col-md-11">
                         {% if action.actor == action.action_object %}
@@ -154,8 +154,10 @@
 
                     </div>
                 </div>
-            {% endif %}
-        </div>
+            </div>
+        {% else %}
+            <!-- activity entry ({{ action.id }}) is missing the activity object -->
+        {% endif %}
     {% endwith %}
     <hr>
 {% empty %}
