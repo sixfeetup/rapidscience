@@ -49,8 +49,6 @@ def activity_mail(user, obj, target, request=None, comment=""):
 
     context = {}
     link = "https://" + settings.DOMAIN + obj.get_absolute_url()
-    # template = 'core/emails/activity_email'
-    template = 'core/emails/immediate_email_notifications'
 
     recipients = resolve_email_targets(target, exclude=user)
     doc_media_list = ['Document', 'File', 'Image', 'Link', 'Video']
@@ -124,10 +122,10 @@ def activity_mail(user, obj, target, request=None, comment=""):
                     request.build_absolute_uri(reverse('dashboard')) \
                     or "https://" + settings.DOMAIN
 
-        if root_obj_cls_name == 'Discussion' and obj.title:
-            template = 'core/emails/immediate_email_notifications'  # 'core/emails/newdiscussion_comment_activity_email'
-        else:
-            template = 'core/emails/immediate_email_notifications'  # 'core/emails/comment_activity_email'
+        # if root_obj_cls_name == 'Discussion' and obj.title:
+        #     template = 'core/emails/immediate_email_notifications'  # 'core/emails/newdiscussion_comment_activity_email'
+        # else:
+        #     template = 'core/emails/immediate_email_notifications'  # 'core/emails/comment_activity_email'
 
         context.update({
             "root_obj": root_obj,
@@ -158,18 +156,20 @@ def activity_mail(user, obj, target, request=None, comment=""):
         "root_obj": root_obj,
     })
 
-    if root_obj_cls_name == 'Discussion' and obj.title:
-        subject = "{} shared a {} with you at Sarcoma Central"
-    elif root_obj_cls_name == 'Reference' or root_obj_cls_name == 'UserReference':
+    # email subject line:
+    if root_obj_cls_name == 'Reference' or root_obj_cls_name == 'UserReference':
         if cls_name == 'ThreadedComment':
-            subject = "{} has shared a comment with you"
+            subject_t = "{} has shared a comment with you at Sarcoma Central"
         else:
-            subject = "{} has shared a reference with you at Sarcoma Central"
+            subject_t = "{} has shared a reference with you at Sarcoma Central"
+            # ^^ is that dead code now?
+        subject = subject_t.format(user.get_full_name())
     else:
-        subject = "{{}} has shared a {} with you".format(root_obj_cls_name.lower())
+        subject_t = "{} has shared a comment with you at Sarcoma Central"
+        subject = subject_t.format(user.get_full_name())
 
-    subject = subject.format(user.get_full_name(), root_obj_cls_name)
-
+    # template = 'core/emails/activity_email'
+    template = 'core/emails/immediate_email_notifications'
     template_name = "{}.html".format(template)
 
     for recipient in recipients:
