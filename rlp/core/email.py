@@ -163,7 +163,7 @@ def activity_mail(user, obj, target, request=None, comment=""):
         if cls_name == 'ThreadedComment':
             subject = "{} has shared a comment with you"
         else:
-            subject = "{} has shared a reference with you"
+            subject = "{} has shared a reference with you at Sarcoma Central"
     else:
         subject = "{{}} has shared a {} with you".format(root_obj_cls_name.lower())
 
