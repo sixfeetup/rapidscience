@@ -31,7 +31,7 @@ def send_transactional_mail(to_email, subject, template, context, from_email=set
     return mail.send()
 
 
-def activity_mail(user, obj, target, request=None):
+def activity_mail(user, obj, target, request=None, comment=""):
     """ send an activity style email ( shared, commented, etc ) relating
         user to obj, to everyone in target.
         Target can a user, a email address string, a group, or a list
@@ -48,7 +48,6 @@ def activity_mail(user, obj, target, request=None):
         return
 
     context = {}
-    comment = ""
     link = "https://" + settings.DOMAIN + obj.get_absolute_url()
     # template = 'core/emails/activity_email'
     template = 'core/emails/immediate_email_notifications'
@@ -71,14 +70,14 @@ def activity_mail(user, obj, target, request=None):
         root_obj = obj.reference
         ref = Reference.objects.get(pk=obj.reference_id)
         title = ref.title
-        comment = obj.description
+        comment = comment or obj.description
         link = request and request.build_absolute_uri(
                    reverse('bibliography:reference_detail',
                            kwargs={'reference_pk': obj.reference_id,
                                    'uref_id': obj.id})) \
                or "https://" + settings.DOMAIN + obj.get_absolute_url()
     if cls_name in ('Document', 'File', 'Image', 'Link', 'Video'):
-        comment = obj.description
+        comment = comment or obj.description
         link = request and request.build_absolute_uri(
                    reverse('documents:document_detail',
                            kwargs={'doc_pk': obj.id})) \
