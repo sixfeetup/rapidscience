@@ -62,7 +62,8 @@
      {% if obj.title %}
         <p>
           {{ root_obj_cls_name }} posted by <a href="https://{{ site }}{{ obj.user.get_absolute_url }}" style="color: #3795bf; text-decoration: none">
-          {% if obj.user == request.user %}me{% else %}{{ obj.user.get_full_name }}{% endif %} </a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="to {0}" style="color: #3795bf; text-decoration: none" %} | {{ obj.submit_date|date:"j M Y" }}
+            {% if obj.user == request.user %}me{% else %}{{ obj.user.get_full_name }}{% endif %}</a>
+          {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="to {0}" style="color: #3795bf; text-decoration: none" %} | {{ obj.date_added|date:"j M Y" }}
         </p>
 
         <div style="margin-left: 0px;" >
