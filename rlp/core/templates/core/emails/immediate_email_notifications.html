@@ -61,13 +61,12 @@
 {% elif root_obj_cls_name in doc_media_list %}
      {% if obj.title %}
         <p>
-          {{ root_obj_cls_name }} posted by <a href="https://{{ site }}{{ obj.user.get_absolute_url }}" style="color: #3795bf; text-decoration: none">
-            {% if obj.user == request.user %}me{% else %}{{ obj.user.get_full_name }}{% endif %}</a>
+          {{ root_obj_cls_name }} posted by <a href="{{ user_link }}" style="color: #3795bf; text-decoration: none"> {{ user.get_full_name }}</a>
           {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="to {0}" style="color: #3795bf; text-decoration: none" %} | {{ obj.date_added|date:"j M Y" }}
         </p>
 
         <div style="margin-left: 0px;" >
-            <p style="color: #3795bf; text-decoration: none">{{ title|safe |striptags }}</p>
+          <p style="color: #3795bf; text-decoration: none"><a href="{{ link }}">{{ title|safe |striptags }}</a></p>
         </div>
 
         {% if comment %}

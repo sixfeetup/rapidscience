@@ -60,6 +60,10 @@ def activity_mail(user, obj, target, request=None, comment=""):
     root_obj_cls_name = cls_name
     root_obj = obj
 
+    user_link = request and request.build_absolute_uri(
+        reverse('profile',
+                kwargs={'pk': user.id})) \
+                or "https://" + settings.DOMAIN + user.get_absolute_url()
     try:
         title = obj.title
     except AttributeError:
@@ -86,10 +90,7 @@ def activity_mail(user, obj, target, request=None, comment=""):
         if obj.is_editorial_note:
             return
         author = ''
-        user_link = request and request.build_absolute_uri(
-                    reverse('profile',
-                           kwargs={'pk': user.id})) \
-                    or "https://" + settings.DOMAIN + user.get_absolute_url()
+
         disc_root = obj.discussion_root
         root_obj = disc_root.content_object
         root_obj_cls_name = root_obj.__class__.__name__
@@ -129,7 +130,6 @@ def activity_mail(user, obj, target, request=None, comment=""):
             template = 'core/emails/immediate_email_notifications'  # 'core/emails/comment_activity_email'
 
         context.update({
-            "user_link": user_link,
             "root_obj": root_obj,
             "author_link": author_link,
             "author": author,
@@ -143,13 +143,14 @@ def activity_mail(user, obj, target, request=None, comment=""):
 
     context.update({
         "user": user,  # author
+        "user_link": user_link,
+        "obj": obj,
+        "link": link,
         "title": title,
         "comment": comment,
-        "link": link,
         "site": settings.DOMAIN,
         "recipients": recipients,
         'doc_media_list': doc_media_list,
-        'obj': obj,
         'viewers': target,
         'both_cls_name': cls_name if cls_name != root_obj_cls_name else root_obj_cls_name,
         'comment_list': comment_list,
