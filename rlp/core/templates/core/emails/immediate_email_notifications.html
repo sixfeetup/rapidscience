@@ -103,7 +103,7 @@
 {#          {% if obj.user == request.user %}me{% else %}{{ obj.user.get_full_name }}{% endif %} </a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="on {0}" style="color: #3795bf; text-decoration: none" %} | {{ obj.submit_date|date:"j M Y" }}#}
 {#        </p>#}
           <p>
-            {{ obj.user.get_full_name }} shared this Reference with you:
+            {{ user.get_full_name }} shared this Reference with you:
           </p>
           <p>
             {# Full reference details #}
