@@ -31,6 +31,18 @@ def send_transactional_mail(to_email, subject, template, context, from_email=set
     return mail.send()
 
 
+def email_to_user(email):
+    """ Return a user for a given email address which might be formatted
+        like "first last <email>" or "user@host.com"
+        If no user can be found, the original email passed in is returned.
+    """
+    if "<" in email:
+        addr = email[ email.index("<")+1:-1]
+    else:
+        addr = email
+    return User.objects.filter(email=addr).first() or email
+
+
 def activity_mail(user, obj, target, request=None, comment=""):
     """ send an activity style email ( shared, commented, etc ) relating
         user to obj, to everyone in target.
@@ -40,7 +52,6 @@ def activity_mail(user, obj, target, request=None, comment=""):
         Users who have opted out of receiving emails are removed from the
         set.
     """
-
     if target == user:
         return
     if not target:
@@ -181,6 +192,7 @@ def activity_mail(user, obj, target, request=None, comment=""):
             recipient_name = recipient_name.split('"')[1]
         context.update({
             "recipient_name": recipient_name,
+            "recipient": email_to_user(recipient),
             'date_time': now,
 
         })
