@@ -9,8 +9,8 @@
 
 {% if root_obj_cls_name == 'CaseReport' %}
   <p>
-    {{ root_obj_cls_name }} posted by <a href="https://{{ site }}{{ obj.user.get_absolute_url }}" style="color: #3795bf; text-decoration: none">
-    {% if obj.user == request.user %}me{% else %}{{ obj.user.get_full_name }}{% endif %} </a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="to {0}" style="color: #3795bf; text-decoration: none" %} | {{ obj.submit_date|date:"j M Y" }}
+    {{ root_obj_cls_name }} posted by <a href="{{ user_link }}" style="color: #3795bf; text-decoration: none">
+    {% if obj.user == recipient %}me{% else %}{{ obj.user.get_full_name }}{% endif %} </a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="to {0}" style="color: #3795bf; text-decoration: none" %} | {{ obj.submit_date|date:"j M Y" }}
   </p>
 
     <div style="margin-left: 0px;" style="color: #3795bf; text-decoration: none" >
@@ -24,8 +24,8 @@
 {% elif root_obj_cls_name == 'Discussion' %}
     {% if obj.title %}
         <p>
-          {{ root_obj_cls_name }} posted by <a href="https://{{ site }}{{ obj.user.get_absolute_url }}" style="color: #3795bf; text-decoration: none">
-          {% if obj.user == request.user %}me{% else %}{{ obj.user.get_full_name }}{% endif %} </a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="to {0}" style="color: #3795bf; text-decoration: none" %} | {{ obj.submit_date|date:"j M Y" }}<br />
+          {{ root_obj_cls_name }} posted by <a href="{{ user_link }}" style="color: #3795bf; text-decoration: none">
+          {% if obj.user == recipient %}me{% else %}{{ obj.user.get_full_name }}{% endif %} </a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="to {0}" style="color: #3795bf; text-decoration: none" %} | {{ obj.submit_date|date:"j M Y" }}<br />
         </p>
 
           <div style="margin-left: 0px;"  >
@@ -39,8 +39,8 @@
           Content posted here from a closed group can be shared only with members of that group. All other content, posted from your personal dashboard or an open group, can be shared with any individuals and with groups to which you belong. In addition, this content can be further shared by original recipients with groups to which they belong.
           <br><br>
     {% else %}
-          <p> Reply by <a href="https://{{ site }}{{ obj.user.get_absolute_url }}" style="color: #3795bf; text-decoration: none">
-            {% if obj.user == request.user %}me{% else %}{{ obj.user.get_full_name }}{% endif %} </a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="on {0}" style="color: #3795bf; text-decoration: none" %} | {{ obj.submit_date|date:"j M Y" }}
+          <p> Reply by <a href="{{ user_link }}" style="color: #3795bf; text-decoration: none">
+            {% if obj.user == recipient %}me{% else %}{{ obj.user.get_full_name }}{% endif %} </a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="on {0}" style="color: #3795bf; text-decoration: none" %} | {{ obj.submit_date|date:"j M Y" }}
           </p>
 
           {% if comment %}
@@ -50,8 +50,8 @@
 
 {% elif root_obj_cls_name in comment_list %}
 
-    <p> Reply by <a href="https://{{ site }}{{ obj.user.get_absolute_url }}" style="color: #3795bf; text-decoration: none">
-    {% if obj.user == request.user %}me{% else %}{{ obj.user.get_full_name }}{% endif %} </a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="on {0}" style="color: #3795bf; text-decoration: none" %} | {{ obj.submit_date|date:"j M Y" }}
+    <p> Reply by <a href="{{ user_link }}" style="color: #3795bf; text-decoration: none">
+    {% if obj.user == recipient %}me{% else %}{{ obj.user.get_full_name }}{% endif %} </a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="on {0}" style="color: #3795bf; text-decoration: none" %} | {{ obj.submit_date|date:"j M Y" }}
     </p>
 
     {% if comment %}
@@ -77,7 +77,7 @@
 
      {% else %}
         <p> Reply by <a href="https://{{ user_link }}" style="color: #3795bf; text-decoration: none">
-          {% if obj.user == request.user %}me{% else %}{{ obj.user.get_full_name }}{% endif %} </a> on <a href="https://{{ site }}{{ root_obj.get_absolute_url }}">{{ root_obj }}</a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="to {0}" style="color: #3795bf; text-decoration: none" %} | {{ obj.submit_date|date:"j M Y" }}
+          {% if obj.user == recipient %}me{% else %}{{ obj.user.get_full_name }}{% endif %} </a> on <a href="https://{{ site }}{{ root_obj.get_absolute_url }}">{{ root_obj }}</a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="to {0}" style="color: #3795bf; text-decoration: none" %} | {{ obj.submit_date|date:"j M Y" }}
         </p>
 
         {% if comment %}
@@ -90,8 +90,8 @@
 {% elif root_obj_cls_name == 'Reference' %}
     {% if obj.title %}
         <p>
-          {{ root_obj_cls_name }} posted by <a href="https://{{ site }}{{ obj.user.get_absolute_url }}" style="color: #3795bf; text-decoration: none">
-          {% if obj.user == request.user %}me{% else %}{{ obj.user.get_full_name }}{% endif %} </a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="with {0}" style="color: #3795bf; text-decoration: none"%} | {{ obj.submit_date|date:"j M Y" }}
+          {{ root_obj_cls_name }} posted by <a href="{{ user_link }}" style="color: #3795bf; text-decoration: none">
+          {% if obj.user == recipient %}me{% else %}{{ obj.user.get_full_name }}{% endif %} </a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="with {0}" style="color: #3795bf; text-decoration: none"%} | {{ obj.submit_date|date:"j M Y" }}
           <p>
             {# Full reference details #}
             {% include 'bibliography/_reference.html' with obj=root_obj email=True %}
