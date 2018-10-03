@@ -176,8 +176,14 @@ def activity_mail(user, obj, target, request=None, comment=""):
             # ^^ is that dead code now?
         subject = subject_t.format(user.get_full_name())
     else:
-        subject_t = "{} has shared a comment with you at Sarcoma Central"
-        subject = subject_t.format(user.get_full_name())
+        if type(obj) == type(root_obj):
+            # when crea-sharing an image, file, document, Discussion?
+            subject_t = "{} has shared a {} with you at Sarcoma Central"
+            subject = subject_t.format(user.get_full_name(), root_obj_cls_name)
+        else:
+            # generally means its a comment on an object
+            subject_t = "{} has shared a comment with you at Sarcoma Central"
+            subject = subject_t.format(user.get_full_name())
 
     # template = 'core/emails/activity_email'
     template = 'core/emails/immediate_email_notifications'
