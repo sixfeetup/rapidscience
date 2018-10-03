@@ -74,22 +74,17 @@
         <div style="margin-left: 0px;" >
           <p style="color: #3795bf; text-decoration: none"><a href="{{ link }}">{{ title|safe |striptags }}</a></p>
         </div>
-
-        {% if comment %}
-            <div style="border-left: 3px solid #e5e5e5; padding-left: 15px; font-style: italic; margin: 10px 0; color: #444444"> {{ comment|safe |striptags|truncatechars:160 }}</div>
-            <br/>
-        {% endif %}
-        <h4>Content posted here from a closed group can be shared only with members of that group. All other content, posted from your personal dashboard or an open group, can be shared with any individuals and with groups to which you belong. In addition, this content can be further shared by original recipients with groups to which they belong.</h4>
-
      {% else %}
         <p> Reply by <a href="https://{{ user_link }}" style="color: #3795bf; text-decoration: none">
           {% if obj.user == recipient %}me{% else %}{{ obj.user.get_full_name }}{% endif %} </a> on <a href="https://{{ site }}{{ root_obj.get_absolute_url }}">{{ root_obj }}</a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="to {0}" style="color: #3795bf; text-decoration: none" %} | {{ obj.submit_date|date:"j M Y" }}
         </p>
-
-        {% if comment %}
-          <div style="border-left: 3px solid #e5e5e5; padding-left: 15px; font-style: italic; margin: 10px 0; color: #444444"> {{ comment|safe |striptags|truncatechars:160 }}</div>
-          <br/>
-        {% endif %}
+    {% endif %}
+    {% if comment %}
+        <div style="border-left: 3px solid #e5e5e5; padding-left: 15px; font-style: italic; margin: 10px 0; color: #444444"> {{ comment|safe |striptags|truncatechars:160 }}</div>
+        <br/>
+    {% endif %}
+    {% if obj.title %}
+        <h4>Content posted here from a closed group can be shared only with members of that group. All other content, posted from your personal dashboard or an open group, can be shared with any individuals and with groups to which you belong. In addition, this content can be further shared by original recipients with groups to which they belong.</h4>
     {% endif %}
 
 
