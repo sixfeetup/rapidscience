@@ -8,17 +8,23 @@
 
 
 {% if root_obj_cls_name == 'CaseReport' %}
-  <p>
-    {{ root_obj_cls_name }} posted by <a href="{{ user_link }}" style="color: #3795bf; text-decoration: none">
-    {% if obj.user == recipient %}me{% else %}{{ obj.user.get_full_name }}{% endif %} </a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="to {0}" style="color: #3795bf; text-decoration: none" %} | {{ obj.submit_date|date:"j M Y" }}
-  </p>
+    {% if obj.title %}
+        <p>
+          {{ root_obj_cls_name }} posted by <a href="{{ user_link }}" style="color: #3795bf; text-decoration: none">
+          {% if obj.user == recipient %}me{% else %}{{ obj.user.get_full_name }}{% endif %} </a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="to {0}" style="color: #3795bf; text-decoration: none" %} | {{ obj.submit_date|date:"j M Y" }}
+        </p>
+    {% else %}
+        <p>
+          Reply by <a href="{{ user_link }}" style="color: #3795bf; text-decoration: none">
+          {% if obj.user == recipient %}me{% else %}{{ obj.user.get_full_name }}{% endif %} </a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="to {0}" style="color: #3795bf; text-decoration: none" %} | {{ obj.submit_date|date:"j M Y" }}
+        </p>
+    {% endif %}
 
     <div style="margin-left: 0px;" style="color: #3795bf; text-decoration: none" >
-    <p>{{ title|safe |striptags }}</p> <br><br>
+      <p>{{ title|safe |striptags }}</p> <br><br>
     </div>
-
     {% if comment %}
-     <div  style="border-left: 3px solid #e5e5e5; padding-left: 15px; font-style: italic; margin: 10px 0; color: #444444"> {{ comment|safe |striptags|truncatechars:160 }}<br><br> </div>
+      <div  style="border-left: 3px solid #e5e5e5; padding-left: 15px; font-style: italic; margin: 10px 0; color: #444444"> {{ comment|safe |striptags|truncatechars:160 }}<br><br> </div>
     {% endif %}
 
 {% elif root_obj_cls_name == 'Discussion' %}
