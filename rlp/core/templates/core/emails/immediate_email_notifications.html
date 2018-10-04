@@ -95,6 +95,7 @@
           {% if obj.user == recipient %}me{% else %}{{ obj.user.get_full_name }}{% endif %} </a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="with {0}" style="color: #3795bf; text-decoration: none"%} | {{ obj.submit_date|date:"j M Y" }}
           <p>
             {# Full reference details #}
+            {# root_obj is Reference #}
             {% include 'bibliography/_reference.html' with obj=root_obj email=True %}
           </p>
           {% if comment %}
@@ -102,15 +103,15 @@
           {% endif %}
         </p>
     {% else %}
-{#        <p> Reply by <a href="https://{{ site }}{{ obj.user.get_absolute_url }}" style="color: #3795bf; text-decoration: none">#}
-{#          {% if obj.user == request.user %}me{% else %}{{ obj.user.get_full_name }}{% endif %} </a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="on {0}" style="color: #3795bf; text-decoration: none" %} | {{ obj.submit_date|date:"j M Y" }}#}
-{#        </p>#}
           <p>
             <a href="{{ user_link }}">{{ user.get_full_name }}</a> shared this Reference with you:
           </p>
           <p>
             {# Full reference details #}
-            {% include 'bibliography/_reference.html' with obj=root_obj email=True %}
+            {#  root_obj is UserReference  true for com on ref #}
+            {% with reference=root_obj obj=root_obj.reference %}
+            {% include 'bibliography/_reference.html' with email=True %}
+            {% endwith %}
           </p>
         {% if comment %}
           <p>

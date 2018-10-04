@@ -79,9 +79,14 @@ def activity_mail(user, obj, target, request=None, comment=""):
         title = ''
     if cls_name == 'UserReference':
         from rlp.bibliography.models import Reference
+        # just make it all references
         root_obj_cls_name = 'Reference'
         root_obj = obj.reference
-        ref = Reference.objects.get(pk=obj.reference_id)
+        obj = obj.reference
+        cls_name = 'Reference'
+
+        # ref = Reference.objects.get(pk=obj.reference_id)
+        ref = obj
         title = ref.title
         comment = comment or obj.description
         link = request and request.build_absolute_uri(
@@ -89,13 +94,13 @@ def activity_mail(user, obj, target, request=None, comment=""):
                            kwargs={'reference_pk': obj.reference_id,
                                    'uref_id': obj.id})) \
                or "https://" + settings.DOMAIN + obj.get_absolute_url()
-    if cls_name in ('Document', 'File', 'Image', 'Link', 'Video'):
+    elif cls_name in ('Document', 'File', 'Image', 'Link', 'Video'):
         comment = comment or obj.description
         link = request and request.build_absolute_uri(
                    reverse('documents:document_detail',
                            kwargs={'doc_pk': obj.id})) \
                or "https://" + settings.DOMAIN + obj.get_absolute_url()
-    if cls_name == 'ThreadedComment':
+    elif cls_name == 'ThreadedComment':
         if obj.is_editorial_note:
             return
         author = ''
