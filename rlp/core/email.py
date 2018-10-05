@@ -78,22 +78,25 @@ def activity_mail(user, obj, target, request=None, comment=""):
     except AttributeError:
         title = ''
     if cls_name == 'UserReference':
-        from rlp.bibliography.models import Reference
+        # create the link while we have the Reference and the UserReference
+        # we can't just use .get_absolute_url because that returns an 'add'
+        # link that was intended tO force users to get their own.
+        link = 'https://' + settings.DOMAIN + \
+               reverse("bibliography:reference_detail", kwargs={
+                   'reference_pk': obj.reference.pk,
+                   'uref_id': obj.id,
+               })
+
         # just make it all references
         root_obj_cls_name = 'Reference'
         root_obj = obj.reference
         obj = obj.reference
         cls_name = 'Reference'
 
-        # ref = Reference.objects.get(pk=obj.reference_id)
         ref = obj
         title = ref.title
         comment = comment or obj.description
-        link = request and request.build_absolute_uri(
-                   reverse('bibliography:reference_detail',
-                           kwargs={'reference_pk': obj.reference_id,
-                                   'uref_id': obj.id})) \
-               or "https://" + settings.DOMAIN + obj.get_absolute_url()
+
     elif cls_name in ('Document', 'File', 'Image', 'Link', 'Video'):
         comment = comment or obj.description
         link = request and request.build_absolute_uri(
