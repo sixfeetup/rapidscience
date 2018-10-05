@@ -92,7 +92,7 @@
     {% if obj.title %}
         <p>
           {{ root_obj_cls_name }} posted by <a href="{{ user_link }}" style="color: #3795bf; text-decoration: none">
-          {% if obj.user == recipient %}me{% else %}{{ obj.user.get_full_name }}{% endif %} </a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="with {0}" style="color: #3795bf; text-decoration: none"%} | {{ obj.date_added|date:"j M Y" }}
+          {% if user == recipient %}me{% else %}{{ user.get_full_name }}{% endif %} </a> {% display_shared_with obj.discussion_root alt_viewers=viewers fmt="with {0}" style="color: #3795bf; text-decoration: none"%} | {{ obj.date_added|date:"j M Y" }}
           <p>
             {# Full reference details #}
             {# root_obj is Reference #}
