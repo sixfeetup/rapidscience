@@ -31,7 +31,19 @@ def send_transactional_mail(to_email, subject, template, context, from_email=set
     return mail.send()
 
 
-def activity_mail(user, obj, target, request=None):
+def email_to_user(email):
+    """ Return a user for a given email address which might be formatted
+        like "first last <email>" or "user@host.com"
+        If no user can be found, the original email passed in is returned.
+    """
+    if "<" in email:
+        addr = email[ email.index("<")+1:-1]
+    else:
+        addr = email
+    return User.objects.filter(email=addr).first() or email
+
+
+def activity_mail(user, obj, target, request=None, comment=""):
     """ send an activity style email ( shared, commented, etc ) relating
         user to obj, to everyone in target.
         Target can a user, a email address string, a group, or a list
@@ -40,7 +52,6 @@ def activity_mail(user, obj, target, request=None):
         Users who have opted out of receiving emails are removed from the
         set.
     """
-
     if target == user:
         return
     if not target:
@@ -48,10 +59,7 @@ def activity_mail(user, obj, target, request=None):
         return
 
     context = {}
-    comment = ""
     link = "https://" + settings.DOMAIN + obj.get_absolute_url()
-    # template = 'core/emails/activity_email'
-    template = 'core/emails/immediate_email_notifications'
 
     recipients = resolve_email_targets(target, exclude=user)
     doc_media_list = ['Document', 'File', 'Image', 'Link', 'Video']
@@ -59,36 +67,47 @@ def activity_mail(user, obj, target, request=None):
 
     cls_name = obj.__class__.__name__
     root_obj_cls_name = cls_name
+    root_obj = obj
 
+    user_link = request and request.build_absolute_uri(
+        reverse('profile',
+                kwargs={'pk': user.id})) \
+                or "https://" + settings.DOMAIN + user.get_absolute_url()
     try:
         title = obj.title
     except AttributeError:
         title = ''
     if cls_name == 'UserReference':
-        from rlp.bibliography.models import Reference
+        # create the link while we have the Reference and the UserReference
+        # we can't just use .get_absolute_url because that returns an 'add'
+        # link that was intended tO force users to get their own.
+        link = 'https://' + settings.DOMAIN + \
+               reverse("bibliography:reference_detail", kwargs={
+                   'reference_pk': obj.reference.pk,
+                   'uref_id': obj.id,
+               })
+
+        # just make it all references
         root_obj_cls_name = 'Reference'
-        ref = Reference.objects.get(pk=obj.reference_id)
+        root_obj = obj.reference
+        obj = obj.reference
+        cls_name = 'Reference'
+
+        ref = obj
         title = ref.title
-        comment = obj.description
-        link = request and request.build_absolute_uri(
-                   reverse('bibliography:reference_detail',
-                           kwargs={'reference_pk': obj.reference_id,
-                                   'uref_id': obj.id})) \
-               or "https://" + settings.DOMAIN + obj.get_absolute_url()
-    if cls_name in ('Document', 'File', 'Image', 'Link', 'Video'):
-        comment = obj.description
+        comment = comment or obj.description
+
+    elif cls_name in ('Document', 'File', 'Image', 'Link', 'Video'):
+        comment = comment or obj.description
         link = request and request.build_absolute_uri(
                    reverse('documents:document_detail',
                            kwargs={'doc_pk': obj.id})) \
                or "https://" + settings.DOMAIN + obj.get_absolute_url()
-    if cls_name == 'ThreadedComment':
+    elif cls_name == 'ThreadedComment':
         if obj.is_editorial_note:
             return
         author = ''
-        user_link = request and request.build_absolute_uri(
-                    reverse('profile',
-                           kwargs={'pk': user.id})) \
-                    or "https://" + settings.DOMAIN + user.get_absolute_url()
+
         disc_root = obj.discussion_root
         root_obj = disc_root.content_object
         root_obj_cls_name = root_obj.__class__.__name__
@@ -122,13 +141,12 @@ def activity_mail(user, obj, target, request=None):
                     request.build_absolute_uri(reverse('dashboard')) \
                     or "https://" + settings.DOMAIN
 
-        if root_obj_cls_name == 'Discussion' and obj.title:
-            template = 'core/emails/immediate_email_notifications'  # 'core/emails/newdiscussion_comment_activity_email'
-        else:
-            template = 'core/emails/immediate_email_notifications'  # 'core/emails/comment_activity_email'
+        # if root_obj_cls_name == 'Discussion' and obj.title:
+        #     template = 'core/emails/immediate_email_notifications'  # 'core/emails/newdiscussion_comment_activity_email'
+        # else:
+        #     template = 'core/emails/immediate_email_notifications'  # 'core/emails/comment_activity_email'
 
         context.update({
-            "user_link": user_link,
             "root_obj": root_obj,
             "author_link": author_link,
             "author": author,
@@ -142,31 +160,41 @@ def activity_mail(user, obj, target, request=None):
 
     context.update({
         "user": user,  # author
+        "user_link": user_link,
+        "obj": obj,
+        "link": link,
         "title": title,
         "comment": comment,
-        "link": link,
         "site": settings.DOMAIN,
         "recipients": recipients,
         'doc_media_list': doc_media_list,
-        'obj': obj,
         'viewers': target,
         'both_cls_name': cls_name if cls_name != root_obj_cls_name else root_obj_cls_name,
         'comment_list': comment_list,
         "root_obj_cls_name": root_obj_cls_name,
+        "root_obj": root_obj,
     })
 
-    if root_obj_cls_name == 'Discussion' and obj.title:
-        subject = "{} shared a {} with you at Sarcoma Central"
-    elif root_obj_cls_name == 'Reference' or root_obj_cls_name == 'UserReference':
+    # email subject line:
+    if root_obj_cls_name == 'Reference' or root_obj_cls_name == 'UserReference':
         if cls_name == 'ThreadedComment':
-            subject = "{} has shared a comment with you"
+            subject_t = "{} has shared a comment with you at Sarcoma Central"
         else:
-            subject = "{} has shared a reference with you"
+            subject_t = "{} has shared a reference with you at Sarcoma Central"
+            # ^^ is that dead code now?
+        subject = subject_t.format(user.get_full_name())
     else:
-        subject = "{{}} has shared a {} with you".format(root_obj_cls_name.lower())
+        if type(obj) == type(root_obj):
+            # when crea-sharing an image, file, document, Discussion?
+            subject_t = "{} has shared a {} with you at Sarcoma Central"
+            subject = subject_t.format(user.get_full_name(), root_obj_cls_name)
+        else:
+            # generally means its a comment on an object
+            subject_t = "{} has shared a comment with you at Sarcoma Central"
+            subject = subject_t.format(user.get_full_name())
 
-    subject = subject.format(user.get_full_name(), root_obj_cls_name)
-
+    # template = 'core/emails/activity_email'
+    template = 'core/emails/immediate_email_notifications'
     template_name = "{}.html".format(template)
 
     for recipient in recipients:
@@ -178,6 +206,7 @@ def activity_mail(user, obj, target, request=None):
             recipient_name = recipient_name.split('"')[1]
         context.update({
             "recipient_name": recipient_name,
+            "recipient": email_to_user(recipient),
             'date_time': now,
 
         })

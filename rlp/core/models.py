@@ -216,14 +216,16 @@ class SharedObjectMixin(models.Model):
                 target=viewer,
                 public=is_public,
             )
+        # TODO?  Ideally the activity email would have access to the action(s).
+        # The code here is about to loose the original comment.
         emails = []
         if publicly:
             if type(self) == CaseReport:
                 emails = casereport_emails.send_shared_email(self, viewers, exclude=exclude)
             else:
                 emails = resolve_email_targets(viewers, exclude=exclude)
+                activity_mail(shared_by, self, viewers, comment=comment)
 
-                activity_mail(shared_by, self, viewers)  # emails)
         return emails
 
     def get_content_type(self, resolve_polymorphic=True):

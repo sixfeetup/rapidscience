@@ -317,6 +317,8 @@ $(".invite-link").click(function(){
 $(".close-overlay").click(function(){
     $(".overlay-form").fadeOut();
     $("body").removeClass("overlay-active");
+    var form = $(this).parents("form")[0];
+    form.reset()
 });
 
 // Edit Group overlay
