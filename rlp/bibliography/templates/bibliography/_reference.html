@@ -34,6 +34,10 @@
   </div>
   <div class="col-md-1">
   {% endif %}
+  {% if email %}
+      <!-- administrative links suppressed for emails -->
+  {% else %}
+      <!-- administrative links -->
       {% if add_reference %}
            <a href="{% url 'bibliography:reference_add' reference.id %}" title="Add" data-refid="{{ reference.id }}" class="add-reference-button"><i class="fa fa-plus-circle" aria-hidden="true"></i><a>
       {% else %}
@@ -42,6 +46,7 @@
             <a class="share-link" href="/send/bibliography/reference/{{ obj.id }}"><i class="fa fa-share"></i></a>
         {% endif %}
       {% endif %}
+  {% endif %}
   {% if not search %}
   </div>
 </div>
